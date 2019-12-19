@@ -1,0 +1,1523 @@
+{
+    "id": "bbb7c2b3a751684dbb28a78344e9521b",
+    "name": "LaunchDarkly",
+    "description": null,
+    "auth": null,
+    "events": null,
+    "variables": [],
+    "order": [],
+    "folders_order": [],
+    "folders": [],
+    "requests": [
+        {
+            "id": "035e6daab4e1d31a8053b424a638f9a1",
+            "name": "",
+            "url": "http:\/\/app.launchdarkly.com\/api\/v2\/",
+            "description": "You can issue a GET request to the root resource to find all of the resource categories supported by the API.",
+            "data": [],
+            "dataMode": "raw",
+            "headerData": null,
+            "method": "get",
+            "pathVariableData": [],
+            "queryParams": [],
+            "auth": null,
+            "events": null,
+            "folder": null,
+            "protocolProfileBehavior": {
+                "disableBodyPruning": true
+            },
+            "responses": [],
+            "currentHelper": null,
+            "helperAttributes": null,
+            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "rawModeData": ""
+        },
+        {
+            "id": "464e4a0e126135521b0495f7bf24b37c",
+            "name": "Get a list of all audit log entries. The query parameters allow you to restrict the returned results by date ranges, resource specifiers, or a full-text search query.",
+            "url": "http:\/\/app.launchdarkly.com\/api\/v2\/auditlog",
+            "description": "",
+            "data": [],
+            "dataMode": "raw",
+            "headerData": null,
+            "method": "get",
+            "pathVariableData": [],
+            "queryParams": [
+                {
+                    "key": "No Name",
+                    "description": "",
+                    "value": "",
+                    "equals": true,
+                    "enabled": true
+                }
+            ],
+            "auth": null,
+            "events": null,
+            "folder": null,
+            "protocolProfileBehavior": {
+                "disableBodyPruning": true
+            },
+            "responses": [],
+            "currentHelper": null,
+            "helperAttributes": null,
+            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "rawModeData": ""
+        },
+        {
+            "id": "234edf5c726d46b8e43b0cc5b2666db2",
+            "name": "Use this endpoint to fetch a single audit log entry by its resouce ID.",
+            "url": "http:\/\/app.launchdarkly.com\/api\/v2\/auditlog\/{resourceId}",
+            "description": "",
+            "data": [],
+            "dataMode": "raw",
+            "headerData": null,
+            "method": "get",
+            "pathVariableData": [],
+            "queryParams": [
+                {
+                    "key": "No Name",
+                    "description": "",
+                    "value": "",
+                    "equals": true,
+                    "enabled": true
+                }
+            ],
+            "auth": null,
+            "events": null,
+            "folder": null,
+            "protocolProfileBehavior": {
+                "disableBodyPruning": true
+            },
+            "responses": [],
+            "currentHelper": null,
+            "helperAttributes": null,
+            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "rawModeData": ""
+        },
+        {
+            "id": "1bc4c5b272220333bd0d7deba5bc05f4",
+            "name": "Get a list of statuses for all feature flags. The status includes the last time the feature flag was requested, as well as the state of the flag.",
+            "url": "http:\/\/app.launchdarkly.com\/api\/v2\/flag-statuses\/{projectKey}\/{environmentKey}",
+            "description": "",
+            "data": [],
+            "dataMode": "raw",
+            "headerData": null,
+            "method": "get",
+            "pathVariableData": [],
+            "queryParams": [
+                {
+                    "key": "No Name",
+                    "description": "",
+                    "value": "",
+                    "equals": true,
+                    "enabled": true
+                }
+            ],
+            "auth": null,
+            "events": null,
+            "folder": null,
+            "protocolProfileBehavior": {
+                "disableBodyPruning": true
+            },
+            "responses": [],
+            "currentHelper": null,
+            "helperAttributes": null,
+            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "rawModeData": ""
+        },
+        {
+            "id": "e6a2d41b675eabb3867deb9976dbd288",
+            "name": "Get the status for a particular feature flag.",
+            "url": "http:\/\/app.launchdarkly.com\/api\/v2\/flag-statuses\/{projectKey}\/{environmentKey}\/{featureFlagKey}",
+            "description": "",
+            "data": [],
+            "dataMode": "raw",
+            "headerData": null,
+            "method": "get",
+            "pathVariableData": [],
+            "queryParams": [
+                {
+                    "key": "No Name",
+                    "description": "",
+                    "value": "",
+                    "equals": true,
+                    "enabled": true
+                }
+            ],
+            "auth": null,
+            "events": null,
+            "folder": null,
+            "protocolProfileBehavior": {
+                "disableBodyPruning": true
+            },
+            "responses": [],
+            "currentHelper": null,
+            "helperAttributes": null,
+            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "rawModeData": ""
+        },
+        {
+            "id": "2e1c696f4c8512b1694a385fed6f8bc8",
+            "name": "Get a list of all features in the given project.",
+            "url": "http:\/\/app.launchdarkly.com\/api\/v2\/flags\/{projectKey}",
+            "description": "",
+            "data": [],
+            "dataMode": "raw",
+            "headerData": null,
+            "method": "get",
+            "pathVariableData": [],
+            "queryParams": [
+                {
+                    "key": "No Name",
+                    "description": "",
+                    "value": "",
+                    "equals": true,
+                    "enabled": true
+                }
+            ],
+            "auth": null,
+            "events": null,
+            "folder": null,
+            "protocolProfileBehavior": {
+                "disableBodyPruning": true
+            },
+            "responses": [],
+            "currentHelper": null,
+            "helperAttributes": null,
+            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "rawModeData": ""
+        },
+        {
+            "id": "fa1fbdedcdb23cdd85363c4084fc65f3",
+            "name": "Creates a new feature flag.",
+            "url": "http:\/\/app.launchdarkly.com\/api\/v2\/flags\/{projectKey}",
+            "description": "",
+            "data": [],
+            "dataMode": "raw",
+            "headerData": null,
+            "method": "post",
+            "pathVariableData": [],
+            "queryParams": [
+                {
+                    "key": "No Name",
+                    "description": "",
+                    "value": "",
+                    "equals": true,
+                    "enabled": true
+                }
+            ],
+            "auth": null,
+            "events": null,
+            "folder": null,
+            "protocolProfileBehavior": {
+                "disableBodyPruning": true
+            },
+            "responses": [],
+            "currentHelper": null,
+            "helperAttributes": null,
+            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "rawModeData": ""
+        },
+        {
+            "id": "7822520a7668054465878fce864befda",
+            "name": "Delete a feature flag in all environments. Be careful-- only delete feature flags that are no longer being used by your application.",
+            "url": "http:\/\/app.launchdarkly.com\/api\/v2\/flags\/{projectKey}\/{featureFlagKey}",
+            "description": "",
+            "data": [],
+            "dataMode": "raw",
+            "headerData": null,
+            "method": "delete",
+            "pathVariableData": [],
+            "queryParams": [
+                {
+                    "key": "No Name",
+                    "description": "",
+                    "value": "",
+                    "equals": true,
+                    "enabled": true
+                }
+            ],
+            "auth": null,
+            "events": null,
+            "folder": null,
+            "protocolProfileBehavior": {
+                "disableBodyPruning": true
+            },
+            "responses": [],
+            "currentHelper": null,
+            "helperAttributes": null,
+            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "rawModeData": ""
+        },
+        {
+            "id": "ffbfffdaa3d1547802fc7b7ff97e0989",
+            "name": "Get a single feature flag by key.",
+            "url": "http:\/\/app.launchdarkly.com\/api\/v2\/flags\/{projectKey}\/{featureFlagKey}",
+            "description": "",
+            "data": [],
+            "dataMode": "raw",
+            "headerData": null,
+            "method": "get",
+            "pathVariableData": [],
+            "queryParams": [
+                {
+                    "key": "No Name",
+                    "description": "",
+                    "value": "",
+                    "equals": true,
+                    "enabled": true
+                }
+            ],
+            "auth": null,
+            "events": null,
+            "folder": null,
+            "protocolProfileBehavior": {
+                "disableBodyPruning": true
+            },
+            "responses": [],
+            "currentHelper": null,
+            "helperAttributes": null,
+            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "rawModeData": ""
+        },
+        {
+            "id": "121e47cfc71f9ca6d64db7742df05100",
+            "name": "Perform a partial update to a feature.",
+            "url": "http:\/\/app.launchdarkly.com\/api\/v2\/flags\/{projectKey}\/{featureFlagKey}",
+            "description": "",
+            "data": [],
+            "dataMode": "raw",
+            "headerData": null,
+            "method": "patch",
+            "pathVariableData": [],
+            "queryParams": [
+                {
+                    "key": "No Name",
+                    "description": "",
+                    "value": "",
+                    "equals": true,
+                    "enabled": true
+                }
+            ],
+            "auth": null,
+            "events": null,
+            "folder": null,
+            "protocolProfileBehavior": {
+                "disableBodyPruning": true
+            },
+            "responses": [],
+            "currentHelper": null,
+            "helperAttributes": null,
+            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "rawModeData": ""
+        },
+        {
+            "id": "8a09267510d4afbfdc2c3f2aa1533d8a",
+            "name": "Returns a list of all members in the account.",
+            "url": "http:\/\/app.launchdarkly.com\/api\/v2\/members",
+            "description": "",
+            "data": [],
+            "dataMode": "raw",
+            "headerData": null,
+            "method": "get",
+            "pathVariableData": [],
+            "queryParams": [],
+            "auth": null,
+            "events": null,
+            "folder": null,
+            "protocolProfileBehavior": {
+                "disableBodyPruning": true
+            },
+            "responses": [],
+            "currentHelper": null,
+            "helperAttributes": null,
+            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "rawModeData": ""
+        },
+        {
+            "id": "b1ac51513abe2e1e972cc7f61e6606cc",
+            "name": "Invite new members.",
+            "url": "http:\/\/app.launchdarkly.com\/api\/v2\/members",
+            "description": "",
+            "data": [],
+            "dataMode": "raw",
+            "headerData": null,
+            "method": "post",
+            "pathVariableData": [],
+            "queryParams": [
+                {
+                    "key": "No Name",
+                    "description": "",
+                    "value": "",
+                    "equals": true,
+                    "enabled": true
+                }
+            ],
+            "auth": null,
+            "events": null,
+            "folder": null,
+            "protocolProfileBehavior": {
+                "disableBodyPruning": true
+            },
+            "responses": [],
+            "currentHelper": null,
+            "helperAttributes": null,
+            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "rawModeData": ""
+        },
+        {
+            "id": "fea43a90b1bcd888fb356fab3fe6d87d",
+            "name": "Delete a team member by ID.",
+            "url": "http:\/\/app.launchdarkly.com\/api\/v2\/members\/{memberId}",
+            "description": "",
+            "data": [],
+            "dataMode": "raw",
+            "headerData": null,
+            "method": "delete",
+            "pathVariableData": [],
+            "queryParams": [
+                {
+                    "key": "No Name",
+                    "description": "",
+                    "value": "",
+                    "equals": true,
+                    "enabled": true
+                }
+            ],
+            "auth": null,
+            "events": null,
+            "folder": null,
+            "protocolProfileBehavior": {
+                "disableBodyPruning": true
+            },
+            "responses": [],
+            "currentHelper": null,
+            "helperAttributes": null,
+            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "rawModeData": ""
+        },
+        {
+            "id": "1f5b59e62346d963beff18c1994c1a18",
+            "name": "Get a single team member by ID.",
+            "url": "http:\/\/app.launchdarkly.com\/api\/v2\/members\/{memberId}",
+            "description": "",
+            "data": [],
+            "dataMode": "raw",
+            "headerData": null,
+            "method": "get",
+            "pathVariableData": [],
+            "queryParams": [
+                {
+                    "key": "No Name",
+                    "description": "",
+                    "value": "",
+                    "equals": true,
+                    "enabled": true
+                }
+            ],
+            "auth": null,
+            "events": null,
+            "folder": null,
+            "protocolProfileBehavior": {
+                "disableBodyPruning": true
+            },
+            "responses": [],
+            "currentHelper": null,
+            "helperAttributes": null,
+            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "rawModeData": ""
+        },
+        {
+            "id": "86a29b7524823a09b632c6ae895d45bc",
+            "name": "Modify a team member by ID.",
+            "url": "http:\/\/app.launchdarkly.com\/api\/v2\/members\/{memberId}",
+            "description": "",
+            "data": [],
+            "dataMode": "raw",
+            "headerData": null,
+            "method": "patch",
+            "pathVariableData": [],
+            "queryParams": [
+                {
+                    "key": "No Name",
+                    "description": "",
+                    "value": "",
+                    "equals": true,
+                    "enabled": true
+                }
+            ],
+            "auth": null,
+            "events": null,
+            "folder": null,
+            "protocolProfileBehavior": {
+                "disableBodyPruning": true
+            },
+            "responses": [],
+            "currentHelper": null,
+            "helperAttributes": null,
+            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "rawModeData": ""
+        },
+        {
+            "id": "5de43ab470a7cf13a68ed057af45135e",
+            "name": "Returns a list of all projects in the account.",
+            "url": "http:\/\/app.launchdarkly.com\/api\/v2\/projects",
+            "description": "",
+            "data": [],
+            "dataMode": "raw",
+            "headerData": null,
+            "method": "get",
+            "pathVariableData": [],
+            "queryParams": [],
+            "auth": null,
+            "events": null,
+            "folder": null,
+            "protocolProfileBehavior": {
+                "disableBodyPruning": true
+            },
+            "responses": [],
+            "currentHelper": null,
+            "helperAttributes": null,
+            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "rawModeData": ""
+        },
+        {
+            "id": "38bfe7aa231cb8b3bae285df0699e31c",
+            "name": "Create a new project with the given key and name.",
+            "url": "http:\/\/app.launchdarkly.com\/api\/v2\/projects",
+            "description": "",
+            "data": [],
+            "dataMode": "raw",
+            "headerData": null,
+            "method": "post",
+            "pathVariableData": [],
+            "queryParams": [
+                {
+                    "key": "No Name",
+                    "description": "",
+                    "value": "",
+                    "equals": true,
+                    "enabled": true
+                }
+            ],
+            "auth": null,
+            "events": null,
+            "folder": null,
+            "protocolProfileBehavior": {
+                "disableBodyPruning": true
+            },
+            "responses": [],
+            "currentHelper": null,
+            "helperAttributes": null,
+            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "rawModeData": ""
+        },
+        {
+            "id": "8170b6405e9b9edd0f7682f90cc2c8cb",
+            "name": "Delete a project by key. Caution-- deleting a project will delete all associated environments and feature flags. You cannot delete the last project in an account.",
+            "url": "http:\/\/app.launchdarkly.com\/api\/v2\/projects\/{projectKey}",
+            "description": "",
+            "data": [],
+            "dataMode": "raw",
+            "headerData": null,
+            "method": "delete",
+            "pathVariableData": [],
+            "queryParams": [
+                {
+                    "key": "No Name",
+                    "description": "",
+                    "value": "",
+                    "equals": true,
+                    "enabled": true
+                }
+            ],
+            "auth": null,
+            "events": null,
+            "folder": null,
+            "protocolProfileBehavior": {
+                "disableBodyPruning": true
+            },
+            "responses": [],
+            "currentHelper": null,
+            "helperAttributes": null,
+            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "rawModeData": ""
+        },
+        {
+            "id": "39e455da1ea57e40a5556ddba0bf155b",
+            "name": "Fetch a single project by key.",
+            "url": "http:\/\/app.launchdarkly.com\/api\/v2\/projects\/{projectKey}",
+            "description": "",
+            "data": [],
+            "dataMode": "raw",
+            "headerData": null,
+            "method": "get",
+            "pathVariableData": [],
+            "queryParams": [
+                {
+                    "key": "No Name",
+                    "description": "",
+                    "value": "",
+                    "equals": true,
+                    "enabled": true
+                }
+            ],
+            "auth": null,
+            "events": null,
+            "folder": null,
+            "protocolProfileBehavior": {
+                "disableBodyPruning": true
+            },
+            "responses": [],
+            "currentHelper": null,
+            "helperAttributes": null,
+            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "rawModeData": ""
+        },
+        {
+            "id": "622fd3d64126dbc4194859fdb7890e4f",
+            "name": "Modify a project by ID.",
+            "url": "http:\/\/app.launchdarkly.com\/api\/v2\/projects\/{projectKey}",
+            "description": "",
+            "data": [],
+            "dataMode": "raw",
+            "headerData": null,
+            "method": "patch",
+            "pathVariableData": [],
+            "queryParams": [
+                {
+                    "key": "No Name",
+                    "description": "",
+                    "value": "",
+                    "equals": true,
+                    "enabled": true
+                }
+            ],
+            "auth": null,
+            "events": null,
+            "folder": null,
+            "protocolProfileBehavior": {
+                "disableBodyPruning": true
+            },
+            "responses": [],
+            "currentHelper": null,
+            "helperAttributes": null,
+            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "rawModeData": ""
+        },
+        {
+            "id": "c695c87fa0ccc186a9969a9cca50acc4",
+            "name": "Create a new environment in a specified project with a given name, key, and swatch color.",
+            "url": "http:\/\/app.launchdarkly.com\/api\/v2\/projects\/{projectKey}\/environments",
+            "description": "",
+            "data": [],
+            "dataMode": "raw",
+            "headerData": null,
+            "method": "post",
+            "pathVariableData": [],
+            "queryParams": [
+                {
+                    "key": "No Name",
+                    "description": "",
+                    "value": "",
+                    "equals": true,
+                    "enabled": true
+                }
+            ],
+            "auth": null,
+            "events": null,
+            "folder": null,
+            "protocolProfileBehavior": {
+                "disableBodyPruning": true
+            },
+            "responses": [],
+            "currentHelper": null,
+            "helperAttributes": null,
+            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "rawModeData": ""
+        },
+        {
+            "id": "6f878dfbabc1da1e74a79c27d8fb5a19",
+            "name": "Delete an environment in a specific project.",
+            "url": "http:\/\/app.launchdarkly.com\/api\/v2\/projects\/{projectKey}\/environments\/{environmentKey}",
+            "description": "",
+            "data": [],
+            "dataMode": "raw",
+            "headerData": null,
+            "method": "delete",
+            "pathVariableData": [],
+            "queryParams": [
+                {
+                    "key": "No Name",
+                    "description": "",
+                    "value": "",
+                    "equals": true,
+                    "enabled": true
+                }
+            ],
+            "auth": null,
+            "events": null,
+            "folder": null,
+            "protocolProfileBehavior": {
+                "disableBodyPruning": true
+            },
+            "responses": [],
+            "currentHelper": null,
+            "helperAttributes": null,
+            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "rawModeData": ""
+        },
+        {
+            "id": "c01ad6c4d373f0fb15e736ce49be8c53",
+            "name": "Get an environment given a project and key.",
+            "url": "http:\/\/app.launchdarkly.com\/api\/v2\/projects\/{projectKey}\/environments\/{environmentKey}",
+            "description": "",
+            "data": [],
+            "dataMode": "raw",
+            "headerData": null,
+            "method": "get",
+            "pathVariableData": [],
+            "queryParams": [
+                {
+                    "key": "No Name",
+                    "description": "",
+                    "value": "",
+                    "equals": true,
+                    "enabled": true
+                }
+            ],
+            "auth": null,
+            "events": null,
+            "folder": null,
+            "protocolProfileBehavior": {
+                "disableBodyPruning": true
+            },
+            "responses": [],
+            "currentHelper": null,
+            "helperAttributes": null,
+            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "rawModeData": ""
+        },
+        {
+            "id": "c4a435299ec0cd65215fdccb495d6260",
+            "name": "Modify an environment by ID.",
+            "url": "http:\/\/app.launchdarkly.com\/api\/v2\/projects\/{projectKey}\/environments\/{environmentKey}",
+            "description": "",
+            "data": [],
+            "dataMode": "raw",
+            "headerData": null,
+            "method": "patch",
+            "pathVariableData": [],
+            "queryParams": [
+                {
+                    "key": "No Name",
+                    "description": "",
+                    "value": "",
+                    "equals": true,
+                    "enabled": true
+                }
+            ],
+            "auth": null,
+            "events": null,
+            "folder": null,
+            "protocolProfileBehavior": {
+                "disableBodyPruning": true
+            },
+            "responses": [],
+            "currentHelper": null,
+            "helperAttributes": null,
+            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "rawModeData": ""
+        },
+        {
+            "id": "397c5be58c537faefd0d061d7e8eced0",
+            "name": "Return a complete list of custom roles.",
+            "url": "http:\/\/app.launchdarkly.com\/api\/v2\/roles",
+            "description": "",
+            "data": [],
+            "dataMode": "raw",
+            "headerData": null,
+            "method": "get",
+            "pathVariableData": [],
+            "queryParams": [],
+            "auth": null,
+            "events": null,
+            "folder": null,
+            "protocolProfileBehavior": {
+                "disableBodyPruning": true
+            },
+            "responses": [],
+            "currentHelper": null,
+            "helperAttributes": null,
+            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "rawModeData": ""
+        },
+        {
+            "id": "5a088233d5af0af0db2800317bf93a08",
+            "name": "Create a new custom role.",
+            "url": "http:\/\/app.launchdarkly.com\/api\/v2\/roles",
+            "description": "",
+            "data": [],
+            "dataMode": "raw",
+            "headerData": null,
+            "method": "post",
+            "pathVariableData": [],
+            "queryParams": [
+                {
+                    "key": "No Name",
+                    "description": "",
+                    "value": "",
+                    "equals": true,
+                    "enabled": true
+                }
+            ],
+            "auth": null,
+            "events": null,
+            "folder": null,
+            "protocolProfileBehavior": {
+                "disableBodyPruning": true
+            },
+            "responses": [],
+            "currentHelper": null,
+            "helperAttributes": null,
+            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "rawModeData": ""
+        },
+        {
+            "id": "5ae982bc1db43e4b4f6e01fbd218da61",
+            "name": "Delete a custom role by key.",
+            "url": "http:\/\/app.launchdarkly.com\/api\/v2\/roles\/{customRoleKey}",
+            "description": "",
+            "data": [],
+            "dataMode": "raw",
+            "headerData": null,
+            "method": "delete",
+            "pathVariableData": [],
+            "queryParams": [
+                {
+                    "key": "No Name",
+                    "description": "",
+                    "value": "",
+                    "equals": true,
+                    "enabled": true
+                }
+            ],
+            "auth": null,
+            "events": null,
+            "folder": null,
+            "protocolProfileBehavior": {
+                "disableBodyPruning": true
+            },
+            "responses": [],
+            "currentHelper": null,
+            "helperAttributes": null,
+            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "rawModeData": ""
+        },
+        {
+            "id": "6ab074df859f78e1660fad1a138c2277",
+            "name": "Get one custom role by key.",
+            "url": "http:\/\/app.launchdarkly.com\/api\/v2\/roles\/{customRoleKey}",
+            "description": "",
+            "data": [],
+            "dataMode": "raw",
+            "headerData": null,
+            "method": "get",
+            "pathVariableData": [],
+            "queryParams": [
+                {
+                    "key": "No Name",
+                    "description": "",
+                    "value": "",
+                    "equals": true,
+                    "enabled": true
+                }
+            ],
+            "auth": null,
+            "events": null,
+            "folder": null,
+            "protocolProfileBehavior": {
+                "disableBodyPruning": true
+            },
+            "responses": [],
+            "currentHelper": null,
+            "helperAttributes": null,
+            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "rawModeData": ""
+        },
+        {
+            "id": "eae880e2ba55065ff523f2054316356b",
+            "name": "Modify a custom role by key.",
+            "url": "http:\/\/app.launchdarkly.com\/api\/v2\/roles\/{customRoleKey}",
+            "description": "",
+            "data": [],
+            "dataMode": "raw",
+            "headerData": null,
+            "method": "patch",
+            "pathVariableData": [],
+            "queryParams": [
+                {
+                    "key": "No Name",
+                    "description": "",
+                    "value": "",
+                    "equals": true,
+                    "enabled": true
+                }
+            ],
+            "auth": null,
+            "events": null,
+            "folder": null,
+            "protocolProfileBehavior": {
+                "disableBodyPruning": true
+            },
+            "responses": [],
+            "currentHelper": null,
+            "helperAttributes": null,
+            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "rawModeData": ""
+        },
+        {
+            "id": "a246de5d8cfa7c8dce4d605cd7b31d53",
+            "name": "Search users in LaunchDarkly based on their last active date, or a search query. It should not be used to enumerate all users in LaunchDarkly-- use the List users API resource.",
+            "url": "http:\/\/app.launchdarkly.com\/api\/v2\/user-search\/{projectKey}\/{environmentKey}",
+            "description": "",
+            "data": [],
+            "dataMode": "raw",
+            "headerData": null,
+            "method": "get",
+            "pathVariableData": [],
+            "queryParams": [
+                {
+                    "key": "No Name",
+                    "description": "",
+                    "value": "",
+                    "equals": true,
+                    "enabled": true
+                }
+            ],
+            "auth": null,
+            "events": null,
+            "folder": null,
+            "protocolProfileBehavior": {
+                "disableBodyPruning": true
+            },
+            "responses": [],
+            "currentHelper": null,
+            "helperAttributes": null,
+            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "rawModeData": ""
+        },
+        {
+            "id": "586bdd0ee34553eeb623a46e5c8b7938",
+            "name": "List all users in the environment. Includes the total count of users. In each page, there will be up to 'limit' users returned (default 20). This is useful for exporting all users in the system for further analysis. Paginated collections will include",
+            "url": "http:\/\/app.launchdarkly.com\/api\/v2\/users\/{projectKey}\/{environmentKey}",
+            "description": "",
+            "data": [],
+            "dataMode": "raw",
+            "headerData": null,
+            "method": "get",
+            "pathVariableData": [],
+            "queryParams": [
+                {
+                    "key": "No Name",
+                    "description": "",
+                    "value": "",
+                    "equals": true,
+                    "enabled": true
+                }
+            ],
+            "auth": null,
+            "events": null,
+            "folder": null,
+            "protocolProfileBehavior": {
+                "disableBodyPruning": true
+            },
+            "responses": [],
+            "currentHelper": null,
+            "helperAttributes": null,
+            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "rawModeData": ""
+        },
+        {
+            "id": "d36f9f311265410caf65810b448e0f42",
+            "name": "Delete a user by ID.",
+            "url": "http:\/\/app.launchdarkly.com\/api\/v2\/users\/{projectKey}\/{environmentKey}\/{userKey}",
+            "description": "",
+            "data": [],
+            "dataMode": "raw",
+            "headerData": null,
+            "method": "delete",
+            "pathVariableData": [],
+            "queryParams": [
+                {
+                    "key": "No Name",
+                    "description": "",
+                    "value": "",
+                    "equals": true,
+                    "enabled": true
+                }
+            ],
+            "auth": null,
+            "events": null,
+            "folder": null,
+            "protocolProfileBehavior": {
+                "disableBodyPruning": true
+            },
+            "responses": [],
+            "currentHelper": null,
+            "helperAttributes": null,
+            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "rawModeData": ""
+        },
+        {
+            "id": "8c1ebc7e596421008fe824b7e1ddb987",
+            "name": "Get a user by key.",
+            "url": "http:\/\/app.launchdarkly.com\/api\/v2\/users\/{projectKey}\/{environmentKey}\/{userKey}",
+            "description": "",
+            "data": [],
+            "dataMode": "raw",
+            "headerData": null,
+            "method": "get",
+            "pathVariableData": [],
+            "queryParams": [
+                {
+                    "key": "No Name",
+                    "description": "",
+                    "value": "",
+                    "equals": true,
+                    "enabled": true
+                }
+            ],
+            "auth": null,
+            "events": null,
+            "folder": null,
+            "protocolProfileBehavior": {
+                "disableBodyPruning": true
+            },
+            "responses": [],
+            "currentHelper": null,
+            "helperAttributes": null,
+            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "rawModeData": ""
+        },
+        {
+            "id": "81918b50bfa3e0f5ecf36dc38dae248e",
+            "name": "Fetch a single flag setting for a user by key.",
+            "url": "http:\/\/app.launchdarkly.com\/api\/v2\/users\/{projectKey}\/{environmentKey}\/{userKey}\/flags",
+            "description": "",
+            "data": [],
+            "dataMode": "raw",
+            "headerData": null,
+            "method": "get",
+            "pathVariableData": [],
+            "queryParams": [
+                {
+                    "key": "No Name",
+                    "description": "",
+                    "value": "",
+                    "equals": true,
+                    "enabled": true
+                }
+            ],
+            "auth": null,
+            "events": null,
+            "folder": null,
+            "protocolProfileBehavior": {
+                "disableBodyPruning": true
+            },
+            "responses": [],
+            "currentHelper": null,
+            "helperAttributes": null,
+            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "rawModeData": ""
+        },
+        {
+            "id": "8316a33ca4fd5748a541d4740e11a00f",
+            "name": "Fetch a single flag setting for a user by key.",
+            "url": "http:\/\/app.launchdarkly.com\/api\/v2\/users\/{projectKey}\/{environmentKey}\/{userKey}\/flags\/{featureFlagKey}",
+            "description": "",
+            "data": [],
+            "dataMode": "raw",
+            "headerData": null,
+            "method": "get",
+            "pathVariableData": [],
+            "queryParams": [
+                {
+                    "key": "No Name",
+                    "description": "",
+                    "value": "",
+                    "equals": true,
+                    "enabled": true
+                }
+            ],
+            "auth": null,
+            "events": null,
+            "folder": null,
+            "protocolProfileBehavior": {
+                "disableBodyPruning": true
+            },
+            "responses": [],
+            "currentHelper": null,
+            "helperAttributes": null,
+            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "rawModeData": ""
+        },
+        {
+            "id": "d36426e3e1eaad177691e008c0205909",
+            "name": "Specifically enable or disable a feature flag for a user based on their key.",
+            "url": "http:\/\/app.launchdarkly.com\/api\/v2\/users\/{projectKey}\/{environmentKey}\/{userKey}\/flags\/{featureFlagKey}",
+            "description": "",
+            "data": [],
+            "dataMode": "raw",
+            "headerData": null,
+            "method": "put",
+            "pathVariableData": [],
+            "queryParams": [
+                {
+                    "key": "No Name",
+                    "description": "",
+                    "value": "",
+                    "equals": true,
+                    "enabled": true
+                }
+            ],
+            "auth": null,
+            "events": null,
+            "folder": null,
+            "protocolProfileBehavior": {
+                "disableBodyPruning": true
+            },
+            "responses": [],
+            "currentHelper": null,
+            "helperAttributes": null,
+            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "rawModeData": ""
+        },
+        {
+            "id": "5d1d57233b926c91d18f1926832b7d74",
+            "name": "Fetch a list of all webhooks.",
+            "url": "http:\/\/app.launchdarkly.com\/api\/v2\/webhooks",
+            "description": "",
+            "data": [],
+            "dataMode": "raw",
+            "headerData": null,
+            "method": "get",
+            "pathVariableData": [],
+            "queryParams": [],
+            "auth": null,
+            "events": null,
+            "folder": null,
+            "protocolProfileBehavior": {
+                "disableBodyPruning": true
+            },
+            "responses": [],
+            "currentHelper": null,
+            "helperAttributes": null,
+            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "rawModeData": ""
+        },
+        {
+            "id": "d63701ce88071aee65263271dfda2393",
+            "name": "Create a webhook.",
+            "url": "http:\/\/app.launchdarkly.com\/api\/v2\/webhooks",
+            "description": "",
+            "data": [],
+            "dataMode": "raw",
+            "headerData": null,
+            "method": "post",
+            "pathVariableData": [],
+            "queryParams": [
+                {
+                    "key": "No Name",
+                    "description": "",
+                    "value": "",
+                    "equals": true,
+                    "enabled": true
+                }
+            ],
+            "auth": null,
+            "events": null,
+            "folder": null,
+            "protocolProfileBehavior": {
+                "disableBodyPruning": true
+            },
+            "responses": [],
+            "currentHelper": null,
+            "helperAttributes": null,
+            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "rawModeData": ""
+        },
+        {
+            "id": "5ccdfdf56c5f53ac2b0a99a367c84e30",
+            "name": "Delete a webhook by ID.",
+            "url": "http:\/\/app.launchdarkly.com\/api\/v2\/webhooks\/{resourceId}",
+            "description": "",
+            "data": [],
+            "dataMode": "raw",
+            "headerData": null,
+            "method": "delete",
+            "pathVariableData": [],
+            "queryParams": [
+                {
+                    "key": "No Name",
+                    "description": "",
+                    "value": "",
+                    "equals": true,
+                    "enabled": true
+                }
+            ],
+            "auth": null,
+            "events": null,
+            "folder": null,
+            "protocolProfileBehavior": {
+                "disableBodyPruning": true
+            },
+            "responses": [],
+            "currentHelper": null,
+            "helperAttributes": null,
+            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "rawModeData": ""
+        },
+        {
+            "id": "ed8c05361e105c70c58d8c36efba9e71",
+            "name": "Get a webhook by ID.",
+            "url": "http:\/\/app.launchdarkly.com\/api\/v2\/webhooks\/{resourceId}",
+            "description": "",
+            "data": [],
+            "dataMode": "raw",
+            "headerData": null,
+            "method": "get",
+            "pathVariableData": [],
+            "queryParams": [
+                {
+                    "key": "No Name",
+                    "description": "",
+                    "value": "",
+                    "equals": true,
+                    "enabled": true
+                }
+            ],
+            "auth": null,
+            "events": null,
+            "folder": null,
+            "protocolProfileBehavior": {
+                "disableBodyPruning": true
+            },
+            "responses": [],
+            "currentHelper": null,
+            "helperAttributes": null,
+            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "rawModeData": ""
+        },
+        {
+            "id": "63af19b399467dee1d8b4a992a35936a",
+            "name": "Modify a webhook by ID.",
+            "url": "http:\/\/app.launchdarkly.com\/api\/v2\/webhooks\/{resourceId}",
+            "description": "",
+            "data": [],
+            "dataMode": "raw",
+            "headerData": null,
+            "method": "patch",
+            "pathVariableData": [],
+            "queryParams": [
+                {
+                    "key": "No Name",
+                    "description": "",
+                    "value": "",
+                    "equals": true,
+                    "enabled": true
+                }
+            ],
+            "auth": null,
+            "events": null,
+            "folder": null,
+            "protocolProfileBehavior": {
+                "disableBodyPruning": true
+            },
+            "responses": [],
+            "currentHelper": null,
+            "helperAttributes": null,
+            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "rawModeData": ""
+        },
+        {
+            "id": "4c815268ec21dba81d4ffaf506e9183a",
+            "name": "Create an environment",
+            "url": "http:\/\/app.launchdarkly.com\/api\/v2\/environments\/{projectKey}",
+            "description": "",
+            "data": [],
+            "dataMode": "raw",
+            "headerData": null,
+            "method": "post",
+            "pathVariableData": [],
+            "queryParams": [
+                {
+                    "key": "No Name",
+                    "description": "",
+                    "value": "",
+                    "equals": true,
+                    "enabled": true
+                }
+            ],
+            "auth": null,
+            "events": null,
+            "folder": null,
+            "protocolProfileBehavior": {
+                "disableBodyPruning": true
+            },
+            "responses": [],
+            "currentHelper": null,
+            "helperAttributes": null,
+            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "rawModeData": ""
+        },
+        {
+            "id": "8d4b022e1ce8d977d8c1eae7ca5924f1",
+            "name": "Delete an environment by ID",
+            "url": "http:\/\/app.launchdarkly.com\/api\/v2\/environments\/{projectKey}\/{environmentKey}",
+            "description": "",
+            "data": [],
+            "dataMode": "raw",
+            "headerData": null,
+            "method": "delete",
+            "pathVariableData": [],
+            "queryParams": [
+                {
+                    "key": "No Name",
+                    "description": "",
+                    "value": "",
+                    "equals": true,
+                    "enabled": true
+                }
+            ],
+            "auth": null,
+            "events": null,
+            "folder": null,
+            "protocolProfileBehavior": {
+                "disableBodyPruning": true
+            },
+            "responses": [],
+            "currentHelper": null,
+            "helperAttributes": null,
+            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "rawModeData": ""
+        },
+        {
+            "id": "93f18802cb69614d9b4135120153dd32",
+            "name": "Get an environment by key.",
+            "url": "http:\/\/app.launchdarkly.com\/api\/v2\/environments\/{projectKey}\/{environmentKey}",
+            "description": "",
+            "data": [],
+            "dataMode": "raw",
+            "headerData": null,
+            "method": "get",
+            "pathVariableData": [],
+            "queryParams": [
+                {
+                    "key": "No Name",
+                    "description": "",
+                    "value": "",
+                    "equals": true,
+                    "enabled": true
+                }
+            ],
+            "auth": null,
+            "events": null,
+            "folder": null,
+            "protocolProfileBehavior": {
+                "disableBodyPruning": true
+            },
+            "responses": [],
+            "currentHelper": null,
+            "helperAttributes": null,
+            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "rawModeData": ""
+        },
+        {
+            "id": "d36901849f640e372311444175ec1dcb",
+            "name": "Modify an environment by ID",
+            "url": "http:\/\/app.launchdarkly.com\/api\/v2\/environments\/{projectKey}\/{environmentKey}",
+            "description": "",
+            "data": [],
+            "dataMode": "raw",
+            "headerData": null,
+            "method": "patch",
+            "pathVariableData": [],
+            "queryParams": [
+                {
+                    "key": "No Name",
+                    "description": "",
+                    "value": "",
+                    "equals": true,
+                    "enabled": true
+                }
+            ],
+            "auth": null,
+            "events": null,
+            "folder": null,
+            "protocolProfileBehavior": {
+                "disableBodyPruning": true
+            },
+            "responses": [],
+            "currentHelper": null,
+            "helperAttributes": null,
+            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "rawModeData": ""
+        },
+        {
+            "id": "dc9004ff3dd9ccf4b94cda0fa3e4b793",
+            "name": "Get a list of all user segments in the given project.",
+            "url": "http:\/\/app.launchdarkly.com\/api\/v2\/segments\/{projectKey}\/{environmentKey}",
+            "description": "",
+            "data": [],
+            "dataMode": "raw",
+            "headerData": null,
+            "method": "get",
+            "pathVariableData": [],
+            "queryParams": [
+                {
+                    "key": "No Name",
+                    "description": "",
+                    "value": "",
+                    "equals": true,
+                    "enabled": true
+                }
+            ],
+            "auth": null,
+            "events": null,
+            "folder": null,
+            "protocolProfileBehavior": {
+                "disableBodyPruning": true
+            },
+            "responses": [],
+            "currentHelper": null,
+            "helperAttributes": null,
+            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "rawModeData": ""
+        },
+        {
+            "id": "3a2a9b01a303d9aecce93780c89d2d8b",
+            "name": "Creates a new user segment.",
+            "url": "http:\/\/app.launchdarkly.com\/api\/v2\/segments\/{projectKey}\/{environmentKey}",
+            "description": "",
+            "data": [],
+            "dataMode": "raw",
+            "headerData": null,
+            "method": "post",
+            "pathVariableData": [],
+            "queryParams": [
+                {
+                    "key": "No Name",
+                    "description": "",
+                    "value": "",
+                    "equals": true,
+                    "enabled": true
+                }
+            ],
+            "auth": null,
+            "events": null,
+            "folder": null,
+            "protocolProfileBehavior": {
+                "disableBodyPruning": true
+            },
+            "responses": [],
+            "currentHelper": null,
+            "helperAttributes": null,
+            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "rawModeData": ""
+        },
+        {
+            "id": "7054a353fc8d25024a8aa169da8cd00f",
+            "name": "Delete a user segment.",
+            "url": "http:\/\/app.launchdarkly.com\/api\/v2\/segments\/{projectKey}\/{environmentKey}\/{userSegmentKey}",
+            "description": "",
+            "data": [],
+            "dataMode": "raw",
+            "headerData": null,
+            "method": "delete",
+            "pathVariableData": [],
+            "queryParams": [
+                {
+                    "key": "No Name",
+                    "description": "",
+                    "value": "",
+                    "equals": true,
+                    "enabled": true
+                }
+            ],
+            "auth": null,
+            "events": null,
+            "folder": null,
+            "protocolProfileBehavior": {
+                "disableBodyPruning": true
+            },
+            "responses": [],
+            "currentHelper": null,
+            "helperAttributes": null,
+            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "rawModeData": ""
+        },
+        {
+            "id": "a4b07c01dc4980ffe9e16bd2081b9963",
+            "name": "Get a single user segment by key.",
+            "url": "http:\/\/app.launchdarkly.com\/api\/v2\/segments\/{projectKey}\/{environmentKey}\/{userSegmentKey}",
+            "description": "",
+            "data": [],
+            "dataMode": "raw",
+            "headerData": null,
+            "method": "get",
+            "pathVariableData": [],
+            "queryParams": [
+                {
+                    "key": "No Name",
+                    "description": "",
+                    "value": "",
+                    "equals": true,
+                    "enabled": true
+                }
+            ],
+            "auth": null,
+            "events": null,
+            "folder": null,
+            "protocolProfileBehavior": {
+                "disableBodyPruning": true
+            },
+            "responses": [],
+            "currentHelper": null,
+            "helperAttributes": null,
+            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "rawModeData": ""
+        },
+        {
+            "id": "25d8f78828562fb9e5884461abda216d",
+            "name": "Perform a partial update to a user segment.",
+            "url": "http:\/\/app.launchdarkly.com\/api\/v2\/segments\/{projectKey}\/{environmentKey}\/{userSegmentKey}",
+            "description": "",
+            "data": [],
+            "dataMode": "raw",
+            "headerData": null,
+            "method": "patch",
+            "pathVariableData": [],
+            "queryParams": [
+                {
+                    "key": "No Name",
+                    "description": "",
+                    "value": "",
+                    "equals": true,
+                    "enabled": true
+                }
+            ],
+            "auth": null,
+            "events": null,
+            "folder": null,
+            "protocolProfileBehavior": {
+                "disableBodyPruning": true
+            },
+            "responses": [],
+            "currentHelper": null,
+            "helperAttributes": null,
+            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "rawModeData": ""
+        }
+    ]
+}
