@@ -1,0 +1,2216 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "version": "2.0.0",
+        "title": "LaunchDarkly",
+        "description": "Build custom integrations with the LaunchDarkly REST API",
+        "termsOfService": "https:\/\/launchdarkly.com\/terms"
+    },
+    "servers": [
+        "http:\/\/app.launchdarkly.com\/api\/v2"
+    ],
+    "paths": {
+        "\/": {
+            "get": {
+                "summary": "",
+                "description": "You can issue a GET request to the root resource to find all of the resource categories supported by the API.",
+                "operationId": "GetRoot",
+                "deprecated": 0,
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application\/json": {
+                                "schema": {
+                                    "$href": "#\/components\/schemas\/AuditLogEntries"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "\/auditlog": {
+            "get": {
+                "summary": "Get a list of all audit log entries. The query parameters allow you to restrict the returned results by date ranges, resource specifiers, or a full-text search query.",
+                "description": "",
+                "operationId": "GetAuditLogEntries",
+                "deprecated": 0,
+                "parameters": [
+                    {
+                        "name": "No Name",
+                        "in": "query",
+                        "description": ""
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application\/json": {
+                                "schema": {
+                                    "$href": "#\/components\/schemas\/AuditLogEntries"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "\/auditlog\/{resourceId}": {
+            "get": {
+                "summary": "Use this endpoint to fetch a single audit log entry by its resouce ID.",
+                "description": "",
+                "operationId": "GetAuditLogEntry",
+                "deprecated": 0,
+                "parameters": [
+                    {
+                        "name": "No Name",
+                        "in": "query",
+                        "description": ""
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application\/json": {
+                                "schema": {
+                                    "$href": "#\/components\/schemas\/AuditLogEntries"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "\/flag-statuses\/{projectKey}\/{environmentKey}": {
+            "get": {
+                "summary": "Get a list of statuses for all feature flags. The status includes the last time the feature flag was requested, as well as the state of the flag.",
+                "description": "",
+                "operationId": "GetFeatureFlagStatus",
+                "deprecated": 0,
+                "parameters": [
+                    {
+                        "name": "No Name",
+                        "in": "query",
+                        "description": ""
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application\/json": {
+                                "schema": {
+                                    "$href": "#\/components\/schemas\/AuditLogEntries"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "\/flag-statuses\/{projectKey}\/{environmentKey}\/{featureFlagKey}": {
+            "get": {
+                "summary": "Get the status for a particular feature flag.",
+                "description": "",
+                "operationId": "GetFeatureFlagStatuses",
+                "deprecated": 0,
+                "parameters": [
+                    {
+                        "name": "No Name",
+                        "in": "query",
+                        "description": ""
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application\/json": {
+                                "schema": {
+                                    "$href": "#\/components\/schemas\/AuditLogEntries"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "\/flags\/{projectKey}": {
+            "get": {
+                "summary": "Get a list of all features in the given project.",
+                "description": "",
+                "operationId": "GetFeatureFlags",
+                "deprecated": 0,
+                "parameters": [
+                    {
+                        "name": "No Name",
+                        "in": "query",
+                        "description": ""
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application\/json": {
+                                "schema": {
+                                    "$href": "#\/components\/schemas\/AuditLogEntries"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "Creates a new feature flag.",
+                "description": "",
+                "operationId": "PostFeatureFlag",
+                "deprecated": 0,
+                "parameters": [
+                    {
+                        "name": "No Name",
+                        "in": "query",
+                        "description": ""
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "\/flags\/{projectKey}\/{featureFlagKey}": {
+            "delete": {
+                "summary": "Delete a feature flag in all environments. Be careful-- only delete feature flags that are no longer being used by your application.",
+                "description": "",
+                "operationId": "DeleteFeatureFlag",
+                "deprecated": 0,
+                "parameters": [
+                    {
+                        "name": "No Name",
+                        "in": "query",
+                        "description": ""
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": ""
+                    }
+                }
+            },
+            "get": {
+                "summary": "Get a single feature flag by key.",
+                "description": "",
+                "operationId": "GetFeatureFlag",
+                "deprecated": 0,
+                "parameters": [
+                    {
+                        "name": "No Name",
+                        "in": "query",
+                        "description": ""
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application\/json": {
+                                "schema": {
+                                    "$href": "#\/components\/schemas\/AuditLogEntries"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "summary": "Perform a partial update to a feature.",
+                "description": "",
+                "operationId": "PatchFeatureFlag",
+                "deprecated": 0,
+                "parameters": [
+                    {
+                        "name": "No Name",
+                        "in": "query",
+                        "description": ""
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application\/json": {
+                                "schema": {
+                                    "$href": "#\/components\/schemas\/AuditLogEntries"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "\/members": {
+            "get": {
+                "summary": "Returns a list of all members in the account.",
+                "description": "",
+                "operationId": "GetMembers",
+                "deprecated": 0,
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application\/json": {
+                                "schema": {
+                                    "$href": "#\/components\/schemas\/AuditLogEntries"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "Invite new members.",
+                "description": "",
+                "operationId": "PostMembers",
+                "deprecated": 0,
+                "parameters": [
+                    {
+                        "name": "No Name",
+                        "in": "query",
+                        "description": ""
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "\/members\/{memberId}": {
+            "delete": {
+                "summary": "Delete a team member by ID.",
+                "description": "",
+                "operationId": "DeleteMember",
+                "deprecated": 0,
+                "parameters": [
+                    {
+                        "name": "No Name",
+                        "in": "query",
+                        "description": ""
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": ""
+                    }
+                }
+            },
+            "get": {
+                "summary": "Get a single team member by ID.",
+                "description": "",
+                "operationId": "GetMember",
+                "deprecated": 0,
+                "parameters": [
+                    {
+                        "name": "No Name",
+                        "in": "query",
+                        "description": ""
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application\/json": {
+                                "schema": {
+                                    "$href": "#\/components\/schemas\/AuditLogEntries"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "summary": "Modify a team member by ID.",
+                "description": "",
+                "operationId": "PatchMember",
+                "deprecated": 0,
+                "parameters": [
+                    {
+                        "name": "No Name",
+                        "in": "query",
+                        "description": ""
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application\/json": {
+                                "schema": {
+                                    "$href": "#\/components\/schemas\/AuditLogEntries"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "\/projects": {
+            "get": {
+                "summary": "Returns a list of all projects in the account.",
+                "description": "",
+                "operationId": "GetProjects",
+                "deprecated": 0,
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application\/json": {
+                                "schema": {
+                                    "$href": "#\/components\/schemas\/AuditLogEntries"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create a new project with the given key and name.",
+                "description": "",
+                "operationId": "PostProject",
+                "deprecated": 0,
+                "parameters": [
+                    {
+                        "name": "No Name",
+                        "in": "query",
+                        "description": ""
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "\/projects\/{projectKey}": {
+            "delete": {
+                "summary": "Delete a project by key. Caution-- deleting a project will delete all associated environments and feature flags. You cannot delete the last project in an account.",
+                "description": "",
+                "operationId": "DeleteProject",
+                "deprecated": 0,
+                "parameters": [
+                    {
+                        "name": "No Name",
+                        "in": "query",
+                        "description": ""
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": ""
+                    }
+                }
+            },
+            "get": {
+                "summary": "Fetch a single project by key.",
+                "description": "",
+                "operationId": "GetProject",
+                "deprecated": 0,
+                "parameters": [
+                    {
+                        "name": "No Name",
+                        "in": "query",
+                        "description": ""
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application\/json": {
+                                "schema": {
+                                    "$href": "#\/components\/schemas\/AuditLogEntries"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "summary": "Modify a project by ID.",
+                "description": "",
+                "operationId": "PatchProject",
+                "deprecated": 0,
+                "parameters": [
+                    {
+                        "name": "No Name",
+                        "in": "query",
+                        "description": ""
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application\/json": {
+                                "schema": {
+                                    "$href": "#\/components\/schemas\/AuditLogEntries"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "\/projects\/{projectKey}\/environments": {
+            "post": {
+                "summary": "Create a new environment in a specified project with a given name, key, and swatch color.",
+                "description": "",
+                "operationId": "PostEnvironment",
+                "deprecated": 0,
+                "parameters": [
+                    {
+                        "name": "No Name",
+                        "in": "query",
+                        "description": ""
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "\/projects\/{projectKey}\/environments\/{environmentKey}": {
+            "delete": {
+                "summary": "Delete an environment in a specific project.",
+                "description": "",
+                "operationId": "DeleteEnvironment",
+                "deprecated": 0,
+                "parameters": [
+                    {
+                        "name": "No Name",
+                        "in": "query",
+                        "description": ""
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": ""
+                    }
+                }
+            },
+            "get": {
+                "summary": "Get an environment given a project and key.",
+                "description": "",
+                "operationId": "GetEnvironment",
+                "deprecated": 0,
+                "parameters": [
+                    {
+                        "name": "No Name",
+                        "in": "query",
+                        "description": ""
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application\/json": {
+                                "schema": {
+                                    "$href": "#\/components\/schemas\/AuditLogEntries"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "summary": "Modify an environment by ID.",
+                "description": "",
+                "operationId": "PatchEnvironment",
+                "deprecated": 0,
+                "parameters": [
+                    {
+                        "name": "No Name",
+                        "in": "query",
+                        "description": ""
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application\/json": {
+                                "schema": {
+                                    "$href": "#\/components\/schemas\/AuditLogEntries"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "\/roles": {
+            "get": {
+                "summary": "Return a complete list of custom roles.",
+                "description": "",
+                "operationId": "GetCustomRoles",
+                "deprecated": 0,
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application\/json": {
+                                "schema": {
+                                    "$href": "#\/components\/schemas\/AuditLogEntries"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create a new custom role.",
+                "description": "",
+                "operationId": "PostCustomRole",
+                "deprecated": 0,
+                "parameters": [
+                    {
+                        "name": "No Name",
+                        "in": "query",
+                        "description": ""
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "\/roles\/{customRoleKey}": {
+            "delete": {
+                "summary": "Delete a custom role by key.",
+                "description": "",
+                "operationId": "DeleteCustomRole",
+                "deprecated": 0,
+                "parameters": [
+                    {
+                        "name": "No Name",
+                        "in": "query",
+                        "description": ""
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": ""
+                    }
+                }
+            },
+            "get": {
+                "summary": "Get one custom role by key.",
+                "description": "",
+                "operationId": "GetCustomRole",
+                "deprecated": 0,
+                "parameters": [
+                    {
+                        "name": "No Name",
+                        "in": "query",
+                        "description": ""
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application\/json": {
+                                "schema": {
+                                    "$href": "#\/components\/schemas\/AuditLogEntries"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "summary": "Modify a custom role by key.",
+                "description": "",
+                "operationId": "PatchCustomRole",
+                "deprecated": 0,
+                "parameters": [
+                    {
+                        "name": "No Name",
+                        "in": "query",
+                        "description": ""
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application\/json": {
+                                "schema": {
+                                    "$href": "#\/components\/schemas\/AuditLogEntries"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "\/user-search\/{projectKey}\/{environmentKey}": {
+            "get": {
+                "summary": "Search users in LaunchDarkly based on their last active date, or a search query. It should not be used to enumerate all users in LaunchDarkly-- use the List users API resource.",
+                "description": "",
+                "operationId": "GetSearchUsers",
+                "deprecated": 0,
+                "parameters": [
+                    {
+                        "name": "No Name",
+                        "in": "query",
+                        "description": ""
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application\/json": {
+                                "schema": {
+                                    "$href": "#\/components\/schemas\/AuditLogEntries"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "\/users\/{projectKey}\/{environmentKey}": {
+            "get": {
+                "summary": "List all users in the environment. Includes the total count of users. In each page, there will be up to 'limit' users returned (default 20). This is useful for exporting all users in the system for further analysis. Paginated collections will include",
+                "description": "",
+                "operationId": "GetUsers",
+                "deprecated": 0,
+                "parameters": [
+                    {
+                        "name": "No Name",
+                        "in": "query",
+                        "description": ""
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application\/json": {
+                                "schema": {
+                                    "$href": "#\/components\/schemas\/AuditLogEntries"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "\/users\/{projectKey}\/{environmentKey}\/{userKey}": {
+            "delete": {
+                "summary": "Delete a user by ID.",
+                "description": "",
+                "operationId": "DeleteUser",
+                "deprecated": 0,
+                "parameters": [
+                    {
+                        "name": "No Name",
+                        "in": "query",
+                        "description": ""
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": ""
+                    }
+                }
+            },
+            "get": {
+                "summary": "Get a user by key.",
+                "description": "",
+                "operationId": "GetUser",
+                "deprecated": 0,
+                "parameters": [
+                    {
+                        "name": "No Name",
+                        "in": "query",
+                        "description": ""
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application\/json": {
+                                "schema": {
+                                    "$href": "#\/components\/schemas\/AuditLogEntries"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "\/users\/{projectKey}\/{environmentKey}\/{userKey}\/flags": {
+            "get": {
+                "summary": "Fetch a single flag setting for a user by key.",
+                "description": "",
+                "operationId": "GetUserFlagSettings",
+                "deprecated": 0,
+                "parameters": [
+                    {
+                        "name": "No Name",
+                        "in": "query",
+                        "description": ""
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application\/json": {
+                                "schema": {
+                                    "$href": "#\/components\/schemas\/AuditLogEntries"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "\/users\/{projectKey}\/{environmentKey}\/{userKey}\/flags\/{featureFlagKey}": {
+            "get": {
+                "summary": "Fetch a single flag setting for a user by key.",
+                "description": "",
+                "operationId": "GetUserFlagSetting",
+                "deprecated": 0,
+                "parameters": [
+                    {
+                        "name": "No Name",
+                        "in": "query",
+                        "description": ""
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application\/json": {
+                                "schema": {
+                                    "$href": "#\/components\/schemas\/AuditLogEntries"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "summary": "Specifically enable or disable a feature flag for a user based on their key.",
+                "description": "",
+                "operationId": "PutFlagSetting",
+                "deprecated": 0,
+                "parameters": [
+                    {
+                        "name": "No Name",
+                        "in": "query",
+                        "description": ""
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "\/webhooks": {
+            "get": {
+                "summary": "Fetch a list of all webhooks.",
+                "description": "",
+                "operationId": "GetWebhooks",
+                "deprecated": 0,
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application\/json": {
+                                "schema": {
+                                    "$href": "#\/components\/schemas\/AuditLogEntries"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create a webhook.",
+                "description": "",
+                "operationId": "PostWebhook",
+                "deprecated": 0,
+                "parameters": [
+                    {
+                        "name": "No Name",
+                        "in": "query",
+                        "description": ""
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "\/webhooks\/{resourceId}": {
+            "delete": {
+                "summary": "Delete a webhook by ID.",
+                "description": "",
+                "operationId": "DeleteWebhook",
+                "deprecated": 0,
+                "parameters": [
+                    {
+                        "name": "No Name",
+                        "in": "query",
+                        "description": ""
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": ""
+                    }
+                }
+            },
+            "get": {
+                "summary": "Get a webhook by ID.",
+                "description": "",
+                "operationId": "GetWebhook",
+                "deprecated": 0,
+                "parameters": [
+                    {
+                        "name": "No Name",
+                        "in": "query",
+                        "description": ""
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application\/json": {
+                                "schema": {
+                                    "$href": "#\/components\/schemas\/AuditLogEntries"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "summary": "Modify a webhook by ID.",
+                "description": "",
+                "operationId": "PatchWebhook",
+                "deprecated": 0,
+                "parameters": [
+                    {
+                        "name": "No Name",
+                        "in": "query",
+                        "description": ""
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application\/json": {
+                                "schema": {
+                                    "$href": "#\/components\/schemas\/AuditLogEntries"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "\/environments\/{projectKey}": {
+            "post": {
+                "summary": "Create an environment",
+                "description": "",
+                "operationId": "PostEnvironment",
+                "deprecated": 0,
+                "parameters": [
+                    {
+                        "name": "No Name",
+                        "in": "query",
+                        "description": ""
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "\/environments\/{projectKey}\/{environmentKey}": {
+            "delete": {
+                "summary": "Delete an environment by ID",
+                "description": "",
+                "operationId": "DeleteEnvironment",
+                "deprecated": 0,
+                "parameters": [
+                    {
+                        "name": "No Name",
+                        "in": "query",
+                        "description": ""
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": ""
+                    }
+                }
+            },
+            "get": {
+                "summary": "Get an environment by key.",
+                "description": "",
+                "operationId": "GetEnvironment",
+                "deprecated": 0,
+                "parameters": [
+                    {
+                        "name": "No Name",
+                        "in": "query",
+                        "description": ""
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application\/json": {
+                                "schema": {
+                                    "$href": "#\/components\/schemas\/AuditLogEntries"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "summary": "Modify an environment by ID",
+                "description": "",
+                "operationId": "PatchEnvironment",
+                "deprecated": 0,
+                "parameters": [
+                    {
+                        "name": "No Name",
+                        "in": "query",
+                        "description": ""
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "\/segments\/{projectKey}\/{environmentKey}": {
+            "get": {
+                "summary": "Get a list of all user segments in the given project.",
+                "description": "",
+                "operationId": "GetUserSegments",
+                "deprecated": 0,
+                "parameters": [
+                    {
+                        "name": "No Name",
+                        "in": "query",
+                        "description": ""
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application\/json": {
+                                "schema": {
+                                    "$href": "#\/components\/schemas\/AuditLogEntries"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "Creates a new user segment.",
+                "description": "",
+                "operationId": "PostUserSegment",
+                "deprecated": 0,
+                "parameters": [
+                    {
+                        "name": "No Name",
+                        "in": "query",
+                        "description": ""
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "\/segments\/{projectKey}\/{environmentKey}\/{userSegmentKey}": {
+            "delete": {
+                "summary": "Delete a user segment.",
+                "description": "",
+                "operationId": "DeleteUserSegment",
+                "deprecated": 0,
+                "parameters": [
+                    {
+                        "name": "No Name",
+                        "in": "query",
+                        "description": ""
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": ""
+                    }
+                }
+            },
+            "get": {
+                "summary": "Get a single user segment by key.",
+                "description": "",
+                "operationId": "GetUserSegment",
+                "deprecated": 0,
+                "parameters": [
+                    {
+                        "name": "No Name",
+                        "in": "query",
+                        "description": ""
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application\/json": {
+                                "schema": {
+                                    "$href": "#\/components\/schemas\/AuditLogEntries"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "summary": "Perform a partial update to a user segment.",
+                "description": "",
+                "operationId": "PatchUserSegment",
+                "deprecated": 0,
+                "parameters": [
+                    {
+                        "name": "No Name",
+                        "in": "query",
+                        "description": ""
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application\/json": {
+                                "schema": {
+                                    "$href": "#\/components\/schemas\/AuditLogEntries"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Actions": {
+                "type": "array"
+            },
+            "AuditLogEntries": {
+                "type": "object",
+                "properties": {
+                    "_links": {
+                        "description": "",
+                        "type": ""
+                    },
+                    "items": {
+                        "description": "",
+                        "type": "array"
+                    },
+                    "Links": {
+                        "description": "",
+                        "type": "object"
+                    }
+                }
+            },
+            "_links": {
+                "type": "object"
+            },
+            "items": {
+                "type": "object"
+            },
+            "AuditLogEntry": {
+                "type": "object",
+                "properties": {
+                    "_id": {
+                        "description": "Reference",
+                        "type": "object"
+                    },
+                    "_links": {
+                        "description": "",
+                        "type": ""
+                    },
+                    "comment": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "date": {
+                        "description": "",
+                        "type": "number"
+                    },
+                    "description": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "kind": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "member": {
+                        "description": "",
+                        "type": ""
+                    },
+                    "name": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "shortDescription": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "target": {
+                        "description": "",
+                        "type": "object"
+                    },
+                    "title": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "titleVerb": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "Links": {
+                        "description": "",
+                        "type": "object"
+                    }
+                }
+            },
+            "_id": {
+                "type": "object"
+            },
+            "member": {
+                "type": "object",
+                "properties": {
+                    "_id": {
+                        "description": "Reference",
+                        "type": "object"
+                    },
+                    "Links": {
+                        "description": "",
+                        "type": "object"
+                    },
+                    "_links": {
+                        "description": "",
+                        "type": ""
+                    },
+                    "_pendingInvite": {
+                        "description": "",
+                        "type": "boolean"
+                    },
+                    "customRoles": {
+                        "description": "",
+                        "type": "array"
+                    },
+                    "email": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "isBeta": {
+                        "description": "",
+                        "type": "boolean"
+                    },
+                    "role": {
+                        "description": "",
+                        "type": ""
+                    },
+                    "Role": {
+                        "description": "",
+                        "type": "string"
+                    }
+                }
+            },
+            "target": {
+                "type": "object",
+                "properties": {
+                    "values": {
+                        "description": "",
+                        "type": "array"
+                    },
+                    "variation": {
+                        "description": "",
+                        "type": "integer"
+                    }
+                }
+            },
+            "Clause": {
+                "type": "object",
+                "properties": {
+                    "attribute": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "negate": {
+                        "description": "",
+                        "type": "boolean"
+                    },
+                    "op": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "values": {
+                        "description": "",
+                        "type": "array"
+                    }
+                }
+            },
+            "values": {
+                "type": "array"
+            },
+            "CustomRole": {
+                "type": "object",
+                "properties": {
+                    "_id": {
+                        "description": "Reference",
+                        "type": "object"
+                    },
+                    "_links": {
+                        "description": "",
+                        "type": ""
+                    },
+                    "description": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "key": {
+                        "description": "Reference",
+                        "type": "object"
+                    },
+                    "name": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "policy": {
+                        "description": "",
+                        "type": "array"
+                    },
+                    "Links": {
+                        "description": "",
+                        "type": "object"
+                    }
+                }
+            },
+            "key": {
+                "type": "object"
+            },
+            "policy": {
+                "type": "array"
+            },
+            "CustomRoles": {
+                "type": "object",
+                "properties": {
+                    "_links": {
+                        "description": "",
+                        "type": ""
+                    },
+                    "CustomRole": {
+                        "description": "",
+                        "type": "object"
+                    },
+                    "items": {
+                        "description": "",
+                        "type": ""
+                    },
+                    "Links": {
+                        "description": "",
+                        "type": "object"
+                    }
+                }
+            },
+            "Environment": {
+                "type": "object",
+                "properties": {
+                    "_id": {
+                        "description": "Reference",
+                        "type": "object"
+                    },
+                    "_links": {
+                        "description": "",
+                        "type": ""
+                    },
+                    "apiKey": {
+                        "description": "The SDK key for backend LaunchDarkly SDKs.",
+                        "type": "string"
+                    },
+                    "color": {
+                        "description": "The swatch color for the environment.",
+                        "type": "string"
+                    },
+                    "defaultTtl": {
+                        "description": "The default TTL.",
+                        "type": "number"
+                    },
+                    "key": {
+                        "description": "The key for the environment.",
+                        "type": "string"
+                    },
+                    "mobileKey": {
+                        "description": "The SDK key for mobile LaunchDarkly SDKs.",
+                        "type": "string"
+                    },
+                    "name": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "secureMode": {
+                        "description": "Determines if this environment is in safe mode.",
+                        "type": "boolean"
+                    },
+                    "Links": {
+                        "description": "",
+                        "type": "object"
+                    },
+                    "defaultTrackEvents": {
+                        "description": "Set to true to send detailed event information for new flags.",
+                        "type": "boolean"
+                    }
+                }
+            },
+            "FeatureFlag": {
+                "type": "object",
+                "properties": {
+                    "_links": {
+                        "description": "",
+                        "type": ""
+                    },
+                    "member": {
+                        "description": "Reference",
+                        "type": "object"
+                    },
+                    "_maintainer": {
+                        "description": "",
+                        "type": ""
+                    },
+                    "creationDate": {
+                        "description": "A unix epoch time in milliseconds specifying the creation time of this flag.",
+                        "type": "number"
+                    },
+                    "environments": {
+                        "description": "",
+                        "type": "object"
+                    },
+                    "includeInSnippet": {
+                        "description": "",
+                        "type": "boolean"
+                    },
+                    "key": {
+                        "description": "The key for the environment.",
+                        "type": "string"
+                    },
+                    "kind": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "maintainerId": {
+                        "description": "The ID of the member that should maintain this flag.",
+                        "type": "string"
+                    },
+                    "name": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "tags": {
+                        "description": "An array of tags for this feature flag.",
+                        "type": "array"
+                    },
+                    "temporary": {
+                        "description": "Whether or not this flag is temporary.",
+                        "type": "boolean"
+                    },
+                    "variations": {
+                        "description": "The variations for this feature flag.",
+                        "type": "array"
+                    },
+                    "Links": {
+                        "description": "",
+                        "type": "object"
+                    },
+                    "description": {
+                        "description": "",
+                        "type": "string"
+                    }
+                }
+            },
+            "environments": {
+                "type": "array"
+            },
+            "tags": {
+                "type": "array"
+            },
+            "variations": {
+                "type": "array"
+            },
+            "FeatureFlagConfig": {
+                "type": "object",
+                "properties": {
+                    "archived": {
+                        "description": "",
+                        "type": "boolean"
+                    },
+                    "fallthrough": {
+                        "description": "",
+                        "type": ""
+                    },
+                    "lastModified": {
+                        "description": "",
+                        "type": "integer"
+                    },
+                    "on": {
+                        "description": "",
+                        "type": "boolean"
+                    },
+                    "rules": {
+                        "description": "",
+                        "type": "array"
+                    },
+                    "salt": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "sel": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "targets": {
+                        "description": "",
+                        "type": "array"
+                    },
+                    "version": {
+                        "description": "",
+                        "type": "integer"
+                    },
+                    "offVariation": {
+                        "description": "",
+                        "type": "integer"
+                    },
+                    "prerequisites": {
+                        "description": "",
+                        "type": "array"
+                    },
+                    "trackEvents": {
+                        "description": "Set to true to send detailed event information for this flag.",
+                        "type": "boolean"
+                    }
+                }
+            },
+            "fallthrough": {
+                "type": "object",
+                "properties": {
+                    "Rollout": {
+                        "description": "",
+                        "type": "object"
+                    },
+                    "rollout": {
+                        "description": "",
+                        "type": ""
+                    },
+                    "variation": {
+                        "description": "",
+                        "type": "integer"
+                    }
+                }
+            },
+            "rules": {
+                "type": "array"
+            },
+            "targets": {
+                "type": "array"
+            },
+            "FeatureFlagStatus": {
+                "type": "object",
+                "properties": {
+                    "_links": {
+                        "description": "",
+                        "type": ""
+                    },
+                    "default": {
+                        "description": "",
+                        "type": "object"
+                    },
+                    "lastRequested": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "name": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "Links": {
+                        "description": "",
+                        "type": "object"
+                    }
+                }
+            },
+            "FeatureFlagStatuses": {
+                "type": "object",
+                "properties": {
+                    "_links": {
+                        "description": "",
+                        "type": ""
+                    },
+                    "items": {
+                        "description": "",
+                        "type": "array"
+                    },
+                    "Links": {
+                        "description": "",
+                        "type": "object"
+                    }
+                }
+            },
+            "FeatureFlags": {
+                "type": "object",
+                "properties": {
+                    "_links": {
+                        "description": "",
+                        "type": ""
+                    },
+                    "items": {
+                        "description": "",
+                        "type": "array"
+                    },
+                    "Links": {
+                        "description": "",
+                        "type": "object"
+                    }
+                }
+            },
+            "Link": {
+                "type": "object",
+                "properties": {
+                    "href": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "type": {
+                        "description": "",
+                        "type": "string"
+                    }
+                }
+            },
+            "Links": {
+                "type": "object",
+                "properties": {
+                    "Link": {
+                        "description": "",
+                        "type": "object"
+                    },
+                    "self": {
+                        "description": "",
+                        "type": ""
+                    },
+                    "next": {
+                        "description": "",
+                        "type": ""
+                    }
+                }
+            },
+            "customRoles": {
+                "type": "array"
+            },
+            "role": {
+                "type": "object"
+            },
+            "Members": {
+                "type": "object",
+                "properties": {
+                    "Links": {
+                        "description": "",
+                        "type": "object"
+                    },
+                    "_links": {
+                        "description": "",
+                        "type": ""
+                    },
+                    "member": {
+                        "description": "Reference",
+                        "type": "object"
+                    },
+                    "items": {
+                        "description": "",
+                        "type": ""
+                    }
+                }
+            },
+            "Policy": {
+                "type": "object",
+                "properties": {
+                    "actions": {
+                        "description": "",
+                        "type": ""
+                    },
+                    "effect": {
+                        "description": "Effect of the policy - allow or deny.",
+                        "type": "string"
+                    },
+                    "resources": {
+                        "description": "",
+                        "type": ""
+                    }
+                }
+            },
+            "actions": {
+                "type": "object"
+            },
+            "resources": {
+                "type": "object"
+            },
+            "Project": {
+                "type": "object",
+                "properties": {
+                    "Links": {
+                        "description": "",
+                        "type": "object"
+                    },
+                    "_links": {
+                        "description": "",
+                        "type": ""
+                    },
+                    "items": {
+                        "description": "",
+                        "type": "array"
+                    },
+                    "_id": {
+                        "description": "Reference",
+                        "type": "object"
+                    },
+                    "environments": {
+                        "description": "",
+                        "type": "array"
+                    },
+                    "key": {
+                        "description": "The key for the environment.",
+                        "type": "string"
+                    },
+                    "name": {
+                        "description": "",
+                        "type": "string"
+                    }
+                }
+            },
+            "Projects": {
+                "type": "object",
+                "properties": {
+                    "_id": {
+                        "description": "The unique id for the environment.",
+                        "type": "string"
+                    },
+                    "Links": {
+                        "description": "",
+                        "type": "object"
+                    },
+                    "_links": {
+                        "description": "",
+                        "type": ""
+                    },
+                    "items": {
+                        "description": "",
+                        "type": "array"
+                    },
+                    "key": {
+                        "description": "The key for the environment.",
+                        "type": "string"
+                    },
+                    "name": {
+                        "description": "",
+                        "type": "string"
+                    }
+                }
+            },
+            "Resources": {
+                "type": "array"
+            },
+            "Rollout": {
+                "type": "object",
+                "properties": {
+                    "variations": {
+                        "description": "The variations for this feature flag.",
+                        "type": "array"
+                    }
+                }
+            },
+            "Rule": {
+                "type": "object",
+                "properties": {
+                    "clauses": {
+                        "description": "",
+                        "type": "array"
+                    },
+                    "Rollout": {
+                        "description": "",
+                        "type": "object"
+                    },
+                    "rollout": {
+                        "description": "",
+                        "type": ""
+                    },
+                    "variation": {
+                        "description": "",
+                        "type": "integer"
+                    }
+                }
+            },
+            "clauses": {
+                "type": "array"
+            },
+            "Statement": {
+                "type": "object",
+                "properties": {
+                    "actions": {
+                        "description": "",
+                        "type": ""
+                    },
+                    "effect": {
+                        "description": "Effect of the policy - allow or deny.",
+                        "type": "string"
+                    },
+                    "notactions": {
+                        "description": "Targeted actions will be those actions NOT in this list. The \"actions\" field must be empty to use this field.",
+                        "type": ""
+                    },
+                    "resources": {
+                        "description": "",
+                        "type": ""
+                    },
+                    "notresources": {
+                        "description": "Targeted resource will be those resources NOT in this list. The \"resources`\" field must be empty to use this field.",
+                        "type": ""
+                    }
+                }
+            },
+            "Statements": {
+                "type": "array"
+            },
+            "User": {
+                "type": "object",
+                "properties": {
+                    "avatar": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "environmentId": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "lastPing": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "ownerId": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "User": {
+                        "description": "",
+                        "type": "object"
+                    },
+                    "anonymous": {
+                        "description": "",
+                        "type": "boolean"
+                    },
+                    "country": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "custom": {
+                        "description": "",
+                        "type": "object"
+                    },
+                    "email": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "firstName": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "ip": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "key": {
+                        "description": "The key for the environment.",
+                        "type": "string"
+                    },
+                    "lastName": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "name": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "secondary": {
+                        "description": "",
+                        "type": "string"
+                    }
+                }
+            },
+            "ownerId": {
+                "type": "object"
+            },
+            "UserFlagSetting": {
+                "type": "object",
+                "properties": {
+                    "Links": {
+                        "description": "",
+                        "type": "object"
+                    },
+                    "_links": {
+                        "description": "",
+                        "type": ""
+                    },
+                    "_value": {
+                        "description": "The most important attribute in the response. The _value is the current setting for the user. For a boolean feature toggle, this will be true, false, or null if there is no defined fallthrough value.",
+                        "type": "boolean"
+                    },
+                    "setting": {
+                        "description": "The setting attribute indicates whether you've explicitly targeted this user to receive a particular variation. For example, if you have explicitly turned off a feature toggle for a user, setting will be false. A setting of null means that you haven't assigned that user to a specific variation.",
+                        "type": "boolean"
+                    }
+                }
+            },
+            "UserFlagSettings": {
+                "type": "object",
+                "properties": {
+                    "Links": {
+                        "description": "",
+                        "type": "object"
+                    },
+                    "_links": {
+                        "description": "",
+                        "type": ""
+                    },
+                    "items": {
+                        "description": "",
+                        "type": "object"
+                    }
+                }
+            },
+            "Users": {
+                "type": "object",
+                "properties": {
+                    "Links": {
+                        "description": "",
+                        "type": "object"
+                    },
+                    "_links": {
+                        "description": "",
+                        "type": ""
+                    },
+                    "items": {
+                        "description": "",
+                        "type": "array"
+                    },
+                    "totalCount": {
+                        "description": "",
+                        "type": "number"
+                    }
+                }
+            },
+            "Variation": {
+                "type": "object",
+                "properties": {
+                    "description": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "name": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "value": {
+                        "description": "",
+                        "type": "object"
+                    }
+                }
+            },
+            "Webhook": {
+                "type": "object",
+                "properties": {
+                    "_id": {
+                        "description": "Reference",
+                        "type": "object"
+                    },
+                    "Links": {
+                        "description": "",
+                        "type": "object"
+                    },
+                    "_links": {
+                        "description": "",
+                        "type": ""
+                    },
+                    "on": {
+                        "description": "",
+                        "type": "boolean"
+                    },
+                    "secret": {
+                        "description": "If defined, the webhooks post request will include a X-LD-Signature header whose value will contain an HMAC SHA256 hex digest of the webhook payload, using the secret as the key.",
+                        "type": "string"
+                    },
+                    "tags": {
+                        "description": "An array of tags for this feature flag.",
+                        "type": "array"
+                    },
+                    "url": {
+                        "description": "The URL of the remote webhook.",
+                        "type": "string"
+                    },
+                    "name": {
+                        "description": "",
+                        "type": "string"
+                    }
+                }
+            },
+            "Webhooks": {
+                "type": "object",
+                "properties": {
+                    "Links": {
+                        "description": "",
+                        "type": "object"
+                    },
+                    "_links": {
+                        "description": "",
+                        "type": ""
+                    },
+                    "items": {
+                        "description": "",
+                        "type": "array"
+                    }
+                }
+            },
+            "WeightedVariation": {
+                "type": "object",
+                "properties": {
+                    "variation": {
+                        "description": "",
+                        "type": "integer"
+                    },
+                    "weight": {
+                        "description": "",
+                        "type": "integer"
+                    }
+                }
+            },
+            "value": {
+                "type": "object"
+            },
+            "prerequisites": {
+                "type": "array"
+            },
+            "default": {
+                "type": "object"
+            },
+            "PatchOperation": {
+                "type": "object",
+                "properties": {
+                    "op": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "path": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "value": {
+                        "description": "",
+                        "type": "object"
+                    }
+                }
+            },
+            "Prerequisite": {
+                "type": "object",
+                "properties": {
+                    "key": {
+                        "description": "The key for the environment.",
+                        "type": "string"
+                    },
+                    "variation": {
+                        "description": "",
+                        "type": "integer"
+                    }
+                }
+            },
+            "custom": {
+                "type": "object"
+            },
+            "UserRecord": {
+                "type": "object",
+                "properties": {
+                    "avatar": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "environmentId": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "lastPing": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "ownerId": {
+                        "description": "Reference",
+                        "type": "object"
+                    },
+                    "User": {
+                        "description": "",
+                        "type": "object"
+                    },
+                    "user": {
+                        "description": "",
+                        "type": ""
+                    }
+                }
+            },
+            "UserSegment": {
+                "type": "object",
+                "properties": {
+                    "Links": {
+                        "description": "",
+                        "type": "object"
+                    },
+                    "_links": {
+                        "description": "",
+                        "type": ""
+                    },
+                    "creationDate": {
+                        "description": "A unix epoch time in milliseconds specifying the creation time of this flag.",
+                        "type": "number"
+                    },
+                    "description": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "excluded": {
+                        "description": "An array of user keys that should not be included in this segment, unless they are also listed in \"included\".",
+                        "type": "array"
+                    },
+                    "included": {
+                        "description": "An array of user keys that are included in this segment.",
+                        "type": "array"
+                    },
+                    "key": {
+                        "description": "The key for the environment.",
+                        "type": "string"
+                    },
+                    "name": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "rules": {
+                        "description": "",
+                        "type": "array"
+                    },
+                    "tags": {
+                        "description": "An array of tags for this feature flag.",
+                        "type": "array"
+                    },
+                    "version": {
+                        "description": "",
+                        "type": "integer"
+                    }
+                }
+            },
+            "excluded": {
+                "type": "array"
+            },
+            "included": {
+                "type": "array"
+            },
+            "UserSegmentRule": {
+                "type": "object",
+                "properties": {
+                    "bucketBy": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "clauses": {
+                        "description": "",
+                        "type": "array"
+                    },
+                    "weight": {
+                        "description": "",
+                        "type": "integer"
+                    }
+                }
+            },
+            "UserSegments": {
+                "type": "object",
+                "properties": {
+                    "Links": {
+                        "description": "",
+                        "type": "object"
+                    },
+                    "_links": {
+                        "description": "",
+                        "type": ""
+                    },
+                    "items": {
+                        "description": "",
+                        "type": "array"
+                    }
+                }
+            }
+        }
+    }
+}
