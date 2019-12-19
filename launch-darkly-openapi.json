@@ -1,0 +1,730 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "version": "2.0.0",
+        "title": "Launch Darkly",
+        "description": "Build custom integrations with the LaunchDarkly REST API",
+        "termsOfService": "https:\/\/launchdarkly.com\/terms"
+    },
+    "servers": [
+        "httpsapp.launchdarkly.com\/api\/v2"
+    ],
+    "paths": {
+        "\/": {
+            "get": {
+                "summary": "Get the root resource",
+                "description": "Get the root resource.",
+                "operationId": "GetRoot",
+                "deprecated": 0,
+                "parameters": []
+            }
+        },
+        "\/auditlog": {
+            "get": {
+                "summary": "Fetch a list of all webhooks",
+                "description": "Fetch a list of all webhooks.",
+                "operationId": "GetAuditLogEntries",
+                "deprecated": 0,
+                "parameters": []
+            }
+        },
+        "\/auditlog\/{resourceId}": {
+            "get": {
+                "summary": "Get a webhook by ID",
+                "description": "Get a webhook by id.",
+                "operationId": "GetAuditLogEntry",
+                "deprecated": 0,
+                "parameters": []
+            }
+        },
+        "\/environments\/{projectKey}": {
+            "post": {
+                "summary": "Create an environment",
+                "description": "Create an environment.",
+                "operationId": "PostEnvironment",
+                "deprecated": 0,
+                "parameters": []
+            }
+        },
+        "\/environments\/{projectKey}\/{environmentKey}": {
+            "delete": {
+                "summary": "Delete an environment by ID",
+                "description": "Delete an environment by id.",
+                "operationId": "DeleteEnvironment",
+                "deprecated": 0,
+                "parameters": []
+            },
+            "get": {
+                "summary": "Get an environment by key.",
+                "description": "Get an environment by key..",
+                "operationId": "GetEnvironment",
+                "deprecated": 0,
+                "parameters": []
+            },
+            "patch": {
+                "summary": "Modify an environment by ID",
+                "description": "Modify an environment by id.",
+                "operationId": "PatchEnvironment",
+                "deprecated": 0,
+                "parameters": []
+            }
+        },
+        "\/flag-statuses\/{projectKey}\/{environmentKey}": {
+            "get": {
+                "summary": "Get a list of statuses for all feature flags",
+                "description": "Get a list of statuses for all feature flags.",
+                "operationId": "GetFeatureFlagStatus",
+                "deprecated": 0,
+                "parameters": []
+            }
+        },
+        "\/flag-statuses\/{projectKey}\/{environmentKey}\/{featureFlagKey}": {
+            "get": {
+                "summary": "Get a list of statuses for all feature flags",
+                "description": "Get a list of statuses for all feature flags.",
+                "operationId": "GetFeatureFlagStatuses",
+                "deprecated": 0,
+                "parameters": []
+            }
+        },
+        "\/flags\/{projectKey}": {
+            "get": {
+                "summary": "Get a list of all features in the given project.",
+                "description": "Get a list of all features in the given project..",
+                "operationId": "GetFeatureFlags",
+                "deprecated": 0,
+                "parameters": []
+            },
+            "post": {
+                "summary": "Create a feature flag",
+                "description": "Create a feature flag.",
+                "operationId": "PostFeatureFlag",
+                "deprecated": 0,
+                "parameters": []
+            }
+        },
+        "\/flags\/{projectKey}\/{featureFlagKey}": {
+            "delete": {
+                "summary": "Delete a feature flag by ID",
+                "description": "Delete a feature flag by id.",
+                "operationId": "DeleteFeatureFlag",
+                "deprecated": 0,
+                "parameters": []
+            },
+            "get": {
+                "summary": "Get a single feature flag by key.",
+                "description": "Get a single feature flag by key..",
+                "operationId": "GetFeatureFlag",
+                "deprecated": 0,
+                "parameters": []
+            },
+            "patch": {
+                "summary": "Modify a feature flag by ID",
+                "description": "Modify a feature flag by id.",
+                "operationId": "PatchFeatureFlag",
+                "deprecated": 0,
+                "parameters": []
+            }
+        },
+        "\/projects": {
+            "get": {
+                "summary": "Returns a list of all projects in the account.",
+                "description": "Returns a list of all projects in the account..",
+                "operationId": "GetProjects",
+                "deprecated": 0,
+                "parameters": []
+            },
+            "post": {
+                "summary": "Create a project",
+                "description": "Create a project.",
+                "operationId": "PostProject",
+                "deprecated": 0,
+                "parameters": []
+            }
+        },
+        "\/projects\/{projectKey}": {
+            "delete": {
+                "summary": "Delete a project by ID",
+                "description": "Delete a project by id.",
+                "operationId": "DeleteProject",
+                "deprecated": 0,
+                "parameters": []
+            },
+            "get": {
+                "summary": "Get a project by key.",
+                "description": "Get a project by key..",
+                "operationId": "GetProject",
+                "deprecated": 0,
+                "parameters": []
+            },
+            "patch": {
+                "summary": "Modify a project by ID",
+                "description": "Modify a project by id.",
+                "operationId": "PatchProject",
+                "deprecated": 0,
+                "parameters": []
+            }
+        },
+        "\/user-search\/{projectKey}\/{environmentKey}": {
+            "get": {
+                "summary": "Search users in LaunchDarkly based on their last active date, or a search query.",
+                "description": "Search users in launchdarkly based on their last active date, or a search query..",
+                "operationId": "GetSearchUsers",
+                "deprecated": 0,
+                "parameters": []
+            }
+        },
+        "\/users\/{projectKey}\/{environmentKey}": {
+            "get": {
+                "summary": "List all users in the environment.",
+                "description": "List all users in the environment..",
+                "operationId": "GetUsers",
+                "deprecated": 0,
+                "parameters": []
+            }
+        },
+        "\/users\/{projectKey}\/{environmentKey}\/{userKey}": {
+            "delete": {
+                "summary": "Delete a user by ID",
+                "description": "Delete a user by id.",
+                "operationId": "DeleteUser",
+                "deprecated": 0,
+                "parameters": []
+            },
+            "get": {
+                "summary": "Get a user by key.",
+                "description": "Get a user by key..",
+                "operationId": "GetUser",
+                "deprecated": 0,
+                "parameters": []
+            }
+        },
+        "\/users\/{projectKey}\/{environmentKey}\/{userKey}\/flags": {
+            "get": {
+                "summary": "Lists the current flag settings for a given user.",
+                "description": "Lists the current flag settings for a given user..",
+                "operationId": "GetUserFlagSettings",
+                "deprecated": 0,
+                "parameters": []
+            }
+        },
+        "\/users\/{projectKey}\/{environmentKey}\/{userKey}\/flags\/{featureFlagKey}": {
+            "get": {
+                "summary": "Get a user by key.",
+                "description": "Get a user by key..",
+                "operationId": "GetUserFlagSetting",
+                "deprecated": 0,
+                "parameters": []
+            },
+            "put": {
+                "summary": "Specifically enable or disable a feature flag for a user based on their key.",
+                "description": "Specifically enable or disable a feature flag for a user based on their key..",
+                "operationId": "PutFlagSetting",
+                "deprecated": 0,
+                "parameters": []
+            }
+        },
+        "\/webhooks": {
+            "get": {
+                "summary": "Fetch a list of all webhooks",
+                "description": "Fetch a list of all webhooks.",
+                "operationId": "GetWebhooks",
+                "deprecated": 0,
+                "parameters": []
+            },
+            "post": {
+                "summary": "Create a webhook",
+                "description": "Create a webhook.",
+                "operationId": "PostWebhook",
+                "deprecated": 0,
+                "parameters": []
+            }
+        },
+        "\/webhooks\/{resourceId}": {
+            "delete": {
+                "summary": "Delete a webhook by ID",
+                "description": "Delete a webhook by id.",
+                "operationId": "DeleteWebhook",
+                "deprecated": 0,
+                "parameters": []
+            },
+            "get": {
+                "summary": "Get a webhook by ID",
+                "description": "Get a webhook by id.",
+                "operationId": "GetWebhook",
+                "deprecated": 0,
+                "parameters": []
+            },
+            "patch": {
+                "summary": "Modify a webhook by ID",
+                "description": "Modify a webhook by id.",
+                "operationId": "PatchWebhook",
+                "deprecated": 0,
+                "parameters": []
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "AuditLogEntries": {
+                "type": "object",
+                "properties": {
+                    "items": {
+                        "description": "",
+                        "type": "patch"
+                    }
+                }
+            },
+            "AuditLogEntry": {
+                "type": "object",
+                "properties": {
+                    "_id": {
+                        "description": "",
+                        "type": "patch"
+                    },
+                    "date": {
+                        "description": "",
+                        "type": "patch"
+                    },
+                    "description": {
+                        "description": "",
+                        "type": "patch"
+                    },
+                    "kind": {
+                        "description": "",
+                        "type": "patch"
+                    },
+                    "name": {
+                        "description": "",
+                        "type": "patch"
+                    },
+                    "target": {
+                        "description": "",
+                        "type": "patch"
+                    },
+                    "title": {
+                        "description": "",
+                        "type": "patch"
+                    },
+                    "titleVerb": {
+                        "description": "",
+                        "type": "patch"
+                    }
+                }
+            },
+            "Clause": {
+                "type": "object",
+                "properties": {
+                    "attribute": {
+                        "description": "",
+                        "type": "patch"
+                    },
+                    "negate": {
+                        "description": "",
+                        "type": "patch"
+                    },
+                    "op": {
+                        "description": "",
+                        "type": "patch"
+                    },
+                    "values": {
+                        "description": "",
+                        "type": "patch"
+                    }
+                }
+            },
+            "Environment": {
+                "type": "object",
+                "properties": {
+                    "_id": {
+                        "description": "",
+                        "type": "patch"
+                    },
+                    "apiKey": {
+                        "description": "",
+                        "type": "patch"
+                    },
+                    "color": {
+                        "description": "",
+                        "type": "patch"
+                    },
+                    "defaultTtl": {
+                        "description": "",
+                        "type": "patch"
+                    },
+                    "key": {
+                        "description": "",
+                        "type": "patch"
+                    },
+                    "mobileKey": {
+                        "description": "",
+                        "type": "patch"
+                    },
+                    "name": {
+                        "description": "",
+                        "type": "patch"
+                    },
+                    "secureMode": {
+                        "description": "",
+                        "type": "patch"
+                    }
+                }
+            },
+            "FeatureFlag": {
+                "type": "object",
+                "properties": {
+                    "creationDate": {
+                        "description": "",
+                        "type": "patch"
+                    },
+                    "environments": {
+                        "description": "",
+                        "type": "patch"
+                    },
+                    "includeInSnippet": {
+                        "description": "",
+                        "type": "patch"
+                    },
+                    "key": {
+                        "description": "",
+                        "type": "patch"
+                    },
+                    "kind": {
+                        "description": "",
+                        "type": "patch"
+                    },
+                    "maintainerId": {
+                        "description": "",
+                        "type": "patch"
+                    },
+                    "name": {
+                        "description": "",
+                        "type": "patch"
+                    },
+                    "tags": {
+                        "description": "",
+                        "type": "patch"
+                    },
+                    "temporary": {
+                        "description": "",
+                        "type": "patch"
+                    },
+                    "variations": {
+                        "description": "",
+                        "type": "patch"
+                    }
+                }
+            },
+            "FeatureFlagConfig": {
+                "type": "object",
+                "properties": {
+                    "archived": {
+                        "description": "",
+                        "type": "patch"
+                    },
+                    "fallthrough": {
+                        "description": "",
+                        "type": "patch"
+                    },
+                    "lastModified": {
+                        "description": "",
+                        "type": "patch"
+                    },
+                    "on": {
+                        "description": "",
+                        "type": "patch"
+                    },
+                    "rules": {
+                        "description": "",
+                        "type": "patch"
+                    },
+                    "salt": {
+                        "description": "",
+                        "type": "patch"
+                    },
+                    "sel": {
+                        "description": "",
+                        "type": "patch"
+                    },
+                    "targets": {
+                        "description": "",
+                        "type": "patch"
+                    },
+                    "version": {
+                        "description": "",
+                        "type": "patch"
+                    }
+                }
+            },
+            "FeatureFlagStatus": {
+                "type": "object",
+                "properties": {
+                    "default": {
+                        "description": "",
+                        "type": "patch"
+                    },
+                    "lastRequested": {
+                        "description": "",
+                        "type": "patch"
+                    },
+                    "name": {
+                        "description": "",
+                        "type": "patch"
+                    }
+                }
+            },
+            "FeatureFlagStatuses": {
+                "type": "object",
+                "properties": {
+                    "items": {
+                        "description": "",
+                        "type": "patch"
+                    }
+                }
+            },
+            "FeatureFlags": {
+                "type": "object",
+                "properties": {
+                    "items": {
+                        "description": "",
+                        "type": "patch"
+                    }
+                }
+            },
+            "Link": {
+                "type": "object",
+                "properties": {
+                    "href": {
+                        "description": "",
+                        "type": "patch"
+                    },
+                    "type": {
+                        "description": "",
+                        "type": "patch"
+                    }
+                }
+            },
+            "Links": {
+                "type": "object"
+            },
+            "Member": {
+                "type": "object",
+                "properties": {
+                    "_id": {
+                        "description": "",
+                        "type": "patch"
+                    },
+                    "_pendingInvite": {
+                        "description": "",
+                        "type": "patch"
+                    },
+                    "customRoles": {
+                        "description": "",
+                        "type": "patch"
+                    },
+                    "email": {
+                        "description": "",
+                        "type": "patch"
+                    },
+                    "isBeta": {
+                        "description": "",
+                        "type": "patch"
+                    },
+                    "role": {
+                        "description": "",
+                        "type": "patch"
+                    }
+                }
+            },
+            "Project": {
+                "type": "object",
+                "properties": {
+                    "items": {
+                        "description": "",
+                        "type": "patch"
+                    }
+                }
+            },
+            "Projects": {
+                "type": "object",
+                "properties": {
+                    "_id": {
+                        "description": "",
+                        "type": "patch"
+                    },
+                    "items": {
+                        "description": "",
+                        "type": "patch"
+                    },
+                    "key": {
+                        "description": "",
+                        "type": "patch"
+                    },
+                    "name": {
+                        "description": "",
+                        "type": "patch"
+                    }
+                }
+            },
+            "Rollout": {
+                "type": "object",
+                "properties": {
+                    "variations": {
+                        "description": "",
+                        "type": "patch"
+                    }
+                }
+            },
+            "Rule": {
+                "type": "object",
+                "properties": {
+                    "clauses": {
+                        "description": "",
+                        "type": "patch"
+                    },
+                    "variation": {
+                        "description": "",
+                        "type": "patch"
+                    }
+                }
+            },
+            "Target": {
+                "type": "object",
+                "properties": {
+                    "values": {
+                        "description": "",
+                        "type": "patch"
+                    },
+                    "variation": {
+                        "description": "",
+                        "type": "patch"
+                    }
+                }
+            },
+            "User": {
+                "type": "object",
+                "properties": {
+                    "avatar": {
+                        "description": "",
+                        "type": "patch"
+                    },
+                    "environmentId": {
+                        "description": "",
+                        "type": "patch"
+                    },
+                    "lastPing": {
+                        "description": "",
+                        "type": "patch"
+                    },
+                    "ownerId": {
+                        "description": "",
+                        "type": "patch"
+                    },
+                    "user": {
+                        "description": "",
+                        "type": "patch"
+                    }
+                }
+            },
+            "UserFlagSetting": {
+                "type": "object",
+                "properties": {
+                    "_value": {
+                        "description": "",
+                        "type": "patch"
+                    },
+                    "setting": {
+                        "description": "",
+                        "type": "patch"
+                    }
+                }
+            },
+            "UserFlagSettings": {
+                "type": "object",
+                "properties": {
+                    "items": {
+                        "description": "",
+                        "type": "patch"
+                    }
+                }
+            },
+            "Users": {
+                "type": "object",
+                "properties": {
+                    "items": {
+                        "description": "",
+                        "type": "patch"
+                    },
+                    "totalCount": {
+                        "description": "",
+                        "type": "patch"
+                    }
+                }
+            },
+            "Variation": {
+                "type": "object",
+                "properties": {
+                    "description": {
+                        "description": "",
+                        "type": "patch"
+                    },
+                    "name": {
+                        "description": "",
+                        "type": "patch"
+                    },
+                    "value": {
+                        "description": "",
+                        "type": "patch"
+                    }
+                }
+            },
+            "Webhook": {
+                "type": "object",
+                "properties": {
+                    "_id": {
+                        "description": "",
+                        "type": "patch"
+                    },
+                    "on": {
+                        "description": "",
+                        "type": "patch"
+                    },
+                    "secret": {
+                        "description": "",
+                        "type": "patch"
+                    },
+                    "tags": {
+                        "description": "",
+                        "type": "patch"
+                    },
+                    "url": {
+                        "description": "",
+                        "type": "patch"
+                    }
+                }
+            },
+            "Webhooks": {
+                "type": "object",
+                "properties": {
+                    "items": {
+                        "description": "",
+                        "type": "patch"
+                    }
+                }
+            },
+            "WeightedVariation": {
+                "type": "object",
+                "properties": {
+                    "variation": {
+                        "description": "",
+                        "type": "patch"
+                    },
+                    "weight": {
+                        "description": "",
+                        "type": "patch"
+                    }
+                }
+            }
+        }
+    }
+}
