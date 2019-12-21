@@ -1,5 +1,5 @@
 {
-    "id": "bbb7c2b3a751684dbb28a78344e9521b",
+    "id": "464aea3c37fea4ccd89ca7fb9f33f1d2",
     "name": "LaunchDarkly",
     "description": null,
     "auth": null,
@@ -10,7 +10,7 @@
     "folders": [],
     "requests": [
         {
-            "id": "035e6daab4e1d31a8053b424a638f9a1",
+            "id": "81900511aa530444fec43c707bc9f188",
             "name": "",
             "url": "http:\/\/app.launchdarkly.com\/api\/v2\/",
             "description": "You can issue a GET request to the root resource to find all of the resource categories supported by the API.",
@@ -29,11 +29,11 @@
             "responses": [],
             "currentHelper": null,
             "helperAttributes": null,
-            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "collectionId": "464aea3c37fea4ccd89ca7fb9f33f1d2",
             "rawModeData": ""
         },
         {
-            "id": "464e4a0e126135521b0495f7bf24b37c",
+            "id": "dfb8df4d3165bc31df01616564402d87",
             "name": "Get a list of all audit log entries. The query parameters allow you to restrict the returned results by date ranges, resource specifiers, or a full-text search query.",
             "url": "http:\/\/app.launchdarkly.com\/api\/v2\/auditlog",
             "description": "",
@@ -60,11 +60,11 @@
             "responses": [],
             "currentHelper": null,
             "helperAttributes": null,
-            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "collectionId": "464aea3c37fea4ccd89ca7fb9f33f1d2",
             "rawModeData": ""
         },
         {
-            "id": "234edf5c726d46b8e43b0cc5b2666db2",
+            "id": "eb344b863d3dc61c26de776b832edec0",
             "name": "Use this endpoint to fetch a single audit log entry by its resouce ID.",
             "url": "http:\/\/app.launchdarkly.com\/api\/v2\/auditlog\/{resourceId}",
             "description": "",
@@ -91,11 +91,11 @@
             "responses": [],
             "currentHelper": null,
             "helperAttributes": null,
-            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "collectionId": "464aea3c37fea4ccd89ca7fb9f33f1d2",
             "rawModeData": ""
         },
         {
-            "id": "1bc4c5b272220333bd0d7deba5bc05f4",
+            "id": "5534198b45ee3a5a2c4c8d53d5cd8e48",
             "name": "Get a list of statuses for all feature flags. The status includes the last time the feature flag was requested, as well as the state of the flag.",
             "url": "http:\/\/app.launchdarkly.com\/api\/v2\/flag-statuses\/{projectKey}\/{environmentKey}",
             "description": "",
@@ -122,11 +122,11 @@
             "responses": [],
             "currentHelper": null,
             "helperAttributes": null,
-            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "collectionId": "464aea3c37fea4ccd89ca7fb9f33f1d2",
             "rawModeData": ""
         },
         {
-            "id": "e6a2d41b675eabb3867deb9976dbd288",
+            "id": "a51d46c47e136f3686bc5e8d3b6eae83",
             "name": "Get the status for a particular feature flag.",
             "url": "http:\/\/app.launchdarkly.com\/api\/v2\/flag-statuses\/{projectKey}\/{environmentKey}\/{featureFlagKey}",
             "description": "",
@@ -153,11 +153,11 @@
             "responses": [],
             "currentHelper": null,
             "helperAttributes": null,
-            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "collectionId": "464aea3c37fea4ccd89ca7fb9f33f1d2",
             "rawModeData": ""
         },
         {
-            "id": "2e1c696f4c8512b1694a385fed6f8bc8",
+            "id": "363958e7c4ff26171b3df032c0946e04",
             "name": "Get a list of all features in the given project.",
             "url": "http:\/\/app.launchdarkly.com\/api\/v2\/flags\/{projectKey}",
             "description": "",
@@ -184,11 +184,11 @@
             "responses": [],
             "currentHelper": null,
             "helperAttributes": null,
-            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "collectionId": "464aea3c37fea4ccd89ca7fb9f33f1d2",
             "rawModeData": ""
         },
         {
-            "id": "fa1fbdedcdb23cdd85363c4084fc65f3",
+            "id": "e32fde6f4c58f0b3228fe478ffe5ad7d",
             "name": "Creates a new feature flag.",
             "url": "http:\/\/app.launchdarkly.com\/api\/v2\/flags\/{projectKey}",
             "description": "",
@@ -215,11 +215,11 @@
             "responses": [],
             "currentHelper": null,
             "helperAttributes": null,
-            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "collectionId": "464aea3c37fea4ccd89ca7fb9f33f1d2",
             "rawModeData": ""
         },
         {
-            "id": "7822520a7668054465878fce864befda",
+            "id": "7b09b091fee7b2626324da4e71527c06",
             "name": "Delete a feature flag in all environments. Be careful-- only delete feature flags that are no longer being used by your application.",
             "url": "http:\/\/app.launchdarkly.com\/api\/v2\/flags\/{projectKey}\/{featureFlagKey}",
             "description": "",
@@ -246,11 +246,11 @@
             "responses": [],
             "currentHelper": null,
             "helperAttributes": null,
-            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "collectionId": "464aea3c37fea4ccd89ca7fb9f33f1d2",
             "rawModeData": ""
         },
         {
-            "id": "ffbfffdaa3d1547802fc7b7ff97e0989",
+            "id": "d4ce2bfbce89cabc95402ea8dfa369ee",
             "name": "Get a single feature flag by key.",
             "url": "http:\/\/app.launchdarkly.com\/api\/v2\/flags\/{projectKey}\/{featureFlagKey}",
             "description": "",
@@ -277,11 +277,11 @@
             "responses": [],
             "currentHelper": null,
             "helperAttributes": null,
-            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "collectionId": "464aea3c37fea4ccd89ca7fb9f33f1d2",
             "rawModeData": ""
         },
         {
-            "id": "121e47cfc71f9ca6d64db7742df05100",
+            "id": "a4991b3850d11aae3302171e3976967a",
             "name": "Perform a partial update to a feature.",
             "url": "http:\/\/app.launchdarkly.com\/api\/v2\/flags\/{projectKey}\/{featureFlagKey}",
             "description": "",
@@ -308,11 +308,11 @@
             "responses": [],
             "currentHelper": null,
             "helperAttributes": null,
-            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "collectionId": "464aea3c37fea4ccd89ca7fb9f33f1d2",
             "rawModeData": ""
         },
         {
-            "id": "8a09267510d4afbfdc2c3f2aa1533d8a",
+            "id": "a3645138b3ab4ba0e49307a3d957db15",
             "name": "Returns a list of all members in the account.",
             "url": "http:\/\/app.launchdarkly.com\/api\/v2\/members",
             "description": "",
@@ -331,11 +331,11 @@
             "responses": [],
             "currentHelper": null,
             "helperAttributes": null,
-            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "collectionId": "464aea3c37fea4ccd89ca7fb9f33f1d2",
             "rawModeData": ""
         },
         {
-            "id": "b1ac51513abe2e1e972cc7f61e6606cc",
+            "id": "dcc1e152ec9d8d8c70731074762b5f5f",
             "name": "Invite new members.",
             "url": "http:\/\/app.launchdarkly.com\/api\/v2\/members",
             "description": "",
@@ -362,11 +362,11 @@
             "responses": [],
             "currentHelper": null,
             "helperAttributes": null,
-            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "collectionId": "464aea3c37fea4ccd89ca7fb9f33f1d2",
             "rawModeData": ""
         },
         {
-            "id": "fea43a90b1bcd888fb356fab3fe6d87d",
+            "id": "b6f8f2a8faab5db4a84a24bb8579615c",
             "name": "Delete a team member by ID.",
             "url": "http:\/\/app.launchdarkly.com\/api\/v2\/members\/{memberId}",
             "description": "",
@@ -393,11 +393,11 @@
             "responses": [],
             "currentHelper": null,
             "helperAttributes": null,
-            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "collectionId": "464aea3c37fea4ccd89ca7fb9f33f1d2",
             "rawModeData": ""
         },
         {
-            "id": "1f5b59e62346d963beff18c1994c1a18",
+            "id": "c6896b695a444493b470d03befe871ee",
             "name": "Get a single team member by ID.",
             "url": "http:\/\/app.launchdarkly.com\/api\/v2\/members\/{memberId}",
             "description": "",
@@ -424,11 +424,11 @@
             "responses": [],
             "currentHelper": null,
             "helperAttributes": null,
-            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "collectionId": "464aea3c37fea4ccd89ca7fb9f33f1d2",
             "rawModeData": ""
         },
         {
-            "id": "86a29b7524823a09b632c6ae895d45bc",
+            "id": "e38ff9155ebcdfa440d2d15c9081f230",
             "name": "Modify a team member by ID.",
             "url": "http:\/\/app.launchdarkly.com\/api\/v2\/members\/{memberId}",
             "description": "",
@@ -455,11 +455,11 @@
             "responses": [],
             "currentHelper": null,
             "helperAttributes": null,
-            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "collectionId": "464aea3c37fea4ccd89ca7fb9f33f1d2",
             "rawModeData": ""
         },
         {
-            "id": "5de43ab470a7cf13a68ed057af45135e",
+            "id": "7bf528d62af10e6f69f3f177962024fa",
             "name": "Returns a list of all projects in the account.",
             "url": "http:\/\/app.launchdarkly.com\/api\/v2\/projects",
             "description": "",
@@ -478,11 +478,11 @@
             "responses": [],
             "currentHelper": null,
             "helperAttributes": null,
-            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "collectionId": "464aea3c37fea4ccd89ca7fb9f33f1d2",
             "rawModeData": ""
         },
         {
-            "id": "38bfe7aa231cb8b3bae285df0699e31c",
+            "id": "eafafb97baeb3bac57c7717a4d64df4b",
             "name": "Create a new project with the given key and name.",
             "url": "http:\/\/app.launchdarkly.com\/api\/v2\/projects",
             "description": "",
@@ -509,11 +509,11 @@
             "responses": [],
             "currentHelper": null,
             "helperAttributes": null,
-            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "collectionId": "464aea3c37fea4ccd89ca7fb9f33f1d2",
             "rawModeData": ""
         },
         {
-            "id": "8170b6405e9b9edd0f7682f90cc2c8cb",
+            "id": "5740a7cedcf2a9749baea950fe493450",
             "name": "Delete a project by key. Caution-- deleting a project will delete all associated environments and feature flags. You cannot delete the last project in an account.",
             "url": "http:\/\/app.launchdarkly.com\/api\/v2\/projects\/{projectKey}",
             "description": "",
@@ -540,11 +540,11 @@
             "responses": [],
             "currentHelper": null,
             "helperAttributes": null,
-            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "collectionId": "464aea3c37fea4ccd89ca7fb9f33f1d2",
             "rawModeData": ""
         },
         {
-            "id": "39e455da1ea57e40a5556ddba0bf155b",
+            "id": "b700a1cfdd2a1332aebf0a71ac6da8ee",
             "name": "Fetch a single project by key.",
             "url": "http:\/\/app.launchdarkly.com\/api\/v2\/projects\/{projectKey}",
             "description": "",
@@ -571,11 +571,11 @@
             "responses": [],
             "currentHelper": null,
             "helperAttributes": null,
-            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "collectionId": "464aea3c37fea4ccd89ca7fb9f33f1d2",
             "rawModeData": ""
         },
         {
-            "id": "622fd3d64126dbc4194859fdb7890e4f",
+            "id": "b082c06770042050eceec5c975e35f6c",
             "name": "Modify a project by ID.",
             "url": "http:\/\/app.launchdarkly.com\/api\/v2\/projects\/{projectKey}",
             "description": "",
@@ -602,11 +602,11 @@
             "responses": [],
             "currentHelper": null,
             "helperAttributes": null,
-            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "collectionId": "464aea3c37fea4ccd89ca7fb9f33f1d2",
             "rawModeData": ""
         },
         {
-            "id": "c695c87fa0ccc186a9969a9cca50acc4",
+            "id": "c3ee6d6c9dea92c3cbfc711eaa3d3ae5",
             "name": "Create a new environment in a specified project with a given name, key, and swatch color.",
             "url": "http:\/\/app.launchdarkly.com\/api\/v2\/projects\/{projectKey}\/environments",
             "description": "",
@@ -633,11 +633,11 @@
             "responses": [],
             "currentHelper": null,
             "helperAttributes": null,
-            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "collectionId": "464aea3c37fea4ccd89ca7fb9f33f1d2",
             "rawModeData": ""
         },
         {
-            "id": "6f878dfbabc1da1e74a79c27d8fb5a19",
+            "id": "dc2141ffe4cf6004a6155a255f856a63",
             "name": "Delete an environment in a specific project.",
             "url": "http:\/\/app.launchdarkly.com\/api\/v2\/projects\/{projectKey}\/environments\/{environmentKey}",
             "description": "",
@@ -664,11 +664,11 @@
             "responses": [],
             "currentHelper": null,
             "helperAttributes": null,
-            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "collectionId": "464aea3c37fea4ccd89ca7fb9f33f1d2",
             "rawModeData": ""
         },
         {
-            "id": "c01ad6c4d373f0fb15e736ce49be8c53",
+            "id": "19033408df69acb57cdcc3ee01947b38",
             "name": "Get an environment given a project and key.",
             "url": "http:\/\/app.launchdarkly.com\/api\/v2\/projects\/{projectKey}\/environments\/{environmentKey}",
             "description": "",
@@ -695,11 +695,11 @@
             "responses": [],
             "currentHelper": null,
             "helperAttributes": null,
-            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "collectionId": "464aea3c37fea4ccd89ca7fb9f33f1d2",
             "rawModeData": ""
         },
         {
-            "id": "c4a435299ec0cd65215fdccb495d6260",
+            "id": "fee676850afba9c6a840da742aec55b5",
             "name": "Modify an environment by ID.",
             "url": "http:\/\/app.launchdarkly.com\/api\/v2\/projects\/{projectKey}\/environments\/{environmentKey}",
             "description": "",
@@ -726,11 +726,11 @@
             "responses": [],
             "currentHelper": null,
             "helperAttributes": null,
-            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "collectionId": "464aea3c37fea4ccd89ca7fb9f33f1d2",
             "rawModeData": ""
         },
         {
-            "id": "397c5be58c537faefd0d061d7e8eced0",
+            "id": "a65bcde9fed8d6ff02b62fe7c7cbb184",
             "name": "Return a complete list of custom roles.",
             "url": "http:\/\/app.launchdarkly.com\/api\/v2\/roles",
             "description": "",
@@ -749,11 +749,11 @@
             "responses": [],
             "currentHelper": null,
             "helperAttributes": null,
-            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "collectionId": "464aea3c37fea4ccd89ca7fb9f33f1d2",
             "rawModeData": ""
         },
         {
-            "id": "5a088233d5af0af0db2800317bf93a08",
+            "id": "1c1c732d3d3d0a8aba40758d1c22938d",
             "name": "Create a new custom role.",
             "url": "http:\/\/app.launchdarkly.com\/api\/v2\/roles",
             "description": "",
@@ -780,11 +780,11 @@
             "responses": [],
             "currentHelper": null,
             "helperAttributes": null,
-            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "collectionId": "464aea3c37fea4ccd89ca7fb9f33f1d2",
             "rawModeData": ""
         },
         {
-            "id": "5ae982bc1db43e4b4f6e01fbd218da61",
+            "id": "1618a7203da47fe9543cdb31fdc2c785",
             "name": "Delete a custom role by key.",
             "url": "http:\/\/app.launchdarkly.com\/api\/v2\/roles\/{customRoleKey}",
             "description": "",
@@ -811,11 +811,11 @@
             "responses": [],
             "currentHelper": null,
             "helperAttributes": null,
-            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "collectionId": "464aea3c37fea4ccd89ca7fb9f33f1d2",
             "rawModeData": ""
         },
         {
-            "id": "6ab074df859f78e1660fad1a138c2277",
+            "id": "76927506bfca3386756a87db86f987f7",
             "name": "Get one custom role by key.",
             "url": "http:\/\/app.launchdarkly.com\/api\/v2\/roles\/{customRoleKey}",
             "description": "",
@@ -842,11 +842,11 @@
             "responses": [],
             "currentHelper": null,
             "helperAttributes": null,
-            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "collectionId": "464aea3c37fea4ccd89ca7fb9f33f1d2",
             "rawModeData": ""
         },
         {
-            "id": "eae880e2ba55065ff523f2054316356b",
+            "id": "18d05b41280466cafdc52a60585c396c",
             "name": "Modify a custom role by key.",
             "url": "http:\/\/app.launchdarkly.com\/api\/v2\/roles\/{customRoleKey}",
             "description": "",
@@ -873,11 +873,11 @@
             "responses": [],
             "currentHelper": null,
             "helperAttributes": null,
-            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "collectionId": "464aea3c37fea4ccd89ca7fb9f33f1d2",
             "rawModeData": ""
         },
         {
-            "id": "a246de5d8cfa7c8dce4d605cd7b31d53",
+            "id": "400bcfcb5dd6c979a333c21e4b0f062b",
             "name": "Search users in LaunchDarkly based on their last active date, or a search query. It should not be used to enumerate all users in LaunchDarkly-- use the List users API resource.",
             "url": "http:\/\/app.launchdarkly.com\/api\/v2\/user-search\/{projectKey}\/{environmentKey}",
             "description": "",
@@ -904,11 +904,11 @@
             "responses": [],
             "currentHelper": null,
             "helperAttributes": null,
-            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "collectionId": "464aea3c37fea4ccd89ca7fb9f33f1d2",
             "rawModeData": ""
         },
         {
-            "id": "586bdd0ee34553eeb623a46e5c8b7938",
+            "id": "638b41ea03ac3c204f5adffda149da55",
             "name": "List all users in the environment. Includes the total count of users. In each page, there will be up to 'limit' users returned (default 20). This is useful for exporting all users in the system for further analysis. Paginated collections will include",
             "url": "http:\/\/app.launchdarkly.com\/api\/v2\/users\/{projectKey}\/{environmentKey}",
             "description": "",
@@ -935,11 +935,11 @@
             "responses": [],
             "currentHelper": null,
             "helperAttributes": null,
-            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "collectionId": "464aea3c37fea4ccd89ca7fb9f33f1d2",
             "rawModeData": ""
         },
         {
-            "id": "d36f9f311265410caf65810b448e0f42",
+            "id": "ef08b76862b29d19ed89cb5ffa06f0a6",
             "name": "Delete a user by ID.",
             "url": "http:\/\/app.launchdarkly.com\/api\/v2\/users\/{projectKey}\/{environmentKey}\/{userKey}",
             "description": "",
@@ -966,11 +966,11 @@
             "responses": [],
             "currentHelper": null,
             "helperAttributes": null,
-            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "collectionId": "464aea3c37fea4ccd89ca7fb9f33f1d2",
             "rawModeData": ""
         },
         {
-            "id": "8c1ebc7e596421008fe824b7e1ddb987",
+            "id": "a7b60055ad028dc81395559332c2440c",
             "name": "Get a user by key.",
             "url": "http:\/\/app.launchdarkly.com\/api\/v2\/users\/{projectKey}\/{environmentKey}\/{userKey}",
             "description": "",
@@ -997,11 +997,11 @@
             "responses": [],
             "currentHelper": null,
             "helperAttributes": null,
-            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "collectionId": "464aea3c37fea4ccd89ca7fb9f33f1d2",
             "rawModeData": ""
         },
         {
-            "id": "81918b50bfa3e0f5ecf36dc38dae248e",
+            "id": "d10e7cd076d6489039b32ed8c2aafdba",
             "name": "Fetch a single flag setting for a user by key.",
             "url": "http:\/\/app.launchdarkly.com\/api\/v2\/users\/{projectKey}\/{environmentKey}\/{userKey}\/flags",
             "description": "",
@@ -1028,11 +1028,11 @@
             "responses": [],
             "currentHelper": null,
             "helperAttributes": null,
-            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "collectionId": "464aea3c37fea4ccd89ca7fb9f33f1d2",
             "rawModeData": ""
         },
         {
-            "id": "8316a33ca4fd5748a541d4740e11a00f",
+            "id": "71bdf1c7b4cd185cd4e4d12abadd1801",
             "name": "Fetch a single flag setting for a user by key.",
             "url": "http:\/\/app.launchdarkly.com\/api\/v2\/users\/{projectKey}\/{environmentKey}\/{userKey}\/flags\/{featureFlagKey}",
             "description": "",
@@ -1059,11 +1059,11 @@
             "responses": [],
             "currentHelper": null,
             "helperAttributes": null,
-            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "collectionId": "464aea3c37fea4ccd89ca7fb9f33f1d2",
             "rawModeData": ""
         },
         {
-            "id": "d36426e3e1eaad177691e008c0205909",
+            "id": "eaf3990e69a1cb6663f2d3b588326ee4",
             "name": "Specifically enable or disable a feature flag for a user based on their key.",
             "url": "http:\/\/app.launchdarkly.com\/api\/v2\/users\/{projectKey}\/{environmentKey}\/{userKey}\/flags\/{featureFlagKey}",
             "description": "",
@@ -1090,11 +1090,11 @@
             "responses": [],
             "currentHelper": null,
             "helperAttributes": null,
-            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "collectionId": "464aea3c37fea4ccd89ca7fb9f33f1d2",
             "rawModeData": ""
         },
         {
-            "id": "5d1d57233b926c91d18f1926832b7d74",
+            "id": "8c635adb97de22048365f0593e86cef4",
             "name": "Fetch a list of all webhooks.",
             "url": "http:\/\/app.launchdarkly.com\/api\/v2\/webhooks",
             "description": "",
@@ -1113,11 +1113,11 @@
             "responses": [],
             "currentHelper": null,
             "helperAttributes": null,
-            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "collectionId": "464aea3c37fea4ccd89ca7fb9f33f1d2",
             "rawModeData": ""
         },
         {
-            "id": "d63701ce88071aee65263271dfda2393",
+            "id": "774855409028cfe8f51f05c75939c690",
             "name": "Create a webhook.",
             "url": "http:\/\/app.launchdarkly.com\/api\/v2\/webhooks",
             "description": "",
@@ -1144,11 +1144,11 @@
             "responses": [],
             "currentHelper": null,
             "helperAttributes": null,
-            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "collectionId": "464aea3c37fea4ccd89ca7fb9f33f1d2",
             "rawModeData": ""
         },
         {
-            "id": "5ccdfdf56c5f53ac2b0a99a367c84e30",
+            "id": "a98e9064708d54b6a817db761ce3f586",
             "name": "Delete a webhook by ID.",
             "url": "http:\/\/app.launchdarkly.com\/api\/v2\/webhooks\/{resourceId}",
             "description": "",
@@ -1175,11 +1175,11 @@
             "responses": [],
             "currentHelper": null,
             "helperAttributes": null,
-            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "collectionId": "464aea3c37fea4ccd89ca7fb9f33f1d2",
             "rawModeData": ""
         },
         {
-            "id": "ed8c05361e105c70c58d8c36efba9e71",
+            "id": "2e2d7328d9742ee1c060637d2afdb34c",
             "name": "Get a webhook by ID.",
             "url": "http:\/\/app.launchdarkly.com\/api\/v2\/webhooks\/{resourceId}",
             "description": "",
@@ -1206,11 +1206,11 @@
             "responses": [],
             "currentHelper": null,
             "helperAttributes": null,
-            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "collectionId": "464aea3c37fea4ccd89ca7fb9f33f1d2",
             "rawModeData": ""
         },
         {
-            "id": "63af19b399467dee1d8b4a992a35936a",
+            "id": "aeec65ffe209ed3a590371f97753b138",
             "name": "Modify a webhook by ID.",
             "url": "http:\/\/app.launchdarkly.com\/api\/v2\/webhooks\/{resourceId}",
             "description": "",
@@ -1237,11 +1237,11 @@
             "responses": [],
             "currentHelper": null,
             "helperAttributes": null,
-            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "collectionId": "464aea3c37fea4ccd89ca7fb9f33f1d2",
             "rawModeData": ""
         },
         {
-            "id": "4c815268ec21dba81d4ffaf506e9183a",
+            "id": "b3aa26478d3fccfd33ef5dbef5f2e962",
             "name": "Create an environment",
             "url": "http:\/\/app.launchdarkly.com\/api\/v2\/environments\/{projectKey}",
             "description": "",
@@ -1268,11 +1268,11 @@
             "responses": [],
             "currentHelper": null,
             "helperAttributes": null,
-            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "collectionId": "464aea3c37fea4ccd89ca7fb9f33f1d2",
             "rawModeData": ""
         },
         {
-            "id": "8d4b022e1ce8d977d8c1eae7ca5924f1",
+            "id": "d21c04657e0f81e2afa674c59819cd81",
             "name": "Delete an environment by ID",
             "url": "http:\/\/app.launchdarkly.com\/api\/v2\/environments\/{projectKey}\/{environmentKey}",
             "description": "",
@@ -1299,11 +1299,11 @@
             "responses": [],
             "currentHelper": null,
             "helperAttributes": null,
-            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "collectionId": "464aea3c37fea4ccd89ca7fb9f33f1d2",
             "rawModeData": ""
         },
         {
-            "id": "93f18802cb69614d9b4135120153dd32",
+            "id": "4f4d10163755af2e973d0bcf42a97fbb",
             "name": "Get an environment by key.",
             "url": "http:\/\/app.launchdarkly.com\/api\/v2\/environments\/{projectKey}\/{environmentKey}",
             "description": "",
@@ -1330,11 +1330,11 @@
             "responses": [],
             "currentHelper": null,
             "helperAttributes": null,
-            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "collectionId": "464aea3c37fea4ccd89ca7fb9f33f1d2",
             "rawModeData": ""
         },
         {
-            "id": "d36901849f640e372311444175ec1dcb",
+            "id": "9b776a94a7147d5a6f78a04ca81279f7",
             "name": "Modify an environment by ID",
             "url": "http:\/\/app.launchdarkly.com\/api\/v2\/environments\/{projectKey}\/{environmentKey}",
             "description": "",
@@ -1361,11 +1361,11 @@
             "responses": [],
             "currentHelper": null,
             "helperAttributes": null,
-            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "collectionId": "464aea3c37fea4ccd89ca7fb9f33f1d2",
             "rawModeData": ""
         },
         {
-            "id": "dc9004ff3dd9ccf4b94cda0fa3e4b793",
+            "id": "c81a56948d2704122646885286e518ac",
             "name": "Get a list of all user segments in the given project.",
             "url": "http:\/\/app.launchdarkly.com\/api\/v2\/segments\/{projectKey}\/{environmentKey}",
             "description": "",
@@ -1392,11 +1392,11 @@
             "responses": [],
             "currentHelper": null,
             "helperAttributes": null,
-            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "collectionId": "464aea3c37fea4ccd89ca7fb9f33f1d2",
             "rawModeData": ""
         },
         {
-            "id": "3a2a9b01a303d9aecce93780c89d2d8b",
+            "id": "2126973852e6c42d159236ab3d5dd468",
             "name": "Creates a new user segment.",
             "url": "http:\/\/app.launchdarkly.com\/api\/v2\/segments\/{projectKey}\/{environmentKey}",
             "description": "",
@@ -1423,11 +1423,11 @@
             "responses": [],
             "currentHelper": null,
             "helperAttributes": null,
-            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "collectionId": "464aea3c37fea4ccd89ca7fb9f33f1d2",
             "rawModeData": ""
         },
         {
-            "id": "7054a353fc8d25024a8aa169da8cd00f",
+            "id": "5c03a86815d89994975a85253054958c",
             "name": "Delete a user segment.",
             "url": "http:\/\/app.launchdarkly.com\/api\/v2\/segments\/{projectKey}\/{environmentKey}\/{userSegmentKey}",
             "description": "",
@@ -1454,11 +1454,11 @@
             "responses": [],
             "currentHelper": null,
             "helperAttributes": null,
-            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "collectionId": "464aea3c37fea4ccd89ca7fb9f33f1d2",
             "rawModeData": ""
         },
         {
-            "id": "a4b07c01dc4980ffe9e16bd2081b9963",
+            "id": "6be346c5eb21725a7be155c8c2d2ca67",
             "name": "Get a single user segment by key.",
             "url": "http:\/\/app.launchdarkly.com\/api\/v2\/segments\/{projectKey}\/{environmentKey}\/{userSegmentKey}",
             "description": "",
@@ -1485,11 +1485,11 @@
             "responses": [],
             "currentHelper": null,
             "helperAttributes": null,
-            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "collectionId": "464aea3c37fea4ccd89ca7fb9f33f1d2",
             "rawModeData": ""
         },
         {
-            "id": "25d8f78828562fb9e5884461abda216d",
+            "id": "48be12ed4509e2d9851823c33eec6b44",
             "name": "Perform a partial update to a user segment.",
             "url": "http:\/\/app.launchdarkly.com\/api\/v2\/segments\/{projectKey}\/{environmentKey}\/{userSegmentKey}",
             "description": "",
@@ -1516,7 +1516,7 @@
             "responses": [],
             "currentHelper": null,
             "helperAttributes": null,
-            "collectionId": "bbb7c2b3a751684dbb28a78344e9521b",
+            "collectionId": "464aea3c37fea4ccd89ca7fb9f33f1d2",
             "rawModeData": ""
         }
     ]
