@@ -1,0 +1,166 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://launchdarkly.com/schemas/launchdarkly/webhook-event.json",
+  "title": "LaunchDarkly Webhook Event",
+  "description": "The payload delivered by LaunchDarkly webhooks when changes occur to resources. The format is identical to audit log entries.",
+  "type": "object",
+  "required": ["_id", "date", "kind", "name"],
+  "properties": {
+    "_id": {
+      "type": "string",
+      "description": "The unique identifier of this audit log event."
+    },
+    "date": {
+      "type": "integer",
+      "format": "int64",
+      "description": "Unix epoch timestamp in milliseconds when the change occurred. Use this to reorder events since webhooks may arrive out of order.",
+      "minimum": 0
+    },
+    "kind": {
+      "type": "string",
+      "description": "The kind of resource that was changed.",
+      "enum": [
+        "flag",
+        "project",
+        "environment",
+        "segment",
+        "metric",
+        "member",
+        "role",
+        "webhook",
+        "integration",
+        "token",
+        "destination",
+        "relay-proxy-config",
+        "experiment",
+        "team",
+        "release-pipeline"
+      ]
+    },
+    "name": {
+      "type": "string",
+      "description": "The name of the resource that was changed."
+    },
+    "description": {
+      "type": "string",
+      "description": "A markdown-formatted description of the changes made."
+    },
+    "shortDescription": {
+      "type": "string",
+      "description": "A brief plain-text summary of the change."
+    },
+    "comment": {
+      "type": "string",
+      "description": "An optional comment provided by the member who made the change."
+    },
+    "accesses": {
+      "type": "array",
+      "description": "The access details describing what action was taken on which resource.",
+      "items": {
+        "$ref": "#/$defs/Access"
+      }
+    },
+    "member": {
+      "$ref": "#/$defs/MemberRef"
+    },
+    "titleVerb": {
+      "type": "string",
+      "description": "The verb describing the action taken, such as created, updated, or deleted."
+    },
+    "title": {
+      "type": "string",
+      "description": "A human-readable title for the event."
+    },
+    "target": {
+      "type": "object",
+      "description": "Details about the target resource.",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of the target resource."
+        },
+        "resources": {
+          "type": "array",
+          "description": "The resource specifiers for the target.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "_links": {
+          "type": "object",
+          "description": "Links to the target resource.",
+          "additionalProperties": {
+            "$ref": "#/$defs/Link"
+          }
+        }
+      }
+    },
+    "_links": {
+      "type": "object",
+      "description": "HATEOAS links to related resources.",
+      "additionalProperties": {
+        "$ref": "#/$defs/Link"
+      }
+    }
+  },
+  "$defs": {
+    "Access": {
+      "type": "object",
+      "description": "An access record describing what action was performed on which resource.",
+      "properties": {
+        "action": {
+          "type": "string",
+          "description": "The action that was performed, such as createFlag, updateOn, deleteFlag, or updateTargets."
+        },
+        "resource": {
+          "type": "string",
+          "description": "A resource specifier in the format proj/{projKey}:env/{envKey}:flag/{flagKey}."
+        }
+      }
+    },
+    "MemberRef": {
+      "type": "object",
+      "description": "A reference to the account member who made the change.",
+      "properties": {
+        "_id": {
+          "type": "string",
+          "description": "The unique identifier of the member."
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "The email address of the member."
+        },
+        "firstName": {
+          "type": "string",
+          "description": "The first name of the member."
+        },
+        "lastName": {
+          "type": "string",
+          "description": "The last name of the member."
+        },
+        "_links": {
+          "type": "object",
+          "description": "Links related to the member.",
+          "additionalProperties": {
+            "$ref": "#/$defs/Link"
+          }
+        }
+      }
+    },
+    "Link": {
+      "type": "object",
+      "description": "A HATEOAS link.",
+      "properties": {
+        "href": {
+          "type": "string",
+          "description": "The URL of the linked resource."
+        },
+        "type": {
+          "type": "string",
+          "description": "The media type of the linked resource."
+        }
+      }
+    }
+  }
+}

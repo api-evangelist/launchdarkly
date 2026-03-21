@@ -1,0 +1,262 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "ld": "https://launchdarkly.com/ns/",
+    "schema": "https://schema.org/",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "dcterms": "http://purl.org/dc/terms/",
+
+    "FeatureFlag": {
+      "@id": "ld:FeatureFlag",
+      "@context": {
+        "key": "ld:flagKey",
+        "name": "schema:name",
+        "description": "schema:description",
+        "kind": "ld:flagKind",
+        "tags": {
+          "@id": "schema:keywords",
+          "@container": "@set"
+        },
+        "creationDate": {
+          "@id": "dcterms:created",
+          "@type": "xsd:dateTime"
+        },
+        "temporary": "ld:isTemporary",
+        "archived": "ld:isArchived",
+        "variations": {
+          "@id": "ld:hasVariations",
+          "@container": "@set"
+        },
+        "environments": {
+          "@id": "ld:hasEnvironmentConfigs",
+          "@container": "@index"
+        }
+      }
+    },
+
+    "Variation": {
+      "@id": "ld:Variation",
+      "@context": {
+        "value": "ld:variationValue",
+        "name": "schema:name",
+        "description": "schema:description"
+      }
+    },
+
+    "Project": {
+      "@id": "ld:Project",
+      "@context": {
+        "key": "ld:projectKey",
+        "name": "schema:name",
+        "tags": {
+          "@id": "schema:keywords",
+          "@container": "@set"
+        },
+        "environments": {
+          "@id": "ld:hasEnvironments",
+          "@container": "@set"
+        }
+      }
+    },
+
+    "Environment": {
+      "@id": "ld:Environment",
+      "@context": {
+        "key": "ld:environmentKey",
+        "name": "schema:name",
+        "color": "ld:displayColor",
+        "apiKey": "ld:sdkKey",
+        "mobileKey": "ld:mobileKey",
+        "defaultTtl": "ld:defaultTtl",
+        "secureMode": "ld:isSecureMode",
+        "tags": {
+          "@id": "schema:keywords",
+          "@container": "@set"
+        }
+      }
+    },
+
+    "Segment": {
+      "@id": "ld:Segment",
+      "@context": {
+        "key": "ld:segmentKey",
+        "name": "schema:name",
+        "description": "schema:description",
+        "tags": {
+          "@id": "schema:keywords",
+          "@container": "@set"
+        },
+        "creationDate": {
+          "@id": "dcterms:created",
+          "@type": "xsd:dateTime"
+        },
+        "included": {
+          "@id": "ld:includedContextKeys",
+          "@container": "@set"
+        },
+        "excluded": {
+          "@id": "ld:excludedContextKeys",
+          "@container": "@set"
+        },
+        "rules": {
+          "@id": "ld:hasRules",
+          "@container": "@set"
+        }
+      }
+    },
+
+    "Webhook": {
+      "@id": "ld:Webhook",
+      "@context": {
+        "url": {
+          "@id": "schema:url",
+          "@type": "@id"
+        },
+        "name": "schema:name",
+        "on": "ld:isEnabled",
+        "tags": {
+          "@id": "schema:keywords",
+          "@container": "@set"
+        }
+      }
+    },
+
+    "AuditLogEntry": {
+      "@id": "ld:AuditLogEntry",
+      "@context": {
+        "date": {
+          "@id": "dcterms:date",
+          "@type": "xsd:dateTime"
+        },
+        "kind": "ld:resourceKind",
+        "name": "schema:name",
+        "description": "schema:description",
+        "shortDescription": "ld:shortDescription",
+        "member": {
+          "@id": "ld:performedBy",
+          "@type": "@id"
+        }
+      }
+    },
+
+    "Member": {
+      "@id": "ld:Member",
+      "@context": {
+        "email": "schema:email",
+        "firstName": "schema:givenName",
+        "lastName": "schema:familyName",
+        "role": "ld:builtInRole",
+        "customRoles": {
+          "@id": "ld:hasCustomRoles",
+          "@container": "@set"
+        }
+      }
+    },
+
+    "Team": {
+      "@id": "ld:Team",
+      "@context": {
+        "key": "ld:teamKey",
+        "name": "schema:name",
+        "description": "schema:description",
+        "customRoleKeys": {
+          "@id": "ld:hasCustomRoleKeys",
+          "@container": "@set"
+        }
+      }
+    },
+
+    "Metric": {
+      "@id": "ld:Metric",
+      "@context": {
+        "key": "ld:metricKey",
+        "name": "schema:name",
+        "description": "schema:description",
+        "kind": "ld:metricKind",
+        "tags": {
+          "@id": "schema:keywords",
+          "@container": "@set"
+        },
+        "creationDate": {
+          "@id": "dcterms:created",
+          "@type": "xsd:dateTime"
+        }
+      }
+    },
+
+    "Experiment": {
+      "@id": "ld:Experiment",
+      "@context": {
+        "key": "ld:experimentKey",
+        "name": "schema:name",
+        "description": "schema:description",
+        "creationDate": {
+          "@id": "dcterms:created",
+          "@type": "xsd:dateTime"
+        }
+      }
+    },
+
+    "CustomRole": {
+      "@id": "ld:CustomRole",
+      "@context": {
+        "key": "ld:roleKey",
+        "name": "schema:name",
+        "description": "schema:description",
+        "policy": {
+          "@id": "ld:hasPolicy",
+          "@container": "@set"
+        }
+      }
+    },
+
+    "AccessToken": {
+      "@id": "ld:AccessToken",
+      "@context": {
+        "name": "schema:name",
+        "role": "ld:tokenRole",
+        "serviceToken": "ld:isServiceToken",
+        "creationDate": {
+          "@id": "dcterms:created",
+          "@type": "xsd:dateTime"
+        },
+        "lastUsed": {
+          "@id": "ld:lastUsed",
+          "@type": "xsd:dateTime"
+        }
+      }
+    },
+
+    "RelayProxyConfig": {
+      "@id": "ld:RelayProxyConfig",
+      "@context": {
+        "name": "schema:name",
+        "creationDate": {
+          "@id": "dcterms:created",
+          "@type": "xsd:dateTime"
+        },
+        "lastModified": {
+          "@id": "dcterms:modified",
+          "@type": "xsd:dateTime"
+        },
+        "policy": {
+          "@id": "ld:hasPolicy",
+          "@container": "@set"
+        }
+      }
+    },
+
+    "ReleasePipeline": {
+      "@id": "ld:ReleasePipeline",
+      "@context": {
+        "key": "ld:pipelineKey",
+        "name": "schema:name",
+        "description": "schema:description",
+        "phases": {
+          "@id": "ld:hasPipelinePhases",
+          "@container": "@list"
+        }
+      }
+    }
+  }
+}

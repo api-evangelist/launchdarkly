@@ -1,0 +1,356 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://launchdarkly.com/schemas/launchdarkly/feature-flag.json",
+  "title": "LaunchDarkly Feature Flag",
+  "description": "A feature flag configuration in LaunchDarkly, including its variations, targeting rules, and environment-specific settings.",
+  "type": "object",
+  "required": ["key", "name", "kind"],
+  "properties": {
+    "key": {
+      "type": "string",
+      "description": "The unique key identifying this feature flag.",
+      "pattern": "^[a-z0-9]([a-z0-9._-])*$",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "name": {
+      "type": "string",
+      "description": "The human-readable name of the feature flag.",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "description": {
+      "type": "string",
+      "description": "A description of the feature flag purpose and behavior.",
+      "maxLength": 10000
+    },
+    "kind": {
+      "type": "string",
+      "description": "The type of flag, either boolean (two variations) or multivariate (multiple variations).",
+      "enum": ["boolean", "multivariate"]
+    },
+    "tags": {
+      "type": "array",
+      "description": "Tags applied to this feature flag for organization and filtering.",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-zA-Z0-9._-]+$"
+      }
+    },
+    "creationDate": {
+      "type": "integer",
+      "description": "Unix epoch timestamp in milliseconds when the flag was created.",
+      "minimum": 0
+    },
+    "temporary": {
+      "type": "boolean",
+      "description": "Whether this flag is intended to be temporary and should be cleaned up after use."
+    },
+    "archived": {
+      "type": "boolean",
+      "description": "Whether this flag has been archived and is no longer actively used."
+    },
+    "includeInSnippet": {
+      "type": "boolean",
+      "description": "Whether this flag is available to client-side SDKs."
+    },
+    "clientSideAvailability": {
+      "type": "object",
+      "description": "Controls which client-side SDKs can access this flag.",
+      "properties": {
+        "usingEnvironmentId": {
+          "type": "boolean",
+          "description": "Whether this flag is available to client-side SDKs using the environment ID."
+        },
+        "usingMobileKey": {
+          "type": "boolean",
+          "description": "Whether this flag is available to mobile SDKs."
+        }
+      }
+    },
+    "variations": {
+      "type": "array",
+      "description": "The possible values this flag can serve.",
+      "minItems": 2,
+      "items": {
+        "$ref": "#/$defs/Variation"
+      }
+    },
+    "defaults": {
+      "type": "object",
+      "description": "Default variation settings applied when new environments are created.",
+      "properties": {
+        "onVariation": {
+          "type": "integer",
+          "description": "The index of the variation to serve when the flag is on.",
+          "minimum": 0
+        },
+        "offVariation": {
+          "type": "integer",
+          "description": "The index of the variation to serve when the flag is off.",
+          "minimum": 0
+        }
+      }
+    },
+    "environments": {
+      "type": "object",
+      "description": "A map of environment keys to their flag configurations.",
+      "additionalProperties": {
+        "$ref": "#/$defs/FlagEnvironment"
+      }
+    },
+    "_version": {
+      "type": "integer",
+      "description": "The current version number of this flag for optimistic concurrency control.",
+      "minimum": 0
+    }
+  },
+  "$defs": {
+    "Variation": {
+      "type": "object",
+      "description": "A single variation value that a feature flag can serve.",
+      "properties": {
+        "_id": {
+          "type": "string",
+          "description": "The unique identifier of this variation."
+        },
+        "value": {
+          "description": "The value of this variation. Can be any JSON type including boolean, string, number, or object."
+        },
+        "name": {
+          "type": "string",
+          "description": "An optional human-readable name for this variation."
+        },
+        "description": {
+          "type": "string",
+          "description": "An optional description of what this variation represents."
+        }
+      }
+    },
+    "FlagEnvironment": {
+      "type": "object",
+      "description": "The configuration of a feature flag for a specific environment.",
+      "properties": {
+        "on": {
+          "type": "boolean",
+          "description": "Whether the flag is currently enabled in this environment."
+        },
+        "archived": {
+          "type": "boolean",
+          "description": "Whether the flag is archived in this environment."
+        },
+        "salt": {
+          "type": "string",
+          "description": "The salt used for percentage rollout hashing."
+        },
+        "lastModified": {
+          "type": "integer",
+          "description": "Unix epoch timestamp in milliseconds of the last modification.",
+          "minimum": 0
+        },
+        "version": {
+          "type": "integer",
+          "description": "The version number of this flag configuration in this environment.",
+          "minimum": 0
+        },
+        "targets": {
+          "type": "array",
+          "description": "Individual context targets for each variation.",
+          "items": {
+            "$ref": "#/$defs/Target"
+          }
+        },
+        "rules": {
+          "type": "array",
+          "description": "Targeting rules that determine which variation to serve.",
+          "items": {
+            "$ref": "#/$defs/Rule"
+          }
+        },
+        "fallthrough": {
+          "$ref": "#/$defs/VariationOrRollout"
+        },
+        "offVariation": {
+          "type": "integer",
+          "description": "The variation index to serve when the flag is off.",
+          "minimum": 0
+        },
+        "prerequisites": {
+          "type": "array",
+          "description": "Flags that must be evaluated before this flag.",
+          "items": {
+            "$ref": "#/$defs/Prerequisite"
+          }
+        },
+        "trackEvents": {
+          "type": "boolean",
+          "description": "Whether to send detailed event data for this flag."
+        },
+        "trackEventsFallthrough": {
+          "type": "boolean",
+          "description": "Whether to send events for the fallthrough rule."
+        }
+      }
+    },
+    "Target": {
+      "type": "object",
+      "description": "An individual targeting entry that serves a specific variation to listed context keys.",
+      "properties": {
+        "values": {
+          "type": "array",
+          "description": "The list of context keys targeted.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "variation": {
+          "type": "integer",
+          "description": "The variation index to serve to these targets.",
+          "minimum": 0
+        },
+        "contextKind": {
+          "type": "string",
+          "description": "The context kind for this target."
+        }
+      }
+    },
+    "Rule": {
+      "type": "object",
+      "description": "A targeting rule with clauses that must all match for the rule to apply.",
+      "properties": {
+        "_id": {
+          "type": "string",
+          "description": "The unique identifier for this rule."
+        },
+        "clauses": {
+          "type": "array",
+          "description": "The conditions that must all be met for this rule to match.",
+          "items": {
+            "$ref": "#/$defs/Clause"
+          }
+        },
+        "variation": {
+          "type": "integer",
+          "description": "The variation index to serve when this rule matches.",
+          "minimum": 0
+        },
+        "rollout": {
+          "$ref": "#/$defs/Rollout"
+        },
+        "trackEvents": {
+          "type": "boolean",
+          "description": "Whether to track events for this rule."
+        }
+      }
+    },
+    "Clause": {
+      "type": "object",
+      "description": "A condition clause used in targeting rules.",
+      "required": ["attribute", "op", "values"],
+      "properties": {
+        "attribute": {
+          "type": "string",
+          "description": "The context attribute to evaluate."
+        },
+        "op": {
+          "type": "string",
+          "description": "The comparison operator.",
+          "enum": [
+            "in",
+            "endsWith",
+            "startsWith",
+            "matches",
+            "contains",
+            "lessThan",
+            "lessThanOrEqual",
+            "greaterThan",
+            "greaterThanOrEqual",
+            "before",
+            "after",
+            "segmentMatch",
+            "semVerEqual",
+            "semVerLessThan",
+            "semVerGreaterThan"
+          ]
+        },
+        "values": {
+          "type": "array",
+          "description": "The values to compare against.",
+          "items": {}
+        },
+        "negate": {
+          "type": "boolean",
+          "description": "Whether to negate the clause result."
+        },
+        "contextKind": {
+          "type": "string",
+          "description": "The context kind to evaluate the attribute against."
+        }
+      }
+    },
+    "Rollout": {
+      "type": "object",
+      "description": "A percentage rollout distributing traffic across variations.",
+      "properties": {
+        "variations": {
+          "type": "array",
+          "description": "The weighted variations in this rollout.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "variation": {
+                "type": "integer",
+                "description": "The variation index.",
+                "minimum": 0
+              },
+              "weight": {
+                "type": "integer",
+                "description": "The rollout weight in thousandths of a percent (0-100000).",
+                "minimum": 0,
+                "maximum": 100000
+              }
+            }
+          }
+        },
+        "bucketBy": {
+          "type": "string",
+          "description": "The context attribute used for bucket assignment."
+        },
+        "contextKind": {
+          "type": "string",
+          "description": "The context kind for rollout bucketing."
+        }
+      }
+    },
+    "VariationOrRollout": {
+      "type": "object",
+      "description": "The default fallthrough rule specifying a variation or rollout.",
+      "properties": {
+        "variation": {
+          "type": "integer",
+          "description": "The variation index to serve.",
+          "minimum": 0
+        },
+        "rollout": {
+          "$ref": "#/$defs/Rollout"
+        }
+      }
+    },
+    "Prerequisite": {
+      "type": "object",
+      "description": "A prerequisite flag that must evaluate to a specific variation before this flag is evaluated.",
+      "required": ["key", "variation"],
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "The key of the prerequisite flag."
+        },
+        "variation": {
+          "type": "integer",
+          "description": "The variation index that the prerequisite must serve.",
+          "minimum": 0
+        }
+      }
+    }
+  }
+}

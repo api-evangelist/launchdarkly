@@ -1,0 +1,328 @@
+asyncapi: 2.6.0
+info:
+  title: LaunchDarkly Webhooks Events
+  description: >-
+    LaunchDarkly sends webhook notifications as HTTP POST requests when
+    changes occur within the platform. The webhook payload format is
+    identical to audit log entries and includes details about what changed,
+    who made the change, and when it occurred. Webhooks may not be
+    delivered in chronological order, so consumers should use the payload
+    date field as a timestamp to reorder events. Payloads can be verified
+    using HMAC-SHA256 signature validation with a shared secret.
+  version: '2.0'
+  contact:
+    name: LaunchDarkly Support
+    url: https://support.launchdarkly.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+  externalDocs:
+    description: LaunchDarkly Webhooks Documentation
+    url: https://launchdarkly.com/docs/api/webhooks
+servers:
+  webhookReceiver:
+    url: '{webhookUrl}'
+    protocol: https
+    description: >-
+      The customer-configured webhook endpoint URL that receives
+      HTTP POST notifications from LaunchDarkly.
+    variables:
+      webhookUrl:
+        description: >-
+          The URL configured in the LaunchDarkly webhook settings.
+    security:
+      - hmacSignature: []
+channels:
+  /webhook:
+    description: >-
+      LaunchDarkly sends audit log events to this channel when changes
+      occur in the platform. Events can be filtered using policy
+      statements configured on the webhook. By default, all flag
+      change events in the production environment are sent.
+    publish:
+      operationId: receiveWebhookEvent
+      summary: Receive a webhook event from LaunchDarkly
+      description: >-
+        Receives an HTTP POST notification from LaunchDarkly containing
+        an audit log event payload. The event describes a change made
+        to a resource such as a feature flag, project, environment,
+        segment, or other LaunchDarkly resource.
+      message:
+        oneOf:
+          - $ref: '#/components/messages/FlagChangeEvent'
+          - $ref: '#/components/messages/ProjectChangeEvent'
+          - $ref: '#/components/messages/EnvironmentChangeEvent'
+          - $ref: '#/components/messages/SegmentChangeEvent'
+          - $ref: '#/components/messages/MemberChangeEvent'
+          - $ref: '#/components/messages/GenericChangeEvent'
+components:
+  securitySchemes:
+    hmacSignature:
+      type: httpApiKey
+      name: X-LD-Signature
+      in: header
+      description: >-
+        HMAC-SHA256 signature of the request body computed using the
+        shared secret configured on the webhook. Consumers should
+        compute the signature of the payload using the same shared
+        secret and compare it to this header value to verify
+        authenticity.
+  messages:
+    FlagChangeEvent:
+      name: FlagChangeEvent
+      title: Feature Flag Change Event
+      summary: >-
+        An event triggered when a feature flag is created, updated,
+        or deleted.
+      contentType: application/json
+      headers:
+        type: object
+        properties:
+          X-LD-Signature:
+            type: string
+            description: >-
+              HMAC-SHA256 signature for payload verification.
+      payload:
+        $ref: '#/components/schemas/AuditLogEvent'
+      examples:
+        - name: flagToggled
+          summary: A feature flag was toggled on
+          payload:
+            _id: 615a8b3d1234567890abcdef
+            date: 1633312573000
+            kind: flag
+            name: dark-mode
+            description: '**dark-mode** turned on in **production**'
+            shortDescription: turned on
+            accesses:
+              - action: updateOn
+                resource: proj/default:env/production:flag/dark-mode
+            member:
+              _id: 507f1f77bcf86cd799439011
+              email: dev@example.com
+              firstName: Jane
+              lastName: Developer
+    ProjectChangeEvent:
+      name: ProjectChangeEvent
+      title: Project Change Event
+      summary: >-
+        An event triggered when a project is created, updated,
+        or deleted.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/AuditLogEvent'
+    EnvironmentChangeEvent:
+      name: EnvironmentChangeEvent
+      title: Environment Change Event
+      summary: >-
+        An event triggered when an environment is created, updated,
+        or deleted.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/AuditLogEvent'
+    SegmentChangeEvent:
+      name: SegmentChangeEvent
+      title: Segment Change Event
+      summary: >-
+        An event triggered when a user segment is created, updated,
+        or deleted.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/AuditLogEvent'
+    MemberChangeEvent:
+      name: MemberChangeEvent
+      title: Member Change Event
+      summary: >-
+        An event triggered when an account member is invited,
+        updated, or removed.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/AuditLogEvent'
+    GenericChangeEvent:
+      name: GenericChangeEvent
+      title: Generic Change Event
+      summary: >-
+        A catch-all event for any change to a LaunchDarkly resource
+        that does not have a more specific event type defined.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/AuditLogEvent'
+  schemas:
+    AuditLogEvent:
+      type: object
+      description: >-
+        An audit log event representing a change made to a resource
+        in LaunchDarkly. This is the standard payload format for
+        webhook notifications.
+      required:
+        - _id
+        - date
+        - kind
+        - name
+      properties:
+        _id:
+          type: string
+          description: >-
+            The unique identifier of this audit log event.
+        date:
+          type: integer
+          format: int64
+          description: >-
+            Unix epoch timestamp in milliseconds when the change
+            occurred. Use this field to reorder webhook events since
+            they may not arrive in chronological order.
+        kind:
+          type: string
+          description: >-
+            The kind of resource that was changed.
+          enum:
+            - flag
+            - project
+            - environment
+            - segment
+            - metric
+            - member
+            - role
+            - webhook
+            - integration
+            - token
+            - destination
+            - relay-proxy-config
+            - experiment
+            - team
+            - release-pipeline
+        name:
+          type: string
+          description: >-
+            The name of the resource that was changed.
+        description:
+          type: string
+          description: >-
+            A markdown-formatted description of the changes made
+            to the resource.
+        shortDescription:
+          type: string
+          description: >-
+            A brief plain-text summary of the change.
+        comment:
+          type: string
+          description: >-
+            An optional comment provided by the member who made
+            the change.
+        accesses:
+          type: array
+          description: >-
+            The access details describing what action was taken
+            and on which resource.
+          items:
+            $ref: '#/components/schemas/Access'
+        member:
+          $ref: '#/components/schemas/MemberRef'
+        titleVerb:
+          type: string
+          description: >-
+            The verb describing the action taken, such as "created",
+            "updated", or "deleted".
+        title:
+          type: string
+          description: >-
+            A human-readable title for the event.
+        target:
+          type: object
+          description: >-
+            Details about the target resource of the change.
+          properties:
+            _links:
+              type: object
+              description: >-
+                Links to the target resource.
+              additionalProperties:
+                type: object
+                properties:
+                  href:
+                    type: string
+                    description: >-
+                      The URL of the linked resource.
+                  type:
+                    type: string
+                    description: >-
+                      The media type.
+            name:
+              type: string
+              description: >-
+                The name of the target resource.
+            resources:
+              type: array
+              description: >-
+                The resource specifiers for the target.
+              items:
+                type: string
+        _links:
+          type: object
+          description: >-
+            HATEOAS links to related resources.
+          additionalProperties:
+            type: object
+            properties:
+              href:
+                type: string
+                description: >-
+                  The URL of the linked resource.
+              type:
+                type: string
+                description: >-
+                  The media type.
+    Access:
+      type: object
+      description: >-
+        An access record describing what action was performed
+        on which resource.
+      properties:
+        action:
+          type: string
+          description: >-
+            The action that was performed, such as "createFlag",
+            "updateOn", "deleteFlag", or "updateTargets".
+        resource:
+          type: string
+          description: >-
+            A resource specifier in the format
+            "proj/{projKey}:env/{envKey}:flag/{flagKey}" identifying
+            the affected resource.
+    MemberRef:
+      type: object
+      description: >-
+        A reference to the account member who made the change.
+      properties:
+        _id:
+          type: string
+          description: >-
+            The unique identifier of the member.
+        email:
+          type: string
+          format: email
+          description: >-
+            The email address of the member.
+        firstName:
+          type: string
+          description: >-
+            The first name of the member.
+        lastName:
+          type: string
+          description: >-
+            The last name of the member.
+        _links:
+          type: object
+          description: >-
+            Links related to the member.
+          additionalProperties:
+            type: object
+            properties:
+              href:
+                type: string
+                description: >-
+                  The URL.
+              type:
+                type: string
+                description: >-
+                  The media type.
