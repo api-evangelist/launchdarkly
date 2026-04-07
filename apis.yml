@@ -1,5 +1,6 @@
 aid: launchdarkly
-url: https://raw.githubusercontent.com/api-evangelist/launchdarkly/refs/heads/main/apis.yml
+url: 
+  https://raw.githubusercontent.com/api-evangelist/launchdarkly/refs/heads/main/apis.yml
 apis:
   - aid: launchdarkly:rest-api
     name: LaunchDarkly REST API
@@ -10,7 +11,8 @@ apis:
       - Toggles
       - Segments
       - Environments
-    image: https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+    image: 
+      https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
     baseURL: https://app.launchdarkly.com/api/v2
     humanURL: https://apidocs.launchdarkly.com/
     properties:
@@ -19,14 +21,11 @@ apis:
       - type: OpenAPI
         url: openapi/launchdarkly-rest-api-openapi.yml
     description: >-
-      The LaunchDarkly REST API provides programmatic access to the full
-      LaunchDarkly feature management platform. Developers can create, update,
-      and manage feature flags, targeting rules, user segments, projects,
-      environments, and team members. The API also supports scheduled flag
-      changes, release pipelines, experimentation, approval workflows, and
-      webhook integrations. Authentication is handled via personal or service
-      access tokens, and the API follows a versioned scheme with the current
-      default version being 20240415.
+      The LaunchDarkly REST API provides programmatic access to the full LaunchDarkly
+      feature management platform. Developers can create, update, and manage feature
+      flags, targeting rules, user segments, projects, environments, and team members.
+      The API also supports scheduled flag changes, release pipelines, experimentation,
+      approval workflows, and webhook integrations.
   - aid: launchdarkly:webhooks-api
     name: LaunchDarkly Webhooks API
     tags:
@@ -34,7 +33,8 @@ apis:
       - Events
       - Integrations
       - Notifications
-    image: https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+    image: 
+      https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
     baseURL: https://app.launchdarkly.com/api/v2
     humanURL: https://launchdarkly.com/docs/api/webhooks
     properties:
@@ -59,7 +59,8 @@ apis:
       - Performance
       - Edge
       - Infrastructure
-    image: https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+    image: 
+      https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
     baseURL: https://api.example.com
     humanURL: https://launchdarkly.com/docs/sdk/relay-proxy
     properties:
@@ -68,14 +69,11 @@ apis:
       - type: OpenAPI
         url: openapi/launchdarkly-relay-proxy-openapi.yml
     description: >-
-      The LaunchDarkly Relay Proxy is a small Go application that connects
-      to the LaunchDarkly streaming API and proxies that connection to SDK
-      clients within an organization's network. Instead of each server making
-      outbound connections to LaunchDarkly's streaming service, multiple
-      servers connect to the local Relay Proxy which maintains a single
-      connection upstream. It supports configuration for exporting metrics
-      to Datadog, Stackdriver, and Prometheus, and can run in daemon mode
-      for server-side SDKs that use a persistent data store.
+      The LaunchDarkly Relay Proxy is a small Go application that connects to the
+      LaunchDarkly streaming API and proxies that connection to SDK clients within
+      an organization's network. Instead of each server making outbound connections
+      to LaunchDarkly's streaming service, multiple servers connect to the local Relay
+      Proxy which maintains a single connection upstream.
 common:
   - type: JSONSchema
     url: json-schema/launchdarkly-feature-flag-schema.json
@@ -84,3 +82,7 @@ common:
   - type: JSON-LD
     url: json-ld/launchdarkly-context.jsonld
 modified: '2026-03-20'
+description: >-
+  LaunchDarkly is a feature management platform that enables development teams to
+  deliver and control software through feature flags, allowing them to test in production
+  and roll out features safely.
