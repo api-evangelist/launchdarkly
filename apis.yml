@@ -1,18 +1,16 @@
 aid: launchdarkly
-url: 
-  https://raw.githubusercontent.com/api-evangelist/launchdarkly/refs/heads/main/apis.yml
+url: https://raw.githubusercontent.com/api-evangelist/launchdarkly/refs/heads/main/apis.yml
 apis:
   - aid: launchdarkly:rest-api
     name: LaunchDarkly REST API
     tags:
+      - Environments
+      - Experimentation
       - Feature Flags
       - Feature Management
-      - Experimentation
-      - Toggles
       - Segments
-      - Environments
-    image: 
-      https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+      - Toggles
+    image: https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
     baseURL: https://app.launchdarkly.com/api/v2
     humanURL: https://apidocs.launchdarkly.com/
     properties:
@@ -29,12 +27,11 @@ apis:
   - aid: launchdarkly:webhooks-api
     name: LaunchDarkly Webhooks API
     tags:
-      - Webhooks
       - Events
       - Integrations
       - Notifications
-    image: 
-      https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+      - Webhooks
+    image: https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
     baseURL: https://app.launchdarkly.com/api/v2
     humanURL: https://launchdarkly.com/docs/api/webhooks
     properties:
@@ -54,13 +51,12 @@ apis:
   - aid: launchdarkly:relay-proxy
     name: LaunchDarkly Relay Proxy
     tags:
-      - Proxy
-      - Streaming
-      - Performance
       - Edge
       - Infrastructure
-    image: 
-      https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+      - Performance
+      - Proxy
+      - Streaming
+    image: https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
     baseURL: https://api.example.com
     humanURL: https://launchdarkly.com/docs/sdk/relay-proxy
     properties:

@@ -25,89 +25,81 @@ servers:
   - url: https://app.launchdarkly.com/api/v2
     description: LaunchDarkly Production API
 tags:
-  - name: Feature Flags
-    description: >-
-      Create, update, and manage feature flags and their targeting rules
-      across projects and environments.
-  - name: Projects
-    description: >-
-      Manage projects that organize feature flags and other resources.
-  - name: Environments
-    description: >-
-      Manage environments within projects such as production, staging,
-      and development.
-  - name: Segments
-    description: >-
-      Create and manage user segments for targeting groups of contexts
-      with feature flags.
-  - name: Contexts
-    description: >-
-      Search, view, and manage context instances that have been
-      encountered by LaunchDarkly.
-  - name: Experiments
-    description: >-
-      Create and manage experiments to measure the impact of feature
-      flag variations on metrics.
-  - name: Metrics
-    description: >-
-      Define and manage metrics used to measure experiment outcomes
-      and feature flag impact.
-  - name: Account Members
-    description: >-
-      Manage team members, invitations, and member roles within
-      a LaunchDarkly account.
-  - name: Teams
-    description: >-
-      Organize account members into teams for collaborative flag
-      management and permissions.
   - name: Access Tokens
     description: >-
       Create and manage personal and service access tokens used
       to authenticate API requests.
-  - name: Custom Roles
+  - name: Account Members
     description: >-
-      Define custom roles with fine-grained permissions using
-      resource specifiers and actions.
-  - name: Webhooks
-    description: >-
-      Configure webhooks to receive HTTP POST notifications when
-      changes occur in LaunchDarkly.
-  - name: Audit Log
-    description: >-
-      Access the change history of all modifications made to
-      resources in the LaunchDarkly account.
+      Manage team members, invitations, and member roles within
+      a LaunchDarkly account.
   - name: Approvals
     description: >-
       Manage approval requests and workflows for flag changes
       that require review before deployment.
-  - name: Workflows
+  - name: Audit Log
     description: >-
-      Create and manage automated workflows for scheduling and
-      orchestrating flag changes.
-  - name: Releases
-    description: >-
-      Manage release pipelines for coordinating feature flag
-      rollouts across environments.
-  - name: Flag Triggers
-    description: >-
-      Create triggers that allow external services to toggle
-      feature flags via unique webhook URLs.
-  - name: Relay Proxy Configurations
-    description: >-
-      Manage automatic configuration entries for LaunchDarkly
-      Relay Proxy instances.
+      Access the change history of all modifications made to
+      resources in the LaunchDarkly account.
   - name: Code References
     description: >-
       View code references that show where feature flags are
       used in your codebase.
+  - name: Custom Roles
+    description: >-
+      Define custom roles with fine-grained permissions using
+      resource specifiers and actions.
+  - name: Environments
+    description: >-
+      Manage environments within projects such as production, staging,
+      and development.
+  - name: Experiments
+    description: >-
+      Create and manage experiments to measure the impact of feature
+      flag variations on metrics.
+  - name: Feature Flags
+    description: >-
+      Create, update, and manage feature flags and their targeting rules
+      across projects and environments.
+  - name: Flag Triggers
+    description: >-
+      Create triggers that allow external services to toggle
+      feature flags via unique webhook URLs.
   - name: Integration Audit Log Subscriptions
     description: >-
       Manage integrations that subscribe to audit log events
       and forward them to external tools.
-  - name: Tags
+  - name: Metrics
     description: >-
-      List and manage tags applied to flags, projects,
-      environments, segments, and other resources.
+      Define and manage metrics used to measure experiment outcomes
+      and feature flag impact.
+  - name: Projects
+    description: >-
+      Manage projects that organize feature flags and other resources.
+  - name: Relay Proxy Configurations
+    description: >-
+      Manage automatic configuration entries for LaunchDarkly
+      Relay Proxy instances.
+  - name: Releases
+    description: >-
+      Manage release pipelines for coordinating feature flag
+      rollouts across environments.
+  - name: Segments
+    description: >-
+      Create and manage user segments for targeting groups of contexts
+      with feature flags.
+  - name: Teams
+    description: >-
+      Organize account members into teams for collaborative flag
+      management and permissions.
+  - name: Webhooks
+    description: >-
+      Configure webhooks to receive HTTP POST notifications when
+      changes occur in LaunchDarkly.
+  - name: Workflows
+    description: >-
+      Create and manage automated workflows for scheduling and
+      orchestrating flag changes.
 security:
   - bearerAuth: []
 paths:
@@ -1326,8 +1318,7 @@ paths:
       summary: List tags
       description: >-
         Returns a list of tags used across all resources in the account.
-      tags:
-        - Tags
+      tags: []
       parameters:
         - name: kind
           in: query

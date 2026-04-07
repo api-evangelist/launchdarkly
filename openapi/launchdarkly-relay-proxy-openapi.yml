@@ -24,22 +24,10 @@ servers:
   - url: http://localhost:8030
     description: Default Relay Proxy instance
 tags:
-  - name: Status
-    description: >-
-      Health and status monitoring endpoints for the Relay Proxy.
-      No authentication is required for these endpoints.
-  - name: Server-Side Evaluation
-    description: >-
-      Flag evaluation endpoints for server-side SDKs using SDK keys
-      for authentication.
   - name: Client-Side Evaluation
     description: >-
       Flag evaluation endpoints for client-side and mobile SDKs using
       environment IDs or mobile keys for authentication.
-  - name: Server-Side Streaming
-    description: >-
-      Server-Sent Events streaming endpoints for server-side SDKs
-      to receive real-time flag updates.
   - name: Client-Side Streaming
     description: >-
       Server-Sent Events streaming endpoints for client-side and
@@ -48,6 +36,18 @@ tags:
     description: >-
       Polling endpoints for PHP server-side SDKs which do not
       support streaming mode.
+  - name: Server-Side Evaluation
+    description: >-
+      Flag evaluation endpoints for server-side SDKs using SDK keys
+      for authentication.
+  - name: Server-Side Streaming
+    description: >-
+      Server-Sent Events streaming endpoints for server-side SDKs
+      to receive real-time flag updates.
+  - name: Status
+    description: >-
+      Health and status monitoring endpoints for the Relay Proxy.
+      No authentication is required for these endpoints.
 paths:
   /status:
     get:
