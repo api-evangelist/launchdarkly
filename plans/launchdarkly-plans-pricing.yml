@@ -1,0 +1,113 @@
+specification: API Commons Plans
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/Plans
+provider: LaunchDarkly
+providerId: launchdarkly
+created: '2026-05-04'
+modified: '2026-05-04'
+reconciled: true
+tags:
+  - Feature Flags
+  - Experimentation
+  - Observability
+description: 'LaunchDarkly tiers: Developer / Foundation / Enterprise / Guardian.'
+sources:
+  - https://launchdarkly.com/pricing/
+plans:
+  - id: launchdarkly-developer
+    name: Developer
+    type: freemium
+    description: Free forever; unlimited flags and seats.
+    entries:
+      - label: Seats
+        name: seats
+        type: quota
+        metric: user
+        limit: -1
+        timeFrame: month
+        geo: global
+        unit: 1
+        price: '0.00'
+        userMultiplied: false
+    elements:
+      - name: Unlimited feature flags
+      - name: 30 SDKs
+      - name: 5K Session Replays + Errors
+      - name: 10M Logs + Traces
+      - name: A/B tests + experiments
+      - name: Unlimited seats
+  - id: launchdarkly-foundation
+    name: Foundation
+    type: paid
+    description: $12/mo per Service Connection + $10/mo per 1k client-side MAU.
+    entries:
+      - label: Per service connection
+        name: svc_conn
+        type: subscription
+        metric: month
+        limit: -1
+        timeFrame: month
+        geo: global
+        unit: 1
+        price: '12.00'
+        userMultiplied: false
+      - label: Per 1k client-side MAU
+        name: mau
+        type: metered
+        metric: MAU
+        limit: -1
+        timeFrame: month
+        geo: global
+        unit: 1000
+        price: '10.00'
+        userMultiplied: false
+    elements:
+      - name: Unlimited projects
+      - name: User/account/device targeting
+      - name: Scalable Observability
+      - name: Scalable Experimentation
+      - name: SSO
+      - name: Unlimited seats
+  - id: launchdarkly-enterprise
+    name: Enterprise
+    type: enterprise
+    description: Custom pricing.
+    entries:
+      - label: Annual (custom)
+        name: annual
+        type: subscription
+        metric: year
+        limit: -1
+        timeFrame: year
+        geo: global
+        unit: 1
+        price: custom
+        userMultiplied: false
+    elements:
+      - name: Advanced user targeting
+      - name: Release automation
+      - name: Workflows, scheduling, approvals
+      - name: SAML/SCIM
+      - name: Custom roles & teams
+  - id: launchdarkly-guardian
+    name: Guardian
+    type: enterprise
+    description: Custom pricing; adds release safety.
+    entries:
+      - label: Annual (custom)
+        name: annual
+        type: subscription
+        metric: year
+        limit: -1
+        timeFrame: year
+        geo: global
+        unit: 1
+        price: custom
+        userMultiplied: false
+    elements:
+      - name: Release Monitoring
+      - name: Guardrail Metrics
+      - name: Proactive Failure Notifications
+      - name: Auto Pause / Rollback
+      - name: Advanced Observability
+      - name: Exposure Insights

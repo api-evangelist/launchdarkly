@@ -1,0 +1,61 @@
+specification: FinOps Framework
+specificationVersion: '1.0'
+schema: https://www.finops.org/framework/
+provider: LaunchDarkly
+providerId: launchdarkly
+created: '2026-05-04'
+modified: '2026-05-04'
+reconciled: true
+tags:
+  - FinOps
+  - FOCUS
+  - Feature Management
+description: FOCUS-aligned FinOps for LaunchDarkly.
+sources:
+  - https://launchdarkly.com/pricing/
+alignedWith:
+  framework: FinOps Foundation Framework
+  frameworkUrl: https://www.finops.org/framework/
+  dataSpec: FOCUS
+  dataSpecVersion: '1.3'
+  dataSpecUrl: https://focus.finops.org/focus-specification/v1-3/
+publisherName: LaunchDarkly
+serviceCategory: Feature Management
+billingModel:
+  pricingCategory: Per-Service-Connection + Per-MAU
+  billingFrequency: Monthly
+  billingCurrency: USD
+focusColumns:
+  ServiceName: LaunchDarkly
+  ServiceCategory: Feature Management
+  ProviderName: LaunchDarkly
+  PublisherName: LaunchDarkly
+  BillingCurrency: USD
+meters:
+  - name: service_connections
+    unit: connection-month
+    aggregation: max
+  - name: client_side_mau
+    unit: MAU
+    aggregation: max
+  - name: flag_evaluations
+    unit: evaluation
+    aggregation: sum
+  - name: session_replays
+    unit: replay
+    aggregation: sum
+  - name: errors
+    unit: error
+    aggregation: sum
+  - name: logs_and_traces
+    unit: GB
+    aggregation: sum
+principles:
+  - name: Visibility
+    description: Track LaunchDarkly consumption monthly.
+  - name: Allocation
+    description: Tag usage to teams/cost centers.
+  - name: Optimization
+    description: Right-size; reclaim unused entitlements.
+  - name: Accountability
+    description: Set spend alerts; quarterly review.
