@@ -67,7 +67,7 @@ common:
     url: json-schema/launchdarkly-feature-flag-schema.json
   - type: JSONSchema
     url: json-schema/launchdarkly-webhook-event-schema.json
-  - type: JSON-LD
+  - type: JSONLD
     url: json-ld/launchdarkly-context.jsonld
   - type: Features
     data:
