@@ -1,0 +1,105 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: LaunchDarkly REST API — Relay Proxy Configurations
+  description: 'LaunchDarkly REST API — Relay Proxy Configurations. 2 operations. Lead operation: List Relay Proxy configurations.
+    Self-contained Naftiko capability covering one Launchdarkly business surface.'
+  tags:
+  - Launchdarkly
+  - Relay Proxy Configurations
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    LAUNCHDARKLY_API_KEY: LAUNCHDARKLY_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: rest-relay-proxy-configurations
+    baseUri: https://app.launchdarkly.com/api/v2
+    description: LaunchDarkly REST API — Relay Proxy Configurations business capability. Self-contained, no shared references.
+    resources:
+    - name: account-relay-auto-configs
+      path: /account/relay-auto-configs
+      operations:
+      - name: listrelayproxyconfigs
+        method: GET
+        description: List Relay Proxy configurations
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: createrelayproxyconfig
+        method: POST
+        description: Create a Relay Proxy configuration
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    authentication:
+      type: bearer
+      token: '{{env.LAUNCHDARKLY_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: rest-relay-proxy-configurations-rest
+    port: 8080
+    description: REST adapter for LaunchDarkly REST API — Relay Proxy Configurations. One Spectral-compliant resource per
+      consumed operation, prefixed with /v1.
+    resources:
+    - path: /v1/account/relay-auto-configs
+      name: account-relay-auto-configs
+      description: REST surface for account-relay-auto-configs.
+      operations:
+      - method: GET
+        name: listrelayproxyconfigs
+        description: List Relay Proxy configurations
+        call: rest-relay-proxy-configurations.listrelayproxyconfigs
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: createrelayproxyconfig
+        description: Create a Relay Proxy configuration
+        call: rest-relay-proxy-configurations.createrelayproxyconfig
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: rest-relay-proxy-configurations-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for LaunchDarkly REST API — Relay Proxy Configurations. One tool per consumed operation, routed
+      inline through this capability's consumes block.
+    tools:
+    - name: list-relay-proxy-configurations
+      description: List Relay Proxy configurations
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: rest-relay-proxy-configurations.listrelayproxyconfigs
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-relay-proxy-configuration
+      description: Create a Relay Proxy configuration
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: rest-relay-proxy-configurations.createrelayproxyconfig
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.

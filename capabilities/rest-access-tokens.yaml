@@ -1,0 +1,105 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: LaunchDarkly REST API — Access Tokens
+  description: 'LaunchDarkly REST API — Access Tokens. 2 operations. Lead operation: List access tokens. Self-contained Naftiko
+    capability covering one Launchdarkly business surface.'
+  tags:
+  - Launchdarkly
+  - Access Tokens
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    LAUNCHDARKLY_API_KEY: LAUNCHDARKLY_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: rest-access-tokens
+    baseUri: https://app.launchdarkly.com/api/v2
+    description: LaunchDarkly REST API — Access Tokens business capability. Self-contained, no shared references.
+    resources:
+    - name: tokens
+      path: /tokens
+      operations:
+      - name: listaccesstokens
+        method: GET
+        description: List access tokens
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: createaccesstoken
+        method: POST
+        description: Create an access token
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    authentication:
+      type: bearer
+      token: '{{env.LAUNCHDARKLY_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: rest-access-tokens-rest
+    port: 8080
+    description: REST adapter for LaunchDarkly REST API — Access Tokens. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/tokens
+      name: tokens
+      description: REST surface for tokens.
+      operations:
+      - method: GET
+        name: listaccesstokens
+        description: List access tokens
+        call: rest-access-tokens.listaccesstokens
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: createaccesstoken
+        description: Create an access token
+        call: rest-access-tokens.createaccesstoken
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: rest-access-tokens-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for LaunchDarkly REST API — Access Tokens. One tool per consumed operation, routed inline through
+      this capability's consumes block.
+    tools:
+    - name: list-access-tokens
+      description: List access tokens
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: rest-access-tokens.listaccesstokens
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-access-token
+      description: Create an access token
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: rest-access-tokens.createaccesstoken
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.

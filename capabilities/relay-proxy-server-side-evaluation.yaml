@@ -1,0 +1,72 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: LaunchDarkly Relay Proxy — Server-Side Evaluation
+  description: 'LaunchDarkly Relay Proxy — Server-Side Evaluation. 1 operations. Lead operation: Evaluate all flags for a
+    context (GET). Self-contained Naftiko capability covering one Launchdarkly business surface.'
+  tags:
+  - Launchdarkly
+  - Server-Side Evaluation
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    LAUNCHDARKLY_API_KEY: LAUNCHDARKLY_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: relay-proxy-server-side-evaluation
+    baseUri: http://localhost:8030
+    description: LaunchDarkly Relay Proxy — Server-Side Evaluation business capability. Self-contained, no shared references.
+    resources:
+    - name: sdk-evalx-contexts-contextBase64
+      path: /sdk/evalx/contexts/{contextBase64}
+      operations:
+      - name: evaluateallflagsforcontext
+        method: GET
+        description: Evaluate all flags for a context (GET)
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    authentication:
+      type: apikey
+      key: Authorization
+      value: '{{env.LAUNCHDARKLY_API_KEY}}'
+      placement: header
+  exposes:
+  - type: rest
+    namespace: relay-proxy-server-side-evaluation-rest
+    port: 8080
+    description: REST adapter for LaunchDarkly Relay Proxy — Server-Side Evaluation. One Spectral-compliant resource per consumed
+      operation, prefixed with /v1.
+    resources:
+    - path: /v1/sdk/evalx/contexts/{contextbase64}
+      name: sdk-evalx-contexts-contextbase64
+      description: REST surface for sdk-evalx-contexts-contextBase64.
+      operations:
+      - method: GET
+        name: evaluateallflagsforcontext
+        description: Evaluate all flags for a context (GET)
+        call: relay-proxy-server-side-evaluation.evaluateallflagsforcontext
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: relay-proxy-server-side-evaluation-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for LaunchDarkly Relay Proxy — Server-Side Evaluation. One tool per consumed operation, routed
+      inline through this capability's consumes block.
+    tools:
+    - name: evaluate-all-flags-context-get
+      description: Evaluate all flags for a context (GET)
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: relay-proxy-server-side-evaluation.evaluateallflagsforcontext
+      outputParameters:
+      - type: object
+        mapping: $.

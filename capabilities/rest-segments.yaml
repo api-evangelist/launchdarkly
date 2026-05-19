@@ -1,0 +1,212 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: LaunchDarkly REST API — Segments
+  description: 'LaunchDarkly REST API — Segments. 5 operations. Lead operation: List segments. Self-contained Naftiko capability
+    covering one Launchdarkly business surface.'
+  tags:
+  - Launchdarkly
+  - Segments
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    LAUNCHDARKLY_API_KEY: LAUNCHDARKLY_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: rest-segments
+    baseUri: https://app.launchdarkly.com/api/v2
+    description: LaunchDarkly REST API — Segments business capability. Self-contained, no shared references.
+    resources:
+    - name: segments-projectKey-environmentKey
+      path: /segments/{projectKey}/{environmentKey}
+      operations:
+      - name: listsegments
+        method: GET
+        description: List segments
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: limit
+          in: query
+          type: integer
+          description: Maximum number of segments to return.
+        - name: offset
+          in: query
+          type: integer
+          description: Number of segments to skip for pagination.
+      - name: createsegment
+        method: POST
+        description: Create a segment
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: segments-projectKey-environmentKey-segmentKey
+      path: /segments/{projectKey}/{environmentKey}/{segmentKey}
+      operations:
+      - name: getsegment
+        method: GET
+        description: Get a segment
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: patchsegment
+        method: PATCH
+        description: Update a segment
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+      - name: deletesegment
+        method: DELETE
+        description: Delete a segment
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    authentication:
+      type: bearer
+      token: '{{env.LAUNCHDARKLY_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: rest-segments-rest
+    port: 8080
+    description: REST adapter for LaunchDarkly REST API — Segments. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/segments/{projectkey}/{environmentkey}
+      name: segments-projectkey-environmentkey
+      description: REST surface for segments-projectKey-environmentKey.
+      operations:
+      - method: GET
+        name: listsegments
+        description: List segments
+        call: rest-segments.listsegments
+        with:
+          limit: rest.limit
+          offset: rest.offset
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: createsegment
+        description: Create a segment
+        call: rest-segments.createsegment
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/segments/{projectkey}/{environmentkey}/{segmentkey}
+      name: segments-projectkey-environmentkey-segmentkey
+      description: REST surface for segments-projectKey-environmentKey-segmentKey.
+      operations:
+      - method: GET
+        name: getsegment
+        description: Get a segment
+        call: rest-segments.getsegment
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: patchsegment
+        description: Update a segment
+        call: rest-segments.patchsegment
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: deletesegment
+        description: Delete a segment
+        call: rest-segments.deletesegment
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: rest-segments-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for LaunchDarkly REST API — Segments. One tool per consumed operation, routed inline through
+      this capability's consumes block.
+    tools:
+    - name: list-segments
+      description: List segments
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: rest-segments.listsegments
+      with:
+        limit: tools.limit
+        offset: tools.offset
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-segment
+      description: Create a segment
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: rest-segments.createsegment
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-segment
+      description: Get a segment
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: rest-segments.getsegment
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-segment
+      description: Update a segment
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: rest-segments.patchsegment
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: delete-segment
+      description: Delete a segment
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: rest-segments.deletesegment
+      outputParameters:
+      - type: object
+        mapping: $.

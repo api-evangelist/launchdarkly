@@ -1,0 +1,105 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: LaunchDarkly REST API — Releases
+  description: 'LaunchDarkly REST API — Releases. 2 operations. Lead operation: List release pipelines. Self-contained Naftiko
+    capability covering one Launchdarkly business surface.'
+  tags:
+  - Launchdarkly
+  - Releases
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    LAUNCHDARKLY_API_KEY: LAUNCHDARKLY_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: rest-releases
+    baseUri: https://app.launchdarkly.com/api/v2
+    description: LaunchDarkly REST API — Releases business capability. Self-contained, no shared references.
+    resources:
+    - name: projects-projectKey-release-pipelines
+      path: /projects/{projectKey}/release-pipelines
+      operations:
+      - name: listreleasepipelines
+        method: GET
+        description: List release pipelines
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: createreleasepipeline
+        method: POST
+        description: Create a release pipeline
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    authentication:
+      type: bearer
+      token: '{{env.LAUNCHDARKLY_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: rest-releases-rest
+    port: 8080
+    description: REST adapter for LaunchDarkly REST API — Releases. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/projects/{projectkey}/release-pipelines
+      name: projects-projectkey-release-pipelines
+      description: REST surface for projects-projectKey-release-pipelines.
+      operations:
+      - method: GET
+        name: listreleasepipelines
+        description: List release pipelines
+        call: rest-releases.listreleasepipelines
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: createreleasepipeline
+        description: Create a release pipeline
+        call: rest-releases.createreleasepipeline
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: rest-releases-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for LaunchDarkly REST API — Releases. One tool per consumed operation, routed inline through
+      this capability's consumes block.
+    tools:
+    - name: list-release-pipelines
+      description: List release pipelines
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: rest-releases.listreleasepipelines
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-release-pipeline
+      description: Create a release pipeline
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: rest-releases.createreleasepipeline
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.

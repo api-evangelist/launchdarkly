@@ -1,0 +1,239 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: LaunchDarkly REST API — Feature Flags
+  description: 'LaunchDarkly REST API — Feature Flags. 5 operations. Lead operation: List feature flags. Self-contained Naftiko
+    capability covering one Launchdarkly business surface.'
+  tags:
+  - Launchdarkly
+  - Feature Flags
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    LAUNCHDARKLY_API_KEY: LAUNCHDARKLY_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: rest-feature-flags
+    baseUri: https://app.launchdarkly.com/api/v2
+    description: LaunchDarkly REST API — Feature Flags business capability. Self-contained, no shared references.
+    resources:
+    - name: flags-projectKey
+      path: /flags/{projectKey}
+      operations:
+      - name: listfeatureflags
+        method: GET
+        description: List feature flags
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: env
+          in: query
+          type: string
+          description: Filter configurations by environment key.
+        - name: tag
+          in: query
+          type: string
+          description: Filter flags by tag.
+        - name: limit
+          in: query
+          type: integer
+          description: Maximum number of flags to return.
+        - name: offset
+          in: query
+          type: integer
+          description: Number of flags to skip for pagination.
+        - name: filter
+          in: query
+          type: string
+          description: A filter expression to apply to the flag list, supporting query, tags, and other fields.
+      - name: createfeatureflag
+        method: POST
+        description: Create a feature flag
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: flags-projectKey-flagKey
+      path: /flags/{projectKey}/{flagKey}
+      operations:
+      - name: getfeatureflag
+        method: GET
+        description: Get a feature flag
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: env
+          in: query
+          type: string
+          description: Filter configurations by environment key.
+      - name: patchfeatureflag
+        method: PATCH
+        description: Update a feature flag
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+      - name: deletefeatureflag
+        method: DELETE
+        description: Delete a feature flag
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    authentication:
+      type: bearer
+      token: '{{env.LAUNCHDARKLY_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: rest-feature-flags-rest
+    port: 8080
+    description: REST adapter for LaunchDarkly REST API — Feature Flags. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/flags/{projectkey}
+      name: flags-projectkey
+      description: REST surface for flags-projectKey.
+      operations:
+      - method: GET
+        name: listfeatureflags
+        description: List feature flags
+        call: rest-feature-flags.listfeatureflags
+        with:
+          env: rest.env
+          tag: rest.tag
+          limit: rest.limit
+          offset: rest.offset
+          filter: rest.filter
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: createfeatureflag
+        description: Create a feature flag
+        call: rest-feature-flags.createfeatureflag
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/flags/{projectkey}/{flagkey}
+      name: flags-projectkey-flagkey
+      description: REST surface for flags-projectKey-flagKey.
+      operations:
+      - method: GET
+        name: getfeatureflag
+        description: Get a feature flag
+        call: rest-feature-flags.getfeatureflag
+        with:
+          env: rest.env
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: patchfeatureflag
+        description: Update a feature flag
+        call: rest-feature-flags.patchfeatureflag
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: deletefeatureflag
+        description: Delete a feature flag
+        call: rest-feature-flags.deletefeatureflag
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: rest-feature-flags-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for LaunchDarkly REST API — Feature Flags. One tool per consumed operation, routed inline through
+      this capability's consumes block.
+    tools:
+    - name: list-feature-flags
+      description: List feature flags
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: rest-feature-flags.listfeatureflags
+      with:
+        env: tools.env
+        tag: tools.tag
+        limit: tools.limit
+        offset: tools.offset
+        filter: tools.filter
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-feature-flag
+      description: Create a feature flag
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: rest-feature-flags.createfeatureflag
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-feature-flag
+      description: Get a feature flag
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: rest-feature-flags.getfeatureflag
+      with:
+        env: tools.env
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-feature-flag
+      description: Update a feature flag
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: rest-feature-flags.patchfeatureflag
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: delete-feature-flag
+      description: Delete a feature flag
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: rest-feature-flags.deletefeatureflag
+      outputParameters:
+      - type: object
+        mapping: $.

@@ -1,0 +1,72 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: LaunchDarkly Relay Proxy — PHP Polling
+  description: 'LaunchDarkly Relay Proxy — PHP Polling. 1 operations. Lead operation: Get latest all flags (PHP polling).
+    Self-contained Naftiko capability covering one Launchdarkly business surface.'
+  tags:
+  - Launchdarkly
+  - PHP Polling
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    LAUNCHDARKLY_API_KEY: LAUNCHDARKLY_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: relay-proxy-php-polling
+    baseUri: http://localhost:8030
+    description: LaunchDarkly Relay Proxy — PHP Polling business capability. Self-contained, no shared references.
+    resources:
+    - name: sdk-latest-all
+      path: /sdk/latest-all
+      operations:
+      - name: getlatestallflags
+        method: GET
+        description: Get latest all flags (PHP polling)
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    authentication:
+      type: apikey
+      key: Authorization
+      value: '{{env.LAUNCHDARKLY_API_KEY}}'
+      placement: header
+  exposes:
+  - type: rest
+    namespace: relay-proxy-php-polling-rest
+    port: 8080
+    description: REST adapter for LaunchDarkly Relay Proxy — PHP Polling. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/sdk/latest-all
+      name: sdk-latest-all
+      description: REST surface for sdk-latest-all.
+      operations:
+      - method: GET
+        name: getlatestallflags
+        description: Get latest all flags (PHP polling)
+        call: relay-proxy-php-polling.getlatestallflags
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: relay-proxy-php-polling-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for LaunchDarkly Relay Proxy — PHP Polling. One tool per consumed operation, routed inline through
+      this capability's consumes block.
+    tools:
+    - name: get-latest-all-flags-php
+      description: Get latest all flags (PHP polling)
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: relay-proxy-php-polling.getlatestallflags
+      outputParameters:
+      - type: object
+        mapping: $.

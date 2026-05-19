@@ -1,0 +1,70 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: LaunchDarkly REST API — Workflows
+  description: 'LaunchDarkly REST API — Workflows. 1 operations. Lead operation: List workflows. Self-contained Naftiko capability
+    covering one Launchdarkly business surface.'
+  tags:
+  - Launchdarkly
+  - Workflows
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    LAUNCHDARKLY_API_KEY: LAUNCHDARKLY_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: rest-workflows
+    baseUri: https://app.launchdarkly.com/api/v2
+    description: LaunchDarkly REST API — Workflows business capability. Self-contained, no shared references.
+    resources:
+    - name: projects-projectKey-flags-flagKey-environments-environmentKey-workflows
+      path: /projects/{projectKey}/flags/{flagKey}/environments/{environmentKey}/workflows
+      operations:
+      - name: listworkflows
+        method: GET
+        description: List workflows
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    authentication:
+      type: bearer
+      token: '{{env.LAUNCHDARKLY_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: rest-workflows-rest
+    port: 8080
+    description: REST adapter for LaunchDarkly REST API — Workflows. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/projects/{projectkey}/flags/{flagkey}/environments/{environmentkey}/workflows
+      name: projects-projectkey-flags-flagkey-environments-environmentkey-workflows
+      description: REST surface for projects-projectKey-flags-flagKey-environments-environmentKey-workflows.
+      operations:
+      - method: GET
+        name: listworkflows
+        description: List workflows
+        call: rest-workflows.listworkflows
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: rest-workflows-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for LaunchDarkly REST API — Workflows. One tool per consumed operation, routed inline through
+      this capability's consumes block.
+    tools:
+    - name: list-workflows
+      description: List workflows
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: rest-workflows.listworkflows
+      outputParameters:
+      - type: object
+        mapping: $.

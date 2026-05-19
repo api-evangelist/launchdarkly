@@ -1,0 +1,72 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: LaunchDarkly Relay Proxy — Client-Side Streaming
+  description: 'LaunchDarkly Relay Proxy — Client-Side Streaming. 1 operations. Lead operation: Stream evaluated flags (client-side).
+    Self-contained Naftiko capability covering one Launchdarkly business surface.'
+  tags:
+  - Launchdarkly
+  - Client-Side Streaming
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    LAUNCHDARKLY_API_KEY: LAUNCHDARKLY_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: relay-proxy-client-side-streaming
+    baseUri: http://localhost:8030
+    description: LaunchDarkly Relay Proxy — Client-Side Streaming business capability. Self-contained, no shared references.
+    resources:
+    - name: eval-envId-contextBase64
+      path: /eval/{envId}/{contextBase64}
+      operations:
+      - name: streamclientsideeval
+        method: GET
+        description: Stream evaluated flags (client-side)
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    authentication:
+      type: apikey
+      key: Authorization
+      value: '{{env.LAUNCHDARKLY_API_KEY}}'
+      placement: header
+  exposes:
+  - type: rest
+    namespace: relay-proxy-client-side-streaming-rest
+    port: 8080
+    description: REST adapter for LaunchDarkly Relay Proxy — Client-Side Streaming. One Spectral-compliant resource per consumed
+      operation, prefixed with /v1.
+    resources:
+    - path: /v1/eval/{envid}/{contextbase64}
+      name: eval-envid-contextbase64
+      description: REST surface for eval-envId-contextBase64.
+      operations:
+      - method: GET
+        name: streamclientsideeval
+        description: Stream evaluated flags (client-side)
+        call: relay-proxy-client-side-streaming.streamclientsideeval
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: relay-proxy-client-side-streaming-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for LaunchDarkly Relay Proxy — Client-Side Streaming. One tool per consumed operation, routed
+      inline through this capability's consumes block.
+    tools:
+    - name: stream-evaluated-flags-client-side
+      description: Stream evaluated flags (client-side)
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: relay-proxy-client-side-streaming.streamclientsideeval
+      outputParameters:
+      - type: object
+        mapping: $.

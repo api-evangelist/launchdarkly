@@ -1,0 +1,104 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: LaunchDarkly Relay Proxy — Server-Side Streaming
+  description: 'LaunchDarkly Relay Proxy — Server-Side Streaming. 2 operations. Lead operation: Stream all flag data (server-side).
+    Self-contained Naftiko capability covering one Launchdarkly business surface.'
+  tags:
+  - Launchdarkly
+  - Server-Side Streaming
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    LAUNCHDARKLY_API_KEY: LAUNCHDARKLY_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: relay-proxy-server-side-streaming
+    baseUri: http://localhost:8030
+    description: LaunchDarkly Relay Proxy — Server-Side Streaming business capability. Self-contained, no shared references.
+    resources:
+    - name: all
+      path: /all
+      operations:
+      - name: streamallflags
+        method: GET
+        description: Stream all flag data (server-side)
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: flags
+      path: /flags
+      operations:
+      - name: streamflagsonly
+        method: GET
+        description: Stream flag updates (server-side)
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    authentication:
+      type: apikey
+      key: Authorization
+      value: '{{env.LAUNCHDARKLY_API_KEY}}'
+      placement: header
+  exposes:
+  - type: rest
+    namespace: relay-proxy-server-side-streaming-rest
+    port: 8080
+    description: REST adapter for LaunchDarkly Relay Proxy — Server-Side Streaming. One Spectral-compliant resource per consumed
+      operation, prefixed with /v1.
+    resources:
+    - path: /v1/all
+      name: all
+      description: REST surface for all.
+      operations:
+      - method: GET
+        name: streamallflags
+        description: Stream all flag data (server-side)
+        call: relay-proxy-server-side-streaming.streamallflags
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/flags
+      name: flags
+      description: REST surface for flags.
+      operations:
+      - method: GET
+        name: streamflagsonly
+        description: Stream flag updates (server-side)
+        call: relay-proxy-server-side-streaming.streamflagsonly
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: relay-proxy-server-side-streaming-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for LaunchDarkly Relay Proxy — Server-Side Streaming. One tool per consumed operation, routed
+      inline through this capability's consumes block.
+    tools:
+    - name: stream-all-flag-data-server
+      description: Stream all flag data (server-side)
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: relay-proxy-server-side-streaming.streamallflags
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: stream-flag-updates-server-side
+      description: Stream flag updates (server-side)
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: relay-proxy-server-side-streaming.streamflagsonly
+      outputParameters:
+      - type: object
+        mapping: $.

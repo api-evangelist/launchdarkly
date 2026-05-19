@@ -1,0 +1,78 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: LaunchDarkly REST API
+  description: 'LaunchDarkly REST API. 1 operations. Lead operation: List tags. Self-contained Naftiko capability covering
+    one Launchdarkly business surface.'
+  tags:
+  - Launchdarkly
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    LAUNCHDARKLY_API_KEY: LAUNCHDARKLY_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: rest-general
+    baseUri: https://app.launchdarkly.com/api/v2
+    description: LaunchDarkly REST API business capability. Self-contained, no shared references.
+    resources:
+    - name: tags
+      path: /tags
+      operations:
+      - name: listtags
+        method: GET
+        description: List tags
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: kind
+          in: query
+          type: string
+          description: Filter tags by resource kind such as flag, project, environment, or segment.
+    authentication:
+      type: bearer
+      token: '{{env.LAUNCHDARKLY_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: rest-general-rest
+    port: 8080
+    description: REST adapter for LaunchDarkly REST API. One Spectral-compliant resource per consumed operation, prefixed
+      with /v1.
+    resources:
+    - path: /v1/tags
+      name: tags
+      description: REST surface for tags.
+      operations:
+      - method: GET
+        name: listtags
+        description: List tags
+        call: rest-general.listtags
+        with:
+          kind: rest.kind
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: rest-general-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for LaunchDarkly REST API. One tool per consumed operation, routed inline through this capability's
+      consumes block.
+    tools:
+    - name: list-tags
+      description: List tags
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: rest-general.listtags
+      with:
+        kind: tools.kind
+      outputParameters:
+      - type: object
+        mapping: $.

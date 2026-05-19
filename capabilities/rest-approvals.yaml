@@ -1,0 +1,105 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: LaunchDarkly REST API — Approvals
+  description: 'LaunchDarkly REST API — Approvals. 2 operations. Lead operation: List approval requests for a flag. Self-contained
+    Naftiko capability covering one Launchdarkly business surface.'
+  tags:
+  - Launchdarkly
+  - Approvals
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    LAUNCHDARKLY_API_KEY: LAUNCHDARKLY_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: rest-approvals
+    baseUri: https://app.launchdarkly.com/api/v2
+    description: LaunchDarkly REST API — Approvals business capability. Self-contained, no shared references.
+    resources:
+    - name: flags-projectKey-flagKey-approval-requests-environmentKey
+      path: /flags/{projectKey}/{flagKey}/approval-requests/{environmentKey}
+      operations:
+      - name: listapprovalrequests
+        method: GET
+        description: List approval requests for a flag
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: createapprovalrequest
+        method: POST
+        description: Create an approval request
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    authentication:
+      type: bearer
+      token: '{{env.LAUNCHDARKLY_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: rest-approvals-rest
+    port: 8080
+    description: REST adapter for LaunchDarkly REST API — Approvals. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/flags/{projectkey}/{flagkey}/approval-requests/{environmentkey}
+      name: flags-projectkey-flagkey-approval-requests-environmentkey
+      description: REST surface for flags-projectKey-flagKey-approval-requests-environmentKey.
+      operations:
+      - method: GET
+        name: listapprovalrequests
+        description: List approval requests for a flag
+        call: rest-approvals.listapprovalrequests
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: createapprovalrequest
+        description: Create an approval request
+        call: rest-approvals.createapprovalrequest
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: rest-approvals-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for LaunchDarkly REST API — Approvals. One tool per consumed operation, routed inline through
+      this capability's consumes block.
+    tools:
+    - name: list-approval-requests-flag
+      description: List approval requests for a flag
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: rest-approvals.listapprovalrequests
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-approval-request
+      description: Create an approval request
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: rest-approvals.createapprovalrequest
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
