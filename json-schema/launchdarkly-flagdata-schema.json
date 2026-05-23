@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/FlagData",
+  "title": "FlagData",
+  "type": "object",
+  "description": "The complete flag data set for PHP polling mode.",
+  "properties": {
+    "flags": {
+      "type": "object",
+      "description": "A map of flag keys to their complete flag configurations.",
+      "additionalProperties": {
+        "type": "object"
+      }
+    },
+    "segments": {
+      "type": "object",
+      "description": "A map of segment keys to their complete segment configurations.",
+      "additionalProperties": {
+        "type": "object"
+      }
+    }
+  }
+}

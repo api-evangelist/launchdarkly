@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/Members",
+  "title": "Members",
+  "type": "object",
+  "description": "A paginated collection of account members.",
+  "properties": {
+    "items": {
+      "type": "array",
+      "description": "The list of account members.",
+      "items": {
+        "$ref": "#/components/schemas/Member"
+      }
+    },
+    "totalCount": {
+      "type": "integer",
+      "description": "The total number of members."
+    },
+    "_links": {
+      "$ref": "#/components/schemas/Links"
+    }
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/ExperimentBody",
+  "title": "ExperimentBody",
+  "type": "object",
+  "description": "The request body for creating a new experiment.",
+  "required": [
+    "name",
+    "key"
+  ],
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "The human-readable name of the experiment."
+    },
+    "key": {
+      "type": "string",
+      "description": "The experiment key."
+    },
+    "description": {
+      "type": "string",
+      "description": "A description of the experiment."
+    },
+    "maintainerId": {
+      "type": "string",
+      "description": "The member ID of the experiment maintainer."
+    }
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/EnvironmentBody",
+  "title": "EnvironmentBody",
+  "type": "object",
+  "description": "The request body for creating a new environment.",
+  "required": [
+    "name",
+    "key",
+    "color"
+  ],
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "The human-readable name of the environment."
+    },
+    "key": {
+      "type": "string",
+      "description": "The environment key.",
+      "pattern": "^[a-z0-9]([a-z0-9-])*$"
+    },
+    "color": {
+      "type": "string",
+      "description": "The color swatch for the environment in the dashboard.",
+      "pattern": "^[0-9a-fA-F]{6}$"
+    },
+    "defaultTtl": {
+      "type": "integer",
+      "description": "The default time-to-live in minutes."
+    },
+    "secureMode": {
+      "type": "boolean",
+      "description": "Whether to enable secure mode."
+    },
+    "tags": {
+      "type": "array",
+      "description": "Tags to apply to the environment.",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

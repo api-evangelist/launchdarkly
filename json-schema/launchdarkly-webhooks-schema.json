@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/Webhooks",
+  "title": "Webhooks",
+  "type": "object",
+  "description": "A collection of webhooks.",
+  "properties": {
+    "items": {
+      "type": "array",
+      "description": "The list of webhooks.",
+      "items": {
+        "$ref": "#/components/schemas/Webhook"
+      }
+    },
+    "_links": {
+      "$ref": "#/components/schemas/Links"
+    }
+  }
+}

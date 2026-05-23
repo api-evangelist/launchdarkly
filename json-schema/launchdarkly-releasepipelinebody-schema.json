@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/ReleasePipelineBody",
+  "title": "ReleasePipelineBody",
+  "type": "object",
+  "description": "The request body for creating a release pipeline.",
+  "required": [
+    "name",
+    "key",
+    "phases"
+  ],
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "The human-readable name of the release pipeline."
+    },
+    "key": {
+      "type": "string",
+      "description": "The release pipeline key."
+    },
+    "description": {
+      "type": "string",
+      "description": "A description of the release pipeline."
+    },
+    "phases": {
+      "type": "array",
+      "description": "The ordered phases of the release pipeline.",
+      "items": {
+        "type": "object",
+        "required": [
+          "audiences"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The phase name."
+          },
+          "audiences": {
+            "type": "array",
+            "description": "The audiences for this phase.",
+            "items": {
+              "type": "object",
+              "required": [
+                "environmentKey"
+              ],
+              "properties": {
+                "environmentKey": {
+                  "type": "string",
+                  "description": "The environment key."
+                },
+                "name": {
+                  "type": "string",
+                  "description": "The audience name."
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

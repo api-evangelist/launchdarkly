@@ -1,0 +1,10 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/FlagEvaluations",
+  "title": "FlagEvaluations",
+  "type": "object",
+  "description": "A map of flag keys to their evaluated results for a context.",
+  "additionalProperties": {
+    "$ref": "#/components/schemas/FlagEvaluation"
+  }
+}

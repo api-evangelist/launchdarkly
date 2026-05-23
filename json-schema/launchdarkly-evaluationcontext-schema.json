@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/EvaluationContext",
+  "title": "EvaluationContext",
+  "type": "object",
+  "description": "A context object describing the entity for which flags are being evaluated.",
+  "required": [
+    "kind",
+    "key"
+  ],
+  "properties": {
+    "kind": {
+      "type": "string",
+      "description": "The context kind, such as \"user\" or a custom kind."
+    },
+    "key": {
+      "type": "string",
+      "description": "The unique key identifying this context."
+    },
+    "name": {
+      "type": "string",
+      "description": "An optional human-readable name for this context."
+    },
+    "anonymous": {
+      "type": "boolean",
+      "description": "Whether this context is anonymous."
+    }
+  },
+  "additionalProperties": true
+}

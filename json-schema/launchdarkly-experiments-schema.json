@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/Experiments",
+  "title": "Experiments",
+  "type": "object",
+  "description": "A paginated collection of experiments.",
+  "properties": {
+    "items": {
+      "type": "array",
+      "description": "The list of experiments.",
+      "items": {
+        "$ref": "#/components/schemas/Experiment"
+      }
+    },
+    "totalCount": {
+      "type": "integer",
+      "description": "The total number of experiments."
+    },
+    "_links": {
+      "$ref": "#/components/schemas/Links"
+    }
+  }
+}

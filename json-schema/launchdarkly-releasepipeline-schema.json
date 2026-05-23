@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/ReleasePipeline",
+  "title": "ReleasePipeline",
+  "type": "object",
+  "description": "A release pipeline for coordinating flag rollouts.",
+  "properties": {
+    "key": {
+      "type": "string",
+      "description": "The release pipeline key."
+    },
+    "name": {
+      "type": "string",
+      "description": "The human-readable name of the release pipeline."
+    },
+    "description": {
+      "type": "string",
+      "description": "A description of the release pipeline."
+    },
+    "phases": {
+      "type": "array",
+      "description": "The ordered phases of the release pipeline.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "The phase identifier."
+          },
+          "name": {
+            "type": "string",
+            "description": "The phase name."
+          },
+          "audiences": {
+            "type": "array",
+            "description": "The audiences for this phase.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "environmentKey": {
+                  "type": "string",
+                  "description": "The environment key."
+                },
+                "name": {
+                  "type": "string",
+                  "description": "The audience name."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "_links": {
+      "$ref": "#/components/schemas/Links"
+    }
+  }
+}

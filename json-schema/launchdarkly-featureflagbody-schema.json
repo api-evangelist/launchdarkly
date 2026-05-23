@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/FeatureFlagBody",
+  "title": "FeatureFlagBody",
+  "type": "object",
+  "description": "The request body for creating a new feature flag.",
+  "required": [
+    "name",
+    "key"
+  ],
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "The human-readable name of the feature flag."
+    },
+    "key": {
+      "type": "string",
+      "description": "The unique key identifying this feature flag.",
+      "pattern": "^[a-z0-9]([a-z0-9._-])*$"
+    },
+    "description": {
+      "type": "string",
+      "description": "A description of the feature flag purpose."
+    },
+    "tags": {
+      "type": "array",
+      "description": "Tags to apply to the feature flag.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "variations": {
+      "type": "array",
+      "description": "The variations this flag can serve.",
+      "items": {
+        "$ref": "#/components/schemas/Variation"
+      }
+    },
+    "temporary": {
+      "type": "boolean",
+      "description": "Whether this flag is intended to be temporary."
+    },
+    "clientSideAvailability": {
+      "type": "object",
+      "description": "Client-side SDK availability settings.",
+      "properties": {
+        "usingEnvironmentId": {
+          "type": "boolean",
+          "description": "Whether this flag is available to client-side SDKs using the environment ID."
+        },
+        "usingMobileKey": {
+          "type": "boolean",
+          "description": "Whether this flag is available to mobile SDKs."
+        }
+      }
+    },
+    "defaults": {
+      "type": "object",
+      "description": "Default variation settings for new environments.",
+      "properties": {
+        "onVariation": {
+          "type": "integer",
+          "description": "The index of the variation to serve when the flag is on."
+        },
+        "offVariation": {
+          "type": "integer",
+          "description": "The index of the variation to serve when the flag is off."
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/FeatureFlags",
+  "title": "FeatureFlags",
+  "type": "object",
+  "description": "A paginated collection of feature flags.",
+  "properties": {
+    "items": {
+      "type": "array",
+      "description": "The list of feature flags.",
+      "items": {
+        "$ref": "#/components/schemas/FeatureFlag"
+      }
+    },
+    "totalCount": {
+      "type": "integer",
+      "description": "The total number of feature flags matching the query."
+    },
+    "_links": {
+      "$ref": "#/components/schemas/Links"
+    }
+  }
+}

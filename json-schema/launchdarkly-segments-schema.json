@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/Segments",
+  "title": "Segments",
+  "type": "object",
+  "description": "A paginated collection of user segments.",
+  "properties": {
+    "items": {
+      "type": "array",
+      "description": "The list of user segments.",
+      "items": {
+        "$ref": "#/components/schemas/Segment"
+      }
+    },
+    "totalCount": {
+      "type": "integer",
+      "description": "The total number of segments."
+    },
+    "_links": {
+      "$ref": "#/components/schemas/Links"
+    }
+  }
+}

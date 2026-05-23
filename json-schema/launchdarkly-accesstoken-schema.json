@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/AccessToken",
+  "title": "AccessToken",
+  "type": "object",
+  "description": "A personal or service access token.",
+  "properties": {
+    "_id": {
+      "type": "string",
+      "description": "The unique identifier of this token."
+    },
+    "name": {
+      "type": "string",
+      "description": "The human-readable name of this token."
+    },
+    "role": {
+      "type": "string",
+      "description": "The built-in role associated with this token."
+    },
+    "customRoleIds": {
+      "type": "array",
+      "description": "Custom role identifiers assigned to this token.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "token": {
+      "type": "string",
+      "description": "The token value. Only returned at creation time."
+    },
+    "serviceToken": {
+      "type": "boolean",
+      "description": "Whether this is a service token."
+    },
+    "defaultApiVersion": {
+      "type": "integer",
+      "description": "The default API version for this token."
+    },
+    "creationDate": {
+      "type": "integer",
+      "format": "int64",
+      "description": "Unix epoch timestamp when the token was created."
+    },
+    "lastUsed": {
+      "type": "integer",
+      "format": "int64",
+      "description": "Unix epoch timestamp when the token was last used."
+    },
+    "_links": {
+      "$ref": "#/components/schemas/Links"
+    }
+  }
+}

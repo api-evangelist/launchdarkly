@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/ApprovalRequest",
+  "title": "ApprovalRequest",
+  "type": "object",
+  "description": "An approval request for a pending flag change.",
+  "properties": {
+    "_id": {
+      "type": "string",
+      "description": "The unique identifier of this approval request."
+    },
+    "requestorId": {
+      "type": "string",
+      "description": "The member ID of the person who requested approval."
+    },
+    "description": {
+      "type": "string",
+      "description": "A description of the proposed change."
+    },
+    "status": {
+      "type": "string",
+      "description": "The current status of the approval request.",
+      "enum": [
+        "pending",
+        "approved",
+        "declined",
+        "completed"
+      ]
+    },
+    "creationDate": {
+      "type": "integer",
+      "format": "int64",
+      "description": "Unix epoch timestamp when the request was created."
+    },
+    "_links": {
+      "$ref": "#/components/schemas/Links"
+    }
+  }
+}

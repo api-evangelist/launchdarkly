@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/Target",
+  "title": "Target",
+  "type": "object",
+  "description": "An individual targeting entry for a specific variation.",
+  "properties": {
+    "values": {
+      "type": "array",
+      "description": "The list of context keys targeted.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "variation": {
+      "type": "integer",
+      "description": "The variation index to serve to these targets."
+    },
+    "contextKind": {
+      "type": "string",
+      "description": "The context kind for this target."
+    }
+  }
+}

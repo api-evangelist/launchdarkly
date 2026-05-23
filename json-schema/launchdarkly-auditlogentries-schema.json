@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/AuditLogEntries",
+  "title": "AuditLogEntries",
+  "type": "object",
+  "description": "A paginated collection of audit log entries.",
+  "properties": {
+    "items": {
+      "type": "array",
+      "description": "The list of audit log entries.",
+      "items": {
+        "$ref": "#/components/schemas/AuditLogEntry"
+      }
+    },
+    "_links": {
+      "$ref": "#/components/schemas/Links"
+    }
+  }
+}

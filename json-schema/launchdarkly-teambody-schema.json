@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/TeamBody",
+  "title": "TeamBody",
+  "type": "object",
+  "description": "The request body for creating a new team.",
+  "required": [
+    "name",
+    "key"
+  ],
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "The human-readable name of the team."
+    },
+    "key": {
+      "type": "string",
+      "description": "The team key."
+    },
+    "description": {
+      "type": "string",
+      "description": "A description of the team."
+    },
+    "memberIDs": {
+      "type": "array",
+      "description": "Member identifiers to add to the team.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "customRoleKeys": {
+      "type": "array",
+      "description": "Custom role keys to assign to the team.",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

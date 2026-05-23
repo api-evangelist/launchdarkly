@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/Environment",
+  "title": "Environment",
+  "type": "object",
+  "description": "An environment within a project, such as production or staging.",
+  "properties": {
+    "_id": {
+      "type": "string",
+      "description": "The unique identifier of this environment."
+    },
+    "key": {
+      "type": "string",
+      "description": "The environment key."
+    },
+    "name": {
+      "type": "string",
+      "description": "The human-readable name of the environment."
+    },
+    "color": {
+      "type": "string",
+      "description": "The color swatch for the environment in the dashboard.",
+      "pattern": "^[0-9a-fA-F]{6}$"
+    },
+    "apiKey": {
+      "type": "string",
+      "description": "The SDK key for server-side SDKs."
+    },
+    "mobileKey": {
+      "type": "string",
+      "description": "The mobile key for mobile SDKs."
+    },
+    "defaultTtl": {
+      "type": "integer",
+      "description": "The default time-to-live in minutes for flag values."
+    },
+    "secureMode": {
+      "type": "boolean",
+      "description": "Whether secure mode is enabled for this environment."
+    },
+    "tags": {
+      "type": "array",
+      "description": "Tags applied to this environment.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "_links": {
+      "$ref": "#/components/schemas/Links"
+    }
+  }
+}

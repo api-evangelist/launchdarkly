@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/Experiment",
+  "title": "Experiment",
+  "type": "object",
+  "description": "An experiment measuring the impact of flag variations on metrics.",
+  "properties": {
+    "_id": {
+      "type": "string",
+      "description": "The unique identifier of this experiment."
+    },
+    "key": {
+      "type": "string",
+      "description": "The experiment key."
+    },
+    "name": {
+      "type": "string",
+      "description": "The human-readable name of the experiment."
+    },
+    "description": {
+      "type": "string",
+      "description": "A description of the experiment."
+    },
+    "_creationDate": {
+      "type": "integer",
+      "format": "int64",
+      "description": "Unix epoch timestamp when the experiment was created."
+    },
+    "currentIteration": {
+      "type": "object",
+      "description": "The current iteration of the experiment.",
+      "properties": {
+        "_id": {
+          "type": "string",
+          "description": "The iteration identifier."
+        },
+        "status": {
+          "type": "string",
+          "description": "The current status of this iteration."
+        },
+        "startDate": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Unix epoch timestamp when this iteration started."
+        },
+        "endDate": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Unix epoch timestamp when this iteration ended."
+        }
+      }
+    },
+    "_links": {
+      "$ref": "#/components/schemas/Links"
+    }
+  }
+}

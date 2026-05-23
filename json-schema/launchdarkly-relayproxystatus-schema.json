@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/RelayProxyStatus",
+  "title": "RelayProxyStatus",
+  "type": "object",
+  "description": "The overall status of the Relay Proxy and its environments.",
+  "properties": {
+    "status": {
+      "type": "string",
+      "description": "The overall health status of the Relay Proxy.",
+      "enum": [
+        "healthy",
+        "degraded"
+      ]
+    },
+    "environments": {
+      "type": "object",
+      "description": "A map of environment names to their connection status.",
+      "additionalProperties": {
+        "$ref": "#/components/schemas/EnvironmentStatus"
+      }
+    },
+    "version": {
+      "type": "string",
+      "description": "The version of the Relay Proxy."
+    }
+  }
+}

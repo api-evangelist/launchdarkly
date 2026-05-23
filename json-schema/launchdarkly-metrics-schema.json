@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/Metrics",
+  "title": "Metrics",
+  "type": "object",
+  "description": "A collection of metrics.",
+  "properties": {
+    "items": {
+      "type": "array",
+      "description": "The list of metrics.",
+      "items": {
+        "$ref": "#/components/schemas/Metric"
+      }
+    },
+    "_links": {
+      "$ref": "#/components/schemas/Links"
+    }
+  }
+}

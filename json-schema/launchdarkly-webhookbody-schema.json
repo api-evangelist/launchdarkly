@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/WebhookBody",
+  "title": "WebhookBody",
+  "type": "object",
+  "description": "The request body for creating a new webhook.",
+  "required": [
+    "url",
+    true
+  ],
+  "properties": {
+    "url": {
+      "type": "string",
+      "format": "uri",
+      "description": "The URL to receive webhook POST requests."
+    },
+    "secret": {
+      "type": "string",
+      "description": "A shared secret for signing webhook payloads."
+    },
+    "true": {
+      "type": "boolean",
+      "description": "Whether the webhook should be enabled."
+    },
+    "name": {
+      "type": "string",
+      "description": "A human-readable name for the webhook."
+    },
+    "tags": {
+      "type": "array",
+      "description": "Tags to apply to the webhook.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "statements": {
+      "type": "array",
+      "description": "Policy statements filtering which events trigger this webhook.",
+      "items": {
+        "$ref": "#/components/schemas/Statement"
+      }
+    }
+  }
+}

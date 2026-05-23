@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/Workflows",
+  "title": "Workflows",
+  "type": "object",
+  "description": "A collection of workflows.",
+  "properties": {
+    "items": {
+      "type": "array",
+      "description": "The list of workflows.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "The workflow identifier."
+          },
+          "name": {
+            "type": "string",
+            "description": "The workflow name."
+          },
+          "_links": {
+            "$ref": "#/components/schemas/Links"
+          }
+        }
+      }
+    }
+  }
+}

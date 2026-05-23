@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/Segment",
+  "title": "Segment",
+  "type": "object",
+  "description": "A user segment for targeting groups of contexts.",
+  "properties": {
+    "key": {
+      "type": "string",
+      "description": "The segment key."
+    },
+    "name": {
+      "type": "string",
+      "description": "The human-readable name of the segment."
+    },
+    "description": {
+      "type": "string",
+      "description": "A description of the segment."
+    },
+    "tags": {
+      "type": "array",
+      "description": "Tags applied to this segment.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "creationDate": {
+      "type": "integer",
+      "format": "int64",
+      "description": "Unix epoch timestamp when the segment was created."
+    },
+    "included": {
+      "type": "array",
+      "description": "Context keys explicitly included in this segment.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "excluded": {
+      "type": "array",
+      "description": "Context keys explicitly excluded from this segment.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "rules": {
+      "type": "array",
+      "description": "Targeting rules for this segment.",
+      "items": {
+        "$ref": "#/components/schemas/SegmentRule"
+      }
+    },
+    "version": {
+      "type": "integer",
+      "description": "The current version of this segment."
+    },
+    "_links": {
+      "$ref": "#/components/schemas/Links"
+    }
+  }
+}

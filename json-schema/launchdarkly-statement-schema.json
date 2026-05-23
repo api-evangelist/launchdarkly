@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/Statement",
+  "title": "Statement",
+  "type": "object",
+  "description": "A policy statement controlling resource access or event filtering.",
+  "properties": {
+    "effect": {
+      "type": "string",
+      "description": "Whether this statement allows or denies the action.",
+      "enum": [
+        "allow",
+        "deny"
+      ]
+    },
+    "resources": {
+      "type": "array",
+      "description": "Resource specifiers this statement applies to.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "notResources": {
+      "type": "array",
+      "description": "Resource specifiers this statement does not apply to.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "actions": {
+      "type": "array",
+      "description": "The actions this statement applies to.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "notActions": {
+      "type": "array",
+      "description": "The actions this statement does not apply to.",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

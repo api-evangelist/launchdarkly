@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/RelayProxyConfigs",
+  "title": "RelayProxyConfigs",
+  "type": "object",
+  "description": "A collection of Relay Proxy configurations.",
+  "properties": {
+    "items": {
+      "type": "array",
+      "description": "The list of Relay Proxy configurations.",
+      "items": {
+        "$ref": "#/components/schemas/RelayProxyConfig"
+      }
+    }
+  }
+}

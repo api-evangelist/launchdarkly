@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/Projects",
+  "title": "Projects",
+  "type": "object",
+  "description": "A paginated collection of projects.",
+  "properties": {
+    "items": {
+      "type": "array",
+      "description": "The list of projects.",
+      "items": {
+        "$ref": "#/components/schemas/Project"
+      }
+    },
+    "totalCount": {
+      "type": "integer",
+      "description": "The total number of projects."
+    },
+    "_links": {
+      "$ref": "#/components/schemas/Links"
+    }
+  }
+}

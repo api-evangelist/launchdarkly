@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/RelayProxyConfig",
+  "title": "RelayProxyConfig",
+  "type": "object",
+  "description": "A Relay Proxy automatic configuration entry.",
+  "properties": {
+    "_id": {
+      "type": "string",
+      "description": "The unique identifier of this configuration."
+    },
+    "name": {
+      "type": "string",
+      "description": "The human-readable name of this configuration."
+    },
+    "fullKey": {
+      "type": "string",
+      "description": "The full key for authenticating Relay Proxy instances. Only returned at creation time."
+    },
+    "displayKey": {
+      "type": "string",
+      "description": "The last four characters of the full key."
+    },
+    "creationDate": {
+      "type": "integer",
+      "format": "int64",
+      "description": "Unix epoch timestamp when the configuration was created."
+    },
+    "lastModified": {
+      "type": "integer",
+      "format": "int64",
+      "description": "Unix epoch timestamp of the last modification."
+    },
+    "policy": {
+      "type": "array",
+      "description": "Policy statements controlling which projects and environments this Relay Proxy can access.",
+      "items": {
+        "$ref": "#/components/schemas/Statement"
+      }
+    },
+    "_links": {
+      "$ref": "#/components/schemas/Links"
+    }
+  }
+}

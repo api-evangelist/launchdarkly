@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/Rule",
+  "title": "Rule",
+  "type": "object",
+  "description": "A targeting rule with clauses and a variation or rollout.",
+  "properties": {
+    "_id": {
+      "type": "string",
+      "description": "The unique identifier for this rule."
+    },
+    "clauses": {
+      "type": "array",
+      "description": "The conditions that must be met for this rule to apply.",
+      "items": {
+        "$ref": "#/components/schemas/Clause"
+      }
+    },
+    "variation": {
+      "type": "integer",
+      "description": "The variation index to serve when this rule matches."
+    },
+    "rollout": {
+      "$ref": "#/components/schemas/Rollout"
+    },
+    "trackEvents": {
+      "type": "boolean",
+      "description": "Whether to track events for this rule."
+    }
+  }
+}

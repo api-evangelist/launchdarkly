@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/FlagTriggerBody",
+  "title": "FlagTriggerBody",
+  "type": "object",
+  "description": "The request body for creating a new flag trigger.",
+  "required": [
+    "instructions"
+  ],
+  "properties": {
+    "comment": {
+      "type": "string",
+      "description": "An optional comment describing the trigger."
+    },
+    "instructions": {
+      "type": "array",
+      "description": "The instructions to execute when the trigger fires.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "description": "The type of instruction.",
+            "enum": [
+              "turnFlagOn",
+              "turnFlagOff"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

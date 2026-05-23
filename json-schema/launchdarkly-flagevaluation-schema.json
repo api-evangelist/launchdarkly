@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/FlagEvaluation",
+  "title": "FlagEvaluation",
+  "type": "object",
+  "description": "The evaluated result of a single feature flag.",
+  "properties": {
+    "value": {
+      "description": "The evaluated value of the flag for the given context."
+    },
+    "variation": {
+      "type": "integer",
+      "description": "The index of the variation that was served."
+    },
+    "version": {
+      "type": "integer",
+      "description": "The version number of the flag."
+    },
+    "trackEvents": {
+      "type": "boolean",
+      "description": "Whether analytics events should be tracked for this flag."
+    },
+    "trackReason": {
+      "type": "boolean",
+      "description": "Whether the evaluation reason should be included in events."
+    },
+    "reason": {
+      "type": "object",
+      "description": "The reason for the evaluation result.",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "description": "The kind of evaluation reason.",
+          "enum": [
+            false,
+            "FALLTHROUGH",
+            "TARGET_MATCH",
+            "RULE_MATCH",
+            "PREREQUISITE_FAILED",
+            "ERROR"
+          ]
+        }
+      }
+    }
+  }
+}

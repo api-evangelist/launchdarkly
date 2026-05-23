@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/Rollout",
+  "title": "Rollout",
+  "type": "object",
+  "description": "A percentage rollout configuration.",
+  "properties": {
+    "variations": {
+      "type": "array",
+      "description": "The weighted variations in this rollout.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "variation": {
+            "type": "integer",
+            "description": "The variation index."
+          },
+          "weight": {
+            "type": "integer",
+            "description": "The rollout weight in thousandths of a percent (0-100000)."
+          }
+        }
+      }
+    },
+    "bucketBy": {
+      "type": "string",
+      "description": "The context attribute used for bucketing."
+    },
+    "contextKind": {
+      "type": "string",
+      "description": "The context kind for rollout bucketing."
+    }
+  }
+}

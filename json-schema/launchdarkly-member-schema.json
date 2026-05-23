@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/Member",
+  "title": "Member",
+  "type": "object",
+  "description": "An account member in the LaunchDarkly organization.",
+  "properties": {
+    "_id": {
+      "type": "string",
+      "description": "The unique identifier of this member."
+    },
+    "email": {
+      "type": "string",
+      "format": "email",
+      "description": "The email address of the member."
+    },
+    "firstName": {
+      "type": "string",
+      "description": "The first name of the member."
+    },
+    "lastName": {
+      "type": "string",
+      "description": "The last name of the member."
+    },
+    "role": {
+      "type": "string",
+      "description": "The built-in role of the member.",
+      "enum": [
+        "reader",
+        "writer",
+        "admin",
+        "owner"
+      ]
+    },
+    "customRoles": {
+      "type": "array",
+      "description": "Custom role keys assigned to this member.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "_lastSeen": {
+      "type": "integer",
+      "format": "int64",
+      "description": "Unix epoch timestamp of the last activity."
+    },
+    "_links": {
+      "$ref": "#/components/schemas/Links"
+    }
+  }
+}

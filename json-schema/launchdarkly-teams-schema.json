@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/Teams",
+  "title": "Teams",
+  "type": "object",
+  "description": "A paginated collection of teams.",
+  "properties": {
+    "items": {
+      "type": "array",
+      "description": "The list of teams.",
+      "items": {
+        "$ref": "#/components/schemas/Team"
+      }
+    },
+    "totalCount": {
+      "type": "integer",
+      "description": "The total number of teams."
+    },
+    "_links": {
+      "$ref": "#/components/schemas/Links"
+    }
+  }
+}

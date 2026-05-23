@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/CustomRoleBody",
+  "title": "CustomRoleBody",
+  "type": "object",
+  "description": "The request body for creating a custom role.",
+  "required": [
+    "name",
+    "key",
+    "policy"
+  ],
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "The human-readable name of the custom role."
+    },
+    "key": {
+      "type": "string",
+      "description": "The custom role key."
+    },
+    "description": {
+      "type": "string",
+      "description": "A description of the custom role."
+    },
+    "policy": {
+      "type": "array",
+      "description": "The policy statements defining permissions.",
+      "items": {
+        "$ref": "#/components/schemas/Statement"
+      }
+    }
+  }
+}

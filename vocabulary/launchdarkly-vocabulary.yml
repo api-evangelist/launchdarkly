@@ -1,0 +1,43 @@
+name: Launchdarkly Domain Vocabulary
+provider: Launchdarkly
+providerId: launchdarkly
+description: Tag-derived vocabulary for the Launchdarkly API surface; sourced from openapi/ tags.
+terms:
+- term: Access Tokens
+  description: Create and manage personal and service access tokens used to authenticate API requests.
+- term: Account Members
+  description: Manage team members, invitations, and member roles within a LaunchDarkly account.
+- term: Approvals
+  description: Manage approval requests and workflows for flag changes that require review before deployment.
+- term: Audit Log
+  description: Access the change history of all modifications made to resources in the LaunchDarkly account.
+- term: Code References
+  description: View code references that show where feature flags are used in your codebase.
+- term: Custom Roles
+  description: Define custom roles with fine-grained permissions using resource specifiers and actions.
+- term: Environments
+  description: Manage environments within projects such as production, staging, and development.
+- term: Experiments
+  description: Create and manage experiments to measure the impact of feature flag variations on metrics.
+- term: Feature Flags
+  description: Create, update, and manage feature flags and their targeting rules across projects and environments.
+- term: Flag Triggers
+  description: Create triggers that allow external services to toggle feature flags via unique webhook URLs.
+- term: Integration Audit Log Subscriptions
+  description: Manage integrations that subscribe to audit log events and forward them to external tools.
+- term: Metrics
+  description: Define and manage metrics used to measure experiment outcomes and feature flag impact.
+- term: Projects
+  description: Manage projects that organize feature flags and other resources.
+- term: Relay Proxy Configurations
+  description: Manage automatic configuration entries for LaunchDarkly Relay Proxy instances.
+- term: Releases
+  description: Manage release pipelines for coordinating feature flag rollouts across environments.
+- term: Segments
+  description: Create and manage user segments for targeting groups of contexts with feature flags.
+- term: Teams
+  description: Organize account members into teams for collaborative flag management and permissions.
+- term: Webhooks
+  description: Configure webhooks to receive HTTP POST notifications when changes occur in LaunchDarkly.
+- term: Workflows
+  description: Create and manage automated workflows for scheduling and orchestrating flag changes.

@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/CustomRole",
+  "title": "CustomRole",
+  "type": "object",
+  "description": "A custom role with fine-grained permissions.",
+  "properties": {
+    "_id": {
+      "type": "string",
+      "description": "The unique identifier of this custom role."
+    },
+    "key": {
+      "type": "string",
+      "description": "The custom role key."
+    },
+    "name": {
+      "type": "string",
+      "description": "The human-readable name of this custom role."
+    },
+    "description": {
+      "type": "string",
+      "description": "A description of this custom role."
+    },
+    "policy": {
+      "type": "array",
+      "description": "The policy statements defining permissions.",
+      "items": {
+        "$ref": "#/components/schemas/Statement"
+      }
+    },
+    "_links": {
+      "$ref": "#/components/schemas/Links"
+    }
+  }
+}

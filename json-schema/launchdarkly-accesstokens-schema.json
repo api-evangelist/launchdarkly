@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/AccessTokens",
+  "title": "AccessTokens",
+  "type": "object",
+  "description": "A collection of access tokens.",
+  "properties": {
+    "items": {
+      "type": "array",
+      "description": "The list of access tokens.",
+      "items": {
+        "$ref": "#/components/schemas/AccessToken"
+      }
+    },
+    "_links": {
+      "$ref": "#/components/schemas/Links"
+    }
+  }
+}

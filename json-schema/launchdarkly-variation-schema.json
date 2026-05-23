@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/Variation",
+  "title": "Variation",
+  "type": "object",
+  "description": "A single variation value that a feature flag can serve.",
+  "properties": {
+    "_id": {
+      "type": "string",
+      "description": "The unique identifier of this variation."
+    },
+    "value": {
+      "description": "The value of this variation. Can be any JSON type."
+    },
+    "name": {
+      "type": "string",
+      "description": "An optional human-readable name for this variation."
+    },
+    "description": {
+      "type": "string",
+      "description": "An optional description of this variation."
+    }
+  }
+}

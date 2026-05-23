@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/FeatureFlag",
+  "title": "FeatureFlag",
+  "type": "object",
+  "description": "A feature flag with its configuration across all environments.",
+  "properties": {
+    "key": {
+      "type": "string",
+      "description": "The unique key identifying this feature flag."
+    },
+    "name": {
+      "type": "string",
+      "description": "The human-readable name of the feature flag."
+    },
+    "description": {
+      "type": "string",
+      "description": "A description of the feature flag purpose and behavior."
+    },
+    "kind": {
+      "type": "string",
+      "description": "The type of flag, such as boolean or multivariate.",
+      "enum": [
+        "boolean",
+        "multivariate"
+      ]
+    },
+    "tags": {
+      "type": "array",
+      "description": "Tags applied to this feature flag.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "creationDate": {
+      "type": "integer",
+      "format": "int64",
+      "description": "Unix epoch timestamp in milliseconds when the flag was created."
+    },
+    "variations": {
+      "type": "array",
+      "description": "The possible values this flag can serve.",
+      "items": {
+        "$ref": "#/components/schemas/Variation"
+      }
+    },
+    "temporary": {
+      "type": "boolean",
+      "description": "Whether this flag is intended to be temporary."
+    },
+    "archived": {
+      "type": "boolean",
+      "description": "Whether this flag has been archived."
+    },
+    "environments": {
+      "type": "object",
+      "description": "A map of environment keys to their flag configurations.",
+      "additionalProperties": {
+        "$ref": "#/components/schemas/FlagEnvironment"
+      }
+    },
+    "_links": {
+      "$ref": "#/components/schemas/Links"
+    },
+    "_version": {
+      "type": "integer",
+      "description": "The current version number of this flag for concurrency control."
+    }
+  }
+}

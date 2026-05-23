@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/AccessTokenBody",
+  "title": "AccessTokenBody",
+  "type": "object",
+  "description": "The request body for creating a new access token.",
+  "required": [
+    "name"
+  ],
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "A human-readable name for the token."
+    },
+    "role": {
+      "type": "string",
+      "description": "The built-in role to assign.",
+      "enum": [
+        "reader",
+        "writer",
+        "admin"
+      ]
+    },
+    "customRoleIds": {
+      "type": "array",
+      "description": "Custom role identifiers to assign.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "serviceToken": {
+      "type": "boolean",
+      "description": "Whether to create a service token."
+    },
+    "defaultApiVersion": {
+      "type": "integer",
+      "description": "The default API version for this token."
+    }
+  }
+}

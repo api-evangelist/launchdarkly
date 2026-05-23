@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/Metric",
+  "title": "Metric",
+  "type": "object",
+  "description": "A metric used to measure experiment outcomes.",
+  "properties": {
+    "_id": {
+      "type": "string",
+      "description": "The unique identifier of this metric."
+    },
+    "key": {
+      "type": "string",
+      "description": "The metric key."
+    },
+    "name": {
+      "type": "string",
+      "description": "The human-readable name of the metric."
+    },
+    "description": {
+      "type": "string",
+      "description": "A description of the metric."
+    },
+    "kind": {
+      "type": "string",
+      "description": "The type of metric.",
+      "enum": [
+        "pageview",
+        "click",
+        "custom"
+      ]
+    },
+    "tags": {
+      "type": "array",
+      "description": "Tags applied to this metric.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "creationDate": {
+      "type": "integer",
+      "format": "int64",
+      "description": "Unix epoch timestamp when the metric was created."
+    },
+    "_links": {
+      "$ref": "#/components/schemas/Links"
+    }
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/Environments",
+  "title": "Environments",
+  "type": "object",
+  "description": "A collection of environments.",
+  "properties": {
+    "items": {
+      "type": "array",
+      "description": "The list of environments.",
+      "items": {
+        "$ref": "#/components/schemas/Environment"
+      }
+    },
+    "totalCount": {
+      "type": "integer",
+      "description": "The total number of environments."
+    },
+    "_links": {
+      "$ref": "#/components/schemas/Links"
+    }
+  }
+}

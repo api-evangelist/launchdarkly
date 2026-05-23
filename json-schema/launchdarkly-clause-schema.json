@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/Clause",
+  "title": "Clause",
+  "type": "object",
+  "description": "A condition clause used in targeting rules.",
+  "properties": {
+    "attribute": {
+      "type": "string",
+      "description": "The context attribute to evaluate."
+    },
+    "op": {
+      "type": "string",
+      "description": "The comparison operator.",
+      "enum": [
+        "in",
+        "endsWith",
+        "startsWith",
+        "matches",
+        "contains",
+        "lessThan",
+        "lessThanOrEqual",
+        "greaterThan",
+        "greaterThanOrEqual",
+        "before",
+        "after",
+        "segmentMatch",
+        "semVerEqual",
+        "semVerLessThan",
+        "semVerGreaterThan"
+      ]
+    },
+    "values": {
+      "type": "array",
+      "description": "The values to compare against.",
+      "items": {}
+    },
+    "negate": {
+      "type": "boolean",
+      "description": "Whether to negate the clause."
+    },
+    "contextKind": {
+      "type": "string",
+      "description": "The context kind to evaluate."
+    }
+  }
+}

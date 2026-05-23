@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/CodeReferenceRepositories",
+  "title": "CodeReferenceRepositories",
+  "type": "object",
+  "description": "A collection of code reference repositories.",
+  "properties": {
+    "items": {
+      "type": "array",
+      "description": "The list of code reference repositories.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The repository name."
+          },
+          "sourceLink": {
+            "type": "string",
+            "description": "The URL to the repository source."
+          },
+          "type": {
+            "type": "string",
+            "description": "The repository hosting type."
+          },
+          "_links": {
+            "$ref": "#/components/schemas/Links"
+          }
+        }
+      }
+    }
+  }
+}

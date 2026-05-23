@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/TagCollection",
+  "title": "TagCollection",
+  "type": "object",
+  "description": "A collection of tags.",
+  "properties": {
+    "items": {
+      "type": "array",
+      "description": "The list of tags.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "_links": {
+      "$ref": "#/components/schemas/Links"
+    }
+  }
+}

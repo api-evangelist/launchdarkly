@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/AuditLogEntry",
+  "title": "AuditLogEntry",
+  "type": "object",
+  "description": "A single audit log entry recording a change to a resource.",
+  "properties": {
+    "_id": {
+      "type": "string",
+      "description": "The unique identifier of this audit log entry."
+    },
+    "date": {
+      "type": "integer",
+      "format": "int64",
+      "description": "Unix epoch timestamp in milliseconds when the change occurred."
+    },
+    "kind": {
+      "type": "string",
+      "description": "The kind of resource that was changed."
+    },
+    "name": {
+      "type": "string",
+      "description": "The name of the changed resource."
+    },
+    "description": {
+      "type": "string",
+      "description": "A markdown-formatted description of the changes made."
+    },
+    "shortDescription": {
+      "type": "string",
+      "description": "A brief summary of the change."
+    },
+    "member": {
+      "$ref": "#/components/schemas/MemberSummary"
+    },
+    "accesses": {
+      "type": "array",
+      "description": "The access details for this change.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "description": "The action performed."
+          },
+          "resource": {
+            "type": "string",
+            "description": "The resource specifier."
+          }
+        }
+      }
+    },
+    "_links": {
+      "$ref": "#/components/schemas/Links"
+    }
+  }
+}

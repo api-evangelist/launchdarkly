@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/FlagEnvironment",
+  "title": "FlagEnvironment",
+  "type": "object",
+  "description": "The configuration of a feature flag for a specific environment.",
+  "properties": {
+    "true": {
+      "type": "boolean",
+      "description": "Whether the flag is currently enabled in this environment."
+    },
+    "archived": {
+      "type": "boolean",
+      "description": "Whether the flag is archived in this environment."
+    },
+    "salt": {
+      "type": "string",
+      "description": "The salt used for percentage rollout hashing."
+    },
+    "sel": {
+      "type": "string",
+      "description": "The selection identifier."
+    },
+    "lastModified": {
+      "type": "integer",
+      "format": "int64",
+      "description": "Unix epoch timestamp of the last modification."
+    },
+    "version": {
+      "type": "integer",
+      "description": "The version number of this flag configuration."
+    },
+    "targets": {
+      "type": "array",
+      "description": "Individual context targets for each variation.",
+      "items": {
+        "$ref": "#/components/schemas/Target"
+      }
+    },
+    "rules": {
+      "type": "array",
+      "description": "Targeting rules that determine which variation to serve.",
+      "items": {
+        "$ref": "#/components/schemas/Rule"
+      }
+    },
+    "fallthrough": {
+      "type": "object",
+      "description": "The default rule applied when no other rules match.",
+      "properties": {
+        "variation": {
+          "type": "integer",
+          "description": "The variation index to serve."
+        },
+        "rollout": {
+          "$ref": "#/components/schemas/Rollout"
+        }
+      }
+    },
+    "offVariation": {
+      "type": "integer",
+      "description": "The variation index to serve when the flag is off."
+    }
+  }
+}

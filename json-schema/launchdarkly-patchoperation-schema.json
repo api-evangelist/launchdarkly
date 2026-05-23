@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/PatchOperation",
+  "title": "PatchOperation",
+  "type": "object",
+  "description": "A JSON Patch or semantic patch request.",
+  "properties": {
+    "patch": {
+      "type": "array",
+      "description": "An array of JSON Patch operations.",
+      "items": {
+        "type": "object",
+        "required": [
+          "op",
+          "path"
+        ],
+        "properties": {
+          "op": {
+            "type": "string",
+            "description": "The patch operation type.",
+            "enum": [
+              "add",
+              "remove",
+              "replace",
+              "move",
+              "copy",
+              "test"
+            ]
+          },
+          "path": {
+            "type": "string",
+            "description": "The JSON Pointer path to the target field."
+          },
+          "value": {
+            "description": "The value to apply for add or replace operations."
+          }
+        }
+      }
+    },
+    "comment": {
+      "type": "string",
+      "description": "An optional comment describing the change."
+    }
+  }
+}

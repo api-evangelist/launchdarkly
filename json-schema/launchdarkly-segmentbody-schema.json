@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/SegmentBody",
+  "title": "SegmentBody",
+  "type": "object",
+  "description": "The request body for creating a new user segment.",
+  "required": [
+    "name",
+    "key"
+  ],
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "The human-readable name of the segment."
+    },
+    "key": {
+      "type": "string",
+      "description": "The segment key."
+    },
+    "description": {
+      "type": "string",
+      "description": "A description of the segment."
+    },
+    "tags": {
+      "type": "array",
+      "description": "Tags to apply to the segment.",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

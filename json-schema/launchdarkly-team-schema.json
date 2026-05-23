@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/Team",
+  "title": "Team",
+  "type": "object",
+  "description": "A team of account members.",
+  "properties": {
+    "key": {
+      "type": "string",
+      "description": "The team key."
+    },
+    "name": {
+      "type": "string",
+      "description": "The human-readable name of the team."
+    },
+    "description": {
+      "type": "string",
+      "description": "A description of the team."
+    },
+    "members": {
+      "type": "object",
+      "description": "Summary of team members.",
+      "properties": {
+        "totalCount": {
+          "type": "integer",
+          "description": "The total number of members."
+        }
+      }
+    },
+    "roles": {
+      "type": "object",
+      "description": "Summary of team roles.",
+      "properties": {
+        "totalCount": {
+          "type": "integer",
+          "description": "The total number of roles assigned."
+        }
+      }
+    },
+    "customRoleKeys": {
+      "type": "array",
+      "description": "Custom role keys assigned to this team.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "_links": {
+      "$ref": "#/components/schemas/Links"
+    }
+  }
+}

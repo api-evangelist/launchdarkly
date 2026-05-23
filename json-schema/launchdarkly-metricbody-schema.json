@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/MetricBody",
+  "title": "MetricBody",
+  "type": "object",
+  "description": "The request body for creating a new metric.",
+  "required": [
+    "name",
+    "key",
+    "kind"
+  ],
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "The human-readable name of the metric."
+    },
+    "key": {
+      "type": "string",
+      "description": "The metric key."
+    },
+    "kind": {
+      "type": "string",
+      "description": "The type of metric.",
+      "enum": [
+        "pageview",
+        "click",
+        "custom"
+      ]
+    },
+    "description": {
+      "type": "string",
+      "description": "A description of the metric."
+    },
+    "tags": {
+      "type": "array",
+      "description": "Tags to apply to the metric.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "selector": {
+      "type": "string",
+      "description": "The CSS selector for click metrics."
+    },
+    "urls": {
+      "type": "array",
+      "description": "URL patterns for pageview and click metrics.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "description": "The type of URL pattern.",
+            "enum": [
+              "exact",
+              "canonical",
+              "substring",
+              "regex"
+            ]
+          },
+          "url": {
+            "type": "string",
+            "description": "The URL pattern value."
+          }
+        }
+      }
+    }
+  }
+}

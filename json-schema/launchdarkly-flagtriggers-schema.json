@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/FlagTriggers",
+  "title": "FlagTriggers",
+  "type": "object",
+  "description": "A collection of flag triggers.",
+  "properties": {
+    "items": {
+      "type": "array",
+      "description": "The list of flag triggers.",
+      "items": {
+        "$ref": "#/components/schemas/FlagTrigger"
+      }
+    },
+    "_links": {
+      "$ref": "#/components/schemas/Links"
+    }
+  }
+}

@@ -1,0 +1,886 @@
+{
+  "provider": "Launchdarkly",
+  "providerId": "launchdarkly",
+  "kind": "json-structure",
+  "description": "Structural overview of the Launchdarkly API surface; extracted from openapi/.",
+  "schemaCount": 62,
+  "operationCount": 51,
+  "schemas": [
+    {
+      "name": "FeatureFlags",
+      "type": "object",
+      "propertyCount": 3,
+      "required": []
+    },
+    {
+      "name": "FeatureFlag",
+      "type": "object",
+      "propertyCount": 12,
+      "required": []
+    },
+    {
+      "name": "FeatureFlagBody",
+      "type": "object",
+      "propertyCount": 8,
+      "required": [
+        "name",
+        "key"
+      ]
+    },
+    {
+      "name": "Variation",
+      "type": "object",
+      "propertyCount": 4,
+      "required": []
+    },
+    {
+      "name": "FlagEnvironment",
+      "type": "object",
+      "propertyCount": 10,
+      "required": []
+    },
+    {
+      "name": "Target",
+      "type": "object",
+      "propertyCount": 3,
+      "required": []
+    },
+    {
+      "name": "Rule",
+      "type": "object",
+      "propertyCount": 5,
+      "required": []
+    },
+    {
+      "name": "Clause",
+      "type": "object",
+      "propertyCount": 5,
+      "required": []
+    },
+    {
+      "name": "Rollout",
+      "type": "object",
+      "propertyCount": 3,
+      "required": []
+    },
+    {
+      "name": "Projects",
+      "type": "object",
+      "propertyCount": 3,
+      "required": []
+    },
+    {
+      "name": "Project",
+      "type": "object",
+      "propertyCount": 6,
+      "required": []
+    },
+    {
+      "name": "ProjectBody",
+      "type": "object",
+      "propertyCount": 4,
+      "required": [
+        "name",
+        "key"
+      ]
+    },
+    {
+      "name": "Environments",
+      "type": "object",
+      "propertyCount": 3,
+      "required": []
+    },
+    {
+      "name": "Environment",
+      "type": "object",
+      "propertyCount": 10,
+      "required": []
+    },
+    {
+      "name": "EnvironmentBody",
+      "type": "object",
+      "propertyCount": 6,
+      "required": [
+        "name",
+        "key",
+        "color"
+      ]
+    },
+    {
+      "name": "Segments",
+      "type": "object",
+      "propertyCount": 3,
+      "required": []
+    },
+    {
+      "name": "Segment",
+      "type": "object",
+      "propertyCount": 10,
+      "required": []
+    },
+    {
+      "name": "SegmentBody",
+      "type": "object",
+      "propertyCount": 4,
+      "required": [
+        "name",
+        "key"
+      ]
+    },
+    {
+      "name": "SegmentRule",
+      "type": "object",
+      "propertyCount": 4,
+      "required": []
+    },
+    {
+      "name": "Webhooks",
+      "type": "object",
+      "propertyCount": 2,
+      "required": []
+    },
+    {
+      "name": "Webhook",
+      "type": "object",
+      "propertyCount": 8,
+      "required": []
+    },
+    {
+      "name": "WebhookBody",
+      "type": "object",
+      "propertyCount": 6,
+      "required": [
+        "url",
+        true
+      ]
+    },
+    {
+      "name": "Statement",
+      "type": "object",
+      "propertyCount": 5,
+      "required": []
+    },
+    {
+      "name": "AuditLogEntries",
+      "type": "object",
+      "propertyCount": 2,
+      "required": []
+    },
+    {
+      "name": "AuditLogEntry",
+      "type": "object",
+      "propertyCount": 9,
+      "required": []
+    },
+    {
+      "name": "Members",
+      "type": "object",
+      "propertyCount": 3,
+      "required": []
+    },
+    {
+      "name": "Member",
+      "type": "object",
+      "propertyCount": 8,
+      "required": []
+    },
+    {
+      "name": "MemberInviteBody",
+      "type": "object",
+      "propertyCount": 3,
+      "required": [
+        "email"
+      ]
+    },
+    {
+      "name": "MemberSummary",
+      "type": "object",
+      "propertyCount": 5,
+      "required": []
+    },
+    {
+      "name": "AccessTokens",
+      "type": "object",
+      "propertyCount": 2,
+      "required": []
+    },
+    {
+      "name": "AccessToken",
+      "type": "object",
+      "propertyCount": 10,
+      "required": []
+    },
+    {
+      "name": "AccessTokenBody",
+      "type": "object",
+      "propertyCount": 5,
+      "required": [
+        "name"
+      ]
+    },
+    {
+      "name": "CustomRoles",
+      "type": "object",
+      "propertyCount": 2,
+      "required": []
+    },
+    {
+      "name": "CustomRole",
+      "type": "object",
+      "propertyCount": 6,
+      "required": []
+    },
+    {
+      "name": "CustomRoleBody",
+      "type": "object",
+      "propertyCount": 4,
+      "required": [
+        "name",
+        "key",
+        "policy"
+      ]
+    },
+    {
+      "name": "Teams",
+      "type": "object",
+      "propertyCount": 3,
+      "required": []
+    },
+    {
+      "name": "Team",
+      "type": "object",
+      "propertyCount": 7,
+      "required": []
+    },
+    {
+      "name": "TeamBody",
+      "type": "object",
+      "propertyCount": 5,
+      "required": [
+        "name",
+        "key"
+      ]
+    },
+    {
+      "name": "Metrics",
+      "type": "object",
+      "propertyCount": 2,
+      "required": []
+    },
+    {
+      "name": "Metric",
+      "type": "object",
+      "propertyCount": 8,
+      "required": []
+    },
+    {
+      "name": "MetricBody",
+      "type": "object",
+      "propertyCount": 7,
+      "required": [
+        "name",
+        "key",
+        "kind"
+      ]
+    },
+    {
+      "name": "Experiments",
+      "type": "object",
+      "propertyCount": 3,
+      "required": []
+    },
+    {
+      "name": "Experiment",
+      "type": "object",
+      "propertyCount": 7,
+      "required": []
+    },
+    {
+      "name": "ExperimentBody",
+      "type": "object",
+      "propertyCount": 4,
+      "required": [
+        "name",
+        "key"
+      ]
+    },
+    {
+      "name": "FlagTriggers",
+      "type": "object",
+      "propertyCount": 2,
+      "required": []
+    },
+    {
+      "name": "FlagTrigger",
+      "type": "object",
+      "propertyCount": 6,
+      "required": []
+    },
+    {
+      "name": "FlagTriggerBody",
+      "type": "object",
+      "propertyCount": 2,
+      "required": [
+        "instructions"
+      ]
+    },
+    {
+      "name": "RelayProxyConfigs",
+      "type": "object",
+      "propertyCount": 1,
+      "required": []
+    },
+    {
+      "name": "RelayProxyConfig",
+      "type": "object",
+      "propertyCount": 8,
+      "required": []
+    },
+    {
+      "name": "RelayProxyConfigBody",
+      "type": "object",
+      "propertyCount": 2,
+      "required": [
+        "name",
+        "policy"
+      ]
+    },
+    {
+      "name": "CodeReferenceRepositories",
+      "type": "object",
+      "propertyCount": 1,
+      "required": []
+    },
+    {
+      "name": "IntegrationSubscriptions",
+      "type": "object",
+      "propertyCount": 1,
+      "required": []
+    },
+    {
+      "name": "ApprovalRequests",
+      "type": "object",
+      "propertyCount": 2,
+      "required": []
+    },
+    {
+      "name": "ApprovalRequest",
+      "type": "object",
+      "propertyCount": 6,
+      "required": []
+    },
+    {
+      "name": "ApprovalRequestBody",
+      "type": "object",
+      "propertyCount": 4,
+      "required": [
+        "description"
+      ]
+    },
+    {
+      "name": "Workflows",
+      "type": "object",
+      "propertyCount": 1,
+      "required": []
+    },
+    {
+      "name": "ReleasePipelines",
+      "type": "object",
+      "propertyCount": 1,
+      "required": []
+    },
+    {
+      "name": "ReleasePipeline",
+      "type": "object",
+      "propertyCount": 5,
+      "required": []
+    },
+    {
+      "name": "ReleasePipelineBody",
+      "type": "object",
+      "propertyCount": 4,
+      "required": [
+        "name",
+        "key",
+        "phases"
+      ]
+    },
+    {
+      "name": "TagCollection",
+      "type": "object",
+      "propertyCount": 2,
+      "required": []
+    },
+    {
+      "name": "PatchOperation",
+      "type": "object",
+      "propertyCount": 2,
+      "required": []
+    },
+    {
+      "name": "Links",
+      "type": "object",
+      "propertyCount": 1,
+      "required": []
+    }
+  ],
+  "operations": [
+    {
+      "method": "GET",
+      "path": "/flags/{projectKey}",
+      "operationId": "listFeatureFlags",
+      "summary": "List feature flags",
+      "tags": [
+        "Feature Flags"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/flags/{projectKey}",
+      "operationId": "createFeatureFlag",
+      "summary": "Create a feature flag",
+      "tags": [
+        "Feature Flags"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/flags/{projectKey}/{flagKey}",
+      "operationId": "getFeatureFlag",
+      "summary": "Get a feature flag",
+      "tags": [
+        "Feature Flags"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/flags/{projectKey}/{flagKey}",
+      "operationId": "deleteFeatureFlag",
+      "summary": "Delete a feature flag",
+      "tags": [
+        "Feature Flags"
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/flags/{projectKey}/{flagKey}",
+      "operationId": "patchFeatureFlag",
+      "summary": "Update a feature flag",
+      "tags": [
+        "Feature Flags"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/projects",
+      "operationId": "listProjects",
+      "summary": "List projects",
+      "tags": [
+        "Projects"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/projects",
+      "operationId": "createProject",
+      "summary": "Create a project",
+      "tags": [
+        "Projects"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/projects/{projectKey}",
+      "operationId": "getProject",
+      "summary": "Get a project",
+      "tags": [
+        "Projects"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/projects/{projectKey}",
+      "operationId": "deleteProject",
+      "summary": "Delete a project",
+      "tags": [
+        "Projects"
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/projects/{projectKey}",
+      "operationId": "patchProject",
+      "summary": "Update a project",
+      "tags": [
+        "Projects"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/projects/{projectKey}/environments",
+      "operationId": "listEnvironments",
+      "summary": "List environments",
+      "tags": [
+        "Environments"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/projects/{projectKey}/environments",
+      "operationId": "createEnvironment",
+      "summary": "Create an environment",
+      "tags": [
+        "Environments"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/projects/{projectKey}/environments/{environmentKey}",
+      "operationId": "getEnvironment",
+      "summary": "Get an environment",
+      "tags": [
+        "Environments"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/projects/{projectKey}/environments/{environmentKey}",
+      "operationId": "deleteEnvironment",
+      "summary": "Delete an environment",
+      "tags": [
+        "Environments"
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/projects/{projectKey}/environments/{environmentKey}",
+      "operationId": "patchEnvironment",
+      "summary": "Update an environment",
+      "tags": [
+        "Environments"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/segments/{projectKey}/{environmentKey}",
+      "operationId": "listSegments",
+      "summary": "List segments",
+      "tags": [
+        "Segments"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/segments/{projectKey}/{environmentKey}",
+      "operationId": "createSegment",
+      "summary": "Create a segment",
+      "tags": [
+        "Segments"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/segments/{projectKey}/{environmentKey}/{segmentKey}",
+      "operationId": "getSegment",
+      "summary": "Get a segment",
+      "tags": [
+        "Segments"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/segments/{projectKey}/{environmentKey}/{segmentKey}",
+      "operationId": "deleteSegment",
+      "summary": "Delete a segment",
+      "tags": [
+        "Segments"
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/segments/{projectKey}/{environmentKey}/{segmentKey}",
+      "operationId": "patchSegment",
+      "summary": "Update a segment",
+      "tags": [
+        "Segments"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/webhooks",
+      "operationId": "listWebhooks",
+      "summary": "List webhooks",
+      "tags": [
+        "Webhooks"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/webhooks",
+      "operationId": "createWebhook",
+      "summary": "Create a webhook",
+      "tags": [
+        "Webhooks"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/webhooks/{webhookId}",
+      "operationId": "getWebhook",
+      "summary": "Get a webhook",
+      "tags": [
+        "Webhooks"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/webhooks/{webhookId}",
+      "operationId": "deleteWebhook",
+      "summary": "Delete a webhook",
+      "tags": [
+        "Webhooks"
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/webhooks/{webhookId}",
+      "operationId": "patchWebhook",
+      "summary": "Update a webhook",
+      "tags": [
+        "Webhooks"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/auditlog",
+      "operationId": "listAuditLogEntries",
+      "summary": "List audit log entries",
+      "tags": [
+        "Audit Log"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/auditlog/{auditLogId}",
+      "operationId": "getAuditLogEntry",
+      "summary": "Get an audit log entry",
+      "tags": [
+        "Audit Log"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/members",
+      "operationId": "listMembers",
+      "summary": "List account members",
+      "tags": [
+        "Account Members"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/members",
+      "operationId": "inviteMember",
+      "summary": "Invite a new member",
+      "tags": [
+        "Account Members"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/tokens",
+      "operationId": "listAccessTokens",
+      "summary": "List access tokens",
+      "tags": [
+        "Access Tokens"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/tokens",
+      "operationId": "createAccessToken",
+      "summary": "Create an access token",
+      "tags": [
+        "Access Tokens"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/roles",
+      "operationId": "listCustomRoles",
+      "summary": "List custom roles",
+      "tags": [
+        "Custom Roles"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/roles",
+      "operationId": "createCustomRole",
+      "summary": "Create a custom role",
+      "tags": [
+        "Custom Roles"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/teams",
+      "operationId": "listTeams",
+      "summary": "List teams",
+      "tags": [
+        "Teams"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/teams",
+      "operationId": "createTeam",
+      "summary": "Create a team",
+      "tags": [
+        "Teams"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/metrics/{projectKey}",
+      "operationId": "listMetrics",
+      "summary": "List metrics",
+      "tags": [
+        "Metrics"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/metrics/{projectKey}",
+      "operationId": "createMetric",
+      "summary": "Create a metric",
+      "tags": [
+        "Metrics"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/projects/{projectKey}/environments/{environmentKey}/experiments",
+      "operationId": "listExperiments",
+      "summary": "List experiments",
+      "tags": [
+        "Experiments"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/projects/{projectKey}/environments/{environmentKey}/experiments",
+      "operationId": "createExperiment",
+      "summary": "Create an experiment",
+      "tags": [
+        "Experiments"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/flags/{projectKey}/{flagKey}/triggers/{environmentKey}",
+      "operationId": "listFlagTriggers",
+      "summary": "List flag triggers",
+      "tags": [
+        "Flag Triggers"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/flags/{projectKey}/{flagKey}/triggers/{environmentKey}",
+      "operationId": "createFlagTrigger",
+      "summary": "Create a flag trigger",
+      "tags": [
+        "Flag Triggers"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/account/relay-auto-configs",
+      "operationId": "listRelayProxyConfigs",
+      "summary": "List Relay Proxy configurations",
+      "tags": [
+        "Relay Proxy Configurations"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/account/relay-auto-configs",
+      "operationId": "createRelayProxyConfig",
+      "summary": "Create a Relay Proxy configuration",
+      "tags": [
+        "Relay Proxy Configurations"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/code-refs/repositories",
+      "operationId": "listCodeReferenceRepositories",
+      "summary": "List code reference repositories",
+      "tags": [
+        "Code References"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/integrations/{integrationKey}/subscriptions",
+      "operationId": "listIntegrationSubscriptions",
+      "summary": "List integration audit log subscriptions",
+      "tags": [
+        "Integration Audit Log Subscriptions"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/tags",
+      "operationId": "listTags",
+      "summary": "List tags",
+      "tags": []
+    },
+    {
+      "method": "GET",
+      "path": "/flags/{projectKey}/{flagKey}/approval-requests/{environmentKey}",
+      "operationId": "listApprovalRequests",
+      "summary": "List approval requests for a flag",
+      "tags": [
+        "Approvals"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/flags/{projectKey}/{flagKey}/approval-requests/{environmentKey}",
+      "operationId": "createApprovalRequest",
+      "summary": "Create an approval request",
+      "tags": [
+        "Approvals"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/projects/{projectKey}/flags/{flagKey}/environments/{environmentKey}/workflows",
+      "operationId": "listWorkflows",
+      "summary": "List workflows",
+      "tags": [
+        "Workflows"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/projects/{projectKey}/release-pipelines",
+      "operationId": "listReleasePipelines",
+      "summary": "List release pipelines",
+      "tags": [
+        "Releases"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/projects/{projectKey}/release-pipelines",
+      "operationId": "createReleasePipeline",
+      "summary": "Create a release pipeline",
+      "tags": [
+        "Releases"
+      ]
+    }
+  ]
+}

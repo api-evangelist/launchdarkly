@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/RelayProxyConfigBody",
+  "title": "RelayProxyConfigBody",
+  "type": "object",
+  "description": "The request body for creating a Relay Proxy configuration.",
+  "required": [
+    "name",
+    "policy"
+  ],
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "A human-readable name for the configuration."
+    },
+    "policy": {
+      "type": "array",
+      "description": "Policy statements controlling access.",
+      "items": {
+        "$ref": "#/components/schemas/Statement"
+      }
+    }
+  }
+}

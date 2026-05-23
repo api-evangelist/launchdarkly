@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/EnvironmentStatus",
+  "title": "EnvironmentStatus",
+  "type": "object",
+  "description": "The connection status of a single environment.",
+  "properties": {
+    "status": {
+      "type": "string",
+      "description": "Whether the environment is currently connected or disconnected.",
+      "enum": [
+        "connected",
+        "disconnected"
+      ]
+    },
+    "connectionStatus": {
+      "type": "object",
+      "description": "Detailed connection status information.",
+      "properties": {
+        "state": {
+          "type": "string",
+          "description": "The current connection state. VALID means connected, INITIALIZING means still starting up, INTERRUPTED means currently experiencing a problem, OFF means permanently failed due to an invalid SDK key.",
+          "enum": [
+            "VALID",
+            "INITIALIZING",
+            "INTERRUPTED",
+            false
+          ]
+        },
+        "stateSince": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Unix epoch timestamp when the current state began."
+        },
+        "lastError": {
+          "type": "object",
+          "description": "Details about the last connection error, if any.",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "description": "The type of error."
+            },
+            "time": {
+              "type": "integer",
+              "format": "int64",
+              "description": "Unix epoch timestamp when the error occurred."
+            }
+          }
+        }
+      }
+    },
+    "sdkKey": {
+      "type": "string",
+      "description": "The last four characters of the SDK key for this environment."
+    },
+    "envId": {
+      "type": "string",
+      "description": "The client-side environment ID."
+    },
+    "envKey": {
+      "type": "string",
+      "description": "The environment key."
+    },
+    "envName": {
+      "type": "string",
+      "description": "The environment name."
+    },
+    "projKey": {
+      "type": "string",
+      "description": "The project key."
+    },
+    "projName": {
+      "type": "string",
+      "description": "The project name."
+    }
+  }
+}

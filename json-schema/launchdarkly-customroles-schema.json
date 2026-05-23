@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/CustomRoles",
+  "title": "CustomRoles",
+  "type": "object",
+  "description": "A collection of custom roles.",
+  "properties": {
+    "items": {
+      "type": "array",
+      "description": "The list of custom roles.",
+      "items": {
+        "$ref": "#/components/schemas/CustomRole"
+      }
+    },
+    "_links": {
+      "$ref": "#/components/schemas/Links"
+    }
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/Webhook",
+  "title": "Webhook",
+  "type": "object",
+  "description": "A webhook configuration for receiving change notifications.",
+  "properties": {
+    "_id": {
+      "type": "string",
+      "description": "The unique identifier of this webhook."
+    },
+    "url": {
+      "type": "string",
+      "format": "uri",
+      "description": "The URL to receive webhook POST requests."
+    },
+    "secret": {
+      "type": "string",
+      "description": "The shared secret used to sign webhook payloads."
+    },
+    "true": {
+      "type": "boolean",
+      "description": "Whether this webhook is currently enabled."
+    },
+    "name": {
+      "type": "string",
+      "description": "The human-readable name of this webhook."
+    },
+    "tags": {
+      "type": "array",
+      "description": "Tags applied to this webhook.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "statements": {
+      "type": "array",
+      "description": "Policy statements filtering which events trigger this webhook.",
+      "items": {
+        "$ref": "#/components/schemas/Statement"
+      }
+    },
+    "_links": {
+      "$ref": "#/components/schemas/Links"
+    }
+  }
+}

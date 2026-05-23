@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/FlagTrigger",
+  "title": "FlagTrigger",
+  "type": "object",
+  "description": "A trigger that provides a unique URL for external services to toggle a feature flag.",
+  "properties": {
+    "_id": {
+      "type": "string",
+      "description": "The unique identifier of this trigger."
+    },
+    "_version": {
+      "type": "integer",
+      "description": "The version number of this trigger."
+    },
+    "triggerUrl": {
+      "type": "string",
+      "format": "uri",
+      "description": "The unique URL for triggering flag changes."
+    },
+    "enabled": {
+      "type": "boolean",
+      "description": "Whether this trigger is enabled."
+    },
+    "instructions": {
+      "type": "array",
+      "description": "The instructions executed when the trigger fires.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "description": "The type of instruction to execute.",
+            "enum": [
+              "turnFlagOn",
+              "turnFlagOff"
+            ]
+          }
+        }
+      }
+    },
+    "_links": {
+      "$ref": "#/components/schemas/Links"
+    }
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/SegmentRule",
+  "title": "SegmentRule",
+  "type": "object",
+  "description": "A targeting rule within a user segment.",
+  "properties": {
+    "_id": {
+      "type": "string",
+      "description": "The unique identifier for this rule."
+    },
+    "clauses": {
+      "type": "array",
+      "description": "The conditions for this rule.",
+      "items": {
+        "$ref": "#/components/schemas/Clause"
+      }
+    },
+    "weight": {
+      "type": "integer",
+      "description": "The percentage of matching contexts to include (0-100000 in thousandths of a percent)."
+    },
+    "bucketBy": {
+      "type": "string",
+      "description": "The attribute to bucket by for percentage inclusion."
+    }
+  }
+}
