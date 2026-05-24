@@ -145,6 +145,8 @@ common:
     sources:
     - https://launchdarkly.com/pricing/
     updated: '2026-05-04'
+  - type: LLMsTxt
+    url: https://apidocs.launchdarkly.com/llms.txt
 modified: '2026-05-19'
 description: LaunchDarkly is a feature management platform that enables development teams to deliver and control software
   through feature flags, allowing them to test in production and roll out features safely.
