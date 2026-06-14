@@ -1,0 +1,893 @@
+"""
+LaunchDarkly Conceptual GraphQL Schema
+Derived from the LaunchDarkly REST API (v20240415) data model.
+LaunchDarkly does not publish a native GraphQL API; this schema is a
+faithful representation of the resource types and relationships found
+in https://apidocs.launchdarkly.com/
+"""
+
+# ─── Scalars ──────────────────────────────────────────────────────────────────
+
+scalar DateTime
+scalar JSON
+
+# ─── Enums ────────────────────────────────────────────────────────────────────
+
+enum FlagKind {
+  BOOLEAN
+  MULTIVARIATE
+}
+
+enum VariationType {
+  BOOLEAN
+  STRING
+  NUMBER
+  JSON
+}
+
+enum RolloutKind {
+  ROLLOUT
+  EXPERIMENT
+}
+
+enum ClauseOp {
+  IN
+  END_WITH
+  START_WITH
+  MATCHES
+  CONTAINS
+  LESS_THAN
+  LESS_THAN_OR_EQUAL
+  GREATER_THAN
+  GREATER_THAN_OR_EQUAL
+  BEFORE
+  AFTER
+  SEGMENT_MATCH
+  SEMANTIC_VERSION_EQUAL
+  SEMANTIC_VERSION_LESS_THAN
+  SEMANTIC_VERSION_GREATER_THAN
+}
+
+enum MetricKind {
+  PAGE_VIEW
+  CLICK
+  CUSTOM
+}
+
+enum ExperimentStatus {
+  CREATED
+  RUNNING
+  STOPPED
+  ARCHIVED
+}
+
+enum ApprovalStatus {
+  PENDING
+  APPROVED
+  DECLINED
+  APPLIED
+  FAILED
+}
+
+enum ApprovalReviewKind {
+  APPROVE
+  DECLINE
+  COMMENT
+}
+
+enum WorkflowKind {
+  CUSTOM
+  RELEASE
+}
+
+enum TokenType {
+  PERSONAL
+  SERVICE
+}
+
+enum RelayProxyMode {
+  RELAY
+  OFFLINE
+}
+
+enum MigrationStage {
+  OFF
+  DUALWRITE
+  SHADOW
+  LIVE
+  RAMPDOWN
+  COMPLETE
+}
+
+# ─── Project & Environment ────────────────────────────────────────────────────
+
+type Project {
+  key: String!
+  name: String!
+  id: ID!
+  includeInSnippetByDefault: Boolean!
+  defaultClientSideAvailability: ClientSideAvailability!
+  tags: [String!]!
+  environments: [Environment!]!
+  flags: [FeatureFlag!]!
+  metrics: [Metric!]!
+  releasePipelines: [ReleasePipeline!]!
+  createdAt: DateTime
+}
+
+type Environment {
+  key: String!
+  name: String!
+  id: ID!
+  color: String!
+  defaultTtl: Int!
+  secureMode: Boolean!
+  defaultTrackEvents: Boolean!
+  tags: [String!]!
+  requireComments: Boolean!
+  confirmChanges: Boolean!
+  approvalSettings: ApprovalSettings
+  mobileKey: String!
+  apiKey: String!
+  project: Project!
+}
+
+type ClientSideAvailability {
+  usingMobileKey: Boolean!
+  usingEnvironmentId: Boolean!
+}
+
+type ApprovalSettings {
+  required: Boolean!
+  bypassApprovalsForPendingChanges: Boolean!
+  minNumApprovals: Int!
+  canReviewOwnRequest: Boolean!
+  canApplyDeclinedChanges: Boolean!
+  serviceKind: String
+  serviceConfig: JSON
+  requiredApprovalTags: [String!]!
+}
+
+# ─── Feature Flag ─────────────────────────────────────────────────────────────
+
+type FeatureFlag {
+  key: String!
+  name: String!
+  kind: FlagKind!
+  description: String
+  id: ID!
+  version: Int!
+  creationDate: DateTime!
+  includeInSnippet: Boolean!
+  clientSideAvailability: ClientSideAvailability!
+  variations: [Variation!]!
+  temporary: Boolean!
+  tags: [String!]!
+  maintainerId: String
+  maintainer: Member
+  goalIds: [String!]!
+  experiments: ExperimentInfoCollection
+  customProperties: JSON
+  archived: Boolean!
+  archivedDate: DateTime
+  deprecated: Boolean!
+  deprecatedDate: DateTime
+  defaults: FlagDefaults
+  environments: [FlagConfig!]!
+  migrationSettings: MigrationSettings
+  project: Project!
+}
+
+type FlagDefaults {
+  onVariation: Int!
+  offVariation: Int!
+}
+
+type MigrationSettings {
+  stageCount: Int!
+  contextKind: String
+  stages: [MigrationStage!]!
+}
+
+type ExperimentInfoCollection {
+  baselineIdx: Int
+  items: [ExperimentInfo!]!
+}
+
+type ExperimentInfo {
+  metricKey: String
+  metric: Metric
+}
+
+# ─── Flag Configuration (per Environment) ────────────────────────────────────
+
+type FlagConfig {
+  environmentKey: String!
+  on: Boolean!
+  archived: Boolean!
+  salt: String!
+  sel: String!
+  lastModified: DateTime!
+  version: Int!
+  targets: [Target!]!
+  contextTargets: [Target!]!
+  rules: [Rule!]!
+  fallthrough: Fallthrough!
+  offVariation: Int
+  prerequisites: [Prerequisite!]!
+  _site: SiteLink
+  trackEvents: Boolean!
+  trackEventsFallthrough: Boolean!
+  debugEventsUntilDate: DateTime
+  environmentKey2: String
+}
+
+type Fallthrough {
+  variation: Int
+  rollout: Rollout
+}
+
+type Prerequisite {
+  key: String!
+  variation: Int!
+  flag: FeatureFlag
+}
+
+# ─── Variation ────────────────────────────────────────────────────────────────
+
+type Variation {
+  id: ID
+  value: JSON!
+  description: String
+  name: String
+}
+
+# ─── Targeting: Rules, Clauses, Rollout ───────────────────────────────────────
+
+type Target {
+  contextKind: String!
+  values: [String!]!
+  variation: Int!
+}
+
+type Rule {
+  id: ID
+  clauses: [Clause!]!
+  variation: Int
+  rollout: Rollout
+  trackEvents: Boolean!
+  description: String
+}
+
+type Clause {
+  id: ID
+  contextKind: String!
+  attribute: String!
+  op: ClauseOp!
+  values: [JSON!]!
+  negate: Boolean!
+}
+
+type Rollout {
+  kind: RolloutKind
+  variations: [WeightedVariation!]!
+  bucketBy: String
+  contextKind: String
+  experimentAllocation: ExperimentAllocation
+}
+
+type WeightedVariation {
+  variation: Int!
+  weight: Int!
+  untracked: Boolean
+}
+
+type ExperimentAllocation {
+  defaultVariation: Int!
+  canReshuffle: Boolean!
+}
+
+# ─── Segment ──────────────────────────────────────────────────────────────────
+
+type Segment {
+  key: String!
+  name: String!
+  id: ID!
+  description: String
+  tags: [String!]!
+  creationDate: DateTime!
+  included: [String!]!
+  excluded: [String!]!
+  includedContexts: [SegmentTarget!]!
+  excludedContexts: [SegmentTarget!]!
+  rules: [SegmentRule!]!
+  version: Int!
+  deleted: Boolean!
+  unbounded: Boolean!
+  unboundedContextKind: String
+  generation: Int
+  project: Project!
+  environment: Environment!
+}
+
+type SegmentTarget {
+  contextKind: String!
+  values: [String!]!
+}
+
+type SegmentRule {
+  id: ID
+  clauses: [Clause!]!
+  weight: Int
+  bucketBy: String
+  rolloutContextKind: String
+}
+
+# ─── Metric & Experiment ─────────────────────────────────────────────────────
+
+type Metric {
+  id: ID!
+  key: String!
+  name: String!
+  kind: MetricKind!
+  description: String
+  isActive: Boolean!
+  isNumeric: Boolean!
+  unit: String
+  eventKey: String
+  selector: String
+  urls: [MetricUrl!]!
+  tags: [String!]!
+  creationDate: DateTime!
+  lastModified: DateTime!
+  successCriteria: String
+  randomizationUnits: [String!]!
+  project: Project!
+}
+
+type MetricUrl {
+  kind: String!
+  url: String
+  substring: String
+  pattern: String
+}
+
+type Experiment {
+  id: ID!
+  key: String!
+  name: String!
+  description: String
+  status: ExperimentStatus!
+  createdAt: DateTime!
+  currentIteration: ExperimentIteration
+  iterations: [ExperimentIteration!]!
+  metrics: [MetricInput!]!
+  holdoutId: String
+  project: Project!
+  environment: Environment!
+  flag: FeatureFlag
+}
+
+type ExperimentIteration {
+  id: ID!
+  hypothesis: String!
+  status: String!
+  createdAt: DateTime!
+  startedAt: DateTime
+  endedAt: DateTime
+  winningVariationId: String
+  winningReason: String
+  canReshuffleTraffic: Boolean!
+  flags: JSON
+  primaryMetricKey: String
+  secondaryMetricKeys: [String!]!
+  treatments: [ExperimentTreatment!]!
+  randomizationUnit: String
+}
+
+type ExperimentTreatment {
+  variationId: String!
+  name: String!
+  baseline: Boolean!
+  allocationPercent: String!
+}
+
+type MetricInput {
+  key: String!
+  isPrimary: Boolean!
+  metric: Metric
+}
+
+# ─── Approval ─────────────────────────────────────────────────────────────────
+
+type ApprovalRequest {
+  id: ID!
+  version: Int!
+  creationDate: DateTime!
+  requestorId: String!
+  requestor: Member
+  description: String
+  reviewStatus: ApprovalStatus!
+  allReviews: [ApprovalReview!]!
+  notifyMemberIds: [String!]!
+  appliedDate: DateTime
+  appliedByMemberId: String
+  appliedBy: Member
+  status: ApprovalStatus!
+  instructions: JSON
+  conflicts: [JSON!]!
+  executionDate: DateTime
+  operatingOnId: String
+  integrationMetadata: JSON
+  source: JSON
+  customWorkflowMetadata: JSON
+  project: Project!
+  environment: Environment!
+  flag: FeatureFlag
+}
+
+type ApprovalReview {
+  id: ID!
+  kind: ApprovalReviewKind!
+  creationDate: DateTime!
+  memberId: String!
+  member: Member
+  comment: String
+}
+
+# ─── Audit Log ────────────────────────────────────────────────────────────────
+
+type AuditLogEntry {
+  id: ID!
+  date: DateTime!
+  kind: String!
+  name: String!
+  description: String!
+  shortDescription: String!
+  comment: String
+  subject: AuditSubject
+  member: Member
+  token: AccessToken
+  app: AuditApp
+  titleVerb: String!
+  title: String!
+  target: AuditTarget
+  parent: AuditTarget
+}
+
+type AuditSubject {
+  name: String
+  resource: String
+  ignored: [String!]
+  links: JSON
+}
+
+type AuditTarget {
+  name: String
+  resources: [String!]!
+  resourceId: String
+  links: JSON
+}
+
+type AuditApp {
+  isScim: Boolean
+  isLaunchDarkly: Boolean
+  name: String
+}
+
+# ─── Webhook & Integration ────────────────────────────────────────────────────
+
+type Webhook {
+  id: ID!
+  url: String!
+  secret: String
+  tags: [String!]!
+  on: Boolean!
+  name: String
+  statements: [Statement!]!
+}
+
+type Statement {
+  resources: [String!]
+  notResources: [String!]
+  actions: [String!]!
+  effect: String!
+}
+
+type IntegrationSubscription {
+  id: ID!
+  kind: String!
+  name: String!
+  config: JSON!
+  on: Boolean!
+  tags: [String!]!
+  statements: [Statement!]!
+  status: IntegrationStatus
+}
+
+type IntegrationStatus {
+  successCount: Int!
+  lastSuccess: DateTime
+  lastError: DateTime
+  lastErrorMessage: String
+}
+
+# ─── Access Token ─────────────────────────────────────────────────────────────
+
+type AccessToken {
+  id: ID!
+  ownerId: String
+  owner: Member
+  memberId: String
+  member: Member
+  name: String
+  description: String
+  customRoleIds: [String!]!
+  inlineRole: [Statement!]!
+  role: String
+  token: String
+  serviceToken: Boolean!
+  creationDate: DateTime!
+  lastModified: DateTime!
+  lastUsed: DateTime
+  defaultApiVersion: Int
+}
+
+# ─── Team & Member ────────────────────────────────────────────────────────────
+
+type Team {
+  key: String!
+  name: String!
+  description: String
+  creationDate: DateTime!
+  lastModified: DateTime!
+  members: [Member!]!
+  maintainers: [Member!]!
+  projects: [TeamProject!]!
+  customRoleKeys: [String!]!
+  idpSynced: Boolean
+  permissionGrants: [PermissionGrant!]!
+}
+
+type TeamProject {
+  key: String!
+  environments: [TeamEnvironment!]!
+}
+
+type TeamEnvironment {
+  key: String!
+}
+
+type PermissionGrant {
+  actionSet: String
+  actions: [String!]!
+  memberId: String!
+  member: Member
+}
+
+type Member {
+  id: ID!
+  firstName: String
+  lastName: String
+  email: String!
+  role: String!
+  customRoles: [String!]!
+  mfa: String
+  excludedDashboards: [String!]!
+  lastSeen: DateTime
+  lastSeenMetadata: JSON
+  creationDate: DateTime!
+  teams: [Team!]!
+  totalFlags: Int
+  pendingInvite: Boolean
+  verified: Boolean
+  permissionGrants: [PermissionGrant!]!
+}
+
+type CustomRole {
+  id: ID!
+  key: String!
+  name: String!
+  description: String
+  policy: [Statement!]!
+  basePermissions: String
+}
+
+# ─── Relay Proxy ─────────────────────────────────────────────────────────────
+
+type RelayProxyConfig {
+  id: ID!
+  name: String!
+  creationDate: DateTime!
+  createdBy: Member
+  lastModified: DateTime!
+  lastModifiedBy: Member
+  fullKey: String
+  displayKey: String!
+  policy: [Statement!]!
+}
+
+# ─── Release Pipeline ─────────────────────────────────────────────────────────
+
+type ReleasePipeline {
+  id: ID!
+  name: String!
+  description: String
+  key: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  phases: [ReleasePhase!]!
+  project: Project!
+  version: Int!
+}
+
+type ReleasePhase {
+  id: ID!
+  name: String!
+  audiences: [ReleaseAudience!]!
+  configuration: JSON
+}
+
+type ReleaseAudience {
+  id: ID!
+  environment: Environment
+  name: String!
+  segmentKeys: [String!]!
+}
+
+# ─── Workflow ─────────────────────────────────────────────────────────────────
+
+type Workflow {
+  id: ID!
+  name: String!
+  description: String
+  kind: WorkflowKind
+  stages: [WorkflowStage!]!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  executionDate: DateTime
+  project: Project!
+  flag: FeatureFlag
+  environment: Environment
+}
+
+type WorkflowStage {
+  id: ID!
+  name: String
+  conditions: [WorkflowCondition!]!
+  action: JSON!
+}
+
+type WorkflowCondition {
+  id: ID!
+  kind: String!
+  scheduleKind: String
+  executeNow: Boolean
+  waitDuration: Int
+  waitDurationUnit: String
+  notifyMemberIds: [String!]!
+  notifyTeamKeys: [String!]!
+  allMembersCanApprove: Boolean
+  anyMemberCanApprove: Boolean
+  minNumApprovals: Int
+  description: String
+}
+
+# ─── Flag Trigger ─────────────────────────────────────────────────────────────
+
+type FlagTrigger {
+  id: ID!
+  version: Int!
+  creationDate: DateTime!
+  maintainerId: String!
+  maintainer: Member
+  enabled: Boolean!
+  integrationKey: String!
+  instructions: JSON!
+  triggerCount: Int!
+  lastTriggeredAt: DateTime
+  recentTriggerBodies: [JSON!]!
+  triggerUrl: String!
+  flag: FeatureFlag
+  environment: Environment
+}
+
+# ─── Code References ─────────────────────────────────────────────────────────
+
+type CodeReferenceRepository {
+  name: String!
+  sourceLink: String
+  commitUrlTemplate: String
+  hunkUrlTemplate: String
+  type: String
+  defaultBranch: String
+  enabled: Boolean!
+  version: Int!
+}
+
+# ─── Big Segment / Holdout ────────────────────────────────────────────────────
+
+type BigSegmentStore {
+  id: ID!
+  kind: String!
+  config: JSON!
+  on: Boolean!
+  status: BigSegmentStatus
+}
+
+type BigSegmentStatus {
+  lastSync: DateTime
+  lastError: DateTime
+  errorMessage: String
+  syncSucceeded: Boolean!
+}
+
+# ─── Supporting types ─────────────────────────────────────────────────────────
+
+type SiteLink {
+  href: String!
+  type: String
+}
+
+type TagCollection {
+  items: [String!]!
+}
+
+# ─── Queries ──────────────────────────────────────────────────────────────────
+
+type Query {
+  # Projects
+  projects: [Project!]!
+  project(projectKey: String!): Project
+
+  # Environments
+  environments(projectKey: String!): [Environment!]!
+  environment(projectKey: String!, environmentKey: String!): Environment
+
+  # Feature Flags
+  featureFlags(projectKey: String!, environmentKey: String, tags: [String!], summary: Boolean): [FeatureFlag!]!
+  featureFlag(projectKey: String!, featureFlagKey: String!, environmentKey: String): FeatureFlag
+
+  # Segments
+  segments(projectKey: String!, environmentKey: String!): [Segment!]!
+  segment(projectKey: String!, environmentKey: String!, segmentKey: String!): Segment
+
+  # Metrics
+  metrics(projectKey: String!): [Metric!]!
+  metric(projectKey: String!, metricKey: String!): Metric
+
+  # Experiments
+  experiments(projectKey: String!, environmentKey: String!): [Experiment!]!
+  experiment(projectKey: String!, environmentKey: String!, experimentKey: String!): Experiment
+
+  # Approvals
+  approvalRequests(projectKey: String!, flagKey: String, environmentKey: String): [ApprovalRequest!]!
+  approvalRequest(id: ID!): ApprovalRequest
+
+  # Audit Log
+  auditLog(before: DateTime, after: DateTime, q: String, limit: Int): [AuditLogEntry!]!
+
+  # Webhooks
+  webhooks: [Webhook!]!
+  webhook(webhookId: ID!): Webhook
+
+  # Integrations
+  integrationSubscriptions(integrationKey: String!): [IntegrationSubscription!]!
+  integrationSubscription(integrationKey: String!, integrationId: ID!): IntegrationSubscription
+
+  # Access Tokens
+  accessTokens: [AccessToken!]!
+  accessToken(tokenId: ID!): AccessToken
+
+  # Teams
+  teams(projectKey: String): [Team!]!
+  team(teamKey: String!): Team
+
+  # Members
+  members: [Member!]!
+  member(memberId: ID!): Member
+
+  # Custom Roles
+  customRoles: [CustomRole!]!
+  customRole(customRoleKey: String!): CustomRole
+
+  # Relay Proxy
+  relayProxyConfigs: [RelayProxyConfig!]!
+  relayProxyConfig(id: ID!): RelayProxyConfig
+
+  # Release Pipelines
+  releasePipelines(projectKey: String!): [ReleasePipeline!]!
+  releasePipeline(projectKey: String!, pipelineKey: String!): ReleasePipeline
+
+  # Workflows
+  workflows(projectKey: String!, featureFlagKey: String!, environmentKey: String!): [Workflow!]!
+
+  # Flag Triggers
+  flagTriggers(projectKey: String!, environmentKey: String!, featureFlagKey: String!): [FlagTrigger!]!
+
+  # Code References
+  codeReferenceRepositories: [CodeReferenceRepository!]!
+
+  # Tags
+  tags(projectKey: String): TagCollection
+}
+
+# ─── Mutations ────────────────────────────────────────────────────────────────
+
+type Mutation {
+  # Feature Flags
+  createFeatureFlag(projectKey: String!, name: String!, key: String!, kind: FlagKind!, variations: [JSON!], tags: [String!], description: String): FeatureFlag!
+  updateFeatureFlag(projectKey: String!, featureFlagKey: String!, patch: [JSON!]!): FeatureFlag!
+  deleteFeatureFlag(projectKey: String!, featureFlagKey: String!): Boolean!
+  toggleFeatureFlag(projectKey: String!, featureFlagKey: String!, environmentKey: String!, on: Boolean!): FlagConfig!
+
+  # Projects
+  createProject(name: String!, key: String!, tags: [String!]): Project!
+  updateProject(projectKey: String!, patch: [JSON!]!): Project!
+  deleteProject(projectKey: String!): Boolean!
+
+  # Environments
+  createEnvironment(projectKey: String!, name: String!, key: String!, color: String!, tags: [String!]): Environment!
+  updateEnvironment(projectKey: String!, environmentKey: String!, patch: [JSON!]!): Environment!
+  deleteEnvironment(projectKey: String!, environmentKey: String!): Boolean!
+
+  # Segments
+  createSegment(projectKey: String!, environmentKey: String!, name: String!, key: String!, tags: [String!]): Segment!
+  updateSegment(projectKey: String!, environmentKey: String!, segmentKey: String!, patch: [JSON!]!): Segment!
+  deleteSegment(projectKey: String!, environmentKey: String!, segmentKey: String!): Boolean!
+
+  # Metrics
+  createMetric(projectKey: String!, key: String!, name: String!, kind: MetricKind!): Metric!
+  updateMetric(projectKey: String!, metricKey: String!, patch: [JSON!]!): Metric!
+  deleteMetric(projectKey: String!, metricKey: String!): Boolean!
+
+  # Experiments
+  createExperiment(projectKey: String!, environmentKey: String!, name: String!, key: String!, hypothesis: String!): Experiment!
+  updateExperiment(projectKey: String!, environmentKey: String!, experimentKey: String!, patch: [JSON!]!): Experiment!
+
+  # Approvals
+  createApprovalRequest(projectKey: String!, featureFlagKey: String!, environmentKey: String!, description: String!, instructions: JSON!, notifyMemberIds: [String!]): ApprovalRequest!
+  reviewApprovalRequest(id: ID!, kind: ApprovalReviewKind!, comment: String): ApprovalRequest!
+  applyApprovalRequest(id: ID!, comment: String): ApprovalRequest!
+  deleteApprovalRequest(id: ID!): Boolean!
+
+  # Webhooks
+  createWebhook(url: String!, name: String, sign: Boolean, on: Boolean, tags: [String!], statements: [JSON!]): Webhook!
+  updateWebhook(webhookId: ID!, patch: [JSON!]!): Webhook!
+  deleteWebhook(webhookId: ID!): Boolean!
+
+  # Access Tokens
+  createAccessToken(name: String!, role: String, customRoleIds: [String!], inlineRole: [JSON!], serviceToken: Boolean, defaultApiVersion: Int): AccessToken!
+  resetAccessToken(tokenId: ID!, expiry: DateTime): AccessToken!
+  deleteAccessToken(tokenId: ID!): Boolean!
+
+  # Teams
+  createTeam(key: String!, name: String!, description: String, memberIDs: [String!], customRoleKeys: [String!]): Team!
+  updateTeam(teamKey: String!, patch: [JSON!]!): Team!
+  deleteTeam(teamKey: String!): Boolean!
+
+  # Members
+  inviteMembers(invitations: [JSON!]!): [Member!]!
+  updateMember(memberId: ID!, patch: [JSON!]!): Member!
+  deleteMember(memberId: ID!): Boolean!
+
+  # Custom Roles
+  createCustomRole(name: String!, key: String!, policy: [JSON!]!, description: String): CustomRole!
+  updateCustomRole(customRoleKey: String!, patch: [JSON!]!): CustomRole!
+  deleteCustomRole(customRoleKey: String!): Boolean!
+
+  # Relay Proxy
+  createRelayProxyConfig(name: String!, policy: [JSON!]!): RelayProxyConfig!
+  updateRelayProxyConfig(id: ID!, patch: [JSON!]!): RelayProxyConfig!
+  deleteRelayProxyConfig(id: ID!): Boolean!
+  resetRelayProxyConfig(id: ID!, expiry: DateTime): RelayProxyConfig!
+
+  # Workflows
+  createWorkflow(projectKey: String!, featureFlagKey: String!, environmentKey: String!, name: String!, stages: [JSON!]!): Workflow!
+  deleteWorkflow(projectKey: String!, featureFlagKey: String!, environmentKey: String!, workflowId: ID!): Boolean!
+
+  # Flag Triggers
+  createFlagTrigger(projectKey: String!, environmentKey: String!, featureFlagKey: String!, integrationKey: String!, instructions: JSON!): FlagTrigger!
+  updateFlagTrigger(projectKey: String!, environmentKey: String!, featureFlagKey: String!, id: ID!, patch: [JSON!]!): FlagTrigger!
+  deleteFlagTrigger(projectKey: String!, environmentKey: String!, featureFlagKey: String!, id: ID!): Boolean!
+}
