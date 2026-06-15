@@ -1,0 +1,1293 @@
+{
+  "item": [
+    {
+      "id": "cfb307db-917c-4b61-afda-04eb223a0aa3",
+      "name": "Client-Side Evaluation",
+      "description": {
+        "content": "Flag evaluation endpoints for client-side and mobile SDKs using environment IDs or mobile keys for authentication.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "0d93d7a6-4d64-46e0-b020-fbafcdaa5280",
+          "name": "Evaluate all flags for a client-side context (GET)",
+          "request": {
+            "name": "Evaluate all flags for a client-side context (GET)",
+            "description": {
+              "content": "Evaluates all client-side enabled feature flags for the given context. Uses the environment ID in the URL path for authentication.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "sdk",
+                "evalx",
+                ":envId",
+                "contexts",
+                ":contextBase64"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "envId",
+                  "description": "(Required) The client-side environment ID."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "contextBase64",
+                  "description": "(Required) A base64-encoded JSON representation of the evaluation context."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "cb93f6b2-b2ba-4b7d-bf69-320a7b8d2cd1",
+              "name": "Successful response with all client-side flag evaluations.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "sdk",
+                    "evalx",
+                    ":envId",
+                    "contexts",
+                    ":contextBase64"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "envId",
+                      "description": "(Required) The client-side environment ID."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "contextBase64",
+                      "description": "(Required) A base64-encoded JSON representation of the evaluation context."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"key_0\": {\n    \"value\": {},\n    \"variation\": 3568,\n    \"version\": 6012,\n    \"trackEvents\": false,\n    \"trackReason\": true,\n    \"reason\": {\n      \"kind\": \"PREREQUISITE_FAILED\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9f9d7f88-200d-4900-a7e6-96f54b9014bb",
+              "name": "Unauthorized. Invalid environment ID.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "sdk",
+                    "evalx",
+                    ":envId",
+                    "contexts",
+                    ":contextBase64"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "envId",
+                      "description": "(Required) The client-side environment ID."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "contextBase64",
+                      "description": "(Required) A base64-encoded JSON representation of the evaluation context."
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "8a0ba653-a38f-4975-bb46-7d1e48f8562b",
+              "name": "Service unavailable. Flag data not yet available.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "sdk",
+                    "evalx",
+                    ":envId",
+                    "contexts",
+                    ":contextBase64"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "envId",
+                      "description": "(Required) The client-side environment ID."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "contextBase64",
+                      "description": "(Required) A base64-encoded JSON representation of the evaluation context."
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "6979d1d8-d9d8-4a9a-aebc-3c6aa5567bce",
+      "name": "Client-Side Streaming",
+      "description": {
+        "content": "Server-Sent Events streaming endpoints for client-side and mobile SDKs to receive real-time flag updates.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "8dac0f3a-01e5-44a6-9fd1-458ae60759d2",
+          "name": "Stream evaluated flags (client-side)",
+          "request": {
+            "name": "Stream evaluated flags (client-side)",
+            "description": {
+              "content": "Establishes a Server-Sent Events (SSE) stream that delivers evaluated flag values for the given context to client-side SDKs.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "eval",
+                ":envId",
+                ":contextBase64"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "envId",
+                  "description": "(Required) The client-side environment ID."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "contextBase64",
+                  "description": "(Required) A base64-encoded JSON representation of the evaluation context."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "text/event-stream"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "4d3ea839-8056-421f-b11d-685f6f1f354c",
+              "name": "SSE stream delivering evaluated flag values.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "eval",
+                    ":envId",
+                    ":contextBase64"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "envId",
+                      "description": "(Required) The client-side environment ID."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "contextBase64",
+                      "description": "(Required) A base64-encoded JSON representation of the evaluation context."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "text/event-stream"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/event-stream"
+                }
+              ],
+              "body": "string",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "2d99bbd4-ae77-4bc8-b42d-560a3982c020",
+              "name": "Unauthorized. Invalid environment ID.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "eval",
+                    ":envId",
+                    ":contextBase64"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "envId",
+                      "description": "(Required) The client-side environment ID."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "contextBase64",
+                      "description": "(Required) A base64-encoded JSON representation of the evaluation context."
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "7d516f58-273a-4a41-9865-5baf35517793",
+              "name": "Service unavailable. Flag data not yet available.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "eval",
+                    ":envId",
+                    ":contextBase64"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "envId",
+                      "description": "(Required) The client-side environment ID."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "contextBase64",
+                      "description": "(Required) A base64-encoded JSON representation of the evaluation context."
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "5b76fbe7-36e3-4a2a-ae17-60696d6dbba4",
+      "name": "PHP Polling",
+      "description": {
+        "content": "Polling endpoints for PHP server-side SDKs which do not support streaming mode.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "931c2c5b-459f-4fe3-9e62-e21c0469a1ec",
+          "name": "Get latest all flags (PHP polling)",
+          "request": {
+            "name": "Get latest all flags (PHP polling)",
+            "description": {
+              "content": "Returns the latest flag data for PHP server-side SDKs that use polling mode instead of streaming. Requires an SDK key in the Authorization header.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "sdk",
+                "latest-all"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "key",
+                  "value": "Authorization"
+                },
+                {
+                  "key": "value",
+                  "value": "{{apiKey}}"
+                },
+                {
+                  "key": "in",
+                  "value": "header"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "eee62387-0d8c-49ab-af49-ee203465060e",
+              "name": "Successful response containing the latest flag data.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "sdk",
+                    "latest-all"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"flags\": {\n    \"key_0\": {},\n    \"key_1\": {},\n    \"key_2\": {},\n    \"key_3\": {}\n  },\n  \"segments\": {\n    \"key_0\": {}\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "6a1ed755-c3d8-4a64-a359-5a2c26e7e805",
+              "name": "Unauthorized. Invalid SDK key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "sdk",
+                    "latest-all"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "bdb802d8-a8ea-420d-862c-994cd0d09b73",
+              "name": "Service unavailable. Flag data not yet available.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "sdk",
+                    "latest-all"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "796c7758-95db-4218-9236-a5180a5af79d",
+      "name": "Server-Side Evaluation",
+      "description": {
+        "content": "Flag evaluation endpoints for server-side SDKs using SDK keys for authentication.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "ab24f059-edb8-410f-adc0-091a9d6767d4",
+          "name": "Evaluate all flags for a context (GET)",
+          "request": {
+            "name": "Evaluate all flags for a context (GET)",
+            "description": {
+              "content": "Evaluates all feature flags for the given context and returns the results. The context is provided as a base64-encoded JSON object in the URL path. Requires an SDK key in the Authorization header.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "sdk",
+                "evalx",
+                "contexts",
+                ":contextBase64"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "contextBase64",
+                  "description": "(Required) A base64-encoded JSON representation of the evaluation context."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "key",
+                  "value": "Authorization"
+                },
+                {
+                  "key": "value",
+                  "value": "{{apiKey}}"
+                },
+                {
+                  "key": "in",
+                  "value": "header"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "affb74fa-a6fd-4bd0-8c69-a72fdbc1c354",
+              "name": "Successful response with all flag evaluations for the context.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "sdk",
+                    "evalx",
+                    "contexts",
+                    ":contextBase64"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "contextBase64",
+                      "description": "(Required) A base64-encoded JSON representation of the evaluation context."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"key_0\": {\n    \"value\": {},\n    \"variation\": 3568,\n    \"version\": 6012,\n    \"trackEvents\": false,\n    \"trackReason\": true,\n    \"reason\": {\n      \"kind\": \"PREREQUISITE_FAILED\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ec3aeb5b-bfb4-4cb9-8f96-0ab2ee54be39",
+              "name": "Unauthorized. The SDK key does not match any environment configured in the Relay Proxy.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "sdk",
+                    "evalx",
+                    "contexts",
+                    ":contextBase64"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "contextBase64",
+                      "description": "(Required) A base64-encoded JSON representation of the evaluation context."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "45559229-03ce-4777-a847-a5362adf9156",
+              "name": "Service unavailable. The Relay Proxy has not yet received flag data from LaunchDarkly for this environment.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "sdk",
+                    "evalx",
+                    "contexts",
+                    ":contextBase64"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "contextBase64",
+                      "description": "(Required) A base64-encoded JSON representation of the evaluation context."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "8f7ab54a-e325-4152-8c0b-3a350f7865db",
+      "name": "Server-Side Streaming",
+      "description": {
+        "content": "Server-Sent Events streaming endpoints for server-side SDKs to receive real-time flag updates.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "304daf62-d79f-4672-bbc7-ab85398c6849",
+          "name": "Stream all flag data (server-side)",
+          "request": {
+            "name": "Stream all flag data (server-side)",
+            "description": {
+              "content": "Establishes a Server-Sent Events (SSE) stream that delivers real-time flag data updates for server-side SDKs. Requires an SDK key in the Authorization header.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "all"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "text/event-stream"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "key",
+                  "value": "Authorization"
+                },
+                {
+                  "key": "value",
+                  "value": "{{apiKey}}"
+                },
+                {
+                  "key": "in",
+                  "value": "header"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "3cd7ae30-a278-4b29-a6ba-ce51e559e252",
+              "name": "SSE stream delivering flag data updates.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "all"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "text/event-stream"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/event-stream"
+                }
+              ],
+              "body": "string",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "eca091eb-65ac-4cb3-92e0-353103b6c86c",
+              "name": "Unauthorized. Invalid SDK key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "all"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "da988e1a-5beb-42e9-892e-bf19108ef13e",
+              "name": "Service unavailable. Flag data not yet available.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "all"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "8b460053-a7e9-4224-b50a-8752836b0803",
+          "name": "Stream flag updates (server-side)",
+          "request": {
+            "name": "Stream flag updates (server-side)",
+            "description": {
+              "content": "Establishes a Server-Sent Events (SSE) stream that delivers only flag updates (not segments) for server-side SDKs.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "flags"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "text/event-stream"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "key",
+                  "value": "Authorization"
+                },
+                {
+                  "key": "value",
+                  "value": "{{apiKey}}"
+                },
+                {
+                  "key": "in",
+                  "value": "header"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "667633e1-9705-40c3-a1d5-d8866d667d8a",
+              "name": "SSE stream delivering flag updates.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "flags"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "text/event-stream"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/event-stream"
+                }
+              ],
+              "body": "string",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "2357a0cb-63d1-4bcd-a1b1-309b614509ae",
+              "name": "Unauthorized. Invalid SDK key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "flags"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "334cbfe3-b46b-442f-9ca4-7c2c51c3ac05",
+              "name": "Service unavailable.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "flags"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "0017bb21-2ef0-4807-bc5a-657e4f667d2c",
+      "name": "Status",
+      "description": {
+        "content": "Health and status monitoring endpoints for the Relay Proxy. No authentication is required for these endpoints.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "c75d43d6-9f8f-4aaf-86f0-72c746e05ec7",
+          "name": "Get Relay Proxy status",
+          "request": {
+            "name": "Get Relay Proxy status",
+            "description": {
+              "content": "Returns the overall health status of the Relay Proxy and detailed connection status for each configured environment. No authentication is required. The top-level status is \"healthy\" if all environments are connected, or \"degraded\" if any environment is disconnected.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "status"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "4b94718b-8021-4170-8690-26ee7879fd63",
+              "name": "Successful response containing the Relay Proxy status.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "status"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"healthy\",\n  \"environments\": {\n    \"key_0\": {\n      \"status\": \"connected\",\n      \"connectionStatus\": {\n        \"state\": \"VALID\",\n        \"stateSince\": 5672,\n        \"lastError\": {\n          \"kind\": \"string\",\n          \"time\": 3385\n        }\n      },\n      \"sdkKey\": \"string\",\n      \"envId\": \"string\",\n      \"envKey\": \"string\",\n      \"envName\": \"string\",\n      \"projKey\": \"string\",\n      \"projName\": \"string\"\n    },\n    \"key_1\": {\n      \"status\": \"connected\",\n      \"connectionStatus\": {\n        \"state\": \"OFF\",\n        \"stateSince\": 2004,\n        \"lastError\": {\n          \"kind\": \"string\",\n          \"time\": 9396\n        }\n      },\n      \"sdkKey\": \"string\",\n      \"envId\": \"string\",\n      \"envKey\": \"string\",\n      \"envName\": \"string\",\n      \"projKey\": \"string\",\n      \"projName\": \"string\"\n    },\n    \"key_2\": {\n      \"status\": \"disconnected\",\n      \"connectionStatus\": {\n        \"state\": \"VALID\",\n        \"stateSince\": 3748,\n        \"lastError\": {\n          \"kind\": \"string\",\n          \"time\": 8630\n        }\n      },\n      \"sdkKey\": \"string\",\n      \"envId\": \"string\",\n      \"envKey\": \"string\",\n      \"envName\": \"string\",\n      \"projKey\": \"string\",\n      \"projName\": \"string\"\n    }\n  },\n  \"version\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "http://localhost:8030",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "e6d2725a-63be-419c-8e1c-5697fdab7647",
+    "name": "LaunchDarkly Relay Proxy",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The LaunchDarkly Relay Proxy is a small Go application that connects to the LaunchDarkly streaming API and proxies that connection to SDK clients within an organization's network. It exposes endpoints for status monitoring, flag evaluation, and SDK streaming that mirror the LaunchDarkly service endpoints. Instead of each server making outbound connections to LaunchDarkly's streaming service, multiple servers connect to the local Relay Proxy which maintains a single upstream connection.\n\nContact Support:\n Name: LaunchDarkly Support",
+      "type": "text/plain"
+    }
+  }
+}

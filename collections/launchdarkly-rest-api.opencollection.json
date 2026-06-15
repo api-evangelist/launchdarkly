@@ -1,0 +1,1417 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "LaunchDarkly REST API",
+    "version": "20240415"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Feature Flags",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List feature flags",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://app.launchdarkly.com/api/v2/flags/:projectKey",
+            "params": [
+              {
+                "name": "projectKey",
+                "value": "",
+                "type": "path",
+                "description": "The project key identifying a LaunchDarkly project."
+              },
+              {
+                "name": "env",
+                "value": "",
+                "type": "query",
+                "description": "Filter configurations by environment key."
+              },
+              {
+                "name": "tag",
+                "value": "",
+                "type": "query",
+                "description": "Filter flags by tag."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of flags to return."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "Number of flags to skip for pagination."
+              },
+              {
+                "name": "filter",
+                "value": "",
+                "type": "query",
+                "description": "A filter expression to apply to the flag list, supporting query, tags, and other fields."
+              }
+            ]
+          },
+          "docs": "Returns a paginated list of all feature flags in the specified project. Supports filtering by tag, query string, and environment."
+        },
+        {
+          "info": {
+            "name": "Create a feature flag",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://app.launchdarkly.com/api/v2/flags/:projectKey",
+            "params": [
+              {
+                "name": "projectKey",
+                "value": "",
+                "type": "path",
+                "description": "The project key identifying a LaunchDarkly project."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new feature flag in the specified project with the provided configuration including key, name, variations, and default targeting rules."
+        },
+        {
+          "info": {
+            "name": "Get a feature flag",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://app.launchdarkly.com/api/v2/flags/:projectKey/:flagKey",
+            "params": [
+              {
+                "name": "projectKey",
+                "value": "",
+                "type": "path",
+                "description": "The project key identifying a LaunchDarkly project."
+              },
+              {
+                "name": "flagKey",
+                "value": "",
+                "type": "path",
+                "description": "The feature flag key identifying a specific flag."
+              },
+              {
+                "name": "env",
+                "value": "",
+                "type": "query",
+                "description": "Filter configurations by environment key."
+              }
+            ]
+          },
+          "docs": "Returns a single feature flag by its key, including all environment-specific configurations and targeting rules."
+        },
+        {
+          "info": {
+            "name": "Update a feature flag",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://app.launchdarkly.com/api/v2/flags/:projectKey/:flagKey",
+            "params": [
+              {
+                "name": "projectKey",
+                "value": "",
+                "type": "path",
+                "description": "The project key identifying a LaunchDarkly project."
+              },
+              {
+                "name": "flagKey",
+                "value": "",
+                "type": "path",
+                "description": "The feature flag key identifying a specific flag."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates a feature flag using a JSON Patch or semantic patch representation. Supports modifying targeting rules, variations, prerequisites, and other flag settings."
+        },
+        {
+          "info": {
+            "name": "Delete a feature flag",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://app.launchdarkly.com/api/v2/flags/:projectKey/:flagKey",
+            "params": [
+              {
+                "name": "projectKey",
+                "value": "",
+                "type": "path",
+                "description": "The project key identifying a LaunchDarkly project."
+              },
+              {
+                "name": "flagKey",
+                "value": "",
+                "type": "path",
+                "description": "The feature flag key identifying a specific flag."
+              }
+            ]
+          },
+          "docs": "Permanently deletes a feature flag and all of its associated targeting rules and environment configurations."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Projects",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List projects",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://app.launchdarkly.com/api/v2/projects",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of projects to return."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "Number of projects to skip for pagination."
+              },
+              {
+                "name": "filter",
+                "value": "",
+                "type": "query",
+                "description": "A filter expression to apply to the project list."
+              }
+            ]
+          },
+          "docs": "Returns a list of all projects in the LaunchDarkly account."
+        },
+        {
+          "info": {
+            "name": "Create a project",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://app.launchdarkly.com/api/v2/projects",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new project with the specified key, name, and default environments."
+        },
+        {
+          "info": {
+            "name": "Get a project",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://app.launchdarkly.com/api/v2/projects/:projectKey",
+            "params": [
+              {
+                "name": "projectKey",
+                "value": "",
+                "type": "path",
+                "description": "The project key identifying a LaunchDarkly project."
+              }
+            ]
+          },
+          "docs": "Returns a single project by its key, including its environments and configuration."
+        },
+        {
+          "info": {
+            "name": "Update a project",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://app.launchdarkly.com/api/v2/projects/:projectKey",
+            "params": [
+              {
+                "name": "projectKey",
+                "value": "",
+                "type": "path",
+                "description": "The project key identifying a LaunchDarkly project."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates a project using a JSON Patch representation."
+        },
+        {
+          "info": {
+            "name": "Delete a project",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://app.launchdarkly.com/api/v2/projects/:projectKey",
+            "params": [
+              {
+                "name": "projectKey",
+                "value": "",
+                "type": "path",
+                "description": "The project key identifying a LaunchDarkly project."
+              }
+            ]
+          },
+          "docs": "Permanently deletes a project and all of its associated feature flags, environments, and other resources."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Environments",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List environments",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://app.launchdarkly.com/api/v2/projects/:projectKey/environments",
+            "params": [
+              {
+                "name": "projectKey",
+                "value": "",
+                "type": "path",
+                "description": "The project key identifying a LaunchDarkly project."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of environments to return."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "Number of environments to skip for pagination."
+              }
+            ]
+          },
+          "docs": "Returns a list of all environments within the specified project."
+        },
+        {
+          "info": {
+            "name": "Create an environment",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://app.launchdarkly.com/api/v2/projects/:projectKey/environments",
+            "params": [
+              {
+                "name": "projectKey",
+                "value": "",
+                "type": "path",
+                "description": "The project key identifying a LaunchDarkly project."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new environment in the specified project."
+        },
+        {
+          "info": {
+            "name": "Get an environment",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://app.launchdarkly.com/api/v2/projects/:projectKey/environments/:environmentKey",
+            "params": [
+              {
+                "name": "projectKey",
+                "value": "",
+                "type": "path",
+                "description": "The project key identifying a LaunchDarkly project."
+              },
+              {
+                "name": "environmentKey",
+                "value": "",
+                "type": "path",
+                "description": "The environment key identifying a specific environment."
+              }
+            ]
+          },
+          "docs": "Returns a single environment by its key within the specified project."
+        },
+        {
+          "info": {
+            "name": "Update an environment",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://app.launchdarkly.com/api/v2/projects/:projectKey/environments/:environmentKey",
+            "params": [
+              {
+                "name": "projectKey",
+                "value": "",
+                "type": "path",
+                "description": "The project key identifying a LaunchDarkly project."
+              },
+              {
+                "name": "environmentKey",
+                "value": "",
+                "type": "path",
+                "description": "The environment key identifying a specific environment."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates an environment using a JSON Patch representation."
+        },
+        {
+          "info": {
+            "name": "Delete an environment",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://app.launchdarkly.com/api/v2/projects/:projectKey/environments/:environmentKey",
+            "params": [
+              {
+                "name": "projectKey",
+                "value": "",
+                "type": "path",
+                "description": "The project key identifying a LaunchDarkly project."
+              },
+              {
+                "name": "environmentKey",
+                "value": "",
+                "type": "path",
+                "description": "The environment key identifying a specific environment."
+              }
+            ]
+          },
+          "docs": "Permanently deletes an environment from the specified project."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Segments",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List segments",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://app.launchdarkly.com/api/v2/segments/:projectKey/:environmentKey",
+            "params": [
+              {
+                "name": "projectKey",
+                "value": "",
+                "type": "path",
+                "description": "The project key identifying a LaunchDarkly project."
+              },
+              {
+                "name": "environmentKey",
+                "value": "",
+                "type": "path",
+                "description": "The environment key identifying a specific environment."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of segments to return."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "Number of segments to skip for pagination."
+              }
+            ]
+          },
+          "docs": "Returns a list of all user segments in the specified project and environment."
+        },
+        {
+          "info": {
+            "name": "Create a segment",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://app.launchdarkly.com/api/v2/segments/:projectKey/:environmentKey",
+            "params": [
+              {
+                "name": "projectKey",
+                "value": "",
+                "type": "path",
+                "description": "The project key identifying a LaunchDarkly project."
+              },
+              {
+                "name": "environmentKey",
+                "value": "",
+                "type": "path",
+                "description": "The environment key identifying a specific environment."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new user segment in the specified project and environment."
+        },
+        {
+          "info": {
+            "name": "Get a segment",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://app.launchdarkly.com/api/v2/segments/:projectKey/:environmentKey/:segmentKey",
+            "params": [
+              {
+                "name": "projectKey",
+                "value": "",
+                "type": "path",
+                "description": "The project key identifying a LaunchDarkly project."
+              },
+              {
+                "name": "environmentKey",
+                "value": "",
+                "type": "path",
+                "description": "The environment key identifying a specific environment."
+              },
+              {
+                "name": "segmentKey",
+                "value": "",
+                "type": "path",
+                "description": "The segment key identifying a specific user segment."
+              }
+            ]
+          },
+          "docs": "Returns a single user segment by its key."
+        },
+        {
+          "info": {
+            "name": "Update a segment",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://app.launchdarkly.com/api/v2/segments/:projectKey/:environmentKey/:segmentKey",
+            "params": [
+              {
+                "name": "projectKey",
+                "value": "",
+                "type": "path",
+                "description": "The project key identifying a LaunchDarkly project."
+              },
+              {
+                "name": "environmentKey",
+                "value": "",
+                "type": "path",
+                "description": "The environment key identifying a specific environment."
+              },
+              {
+                "name": "segmentKey",
+                "value": "",
+                "type": "path",
+                "description": "The segment key identifying a specific user segment."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates a segment using a JSON Patch or semantic patch representation."
+        },
+        {
+          "info": {
+            "name": "Delete a segment",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://app.launchdarkly.com/api/v2/segments/:projectKey/:environmentKey/:segmentKey",
+            "params": [
+              {
+                "name": "projectKey",
+                "value": "",
+                "type": "path",
+                "description": "The project key identifying a LaunchDarkly project."
+              },
+              {
+                "name": "environmentKey",
+                "value": "",
+                "type": "path",
+                "description": "The environment key identifying a specific environment."
+              },
+              {
+                "name": "segmentKey",
+                "value": "",
+                "type": "path",
+                "description": "The segment key identifying a specific user segment."
+              }
+            ]
+          },
+          "docs": "Permanently deletes a user segment."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Webhooks",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List webhooks",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://app.launchdarkly.com/api/v2/webhooks"
+          },
+          "docs": "Returns a list of all webhooks configured in the LaunchDarkly account."
+        },
+        {
+          "info": {
+            "name": "Create a webhook",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://app.launchdarkly.com/api/v2/webhooks",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new webhook subscription that will receive HTTP POST notifications when changes occur in LaunchDarkly."
+        },
+        {
+          "info": {
+            "name": "Get a webhook",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://app.launchdarkly.com/api/v2/webhooks/:webhookId",
+            "params": [
+              {
+                "name": "webhookId",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of a webhook."
+              }
+            ]
+          },
+          "docs": "Returns a single webhook by its identifier."
+        },
+        {
+          "info": {
+            "name": "Update a webhook",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://app.launchdarkly.com/api/v2/webhooks/:webhookId",
+            "params": [
+              {
+                "name": "webhookId",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of a webhook."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates a webhook using a JSON Patch representation."
+        },
+        {
+          "info": {
+            "name": "Delete a webhook",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://app.launchdarkly.com/api/v2/webhooks/:webhookId",
+            "params": [
+              {
+                "name": "webhookId",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of a webhook."
+              }
+            ]
+          },
+          "docs": "Permanently deletes a webhook subscription."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Audit Log",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List audit log entries",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://app.launchdarkly.com/api/v2/auditlog",
+            "params": [
+              {
+                "name": "before",
+                "value": "",
+                "type": "query",
+                "description": "A timestamp filter returning entries before this time (Unix epoch milliseconds)."
+              },
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "A timestamp filter returning entries after this time (Unix epoch milliseconds)."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of entries to return."
+              },
+              {
+                "name": "q",
+                "value": "",
+                "type": "query",
+                "description": "A text filter for searching audit log entries."
+              },
+              {
+                "name": "spec",
+                "value": "",
+                "type": "query",
+                "description": "A resource specifier filter for narrowing entries to specific resource types."
+              }
+            ]
+          },
+          "docs": "Returns a paginated list of audit log entries recording all changes made to resources in the LaunchDarkly account."
+        },
+        {
+          "info": {
+            "name": "Get an audit log entry",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://app.launchdarkly.com/api/v2/auditlog/:auditLogId",
+            "params": [
+              {
+                "name": "auditLogId",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the audit log entry."
+              }
+            ]
+          },
+          "docs": "Returns a single audit log entry by its identifier."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Account Members",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List account members",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://app.launchdarkly.com/api/v2/members",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of members to return."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "Number of members to skip for pagination."
+              },
+              {
+                "name": "filter",
+                "value": "",
+                "type": "query",
+                "description": "A filter expression to apply to the member list."
+              }
+            ]
+          },
+          "docs": "Returns a paginated list of all members in the LaunchDarkly account."
+        },
+        {
+          "info": {
+            "name": "Invite a new member",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://app.launchdarkly.com/api/v2/members",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Sends an invitation to a new member to join the LaunchDarkly account."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Access Tokens",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List access tokens",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://app.launchdarkly.com/api/v2/tokens"
+          },
+          "docs": "Returns a list of all personal and service access tokens in the LaunchDarkly account."
+        },
+        {
+          "info": {
+            "name": "Create an access token",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://app.launchdarkly.com/api/v2/tokens",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new personal or service access token."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Custom Roles",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List custom roles",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://app.launchdarkly.com/api/v2/roles"
+          },
+          "docs": "Returns a list of all custom roles defined in the LaunchDarkly account."
+        },
+        {
+          "info": {
+            "name": "Create a custom role",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://app.launchdarkly.com/api/v2/roles",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new custom role with the specified permissions policy."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Teams",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List teams",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://app.launchdarkly.com/api/v2/teams",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of teams to return."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "Number of teams to skip for pagination."
+              },
+              {
+                "name": "filter",
+                "value": "",
+                "type": "query",
+                "description": "A filter expression to apply to the team list."
+              }
+            ]
+          },
+          "docs": "Returns a list of all teams in the LaunchDarkly account."
+        },
+        {
+          "info": {
+            "name": "Create a team",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://app.launchdarkly.com/api/v2/teams",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new team with the specified name and member list."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Metrics",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List metrics",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://app.launchdarkly.com/api/v2/metrics/:projectKey",
+            "params": [
+              {
+                "name": "projectKey",
+                "value": "",
+                "type": "path",
+                "description": "The project key identifying a LaunchDarkly project."
+              }
+            ]
+          },
+          "docs": "Returns a list of all metrics defined in the specified project."
+        },
+        {
+          "info": {
+            "name": "Create a metric",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://app.launchdarkly.com/api/v2/metrics/:projectKey",
+            "params": [
+              {
+                "name": "projectKey",
+                "value": "",
+                "type": "path",
+                "description": "The project key identifying a LaunchDarkly project."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new metric in the specified project for use in experiments and monitoring."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Experiments",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List experiments",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://app.launchdarkly.com/api/v2/projects/:projectKey/environments/:environmentKey/experiments",
+            "params": [
+              {
+                "name": "projectKey",
+                "value": "",
+                "type": "path",
+                "description": "The project key identifying a LaunchDarkly project."
+              },
+              {
+                "name": "environmentKey",
+                "value": "",
+                "type": "path",
+                "description": "The environment key identifying a specific environment."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of experiments to return."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "Number of experiments to skip for pagination."
+              }
+            ]
+          },
+          "docs": "Returns a list of all experiments in the specified project and environment."
+        },
+        {
+          "info": {
+            "name": "Create an experiment",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://app.launchdarkly.com/api/v2/projects/:projectKey/environments/:environmentKey/experiments",
+            "params": [
+              {
+                "name": "projectKey",
+                "value": "",
+                "type": "path",
+                "description": "The project key identifying a LaunchDarkly project."
+              },
+              {
+                "name": "environmentKey",
+                "value": "",
+                "type": "path",
+                "description": "The environment key identifying a specific environment."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new experiment in the specified project and environment."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Flag Triggers",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List flag triggers",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://app.launchdarkly.com/api/v2/flags/:projectKey/:flagKey/triggers/:environmentKey",
+            "params": [
+              {
+                "name": "projectKey",
+                "value": "",
+                "type": "path",
+                "description": "The project key identifying a LaunchDarkly project."
+              },
+              {
+                "name": "flagKey",
+                "value": "",
+                "type": "path",
+                "description": "The feature flag key identifying a specific flag."
+              },
+              {
+                "name": "environmentKey",
+                "value": "",
+                "type": "path",
+                "description": "The environment key identifying a specific environment."
+              }
+            ]
+          },
+          "docs": "Returns a list of all triggers for the specified feature flag in the given environment."
+        },
+        {
+          "info": {
+            "name": "Create a flag trigger",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://app.launchdarkly.com/api/v2/flags/:projectKey/:flagKey/triggers/:environmentKey",
+            "params": [
+              {
+                "name": "projectKey",
+                "value": "",
+                "type": "path",
+                "description": "The project key identifying a LaunchDarkly project."
+              },
+              {
+                "name": "flagKey",
+                "value": "",
+                "type": "path",
+                "description": "The feature flag key identifying a specific flag."
+              },
+              {
+                "name": "environmentKey",
+                "value": "",
+                "type": "path",
+                "description": "The environment key identifying a specific environment."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new trigger for the specified feature flag that generates a unique URL for external services to toggle the flag."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Relay Proxy Configurations",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List Relay Proxy configurations",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://app.launchdarkly.com/api/v2/account/relay-auto-configs"
+          },
+          "docs": "Returns a list of all Relay Proxy automatic configuration entries."
+        },
+        {
+          "info": {
+            "name": "Create a Relay Proxy configuration",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://app.launchdarkly.com/api/v2/account/relay-auto-configs",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new Relay Proxy automatic configuration entry that generates a unique key for Relay Proxy instances."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Code References",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List code reference repositories",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://app.launchdarkly.com/api/v2/code-refs/repositories"
+          },
+          "docs": "Returns a list of all repositories connected for code reference scanning."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Integration Audit Log Subscriptions",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List integration audit log subscriptions",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://app.launchdarkly.com/api/v2/integrations/:integrationKey/subscriptions",
+            "params": [
+              {
+                "name": "integrationKey",
+                "value": "",
+                "type": "path",
+                "description": "The key identifying the integration type."
+              }
+            ]
+          },
+          "docs": "Returns a list of all audit log event subscriptions for the specified integration."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Default",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List tags",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://app.launchdarkly.com/api/v2/tags",
+            "params": [
+              {
+                "name": "kind",
+                "value": "",
+                "type": "query",
+                "description": "Filter tags by resource kind such as flag, project, environment, or segment."
+              }
+            ]
+          },
+          "docs": "Returns a list of tags used across all resources in the account."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Approvals",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List approval requests for a flag",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://app.launchdarkly.com/api/v2/flags/:projectKey/:flagKey/approval-requests/:environmentKey",
+            "params": [
+              {
+                "name": "projectKey",
+                "value": "",
+                "type": "path",
+                "description": "The project key identifying a LaunchDarkly project."
+              },
+              {
+                "name": "flagKey",
+                "value": "",
+                "type": "path",
+                "description": "The feature flag key identifying a specific flag."
+              },
+              {
+                "name": "environmentKey",
+                "value": "",
+                "type": "path",
+                "description": "The environment key identifying a specific environment."
+              }
+            ]
+          },
+          "docs": "Returns a list of all approval requests for the specified feature flag in the given environment."
+        },
+        {
+          "info": {
+            "name": "Create an approval request",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://app.launchdarkly.com/api/v2/flags/:projectKey/:flagKey/approval-requests/:environmentKey",
+            "params": [
+              {
+                "name": "projectKey",
+                "value": "",
+                "type": "path",
+                "description": "The project key identifying a LaunchDarkly project."
+              },
+              {
+                "name": "flagKey",
+                "value": "",
+                "type": "path",
+                "description": "The feature flag key identifying a specific flag."
+              },
+              {
+                "name": "environmentKey",
+                "value": "",
+                "type": "path",
+                "description": "The environment key identifying a specific environment."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new approval request for a pending change to the specified feature flag."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Workflows",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List workflows",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://app.launchdarkly.com/api/v2/projects/:projectKey/flags/:flagKey/environments/:environmentKey/workflows",
+            "params": [
+              {
+                "name": "projectKey",
+                "value": "",
+                "type": "path",
+                "description": "The project key identifying a LaunchDarkly project."
+              },
+              {
+                "name": "flagKey",
+                "value": "",
+                "type": "path",
+                "description": "The feature flag key identifying a specific flag."
+              },
+              {
+                "name": "environmentKey",
+                "value": "",
+                "type": "path",
+                "description": "The environment key identifying a specific environment."
+              }
+            ]
+          },
+          "docs": "Returns a list of all workflows for the specified feature flag in the given environment."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Releases",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List release pipelines",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://app.launchdarkly.com/api/v2/projects/:projectKey/release-pipelines",
+            "params": [
+              {
+                "name": "projectKey",
+                "value": "",
+                "type": "path",
+                "description": "The project key identifying a LaunchDarkly project."
+              }
+            ]
+          },
+          "docs": "Returns a list of all release pipelines in the specified project."
+        },
+        {
+          "info": {
+            "name": "Create a release pipeline",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://app.launchdarkly.com/api/v2/projects/:projectKey/release-pipelines",
+            "params": [
+              {
+                "name": "projectKey",
+                "value": "",
+                "type": "path",
+                "description": "The project key identifying a LaunchDarkly project."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new release pipeline in the specified project for coordinating feature flag rollouts across environments."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,82 +1,89 @@
-# LaunchDarkly (launchdarkly)
-LaunchDarkly is a feature management platform that enables development teams to safely deploy, control, and measure software features at scale. Their developer platform provides REST APIs, webhook integrations, and a relay proxy for managing feature flags, targeting rules, user segments, experimentation, and release pipelines across environments.
+# launchdarkly (launchdarkly)
 
-**URL:** [Visit APIs.json URL](https://raw.githubusercontent.com/api-evangelist/launchdarkly/refs/heads/main/apis.yml)
+LaunchDarkly is a feature management platform that enables development teams to deliver and control software through feature flags, allowing them to test in production and roll out features safely.
 
-## Scope
-
-- **Type:** Contract
-- **Position:** Consuming
-- **Access:** 3rd-Party
-
-## Tags:
-
- - Feature Flags, Feature Management, Experimentation, Toggles, Webhooks, Proxy
+**APIs.json:** [https://raw.githubusercontent.com/api-evangelist/launchdarkly/refs/heads/main/apis.yml](https://raw.githubusercontent.com/api-evangelist/launchdarkly/refs/heads/main/apis.yml)
 
 ## Timestamps
 
-- **Created:** 2025-03-05
-- **Modified:** 2026-04-28
+- **Modified:** 2026-05-19
 
 ## APIs
 
 ### LaunchDarkly REST API
-The LaunchDarkly REST API provides programmatic access to the full LaunchDarkly feature management platform. Developers can create, update, and manage feature flags, targeting rules, user segments, projects, environments, and team members. The API also supports scheduled flag changes, release pipelines, experimentation, approval workflows, and webhook integrations. Authentication is handled via personal or service access tokens, and the API follows a versioned scheme with the current default version being 20240415.
 
-**Human URL:** [https://apidocs.launchdarkly.com/](https://apidocs.launchdarkly.com/)
+The LaunchDarkly REST API provides programmatic access to the full LaunchDarkly feature management platform. Developers can create, update, and manage feature flags, targeting rules, user segments, projects, environments, and team members. The API also supports scheduled flag changes, release pipelines, experimentation, approval workflows, and webhook integrations.
 
+- **Human URL:** [https://apidocs.launchdarkly.com/](https://apidocs.launchdarkly.com/)
+- **Base URL:** `https://app.launchdarkly.com/api/v2`
 
-#### Tags:
+#### Tags
 
- - Feature Flags, Feature Management, Experimentation, Toggles, Segments, Environments
+- Environments
+- Experimentation
+- Feature Flags
+- Feature Management
+- Segments
+- Toggles
 
 #### Properties
 
 - [Documentation](https://apidocs.launchdarkly.com/)
-- [OpenAPI](openapi/launchdarkly-rest-api-openapi.yml)
+- [OpenAPI](openapi/launchdarkly-rest-api-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
+- [Postman Collection](collections/launchdarkly-rest-api.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/launchdarkly-rest-api.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
 
 ### LaunchDarkly Webhooks API
+
 The LaunchDarkly Webhooks API allows developers to build custom integrations that subscribe to activity events within LaunchDarkly. When actions occur such as flag changes, project creation, or environment modifications, LaunchDarkly sends HTTP POST payloads to configured webhook URLs. This enables use cases like updating external issue trackers, notifying support systems of feature rollouts, and triggering downstream automation workflows based on feature flag lifecycle events.
 
-**Human URL:** [https://launchdarkly.com/docs/api/webhooks](https://launchdarkly.com/docs/api/webhooks)
+- **Human URL:** [https://launchdarkly.com/docs/api/webhooks](https://launchdarkly.com/docs/api/webhooks)
+- **Base URL:** `https://app.launchdarkly.com/api/v2`
 
+#### Tags
 
-#### Tags:
-
- - Webhooks, Events, Integrations, Notifications
+- Events
+- Integrations
+- Notifications
+- Webhooks
 
 #### Properties
 
 - [Documentation](https://launchdarkly.com/docs/api/webhooks)
-- [AsyncAPI](asyncapi/launchdarkly-webhooks-asyncapi.yml)
+- [AsyncAPI](asyncapi/launchdarkly-webhooks-asyncapi.yml) — [AsyncAPI Specification](https://www.asyncapi.com/docs/reference/specification/latest)
+- [Postman Collection](collections/launchdarkly-relay-proxy.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/launchdarkly-relay-proxy.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [Postman Collection](collections/launchdarkly-rest-api.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/launchdarkly-rest-api.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
 
 ### LaunchDarkly Relay Proxy
-The LaunchDarkly Relay Proxy is a small Go application that connects to the LaunchDarkly streaming API and proxies that connection to SDK clients within an organization's network. Instead of each server making outbound connections to LaunchDarkly's streaming service, multiple servers connect to the local Relay Proxy which maintains a single connection upstream. It supports configuration for exporting metrics to Datadog, Stackdriver, and Prometheus, and can run in daemon mode for server-side SDKs that use a persistent data store.
 
-**Human URL:** [https://launchdarkly.com/docs/sdk/relay-proxy](https://launchdarkly.com/docs/sdk/relay-proxy)
+The LaunchDarkly Relay Proxy is a small Go application that connects to the LaunchDarkly streaming API and proxies that connection to SDK clients within an organization's network. Instead of each server making outbound connections to LaunchDarkly's streaming service, multiple servers connect to the local Relay Proxy which maintains a single connection upstream.
 
+- **Human URL:** [https://launchdarkly.com/docs/sdk/relay-proxy](https://launchdarkly.com/docs/sdk/relay-proxy)
+- **Base URL:** `https://api.example.com`
 
-#### Tags:
+#### Tags
 
- - Proxy, Streaming, Performance, Edge, Infrastructure
+- Edge
+- Infrastructure
+- Performance
+- Proxy
+- Streaming
 
 #### Properties
 
 - [Documentation](https://launchdarkly.com/docs/sdk/relay-proxy)
-- [OpenAPI](openapi/launchdarkly-relay-proxy-openapi.yml)
+- [OpenAPI](openapi/launchdarkly-relay-proxy-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
+- [Postman Collection](collections/launchdarkly-relay-proxy.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/launchdarkly-relay-proxy.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
 
 ## Common Properties
 
-- [Portal](https://launchdarkly.com/docs/)
-- [Documentation](https://apidocs.launchdarkly.com/)
-- [Website](https://launchdarkly.com/)
-- [PrivacyPolicy](https://launchdarkly.com/policies/privacy/)
-- [TermsOfService](https://launchdarkly.com/policies/terms-of-service/)
-- [Blog](https://launchdarkly.com/blog/)
-- [Login](https://app.launchdarkly.com/)
-
-## Maintainers
-
-**FN:** API Evangelist
-
-**Email:** info@apievangelist.com
+- [GitHub Organization](https://github.com/launchdarkly)
+- [LinkedIn](https://www.linkedin.com/company/launchdarkly)
+- [JSON Schema](json-schema/launchdarkly-feature-flag-schema.json) — [JSON Schema](https://json-schema.org/specification)
+- [JSON Schema](json-schema/launchdarkly-webhook-event-schema.json) — [JSON Schema](https://json-schema.org/specification)
+- [JSON-LD](json-ld/launchdarkly-context.jsonld) — [JSON-LD](https://www.w3.org/TR/json-ld11/)
+- [Features](undefined)
+- [L L Ms Txt](https://apidocs.launchdarkly.com/llms.txt)
