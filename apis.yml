@@ -10,7 +10,7 @@ apis:
   - Feature Management
   - Segments
   - Toggles
-  image: https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
   baseURL: https://app.launchdarkly.com/api/v2
   humanURL: https://apidocs.launchdarkly.com/
   properties:
@@ -32,7 +32,7 @@ apis:
   - Integrations
   - Notifications
   - Webhooks
-  image: https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
   baseURL: https://app.launchdarkly.com/api/v2
   humanURL: https://launchdarkly.com/docs/api/webhooks
   properties:
@@ -55,7 +55,7 @@ apis:
   - Performance
   - Proxy
   - Streaming
-  image: https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
   baseURL: https://api.example.com
   humanURL: https://launchdarkly.com/docs/sdk/relay-proxy
   properties:
