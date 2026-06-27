@@ -100,7 +100,7 @@ common:
   sources:
   - https://launchdarkly.com/pricing/
   updated: '2026-05-04'
-- type: LLMsTxt
+- type: LlmsText
   url: https://apidocs.launchdarkly.com/llms.txt
 modified: '2026-05-19'
 description: LaunchDarkly is a feature management platform that enables development
