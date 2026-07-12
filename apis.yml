@@ -69,6 +69,10 @@ apis:
     to LaunchDarkly's streaming service, multiple servers connect to the local Relay
     Proxy which maintains a single connection upstream.
 common:
+- type: DomainSecurity
+  url: security/launchdarkly-domain-security.yml
+- type: Authentication
+  url: authentication/launchdarkly-authentication.yml
 - type: GitHubOrganization
   url: https://github.com/launchdarkly
 - type: LinkedIn
@@ -79,6 +83,8 @@ common:
   url: json-schema/launchdarkly-webhook-event-schema.json
 - type: JSONLD
   url: json-ld/launchdarkly-context.jsonld
+- type: Blog
+  url: https://launchdarkly.com/blog/feed/
 - type: Features
   data:
   - 'Developer free: unlimited flags, seats, 30 SDKs, 5K replays, 10M logs'

@@ -1,0 +1,24 @@
+generated: '2026-07-11'
+method: derived
+source: openapi/launchdarkly-relay-proxy-openapi.yml, openapi/launchdarkly-rest-api-openapi.yml
+summary:
+  types:
+  - apiKey
+  - http
+  api_key_in:
+  - header
+schemes:
+- name: sdkKeyAuth
+  type: apiKey
+  in: header
+  parameter: Authorization
+  description: Server-side SDK key for authenticating with the Relay Proxy.
+  sources:
+  - openapi/launchdarkly-relay-proxy-openapi.yml
+- name: bearerAuth
+  type: http
+  scheme: bearer
+  description: LaunchDarkly API access token. Create personal or service tokens in the LaunchDarkly
+    dashboard under Account Settings.
+  sources:
+  - openapi/launchdarkly-rest-api-openapi.yml
