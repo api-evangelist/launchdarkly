@@ -69,6 +69,8 @@ apis:
     to LaunchDarkly's streaming service, multiple servers connect to the local Relay
     Proxy which maintains a single connection upstream.
 common:
+- type: AgenticAccess
+  url: agentic-access/launchdarkly-agentic-access.yml
 - type: DomainSecurity
   url: security/launchdarkly-domain-security.yml
 - type: Authentication
