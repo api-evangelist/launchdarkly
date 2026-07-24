@@ -1,0 +1,300 @@
+openapi: 3.1.0
+info:
+  title: LaunchDarkly Relay Proxy Access Tokens Webhooks API
+  description: The LaunchDarkly Relay Proxy is a small Go application that connects to the LaunchDarkly streaming API and proxies that connection to SDK clients within an organization's network. It exposes endpoints for status monitoring, flag evaluation, and SDK streaming that mirror the LaunchDarkly service endpoints. Instead of each server making outbound connections to LaunchDarkly's streaming service, multiple servers connect to the local Relay Proxy which maintains a single upstream connection.
+  version: '8.0'
+  contact:
+    name: LaunchDarkly Support
+    url: https://support.launchdarkly.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+servers:
+- url: http://localhost:8030
+  description: Default Relay Proxy instance
+tags:
+- name: Webhooks
+  description: Configure webhooks to receive HTTP POST notifications when changes occur in LaunchDarkly.
+paths:
+  /webhooks:
+    get:
+      operationId: listWebhooks
+      summary: List webhooks
+      description: Returns a list of all webhooks configured in the LaunchDarkly account.
+      tags:
+      - Webhooks
+      responses:
+        '200':
+          description: Successful response containing a list of webhooks.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Webhooks'
+        '401':
+          description: Unauthorized. Invalid or missing access token.
+    post:
+      operationId: createWebhook
+      summary: Create a webhook
+      description: Creates a new webhook subscription that will receive HTTP POST notifications when changes occur in LaunchDarkly.
+      tags:
+      - Webhooks
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookBody'
+      responses:
+        '201':
+          description: Webhook created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Webhook'
+        '400':
+          description: Invalid request body.
+        '401':
+          description: Unauthorized. Invalid or missing access token.
+  /webhooks/{webhookId}:
+    get:
+      operationId: getWebhook
+      summary: Get a webhook
+      description: Returns a single webhook by its identifier.
+      tags:
+      - Webhooks
+      parameters:
+      - $ref: '#/components/parameters/WebhookId'
+      responses:
+        '200':
+          description: Successful response containing the webhook.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Webhook'
+        '401':
+          description: Unauthorized. Invalid or missing access token.
+        '404':
+          description: Webhook not found.
+    patch:
+      operationId: patchWebhook
+      summary: Update a webhook
+      description: Updates a webhook using a JSON Patch representation.
+      tags:
+      - Webhooks
+      parameters:
+      - $ref: '#/components/parameters/WebhookId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchOperation'
+      responses:
+        '200':
+          description: Webhook updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Webhook'
+        '400':
+          description: Invalid patch request.
+        '401':
+          description: Unauthorized. Invalid or missing access token.
+        '404':
+          description: Webhook not found.
+    delete:
+      operationId: deleteWebhook
+      summary: Delete a webhook
+      description: Permanently deletes a webhook subscription.
+      tags:
+      - Webhooks
+      parameters:
+      - $ref: '#/components/parameters/WebhookId'
+      responses:
+        '204':
+          description: Webhook deleted successfully.
+        '401':
+          description: Unauthorized. Invalid or missing access token.
+        '404':
+          description: Webhook not found.
+components:
+  schemas:
+    Statement:
+      type: object
+      description: A policy statement controlling resource access or event filtering.
+      properties:
+        effect:
+          type: string
+          description: Whether this statement allows or denies the action.
+          enum:
+          - allow
+          - deny
+        resources:
+          type: array
+          description: Resource specifiers this statement applies to.
+          items:
+            type: string
+        notResources:
+          type: array
+          description: Resource specifiers this statement does not apply to.
+          items:
+            type: string
+        actions:
+          type: array
+          description: The actions this statement applies to.
+          items:
+            type: string
+        notActions:
+          type: array
+          description: The actions this statement does not apply to.
+          items:
+            type: string
+    Webhook:
+      type: object
+      description: A webhook configuration for receiving change notifications.
+      properties:
+        _id:
+          type: string
+          description: The unique identifier of this webhook.
+        url:
+          type: string
+          format: uri
+          description: The URL to receive webhook POST requests.
+        secret:
+          type: string
+          description: The shared secret used to sign webhook payloads.
+        true:
+          type: boolean
+          description: Whether this webhook is currently enabled.
+        name:
+          type: string
+          description: The human-readable name of this webhook.
+        tags:
+          type: array
+          description: Tags applied to this webhook.
+          items:
+            type: string
+        statements:
+          type: array
+          description: Policy statements filtering which events trigger this webhook.
+          items:
+            $ref: '#/components/schemas/Statement'
+        _links:
+          $ref: '#/components/schemas/Links'
+    PatchOperation:
+      type: object
+      description: A JSON Patch or semantic patch request.
+      properties:
+        patch:
+          type: array
+          description: An array of JSON Patch operations.
+          items:
+            type: object
+            required:
+            - op
+            - path
+            properties:
+              op:
+                type: string
+                description: The patch operation type.
+                enum:
+                - add
+                - remove
+                - replace
+                - move
+                - copy
+                - test
+              path:
+                type: string
+                description: The JSON Pointer path to the target field.
+              value:
+                description: The value to apply for add or replace operations.
+        comment:
+          type: string
+          description: An optional comment describing the change.
+    Webhooks:
+      type: object
+      description: A collection of webhooks.
+      properties:
+        items:
+          type: array
+          description: The list of webhooks.
+          items:
+            $ref: '#/components/schemas/Webhook'
+        _links:
+          $ref: '#/components/schemas/Links'
+    WebhookBody:
+      type: object
+      description: The request body for creating a new webhook.
+      required:
+      - url
+      - true
+      properties:
+        url:
+          type: string
+          format: uri
+          description: The URL to receive webhook POST requests.
+        secret:
+          type: string
+          description: A shared secret for signing webhook payloads.
+        true:
+          type: boolean
+          description: Whether the webhook should be enabled.
+        name:
+          type: string
+          description: A human-readable name for the webhook.
+        tags:
+          type: array
+          description: Tags to apply to the webhook.
+          items:
+            type: string
+        statements:
+          type: array
+          description: Policy statements filtering which events trigger this webhook.
+          items:
+            $ref: '#/components/schemas/Statement'
+    Links:
+      type: object
+      description: HATEOAS links for navigating related resources.
+      properties:
+        self:
+          type: object
+          description: A link to this resource.
+          properties:
+            href:
+              type: string
+              description: The URL of this resource.
+            type:
+              type: string
+              description: The media type.
+      additionalProperties:
+        type: object
+        properties:
+          href:
+            type: string
+            description: The URL of the linked resource.
+          type:
+            type: string
+            description: The media type.
+  parameters:
+    WebhookId:
+      name: webhookId
+      in: path
+      required: true
+      description: The unique identifier of a webhook.
+      schema:
+        type: string
+  securitySchemes:
+    sdkKeyAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: Server-side SDK key for authenticating with the Relay Proxy.
+    mobileKeyAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: Mobile SDK key for authenticating with the Relay Proxy.
+externalDocs:
+  description: Relay Proxy Documentation
+  url: https://launchdarkly.com/docs/sdk/relay-proxy

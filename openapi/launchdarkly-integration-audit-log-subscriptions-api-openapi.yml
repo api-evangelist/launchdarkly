@@ -1,0 +1,100 @@
+openapi: 3.1.0
+info:
+  title: LaunchDarkly Relay Proxy Access Tokens Integration Audit Log Subscriptions API
+  description: The LaunchDarkly Relay Proxy is a small Go application that connects to the LaunchDarkly streaming API and proxies that connection to SDK clients within an organization's network. It exposes endpoints for status monitoring, flag evaluation, and SDK streaming that mirror the LaunchDarkly service endpoints. Instead of each server making outbound connections to LaunchDarkly's streaming service, multiple servers connect to the local Relay Proxy which maintains a single upstream connection.
+  version: '8.0'
+  contact:
+    name: LaunchDarkly Support
+    url: https://support.launchdarkly.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+servers:
+- url: http://localhost:8030
+  description: Default Relay Proxy instance
+tags:
+- name: Integration Audit Log Subscriptions
+  description: Manage integrations that subscribe to audit log events and forward them to external tools.
+paths:
+  /integrations/{integrationKey}/subscriptions:
+    get:
+      operationId: listIntegrationSubscriptions
+      summary: List integration audit log subscriptions
+      description: Returns a list of all audit log event subscriptions for the specified integration.
+      tags:
+      - Integration Audit Log Subscriptions
+      parameters:
+      - name: integrationKey
+        in: path
+        required: true
+        description: The key identifying the integration type.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response containing integration subscriptions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IntegrationSubscriptions'
+        '401':
+          description: Unauthorized. Invalid or missing access token.
+        '404':
+          description: Integration not found.
+components:
+  schemas:
+    IntegrationSubscriptions:
+      type: object
+      description: A collection of integration audit log subscriptions.
+      properties:
+        items:
+          type: array
+          description: The list of integration subscriptions.
+          items:
+            type: object
+            properties:
+              _id:
+                type: string
+                description: The subscription identifier.
+              name:
+                type: string
+                description: The subscription name.
+              _links:
+                $ref: '#/components/schemas/Links'
+    Links:
+      type: object
+      description: HATEOAS links for navigating related resources.
+      properties:
+        self:
+          type: object
+          description: A link to this resource.
+          properties:
+            href:
+              type: string
+              description: The URL of this resource.
+            type:
+              type: string
+              description: The media type.
+      additionalProperties:
+        type: object
+        properties:
+          href:
+            type: string
+            description: The URL of the linked resource.
+          type:
+            type: string
+            description: The media type.
+  securitySchemes:
+    sdkKeyAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: Server-side SDK key for authenticating with the Relay Proxy.
+    mobileKeyAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: Mobile SDK key for authenticating with the Relay Proxy.
+externalDocs:
+  description: Relay Proxy Documentation
+  url: https://launchdarkly.com/docs/sdk/relay-proxy

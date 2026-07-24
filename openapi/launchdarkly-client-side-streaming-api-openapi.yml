@@ -1,0 +1,70 @@
+openapi: 3.1.0
+info:
+  title: LaunchDarkly Relay Proxy Access Tokens Client-Side Streaming API
+  description: The LaunchDarkly Relay Proxy is a small Go application that connects to the LaunchDarkly streaming API and proxies that connection to SDK clients within an organization's network. It exposes endpoints for status monitoring, flag evaluation, and SDK streaming that mirror the LaunchDarkly service endpoints. Instead of each server making outbound connections to LaunchDarkly's streaming service, multiple servers connect to the local Relay Proxy which maintains a single upstream connection.
+  version: '8.0'
+  contact:
+    name: LaunchDarkly Support
+    url: https://support.launchdarkly.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+servers:
+- url: http://localhost:8030
+  description: Default Relay Proxy instance
+tags:
+- name: Client-Side Streaming
+  description: Server-Sent Events streaming endpoints for client-side and mobile SDKs to receive real-time flag updates.
+paths:
+  /eval/{envId}/{contextBase64}:
+    get:
+      operationId: streamClientSideEval
+      summary: Stream evaluated flags (client-side)
+      description: Establishes a Server-Sent Events (SSE) stream that delivers evaluated flag values for the given context to client-side SDKs.
+      tags:
+      - Client-Side Streaming
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentId'
+      - $ref: '#/components/parameters/ContextBase64'
+      responses:
+        '200':
+          description: SSE stream delivering evaluated flag values.
+          content:
+            text/event-stream:
+              schema:
+                type: string
+                description: Server-Sent Events stream with evaluated flag data.
+        '401':
+          description: Unauthorized. Invalid environment ID.
+        '503':
+          description: Service unavailable. Flag data not yet available.
+components:
+  parameters:
+    ContextBase64:
+      name: contextBase64
+      in: path
+      required: true
+      description: A base64-encoded JSON representation of the evaluation context.
+      schema:
+        type: string
+    EnvironmentId:
+      name: envId
+      in: path
+      required: true
+      description: The client-side environment ID.
+      schema:
+        type: string
+  securitySchemes:
+    sdkKeyAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: Server-side SDK key for authenticating with the Relay Proxy.
+    mobileKeyAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: Mobile SDK key for authenticating with the Relay Proxy.
+externalDocs:
+  description: Relay Proxy Documentation
+  url: https://launchdarkly.com/docs/sdk/relay-proxy

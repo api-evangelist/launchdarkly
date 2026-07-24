@@ -1,0 +1,171 @@
+openapi: 3.1.0
+info:
+  title: LaunchDarkly Relay Proxy Access Tokens API
+  description: The LaunchDarkly Relay Proxy is a small Go application that connects to the LaunchDarkly streaming API and proxies that connection to SDK clients within an organization's network. It exposes endpoints for status monitoring, flag evaluation, and SDK streaming that mirror the LaunchDarkly service endpoints. Instead of each server making outbound connections to LaunchDarkly's streaming service, multiple servers connect to the local Relay Proxy which maintains a single upstream connection.
+  version: '8.0'
+  contact:
+    name: LaunchDarkly Support
+    url: https://support.launchdarkly.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+servers:
+- url: http://localhost:8030
+  description: Default Relay Proxy instance
+tags:
+- name: Access Tokens
+  description: Create and manage personal and service access tokens used to authenticate API requests.
+paths:
+  /tokens:
+    get:
+      operationId: listAccessTokens
+      summary: List access tokens
+      description: Returns a list of all personal and service access tokens in the LaunchDarkly account.
+      tags:
+      - Access Tokens
+      responses:
+        '200':
+          description: Successful response containing a list of access tokens.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccessTokens'
+        '401':
+          description: Unauthorized. Invalid or missing access token.
+    post:
+      operationId: createAccessToken
+      summary: Create an access token
+      description: Creates a new personal or service access token.
+      tags:
+      - Access Tokens
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccessTokenBody'
+      responses:
+        '201':
+          description: Access token created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccessToken'
+        '400':
+          description: Invalid request body.
+        '401':
+          description: Unauthorized. Invalid or missing access token.
+components:
+  schemas:
+    AccessTokens:
+      type: object
+      description: A collection of access tokens.
+      properties:
+        items:
+          type: array
+          description: The list of access tokens.
+          items:
+            $ref: '#/components/schemas/AccessToken'
+        _links:
+          $ref: '#/components/schemas/Links'
+    AccessToken:
+      type: object
+      description: A personal or service access token.
+      properties:
+        _id:
+          type: string
+          description: The unique identifier of this token.
+        name:
+          type: string
+          description: The human-readable name of this token.
+        role:
+          type: string
+          description: The built-in role associated with this token.
+        customRoleIds:
+          type: array
+          description: Custom role identifiers assigned to this token.
+          items:
+            type: string
+        token:
+          type: string
+          description: The token value. Only returned at creation time.
+        serviceToken:
+          type: boolean
+          description: Whether this is a service token.
+        defaultApiVersion:
+          type: integer
+          description: The default API version for this token.
+        creationDate:
+          type: integer
+          format: int64
+          description: Unix epoch timestamp when the token was created.
+        lastUsed:
+          type: integer
+          format: int64
+          description: Unix epoch timestamp when the token was last used.
+        _links:
+          $ref: '#/components/schemas/Links'
+    AccessTokenBody:
+      type: object
+      description: The request body for creating a new access token.
+      required:
+      - name
+      properties:
+        name:
+          type: string
+          description: A human-readable name for the token.
+        role:
+          type: string
+          description: The built-in role to assign.
+          enum:
+          - reader
+          - writer
+          - admin
+        customRoleIds:
+          type: array
+          description: Custom role identifiers to assign.
+          items:
+            type: string
+        serviceToken:
+          type: boolean
+          description: Whether to create a service token.
+        defaultApiVersion:
+          type: integer
+          description: The default API version for this token.
+    Links:
+      type: object
+      description: HATEOAS links for navigating related resources.
+      properties:
+        self:
+          type: object
+          description: A link to this resource.
+          properties:
+            href:
+              type: string
+              description: The URL of this resource.
+            type:
+              type: string
+              description: The media type.
+      additionalProperties:
+        type: object
+        properties:
+          href:
+            type: string
+            description: The URL of the linked resource.
+          type:
+            type: string
+            description: The media type.
+  securitySchemes:
+    sdkKeyAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: Server-side SDK key for authenticating with the Relay Proxy.
+    mobileKeyAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: Mobile SDK key for authenticating with the Relay Proxy.
+externalDocs:
+  description: Relay Proxy Documentation
+  url: https://launchdarkly.com/docs/sdk/relay-proxy

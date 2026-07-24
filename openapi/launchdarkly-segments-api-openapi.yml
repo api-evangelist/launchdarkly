@@ -1,0 +1,370 @@
+openapi: 3.1.0
+info:
+  title: LaunchDarkly Relay Proxy Access Tokens Segments API
+  description: The LaunchDarkly Relay Proxy is a small Go application that connects to the LaunchDarkly streaming API and proxies that connection to SDK clients within an organization's network. It exposes endpoints for status monitoring, flag evaluation, and SDK streaming that mirror the LaunchDarkly service endpoints. Instead of each server making outbound connections to LaunchDarkly's streaming service, multiple servers connect to the local Relay Proxy which maintains a single upstream connection.
+  version: '8.0'
+  contact:
+    name: LaunchDarkly Support
+    url: https://support.launchdarkly.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+servers:
+- url: http://localhost:8030
+  description: Default Relay Proxy instance
+tags:
+- name: Segments
+  description: Create and manage user segments for targeting groups of contexts with feature flags.
+paths:
+  /segments/{projectKey}/{environmentKey}:
+    get:
+      operationId: listSegments
+      summary: List segments
+      description: Returns a list of all user segments in the specified project and environment.
+      tags:
+      - Segments
+      parameters:
+      - $ref: '#/components/parameters/ProjectKey'
+      - $ref: '#/components/parameters/EnvironmentKey'
+      - name: limit
+        in: query
+        description: Maximum number of segments to return.
+        schema:
+          type: integer
+      - name: offset
+        in: query
+        description: Number of segments to skip for pagination.
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Successful response containing a list of segments.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Segments'
+        '401':
+          description: Unauthorized. Invalid or missing access token.
+        '404':
+          description: Project or environment not found.
+    post:
+      operationId: createSegment
+      summary: Create a segment
+      description: Creates a new user segment in the specified project and environment.
+      tags:
+      - Segments
+      parameters:
+      - $ref: '#/components/parameters/ProjectKey'
+      - $ref: '#/components/parameters/EnvironmentKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SegmentBody'
+      responses:
+        '201':
+          description: Segment created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Segment'
+        '400':
+          description: Invalid request body.
+        '401':
+          description: Unauthorized. Invalid or missing access token.
+        '409':
+          description: A segment with the given key already exists.
+  /segments/{projectKey}/{environmentKey}/{segmentKey}:
+    get:
+      operationId: getSegment
+      summary: Get a segment
+      description: Returns a single user segment by its key.
+      tags:
+      - Segments
+      parameters:
+      - $ref: '#/components/parameters/ProjectKey'
+      - $ref: '#/components/parameters/EnvironmentKey'
+      - $ref: '#/components/parameters/SegmentKey'
+      responses:
+        '200':
+          description: Successful response containing the segment.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Segment'
+        '401':
+          description: Unauthorized. Invalid or missing access token.
+        '404':
+          description: Segment not found.
+    patch:
+      operationId: patchSegment
+      summary: Update a segment
+      description: Updates a segment using a JSON Patch or semantic patch representation.
+      tags:
+      - Segments
+      parameters:
+      - $ref: '#/components/parameters/ProjectKey'
+      - $ref: '#/components/parameters/EnvironmentKey'
+      - $ref: '#/components/parameters/SegmentKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchOperation'
+      responses:
+        '200':
+          description: Segment updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Segment'
+        '400':
+          description: Invalid patch request.
+        '401':
+          description: Unauthorized. Invalid or missing access token.
+        '404':
+          description: Segment not found.
+    delete:
+      operationId: deleteSegment
+      summary: Delete a segment
+      description: Permanently deletes a user segment.
+      tags:
+      - Segments
+      parameters:
+      - $ref: '#/components/parameters/ProjectKey'
+      - $ref: '#/components/parameters/EnvironmentKey'
+      - $ref: '#/components/parameters/SegmentKey'
+      responses:
+        '204':
+          description: Segment deleted successfully.
+        '401':
+          description: Unauthorized. Invalid or missing access token.
+        '404':
+          description: Segment not found.
+components:
+  schemas:
+    Segment:
+      type: object
+      description: A user segment for targeting groups of contexts.
+      properties:
+        key:
+          type: string
+          description: The segment key.
+        name:
+          type: string
+          description: The human-readable name of the segment.
+        description:
+          type: string
+          description: A description of the segment.
+        tags:
+          type: array
+          description: Tags applied to this segment.
+          items:
+            type: string
+        creationDate:
+          type: integer
+          format: int64
+          description: Unix epoch timestamp when the segment was created.
+        included:
+          type: array
+          description: Context keys explicitly included in this segment.
+          items:
+            type: string
+        excluded:
+          type: array
+          description: Context keys explicitly excluded from this segment.
+          items:
+            type: string
+        rules:
+          type: array
+          description: Targeting rules for this segment.
+          items:
+            $ref: '#/components/schemas/SegmentRule'
+        version:
+          type: integer
+          description: The current version of this segment.
+        _links:
+          $ref: '#/components/schemas/Links'
+    Clause:
+      type: object
+      description: A condition clause used in targeting rules.
+      properties:
+        attribute:
+          type: string
+          description: The context attribute to evaluate.
+        op:
+          type: string
+          description: The comparison operator.
+          enum:
+          - in
+          - endsWith
+          - startsWith
+          - matches
+          - contains
+          - lessThan
+          - lessThanOrEqual
+          - greaterThan
+          - greaterThanOrEqual
+          - before
+          - after
+          - segmentMatch
+          - semVerEqual
+          - semVerLessThan
+          - semVerGreaterThan
+        values:
+          type: array
+          description: The values to compare against.
+          items: {}
+        negate:
+          type: boolean
+          description: Whether to negate the clause.
+        contextKind:
+          type: string
+          description: The context kind to evaluate.
+    SegmentBody:
+      type: object
+      description: The request body for creating a new user segment.
+      required:
+      - name
+      - key
+      properties:
+        name:
+          type: string
+          description: The human-readable name of the segment.
+        key:
+          type: string
+          description: The segment key.
+        description:
+          type: string
+          description: A description of the segment.
+        tags:
+          type: array
+          description: Tags to apply to the segment.
+          items:
+            type: string
+    SegmentRule:
+      type: object
+      description: A targeting rule within a user segment.
+      properties:
+        _id:
+          type: string
+          description: The unique identifier for this rule.
+        clauses:
+          type: array
+          description: The conditions for this rule.
+          items:
+            $ref: '#/components/schemas/Clause'
+        weight:
+          type: integer
+          description: The percentage of matching contexts to include (0-100000 in thousandths of a percent).
+        bucketBy:
+          type: string
+          description: The attribute to bucket by for percentage inclusion.
+    PatchOperation:
+      type: object
+      description: A JSON Patch or semantic patch request.
+      properties:
+        patch:
+          type: array
+          description: An array of JSON Patch operations.
+          items:
+            type: object
+            required:
+            - op
+            - path
+            properties:
+              op:
+                type: string
+                description: The patch operation type.
+                enum:
+                - add
+                - remove
+                - replace
+                - move
+                - copy
+                - test
+              path:
+                type: string
+                description: The JSON Pointer path to the target field.
+              value:
+                description: The value to apply for add or replace operations.
+        comment:
+          type: string
+          description: An optional comment describing the change.
+    Segments:
+      type: object
+      description: A paginated collection of user segments.
+      properties:
+        items:
+          type: array
+          description: The list of user segments.
+          items:
+            $ref: '#/components/schemas/Segment'
+        totalCount:
+          type: integer
+          description: The total number of segments.
+        _links:
+          $ref: '#/components/schemas/Links'
+    Links:
+      type: object
+      description: HATEOAS links for navigating related resources.
+      properties:
+        self:
+          type: object
+          description: A link to this resource.
+          properties:
+            href:
+              type: string
+              description: The URL of this resource.
+            type:
+              type: string
+              description: The media type.
+      additionalProperties:
+        type: object
+        properties:
+          href:
+            type: string
+            description: The URL of the linked resource.
+          type:
+            type: string
+            description: The media type.
+  parameters:
+    EnvironmentKey:
+      name: environmentKey
+      in: path
+      required: true
+      description: The environment key identifying a specific environment.
+      schema:
+        type: string
+        pattern: ^[a-z0-9]([a-z0-9-])*$
+    ProjectKey:
+      name: projectKey
+      in: path
+      required: true
+      description: The project key identifying a LaunchDarkly project.
+      schema:
+        type: string
+        pattern: ^[a-z0-9]([a-z0-9-])*$
+    SegmentKey:
+      name: segmentKey
+      in: path
+      required: true
+      description: The segment key identifying a specific user segment.
+      schema:
+        type: string
+  securitySchemes:
+    sdkKeyAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: Server-side SDK key for authenticating with the Relay Proxy.
+    mobileKeyAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: Mobile SDK key for authenticating with the Relay Proxy.
+externalDocs:
+  description: Relay Proxy Documentation
+  url: https://launchdarkly.com/docs/sdk/relay-proxy

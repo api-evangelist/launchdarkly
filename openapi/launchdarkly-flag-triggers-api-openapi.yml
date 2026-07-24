@@ -1,0 +1,194 @@
+openapi: 3.1.0
+info:
+  title: LaunchDarkly Relay Proxy Access Tokens Flag Triggers API
+  description: The LaunchDarkly Relay Proxy is a small Go application that connects to the LaunchDarkly streaming API and proxies that connection to SDK clients within an organization's network. It exposes endpoints for status monitoring, flag evaluation, and SDK streaming that mirror the LaunchDarkly service endpoints. Instead of each server making outbound connections to LaunchDarkly's streaming service, multiple servers connect to the local Relay Proxy which maintains a single upstream connection.
+  version: '8.0'
+  contact:
+    name: LaunchDarkly Support
+    url: https://support.launchdarkly.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+servers:
+- url: http://localhost:8030
+  description: Default Relay Proxy instance
+tags:
+- name: Flag Triggers
+  description: Create triggers that allow external services to toggle feature flags via unique webhook URLs.
+paths:
+  /flags/{projectKey}/{flagKey}/triggers/{environmentKey}:
+    get:
+      operationId: listFlagTriggers
+      summary: List flag triggers
+      description: Returns a list of all triggers for the specified feature flag in the given environment.
+      tags:
+      - Flag Triggers
+      parameters:
+      - $ref: '#/components/parameters/ProjectKey'
+      - $ref: '#/components/parameters/FlagKey'
+      - $ref: '#/components/parameters/EnvironmentKey'
+      responses:
+        '200':
+          description: Successful response containing a list of flag triggers.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FlagTriggers'
+        '401':
+          description: Unauthorized. Invalid or missing access token.
+        '404':
+          description: Flag or environment not found.
+    post:
+      operationId: createFlagTrigger
+      summary: Create a flag trigger
+      description: Creates a new trigger for the specified feature flag that generates a unique URL for external services to toggle the flag.
+      tags:
+      - Flag Triggers
+      parameters:
+      - $ref: '#/components/parameters/ProjectKey'
+      - $ref: '#/components/parameters/FlagKey'
+      - $ref: '#/components/parameters/EnvironmentKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FlagTriggerBody'
+      responses:
+        '201':
+          description: Flag trigger created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FlagTrigger'
+        '400':
+          description: Invalid request body.
+        '401':
+          description: Unauthorized. Invalid or missing access token.
+components:
+  parameters:
+    FlagKey:
+      name: flagKey
+      in: path
+      required: true
+      description: The feature flag key identifying a specific flag.
+      schema:
+        type: string
+        pattern: ^[a-z0-9]([a-z0-9._-])*$
+    EnvironmentKey:
+      name: environmentKey
+      in: path
+      required: true
+      description: The environment key identifying a specific environment.
+      schema:
+        type: string
+        pattern: ^[a-z0-9]([a-z0-9-])*$
+    ProjectKey:
+      name: projectKey
+      in: path
+      required: true
+      description: The project key identifying a LaunchDarkly project.
+      schema:
+        type: string
+        pattern: ^[a-z0-9]([a-z0-9-])*$
+  schemas:
+    FlagTriggers:
+      type: object
+      description: A collection of flag triggers.
+      properties:
+        items:
+          type: array
+          description: The list of flag triggers.
+          items:
+            $ref: '#/components/schemas/FlagTrigger'
+        _links:
+          $ref: '#/components/schemas/Links'
+    FlagTrigger:
+      type: object
+      description: A trigger that provides a unique URL for external services to toggle a feature flag.
+      properties:
+        _id:
+          type: string
+          description: The unique identifier of this trigger.
+        _version:
+          type: integer
+          description: The version number of this trigger.
+        triggerUrl:
+          type: string
+          format: uri
+          description: The unique URL for triggering flag changes.
+        enabled:
+          type: boolean
+          description: Whether this trigger is enabled.
+        instructions:
+          type: array
+          description: The instructions executed when the trigger fires.
+          items:
+            type: object
+            properties:
+              kind:
+                type: string
+                description: The type of instruction to execute.
+                enum:
+                - turnFlagOn
+                - turnFlagOff
+        _links:
+          $ref: '#/components/schemas/Links'
+    FlagTriggerBody:
+      type: object
+      description: The request body for creating a new flag trigger.
+      required:
+      - instructions
+      properties:
+        comment:
+          type: string
+          description: An optional comment describing the trigger.
+        instructions:
+          type: array
+          description: The instructions to execute when the trigger fires.
+          items:
+            type: object
+            properties:
+              kind:
+                type: string
+                description: The type of instruction.
+                enum:
+                - turnFlagOn
+                - turnFlagOff
+    Links:
+      type: object
+      description: HATEOAS links for navigating related resources.
+      properties:
+        self:
+          type: object
+          description: A link to this resource.
+          properties:
+            href:
+              type: string
+              description: The URL of this resource.
+            type:
+              type: string
+              description: The media type.
+      additionalProperties:
+        type: object
+        properties:
+          href:
+            type: string
+            description: The URL of the linked resource.
+          type:
+            type: string
+            description: The media type.
+  securitySchemes:
+    sdkKeyAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: Server-side SDK key for authenticating with the Relay Proxy.
+    mobileKeyAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: Mobile SDK key for authenticating with the Relay Proxy.
+externalDocs:
+  description: Relay Proxy Documentation
+  url: https://launchdarkly.com/docs/sdk/relay-proxy

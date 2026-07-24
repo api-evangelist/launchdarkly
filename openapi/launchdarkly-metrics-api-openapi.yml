@@ -1,0 +1,207 @@
+openapi: 3.1.0
+info:
+  title: LaunchDarkly Relay Proxy Access Tokens Metrics API
+  description: The LaunchDarkly Relay Proxy is a small Go application that connects to the LaunchDarkly streaming API and proxies that connection to SDK clients within an organization's network. It exposes endpoints for status monitoring, flag evaluation, and SDK streaming that mirror the LaunchDarkly service endpoints. Instead of each server making outbound connections to LaunchDarkly's streaming service, multiple servers connect to the local Relay Proxy which maintains a single upstream connection.
+  version: '8.0'
+  contact:
+    name: LaunchDarkly Support
+    url: https://support.launchdarkly.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+servers:
+- url: http://localhost:8030
+  description: Default Relay Proxy instance
+tags:
+- name: Metrics
+  description: Define and manage metrics used to measure experiment outcomes and feature flag impact.
+paths:
+  /metrics/{projectKey}:
+    get:
+      operationId: listMetrics
+      summary: List metrics
+      description: Returns a list of all metrics defined in the specified project.
+      tags:
+      - Metrics
+      parameters:
+      - $ref: '#/components/parameters/ProjectKey'
+      responses:
+        '200':
+          description: Successful response containing a list of metrics.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Metrics'
+        '401':
+          description: Unauthorized. Invalid or missing access token.
+        '404':
+          description: Project not found.
+    post:
+      operationId: createMetric
+      summary: Create a metric
+      description: Creates a new metric in the specified project for use in experiments and monitoring.
+      tags:
+      - Metrics
+      parameters:
+      - $ref: '#/components/parameters/ProjectKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MetricBody'
+      responses:
+        '201':
+          description: Metric created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Metric'
+        '400':
+          description: Invalid request body.
+        '401':
+          description: Unauthorized. Invalid or missing access token.
+        '409':
+          description: A metric with the given key already exists.
+components:
+  parameters:
+    ProjectKey:
+      name: projectKey
+      in: path
+      required: true
+      description: The project key identifying a LaunchDarkly project.
+      schema:
+        type: string
+        pattern: ^[a-z0-9]([a-z0-9-])*$
+  schemas:
+    Metrics:
+      type: object
+      description: A collection of metrics.
+      properties:
+        items:
+          type: array
+          description: The list of metrics.
+          items:
+            $ref: '#/components/schemas/Metric'
+        _links:
+          $ref: '#/components/schemas/Links'
+    MetricBody:
+      type: object
+      description: The request body for creating a new metric.
+      required:
+      - name
+      - key
+      - kind
+      properties:
+        name:
+          type: string
+          description: The human-readable name of the metric.
+        key:
+          type: string
+          description: The metric key.
+        kind:
+          type: string
+          description: The type of metric.
+          enum:
+          - pageview
+          - click
+          - custom
+        description:
+          type: string
+          description: A description of the metric.
+        tags:
+          type: array
+          description: Tags to apply to the metric.
+          items:
+            type: string
+        selector:
+          type: string
+          description: The CSS selector for click metrics.
+        urls:
+          type: array
+          description: URL patterns for pageview and click metrics.
+          items:
+            type: object
+            properties:
+              kind:
+                type: string
+                description: The type of URL pattern.
+                enum:
+                - exact
+                - canonical
+                - substring
+                - regex
+              url:
+                type: string
+                description: The URL pattern value.
+    Metric:
+      type: object
+      description: A metric used to measure experiment outcomes.
+      properties:
+        _id:
+          type: string
+          description: The unique identifier of this metric.
+        key:
+          type: string
+          description: The metric key.
+        name:
+          type: string
+          description: The human-readable name of the metric.
+        description:
+          type: string
+          description: A description of the metric.
+        kind:
+          type: string
+          description: The type of metric.
+          enum:
+          - pageview
+          - click
+          - custom
+        tags:
+          type: array
+          description: Tags applied to this metric.
+          items:
+            type: string
+        creationDate:
+          type: integer
+          format: int64
+          description: Unix epoch timestamp when the metric was created.
+        _links:
+          $ref: '#/components/schemas/Links'
+    Links:
+      type: object
+      description: HATEOAS links for navigating related resources.
+      properties:
+        self:
+          type: object
+          description: A link to this resource.
+          properties:
+            href:
+              type: string
+              description: The URL of this resource.
+            type:
+              type: string
+              description: The media type.
+      additionalProperties:
+        type: object
+        properties:
+          href:
+            type: string
+            description: The URL of the linked resource.
+          type:
+            type: string
+            description: The media type.
+  securitySchemes:
+    sdkKeyAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: Server-side SDK key for authenticating with the Relay Proxy.
+    mobileKeyAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: Mobile SDK key for authenticating with the Relay Proxy.
+externalDocs:
+  description: Relay Proxy Documentation
+  url: https://launchdarkly.com/docs/sdk/relay-proxy

@@ -1,0 +1,101 @@
+openapi: 3.1.0
+info:
+  title: LaunchDarkly Relay Proxy Access Tokens Server-Side Evaluation API
+  description: The LaunchDarkly Relay Proxy is a small Go application that connects to the LaunchDarkly streaming API and proxies that connection to SDK clients within an organization's network. It exposes endpoints for status monitoring, flag evaluation, and SDK streaming that mirror the LaunchDarkly service endpoints. Instead of each server making outbound connections to LaunchDarkly's streaming service, multiple servers connect to the local Relay Proxy which maintains a single upstream connection.
+  version: '8.0'
+  contact:
+    name: LaunchDarkly Support
+    url: https://support.launchdarkly.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+servers:
+- url: http://localhost:8030
+  description: Default Relay Proxy instance
+tags:
+- name: Server-Side Evaluation
+  description: Flag evaluation endpoints for server-side SDKs using SDK keys for authentication.
+paths:
+  /sdk/evalx/contexts/{contextBase64}:
+    get:
+      operationId: evaluateAllFlagsForContext
+      summary: Evaluate all flags for a context (GET)
+      description: Evaluates all feature flags for the given context and returns the results. The context is provided as a base64-encoded JSON object in the URL path. Requires an SDK key in the Authorization header.
+      tags:
+      - Server-Side Evaluation
+      security:
+      - sdkKeyAuth: []
+      parameters:
+      - $ref: '#/components/parameters/ContextBase64'
+      responses:
+        '200':
+          description: Successful response with all flag evaluations for the context.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FlagEvaluations'
+        '401':
+          description: Unauthorized. The SDK key does not match any environment configured in the Relay Proxy.
+        '503':
+          description: Service unavailable. The Relay Proxy has not yet received flag data from LaunchDarkly for this environment.
+components:
+  schemas:
+    FlagEvaluations:
+      type: object
+      description: A map of flag keys to their evaluated results for a context.
+      additionalProperties:
+        $ref: '#/components/schemas/FlagEvaluation'
+    FlagEvaluation:
+      type: object
+      description: The evaluated result of a single feature flag.
+      properties:
+        value:
+          description: The evaluated value of the flag for the given context.
+        variation:
+          type: integer
+          description: The index of the variation that was served.
+        version:
+          type: integer
+          description: The version number of the flag.
+        trackEvents:
+          type: boolean
+          description: Whether analytics events should be tracked for this flag.
+        trackReason:
+          type: boolean
+          description: Whether the evaluation reason should be included in events.
+        reason:
+          type: object
+          description: The reason for the evaluation result.
+          properties:
+            kind:
+              type: string
+              description: The kind of evaluation reason.
+              enum:
+              - false
+              - FALLTHROUGH
+              - TARGET_MATCH
+              - RULE_MATCH
+              - PREREQUISITE_FAILED
+              - ERROR
+  parameters:
+    ContextBase64:
+      name: contextBase64
+      in: path
+      required: true
+      description: A base64-encoded JSON representation of the evaluation context.
+      schema:
+        type: string
+  securitySchemes:
+    sdkKeyAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: Server-side SDK key for authenticating with the Relay Proxy.
+    mobileKeyAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: Mobile SDK key for authenticating with the Relay Proxy.
+externalDocs:
+  description: Relay Proxy Documentation
+  url: https://launchdarkly.com/docs/sdk/relay-proxy

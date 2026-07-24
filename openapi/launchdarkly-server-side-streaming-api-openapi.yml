@@ -1,0 +1,75 @@
+openapi: 3.1.0
+info:
+  title: LaunchDarkly Relay Proxy Access Tokens Server-Side Streaming API
+  description: The LaunchDarkly Relay Proxy is a small Go application that connects to the LaunchDarkly streaming API and proxies that connection to SDK clients within an organization's network. It exposes endpoints for status monitoring, flag evaluation, and SDK streaming that mirror the LaunchDarkly service endpoints. Instead of each server making outbound connections to LaunchDarkly's streaming service, multiple servers connect to the local Relay Proxy which maintains a single upstream connection.
+  version: '8.0'
+  contact:
+    name: LaunchDarkly Support
+    url: https://support.launchdarkly.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+servers:
+- url: http://localhost:8030
+  description: Default Relay Proxy instance
+tags:
+- name: Server-Side Streaming
+  description: Server-Sent Events streaming endpoints for server-side SDKs to receive real-time flag updates.
+paths:
+  /all:
+    get:
+      operationId: streamAllFlags
+      summary: Stream all flag data (server-side)
+      description: Establishes a Server-Sent Events (SSE) stream that delivers real-time flag data updates for server-side SDKs. Requires an SDK key in the Authorization header.
+      tags:
+      - Server-Side Streaming
+      security:
+      - sdkKeyAuth: []
+      responses:
+        '200':
+          description: SSE stream delivering flag data updates.
+          content:
+            text/event-stream:
+              schema:
+                type: string
+                description: Server-Sent Events stream with put and patch events.
+        '401':
+          description: Unauthorized. Invalid SDK key.
+        '503':
+          description: Service unavailable. Flag data not yet available.
+  /flags:
+    get:
+      operationId: streamFlagsOnly
+      summary: Stream flag updates (server-side)
+      description: Establishes a Server-Sent Events (SSE) stream that delivers only flag updates (not segments) for server-side SDKs.
+      tags:
+      - Server-Side Streaming
+      security:
+      - sdkKeyAuth: []
+      responses:
+        '200':
+          description: SSE stream delivering flag updates.
+          content:
+            text/event-stream:
+              schema:
+                type: string
+                description: Server-Sent Events stream with flag events.
+        '401':
+          description: Unauthorized. Invalid SDK key.
+        '503':
+          description: Service unavailable.
+components:
+  securitySchemes:
+    sdkKeyAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: Server-side SDK key for authenticating with the Relay Proxy.
+    mobileKeyAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: Mobile SDK key for authenticating with the Relay Proxy.
+externalDocs:
+  description: Relay Proxy Documentation
+  url: https://launchdarkly.com/docs/sdk/relay-proxy

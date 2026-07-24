@@ -1,0 +1,201 @@
+openapi: 3.1.0
+info:
+  title: LaunchDarkly Relay Proxy Access Tokens Releases API
+  description: The LaunchDarkly Relay Proxy is a small Go application that connects to the LaunchDarkly streaming API and proxies that connection to SDK clients within an organization's network. It exposes endpoints for status monitoring, flag evaluation, and SDK streaming that mirror the LaunchDarkly service endpoints. Instead of each server making outbound connections to LaunchDarkly's streaming service, multiple servers connect to the local Relay Proxy which maintains a single upstream connection.
+  version: '8.0'
+  contact:
+    name: LaunchDarkly Support
+    url: https://support.launchdarkly.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+servers:
+- url: http://localhost:8030
+  description: Default Relay Proxy instance
+tags:
+- name: Releases
+  description: Manage release pipelines for coordinating feature flag rollouts across environments.
+paths:
+  /projects/{projectKey}/release-pipelines:
+    get:
+      operationId: listReleasePipelines
+      summary: List release pipelines
+      description: Returns a list of all release pipelines in the specified project.
+      tags:
+      - Releases
+      parameters:
+      - $ref: '#/components/parameters/ProjectKey'
+      responses:
+        '200':
+          description: Successful response containing release pipelines.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReleasePipelines'
+        '401':
+          description: Unauthorized. Invalid or missing access token.
+        '404':
+          description: Project not found.
+    post:
+      operationId: createReleasePipeline
+      summary: Create a release pipeline
+      description: Creates a new release pipeline in the specified project for coordinating feature flag rollouts across environments.
+      tags:
+      - Releases
+      parameters:
+      - $ref: '#/components/parameters/ProjectKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReleasePipelineBody'
+      responses:
+        '201':
+          description: Release pipeline created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReleasePipeline'
+        '400':
+          description: Invalid request body.
+        '401':
+          description: Unauthorized. Invalid or missing access token.
+components:
+  parameters:
+    ProjectKey:
+      name: projectKey
+      in: path
+      required: true
+      description: The project key identifying a LaunchDarkly project.
+      schema:
+        type: string
+        pattern: ^[a-z0-9]([a-z0-9-])*$
+  schemas:
+    ReleasePipeline:
+      type: object
+      description: A release pipeline for coordinating flag rollouts.
+      properties:
+        key:
+          type: string
+          description: The release pipeline key.
+        name:
+          type: string
+          description: The human-readable name of the release pipeline.
+        description:
+          type: string
+          description: A description of the release pipeline.
+        phases:
+          type: array
+          description: The ordered phases of the release pipeline.
+          items:
+            type: object
+            properties:
+              _id:
+                type: string
+                description: The phase identifier.
+              name:
+                type: string
+                description: The phase name.
+              audiences:
+                type: array
+                description: The audiences for this phase.
+                items:
+                  type: object
+                  properties:
+                    environmentKey:
+                      type: string
+                      description: The environment key.
+                    name:
+                      type: string
+                      description: The audience name.
+        _links:
+          $ref: '#/components/schemas/Links'
+    ReleasePipelineBody:
+      type: object
+      description: The request body for creating a release pipeline.
+      required:
+      - name
+      - key
+      - phases
+      properties:
+        name:
+          type: string
+          description: The human-readable name of the release pipeline.
+        key:
+          type: string
+          description: The release pipeline key.
+        description:
+          type: string
+          description: A description of the release pipeline.
+        phases:
+          type: array
+          description: The ordered phases of the release pipeline.
+          items:
+            type: object
+            required:
+            - audiences
+            properties:
+              name:
+                type: string
+                description: The phase name.
+              audiences:
+                type: array
+                description: The audiences for this phase.
+                items:
+                  type: object
+                  required:
+                  - environmentKey
+                  properties:
+                    environmentKey:
+                      type: string
+                      description: The environment key.
+                    name:
+                      type: string
+                      description: The audience name.
+    ReleasePipelines:
+      type: object
+      description: A collection of release pipelines.
+      properties:
+        items:
+          type: array
+          description: The list of release pipelines.
+          items:
+            $ref: '#/components/schemas/ReleasePipeline'
+    Links:
+      type: object
+      description: HATEOAS links for navigating related resources.
+      properties:
+        self:
+          type: object
+          description: A link to this resource.
+          properties:
+            href:
+              type: string
+              description: The URL of this resource.
+            type:
+              type: string
+              description: The media type.
+      additionalProperties:
+        type: object
+        properties:
+          href:
+            type: string
+            description: The URL of the linked resource.
+          type:
+            type: string
+            description: The media type.
+  securitySchemes:
+    sdkKeyAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: Server-side SDK key for authenticating with the Relay Proxy.
+    mobileKeyAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: Mobile SDK key for authenticating with the Relay Proxy.
+externalDocs:
+  description: Relay Proxy Documentation
+  url: https://launchdarkly.com/docs/sdk/relay-proxy

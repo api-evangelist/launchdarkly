@@ -1,0 +1,188 @@
+openapi: 3.1.0
+info:
+  title: LaunchDarkly Relay Proxy Access Tokens Teams API
+  description: The LaunchDarkly Relay Proxy is a small Go application that connects to the LaunchDarkly streaming API and proxies that connection to SDK clients within an organization's network. It exposes endpoints for status monitoring, flag evaluation, and SDK streaming that mirror the LaunchDarkly service endpoints. Instead of each server making outbound connections to LaunchDarkly's streaming service, multiple servers connect to the local Relay Proxy which maintains a single upstream connection.
+  version: '8.0'
+  contact:
+    name: LaunchDarkly Support
+    url: https://support.launchdarkly.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+servers:
+- url: http://localhost:8030
+  description: Default Relay Proxy instance
+tags:
+- name: Teams
+  description: Organize account members into teams for collaborative flag management and permissions.
+paths:
+  /teams:
+    get:
+      operationId: listTeams
+      summary: List teams
+      description: Returns a list of all teams in the LaunchDarkly account.
+      tags:
+      - Teams
+      parameters:
+      - name: limit
+        in: query
+        description: Maximum number of teams to return.
+        schema:
+          type: integer
+      - name: offset
+        in: query
+        description: Number of teams to skip for pagination.
+        schema:
+          type: integer
+      - name: filter
+        in: query
+        description: A filter expression to apply to the team list.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response containing a list of teams.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Teams'
+        '401':
+          description: Unauthorized. Invalid or missing access token.
+    post:
+      operationId: createTeam
+      summary: Create a team
+      description: Creates a new team with the specified name and member list.
+      tags:
+      - Teams
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TeamBody'
+      responses:
+        '201':
+          description: Team created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Team'
+        '400':
+          description: Invalid request body.
+        '401':
+          description: Unauthorized. Invalid or missing access token.
+        '409':
+          description: A team with the given key already exists.
+components:
+  schemas:
+    Teams:
+      type: object
+      description: A paginated collection of teams.
+      properties:
+        items:
+          type: array
+          description: The list of teams.
+          items:
+            $ref: '#/components/schemas/Team'
+        totalCount:
+          type: integer
+          description: The total number of teams.
+        _links:
+          $ref: '#/components/schemas/Links'
+    TeamBody:
+      type: object
+      description: The request body for creating a new team.
+      required:
+      - name
+      - key
+      properties:
+        name:
+          type: string
+          description: The human-readable name of the team.
+        key:
+          type: string
+          description: The team key.
+        description:
+          type: string
+          description: A description of the team.
+        memberIDs:
+          type: array
+          description: Member identifiers to add to the team.
+          items:
+            type: string
+        customRoleKeys:
+          type: array
+          description: Custom role keys to assign to the team.
+          items:
+            type: string
+    Team:
+      type: object
+      description: A team of account members.
+      properties:
+        key:
+          type: string
+          description: The team key.
+        name:
+          type: string
+          description: The human-readable name of the team.
+        description:
+          type: string
+          description: A description of the team.
+        members:
+          type: object
+          description: Summary of team members.
+          properties:
+            totalCount:
+              type: integer
+              description: The total number of members.
+        roles:
+          type: object
+          description: Summary of team roles.
+          properties:
+            totalCount:
+              type: integer
+              description: The total number of roles assigned.
+        customRoleKeys:
+          type: array
+          description: Custom role keys assigned to this team.
+          items:
+            type: string
+        _links:
+          $ref: '#/components/schemas/Links'
+    Links:
+      type: object
+      description: HATEOAS links for navigating related resources.
+      properties:
+        self:
+          type: object
+          description: A link to this resource.
+          properties:
+            href:
+              type: string
+              description: The URL of this resource.
+            type:
+              type: string
+              description: The media type.
+      additionalProperties:
+        type: object
+        properties:
+          href:
+            type: string
+            description: The URL of the linked resource.
+          type:
+            type: string
+            description: The media type.
+  securitySchemes:
+    sdkKeyAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: Server-side SDK key for authenticating with the Relay Proxy.
+    mobileKeyAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: Mobile SDK key for authenticating with the Relay Proxy.
+externalDocs:
+  description: Relay Proxy Documentation
+  url: https://launchdarkly.com/docs/sdk/relay-proxy

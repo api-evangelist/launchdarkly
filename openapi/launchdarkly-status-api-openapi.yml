@@ -1,0 +1,121 @@
+openapi: 3.1.0
+info:
+  title: LaunchDarkly Relay Proxy Access Tokens Status API
+  description: The LaunchDarkly Relay Proxy is a small Go application that connects to the LaunchDarkly streaming API and proxies that connection to SDK clients within an organization's network. It exposes endpoints for status monitoring, flag evaluation, and SDK streaming that mirror the LaunchDarkly service endpoints. Instead of each server making outbound connections to LaunchDarkly's streaming service, multiple servers connect to the local Relay Proxy which maintains a single upstream connection.
+  version: '8.0'
+  contact:
+    name: LaunchDarkly Support
+    url: https://support.launchdarkly.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+servers:
+- url: http://localhost:8030
+  description: Default Relay Proxy instance
+tags:
+- name: Status
+  description: Health and status monitoring endpoints for the Relay Proxy. No authentication is required for these endpoints.
+paths:
+  /status:
+    get:
+      operationId: getRelayProxyStatus
+      summary: Get Relay Proxy status
+      description: Returns the overall health status of the Relay Proxy and detailed connection status for each configured environment. No authentication is required. The top-level status is "healthy" if all environments are connected, or "degraded" if any environment is disconnected.
+      tags:
+      - Status
+      responses:
+        '200':
+          description: Successful response containing the Relay Proxy status.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RelayProxyStatus'
+components:
+  schemas:
+    RelayProxyStatus:
+      type: object
+      description: The overall status of the Relay Proxy and its environments.
+      properties:
+        status:
+          type: string
+          description: The overall health status of the Relay Proxy.
+          enum:
+          - healthy
+          - degraded
+        environments:
+          type: object
+          description: A map of environment names to their connection status.
+          additionalProperties:
+            $ref: '#/components/schemas/EnvironmentStatus'
+        version:
+          type: string
+          description: The version of the Relay Proxy.
+    EnvironmentStatus:
+      type: object
+      description: The connection status of a single environment.
+      properties:
+        status:
+          type: string
+          description: Whether the environment is currently connected or disconnected.
+          enum:
+          - connected
+          - disconnected
+        connectionStatus:
+          type: object
+          description: Detailed connection status information.
+          properties:
+            state:
+              type: string
+              description: The current connection state. VALID means connected, INITIALIZING means still starting up, INTERRUPTED means currently experiencing a problem, OFF means permanently failed due to an invalid SDK key.
+              enum:
+              - VALID
+              - INITIALIZING
+              - INTERRUPTED
+              - false
+            stateSince:
+              type: integer
+              format: int64
+              description: Unix epoch timestamp when the current state began.
+            lastError:
+              type: object
+              description: Details about the last connection error, if any.
+              properties:
+                kind:
+                  type: string
+                  description: The type of error.
+                time:
+                  type: integer
+                  format: int64
+                  description: Unix epoch timestamp when the error occurred.
+        sdkKey:
+          type: string
+          description: The last four characters of the SDK key for this environment.
+        envId:
+          type: string
+          description: The client-side environment ID.
+        envKey:
+          type: string
+          description: The environment key.
+        envName:
+          type: string
+          description: The environment name.
+        projKey:
+          type: string
+          description: The project key.
+        projName:
+          type: string
+          description: The project name.
+  securitySchemes:
+    sdkKeyAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: Server-side SDK key for authenticating with the Relay Proxy.
+    mobileKeyAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: Mobile SDK key for authenticating with the Relay Proxy.
+externalDocs:
+  description: Relay Proxy Documentation
+  url: https://launchdarkly.com/docs/sdk/relay-proxy

@@ -1,0 +1,184 @@
+openapi: 3.1.0
+info:
+  title: LaunchDarkly Relay Proxy Access Tokens Custom Roles API
+  description: The LaunchDarkly Relay Proxy is a small Go application that connects to the LaunchDarkly streaming API and proxies that connection to SDK clients within an organization's network. It exposes endpoints for status monitoring, flag evaluation, and SDK streaming that mirror the LaunchDarkly service endpoints. Instead of each server making outbound connections to LaunchDarkly's streaming service, multiple servers connect to the local Relay Proxy which maintains a single upstream connection.
+  version: '8.0'
+  contact:
+    name: LaunchDarkly Support
+    url: https://support.launchdarkly.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+servers:
+- url: http://localhost:8030
+  description: Default Relay Proxy instance
+tags:
+- name: Custom Roles
+  description: Define custom roles with fine-grained permissions using resource specifiers and actions.
+paths:
+  /roles:
+    get:
+      operationId: listCustomRoles
+      summary: List custom roles
+      description: Returns a list of all custom roles defined in the LaunchDarkly account.
+      tags:
+      - Custom Roles
+      responses:
+        '200':
+          description: Successful response containing a list of custom roles.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomRoles'
+        '401':
+          description: Unauthorized. Invalid or missing access token.
+    post:
+      operationId: createCustomRole
+      summary: Create a custom role
+      description: Creates a new custom role with the specified permissions policy.
+      tags:
+      - Custom Roles
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomRoleBody'
+      responses:
+        '201':
+          description: Custom role created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomRole'
+        '400':
+          description: Invalid request body.
+        '401':
+          description: Unauthorized. Invalid or missing access token.
+        '409':
+          description: A custom role with the given key already exists.
+components:
+  schemas:
+    Statement:
+      type: object
+      description: A policy statement controlling resource access or event filtering.
+      properties:
+        effect:
+          type: string
+          description: Whether this statement allows or denies the action.
+          enum:
+          - allow
+          - deny
+        resources:
+          type: array
+          description: Resource specifiers this statement applies to.
+          items:
+            type: string
+        notResources:
+          type: array
+          description: Resource specifiers this statement does not apply to.
+          items:
+            type: string
+        actions:
+          type: array
+          description: The actions this statement applies to.
+          items:
+            type: string
+        notActions:
+          type: array
+          description: The actions this statement does not apply to.
+          items:
+            type: string
+    CustomRoles:
+      type: object
+      description: A collection of custom roles.
+      properties:
+        items:
+          type: array
+          description: The list of custom roles.
+          items:
+            $ref: '#/components/schemas/CustomRole'
+        _links:
+          $ref: '#/components/schemas/Links'
+    CustomRoleBody:
+      type: object
+      description: The request body for creating a custom role.
+      required:
+      - name
+      - key
+      - policy
+      properties:
+        name:
+          type: string
+          description: The human-readable name of the custom role.
+        key:
+          type: string
+          description: The custom role key.
+        description:
+          type: string
+          description: A description of the custom role.
+        policy:
+          type: array
+          description: The policy statements defining permissions.
+          items:
+            $ref: '#/components/schemas/Statement'
+    CustomRole:
+      type: object
+      description: A custom role with fine-grained permissions.
+      properties:
+        _id:
+          type: string
+          description: The unique identifier of this custom role.
+        key:
+          type: string
+          description: The custom role key.
+        name:
+          type: string
+          description: The human-readable name of this custom role.
+        description:
+          type: string
+          description: A description of this custom role.
+        policy:
+          type: array
+          description: The policy statements defining permissions.
+          items:
+            $ref: '#/components/schemas/Statement'
+        _links:
+          $ref: '#/components/schemas/Links'
+    Links:
+      type: object
+      description: HATEOAS links for navigating related resources.
+      properties:
+        self:
+          type: object
+          description: A link to this resource.
+          properties:
+            href:
+              type: string
+              description: The URL of this resource.
+            type:
+              type: string
+              description: The media type.
+      additionalProperties:
+        type: object
+        properties:
+          href:
+            type: string
+            description: The URL of the linked resource.
+          type:
+            type: string
+            description: The media type.
+  securitySchemes:
+    sdkKeyAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: Server-side SDK key for authenticating with the Relay Proxy.
+    mobileKeyAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: Mobile SDK key for authenticating with the Relay Proxy.
+externalDocs:
+  description: Relay Proxy Documentation
+  url: https://launchdarkly.com/docs/sdk/relay-proxy

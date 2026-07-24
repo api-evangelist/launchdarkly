@@ -1,0 +1,195 @@
+openapi: 3.1.0
+info:
+  title: LaunchDarkly Relay Proxy Access Tokens Audit Log API
+  description: The LaunchDarkly Relay Proxy is a small Go application that connects to the LaunchDarkly streaming API and proxies that connection to SDK clients within an organization's network. It exposes endpoints for status monitoring, flag evaluation, and SDK streaming that mirror the LaunchDarkly service endpoints. Instead of each server making outbound connections to LaunchDarkly's streaming service, multiple servers connect to the local Relay Proxy which maintains a single upstream connection.
+  version: '8.0'
+  contact:
+    name: LaunchDarkly Support
+    url: https://support.launchdarkly.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+servers:
+- url: http://localhost:8030
+  description: Default Relay Proxy instance
+tags:
+- name: Audit Log
+  description: Access the change history of all modifications made to resources in the LaunchDarkly account.
+paths:
+  /auditlog:
+    get:
+      operationId: listAuditLogEntries
+      summary: List audit log entries
+      description: Returns a paginated list of audit log entries recording all changes made to resources in the LaunchDarkly account.
+      tags:
+      - Audit Log
+      parameters:
+      - name: before
+        in: query
+        description: A timestamp filter returning entries before this time (Unix epoch milliseconds).
+        schema:
+          type: integer
+          format: int64
+      - name: after
+        in: query
+        description: A timestamp filter returning entries after this time (Unix epoch milliseconds).
+        schema:
+          type: integer
+          format: int64
+      - name: limit
+        in: query
+        description: Maximum number of entries to return.
+        schema:
+          type: integer
+      - name: q
+        in: query
+        description: A text filter for searching audit log entries.
+        schema:
+          type: string
+      - name: spec
+        in: query
+        description: A resource specifier filter for narrowing entries to specific resource types.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response containing audit log entries.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuditLogEntries'
+        '401':
+          description: Unauthorized. Invalid or missing access token.
+  /auditlog/{auditLogId}:
+    get:
+      operationId: getAuditLogEntry
+      summary: Get an audit log entry
+      description: Returns a single audit log entry by its identifier.
+      tags:
+      - Audit Log
+      parameters:
+      - name: auditLogId
+        in: path
+        required: true
+        description: The unique identifier of the audit log entry.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response containing the audit log entry.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuditLogEntry'
+        '401':
+          description: Unauthorized. Invalid or missing access token.
+        '404':
+          description: Audit log entry not found.
+components:
+  schemas:
+    AuditLogEntries:
+      type: object
+      description: A paginated collection of audit log entries.
+      properties:
+        items:
+          type: array
+          description: The list of audit log entries.
+          items:
+            $ref: '#/components/schemas/AuditLogEntry'
+        _links:
+          $ref: '#/components/schemas/Links'
+    MemberSummary:
+      type: object
+      description: A summary of a member who performed an action.
+      properties:
+        _id:
+          type: string
+          description: The unique identifier of the member.
+        email:
+          type: string
+          format: email
+          description: The email address of the member.
+        firstName:
+          type: string
+          description: The first name of the member.
+        lastName:
+          type: string
+          description: The last name of the member.
+        _links:
+          $ref: '#/components/schemas/Links'
+    AuditLogEntry:
+      type: object
+      description: A single audit log entry recording a change to a resource.
+      properties:
+        _id:
+          type: string
+          description: The unique identifier of this audit log entry.
+        date:
+          type: integer
+          format: int64
+          description: Unix epoch timestamp in milliseconds when the change occurred.
+        kind:
+          type: string
+          description: The kind of resource that was changed.
+        name:
+          type: string
+          description: The name of the changed resource.
+        description:
+          type: string
+          description: A markdown-formatted description of the changes made.
+        shortDescription:
+          type: string
+          description: A brief summary of the change.
+        member:
+          $ref: '#/components/schemas/MemberSummary'
+        accesses:
+          type: array
+          description: The access details for this change.
+          items:
+            type: object
+            properties:
+              action:
+                type: string
+                description: The action performed.
+              resource:
+                type: string
+                description: The resource specifier.
+        _links:
+          $ref: '#/components/schemas/Links'
+    Links:
+      type: object
+      description: HATEOAS links for navigating related resources.
+      properties:
+        self:
+          type: object
+          description: A link to this resource.
+          properties:
+            href:
+              type: string
+              description: The URL of this resource.
+            type:
+              type: string
+              description: The media type.
+      additionalProperties:
+        type: object
+        properties:
+          href:
+            type: string
+            description: The URL of the linked resource.
+          type:
+            type: string
+            description: The media type.
+  securitySchemes:
+    sdkKeyAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: Server-side SDK key for authenticating with the Relay Proxy.
+    mobileKeyAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: Mobile SDK key for authenticating with the Relay Proxy.
+externalDocs:
+  description: Relay Proxy Documentation
+  url: https://launchdarkly.com/docs/sdk/relay-proxy
