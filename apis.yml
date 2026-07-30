@@ -1,30 +1,20 @@
 aid: launchdarkly
+accessModel:
+  pricing: freemium
+  onboarding: self-serve
+  trial: false
+  try_now: true
+  public: false
+  label: Freemium · Self-serve signup
+  confidence: high
+  source:
+  - plans
+  - authentication
+  generated: '2026-07-22'
+  method: derived
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/launchdarkly.png
 url: https://raw.githubusercontent.com/api-evangelist/launchdarkly/refs/heads/main/apis.yml
 apis:
-- aid: launchdarkly:rest-api
-  name: LaunchDarkly REST API
-  tags:
-  - Environments
-  - Experimentation
-  - Feature Flags
-  - Feature Management
-  - Segments
-  - Toggles
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
-  baseURL: https://app.launchdarkly.com/api/v2
-  humanURL: https://apidocs.launchdarkly.com/
-  properties:
-  - url: https://apidocs.launchdarkly.com/
-    type: Documentation
-  - type: OpenAPI
-    url: openapi/launchdarkly-rest-api-openapi.yml
-  - url: graphql/launchdarkly-graphql.md
-    type: GraphQL
-  description: The LaunchDarkly REST API provides programmatic access to the full
-    LaunchDarkly feature management platform. Developers can create, update, and manage
-    feature flags, targeting rules, user segments, projects, environments, and team
-    members. The API also supports scheduled flag changes, release pipelines, experimentation,
-    approval workflows, and webhook integrations.
 - aid: launchdarkly:webhooks-api
   name: LaunchDarkly Webhooks API
   tags:
@@ -40,34 +30,441 @@ apis:
     type: Documentation
   - type: AsyncAPI
     url: asyncapi/launchdarkly-webhooks-asyncapi.yml
-  description: The LaunchDarkly Webhooks API allows developers to build custom integrations
-    that subscribe to activity events within LaunchDarkly. When actions occur such
-    as flag changes, project creation, or environment modifications, LaunchDarkly
-    sends HTTP POST payloads to configured webhook URLs. This enables use cases like
-    updating external issue trackers, notifying support systems of feature rollouts,
-    and triggering downstream automation workflows based on feature flag lifecycle
-    events.
-- aid: launchdarkly:relay-proxy
-  name: LaunchDarkly Relay Proxy
+  description: >-
+    The LaunchDarkly Webhooks API allows developers to build custom integrations that subscribe to activity
+    events within LaunchDarkly. When actions occur such as flag changes, project creation, or environment
+    modifications, LaunchDarkly sends HTTP POST payloads to configured webhook URLs. This enables use
+    cases like updating external issue trackers, notifying support systems of feature rollouts, and triggering
+    downstream automation workflows based on feature flag lifecycle events.
+- aid: launchdarkly:launchdarkly-access-tokens-api
+  name: launchdarkly Access Tokens API
+  description: Create and manage personal and service access tokens used to authenticate API requests.
+  humanURL: https://apidocs.launchdarkly.com/
+  baseURL: https://app.launchdarkly.com/api/v2
   tags:
-  - Edge
-  - Infrastructure
-  - Performance
-  - Proxy
-  - Streaming
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
-  baseURL: https://api.example.com
-  humanURL: https://launchdarkly.com/docs/sdk/relay-proxy
+  - Access Tokens
   properties:
-  - url: https://launchdarkly.com/docs/sdk/relay-proxy
-    type: Documentation
   - type: OpenAPI
-    url: openapi/launchdarkly-relay-proxy-openapi.yml
-  description: The LaunchDarkly Relay Proxy is a small Go application that connects
-    to the LaunchDarkly streaming API and proxies that connection to SDK clients within
-    an organization's network. Instead of each server making outbound connections
-    to LaunchDarkly's streaming service, multiple servers connect to the local Relay
-    Proxy which maintains a single connection upstream.
+    url: openapi/launchdarkly-access-tokens-api-openapi.yml
+  - type: Documentation
+    url: https://apidocs.launchdarkly.com/
+  - type: GraphQL
+    url: graphql/launchdarkly-graphql.md
+  - type: Documentation
+    url: https://launchdarkly.com/docs/sdk/relay-proxy
+- aid: launchdarkly:launchdarkly-account-members-api
+  name: launchdarkly Account Members API
+  description: Manage team members, invitations, and member roles within a LaunchDarkly account.
+  humanURL: https://apidocs.launchdarkly.com/
+  baseURL: https://app.launchdarkly.com/api/v2
+  tags:
+  - Account Members
+  properties:
+  - type: OpenAPI
+    url: openapi/launchdarkly-account-members-api-openapi.yml
+  - type: Documentation
+    url: https://apidocs.launchdarkly.com/
+  - type: GraphQL
+    url: graphql/launchdarkly-graphql.md
+  - type: Documentation
+    url: https://launchdarkly.com/docs/sdk/relay-proxy
+- aid: launchdarkly:launchdarkly-approvals-api
+  name: launchdarkly Approvals API
+  description: >-
+    Manage approval requests and workflows for flag changes that require review before deployment.
+  humanURL: https://apidocs.launchdarkly.com/
+  baseURL: https://app.launchdarkly.com/api/v2
+  tags:
+  - Approvals
+  properties:
+  - type: OpenAPI
+    url: openapi/launchdarkly-approvals-api-openapi.yml
+  - type: Documentation
+    url: https://apidocs.launchdarkly.com/
+  - type: GraphQL
+    url: graphql/launchdarkly-graphql.md
+  - type: Documentation
+    url: https://launchdarkly.com/docs/sdk/relay-proxy
+- aid: launchdarkly:launchdarkly-audit-log-api
+  name: launchdarkly Audit Log API
+  description: >-
+    Access the change history of all modifications made to resources in the LaunchDarkly account.
+  humanURL: https://apidocs.launchdarkly.com/
+  baseURL: https://app.launchdarkly.com/api/v2
+  tags:
+  - Audit Log
+  properties:
+  - type: OpenAPI
+    url: openapi/launchdarkly-audit-log-api-openapi.yml
+  - type: Documentation
+    url: https://apidocs.launchdarkly.com/
+  - type: GraphQL
+    url: graphql/launchdarkly-graphql.md
+  - type: Documentation
+    url: https://launchdarkly.com/docs/sdk/relay-proxy
+- aid: launchdarkly:launchdarkly-client-side-evaluation-api
+  name: launchdarkly Client-Side Evaluation API
+  description: >-
+    Flag evaluation endpoints for client-side and mobile SDKs using environment IDs or mobile keys for
+    authentication.
+  humanURL: https://apidocs.launchdarkly.com/
+  baseURL: https://app.launchdarkly.com/api/v2
+  tags:
+  - Client-Side Evaluation
+  properties:
+  - type: OpenAPI
+    url: openapi/launchdarkly-client-side-evaluation-api-openapi.yml
+  - type: Documentation
+    url: https://apidocs.launchdarkly.com/
+  - type: GraphQL
+    url: graphql/launchdarkly-graphql.md
+  - type: Documentation
+    url: https://launchdarkly.com/docs/sdk/relay-proxy
+- aid: launchdarkly:launchdarkly-client-side-streaming-api
+  name: launchdarkly Client-Side Streaming API
+  description: >-
+    Server-Sent Events streaming endpoints for client-side and mobile SDKs to receive real-time flag updates.
+  humanURL: https://apidocs.launchdarkly.com/
+  baseURL: https://app.launchdarkly.com/api/v2
+  tags:
+  - Client-Side Streaming
+  properties:
+  - type: OpenAPI
+    url: openapi/launchdarkly-client-side-streaming-api-openapi.yml
+  - type: Documentation
+    url: https://apidocs.launchdarkly.com/
+  - type: GraphQL
+    url: graphql/launchdarkly-graphql.md
+  - type: Documentation
+    url: https://launchdarkly.com/docs/sdk/relay-proxy
+- aid: launchdarkly:launchdarkly-code-references-api
+  name: launchdarkly Code References API
+  description: View code references that show where feature flags are used in your codebase.
+  humanURL: https://apidocs.launchdarkly.com/
+  baseURL: https://app.launchdarkly.com/api/v2
+  tags:
+  - Code References
+  properties:
+  - type: OpenAPI
+    url: openapi/launchdarkly-code-references-api-openapi.yml
+  - type: Documentation
+    url: https://apidocs.launchdarkly.com/
+  - type: GraphQL
+    url: graphql/launchdarkly-graphql.md
+  - type: Documentation
+    url: https://launchdarkly.com/docs/sdk/relay-proxy
+- aid: launchdarkly:launchdarkly-custom-roles-api
+  name: launchdarkly Custom Roles API
+  description: Define custom roles with fine-grained permissions using resource specifiers and actions.
+  humanURL: https://apidocs.launchdarkly.com/
+  baseURL: https://app.launchdarkly.com/api/v2
+  tags:
+  - Custom Roles
+  properties:
+  - type: OpenAPI
+    url: openapi/launchdarkly-custom-roles-api-openapi.yml
+  - type: Documentation
+    url: https://apidocs.launchdarkly.com/
+  - type: GraphQL
+    url: graphql/launchdarkly-graphql.md
+  - type: Documentation
+    url: https://launchdarkly.com/docs/sdk/relay-proxy
+- aid: launchdarkly:launchdarkly-environments-api
+  name: launchdarkly Environments API
+  description: Manage environments within projects such as production, staging, and development.
+  humanURL: https://apidocs.launchdarkly.com/
+  baseURL: https://app.launchdarkly.com/api/v2
+  tags:
+  - Environments
+  properties:
+  - type: OpenAPI
+    url: openapi/launchdarkly-environments-api-openapi.yml
+  - type: Documentation
+    url: https://apidocs.launchdarkly.com/
+  - type: GraphQL
+    url: graphql/launchdarkly-graphql.md
+  - type: Documentation
+    url: https://launchdarkly.com/docs/sdk/relay-proxy
+- aid: launchdarkly:launchdarkly-experiments-api
+  name: launchdarkly Experiments API
+  description: >-
+    Create and manage experiments to measure the impact of feature flag variations on metrics.
+  humanURL: https://apidocs.launchdarkly.com/
+  baseURL: https://app.launchdarkly.com/api/v2
+  tags:
+  - Experiments
+  properties:
+  - type: OpenAPI
+    url: openapi/launchdarkly-experiments-api-openapi.yml
+  - type: Documentation
+    url: https://apidocs.launchdarkly.com/
+  - type: GraphQL
+    url: graphql/launchdarkly-graphql.md
+  - type: Documentation
+    url: https://launchdarkly.com/docs/sdk/relay-proxy
+- aid: launchdarkly:launchdarkly-feature-flags-api
+  name: launchdarkly Feature Flags API
+  description: >-
+    Create, update, and manage feature flags and their targeting rules across projects and environments.
+  humanURL: https://apidocs.launchdarkly.com/
+  baseURL: https://app.launchdarkly.com/api/v2
+  tags:
+  - Feature Flags
+  properties:
+  - type: OpenAPI
+    url: openapi/launchdarkly-feature-flags-api-openapi.yml
+  - type: Documentation
+    url: https://apidocs.launchdarkly.com/
+  - type: GraphQL
+    url: graphql/launchdarkly-graphql.md
+  - type: Documentation
+    url: https://launchdarkly.com/docs/sdk/relay-proxy
+- aid: launchdarkly:launchdarkly-flag-triggers-api
+  name: launchdarkly Flag Triggers API
+  description: >-
+    Create triggers that allow external services to toggle feature flags via unique webhook URLs.
+  humanURL: https://apidocs.launchdarkly.com/
+  baseURL: https://app.launchdarkly.com/api/v2
+  tags:
+  - Flag Triggers
+  properties:
+  - type: OpenAPI
+    url: openapi/launchdarkly-flag-triggers-api-openapi.yml
+  - type: Documentation
+    url: https://apidocs.launchdarkly.com/
+  - type: GraphQL
+    url: graphql/launchdarkly-graphql.md
+  - type: Documentation
+    url: https://launchdarkly.com/docs/sdk/relay-proxy
+- aid: launchdarkly:launchdarkly-integration-audit-log-subscriptions-api
+  name: launchdarkly Integration Audit Log Subscriptions API
+  description: >-
+    Manage integrations that subscribe to audit log events and forward them to external tools.
+  humanURL: https://apidocs.launchdarkly.com/
+  baseURL: https://app.launchdarkly.com/api/v2
+  tags:
+  - Integration Audit Log Subscriptions
+  properties:
+  - type: OpenAPI
+    url: openapi/launchdarkly-integration-audit-log-subscriptions-api-openapi.yml
+  - type: Documentation
+    url: https://apidocs.launchdarkly.com/
+  - type: GraphQL
+    url: graphql/launchdarkly-graphql.md
+  - type: Documentation
+    url: https://launchdarkly.com/docs/sdk/relay-proxy
+- aid: launchdarkly:launchdarkly-metrics-api
+  name: launchdarkly Metrics API
+  description: Define and manage metrics used to measure experiment outcomes and feature flag impact.
+  humanURL: https://apidocs.launchdarkly.com/
+  baseURL: https://app.launchdarkly.com/api/v2
+  tags:
+  - Metrics
+  properties:
+  - type: OpenAPI
+    url: openapi/launchdarkly-metrics-api-openapi.yml
+  - type: Documentation
+    url: https://apidocs.launchdarkly.com/
+  - type: GraphQL
+    url: graphql/launchdarkly-graphql.md
+  - type: Documentation
+    url: https://launchdarkly.com/docs/sdk/relay-proxy
+- aid: launchdarkly:launchdarkly-php-polling-api
+  name: launchdarkly PHP Polling API
+  description: Polling endpoints for PHP server-side SDKs which do not support streaming mode.
+  humanURL: https://apidocs.launchdarkly.com/
+  baseURL: https://app.launchdarkly.com/api/v2
+  tags:
+  - PHP Polling
+  properties:
+  - type: OpenAPI
+    url: openapi/launchdarkly-php-polling-api-openapi.yml
+  - type: Documentation
+    url: https://apidocs.launchdarkly.com/
+  - type: GraphQL
+    url: graphql/launchdarkly-graphql.md
+  - type: Documentation
+    url: https://launchdarkly.com/docs/sdk/relay-proxy
+- aid: launchdarkly:launchdarkly-projects-api
+  name: launchdarkly Projects API
+  description: Manage projects that organize feature flags and other resources.
+  humanURL: https://apidocs.launchdarkly.com/
+  baseURL: https://app.launchdarkly.com/api/v2
+  tags:
+  - Projects
+  properties:
+  - type: OpenAPI
+    url: openapi/launchdarkly-projects-api-openapi.yml
+  - type: Documentation
+    url: https://apidocs.launchdarkly.com/
+  - type: GraphQL
+    url: graphql/launchdarkly-graphql.md
+  - type: Documentation
+    url: https://launchdarkly.com/docs/sdk/relay-proxy
+- aid: launchdarkly:launchdarkly-relay-proxy-configurations-api
+  name: launchdarkly Relay Proxy Configurations API
+  description: Manage automatic configuration entries for LaunchDarkly Relay Proxy instances.
+  humanURL: https://apidocs.launchdarkly.com/
+  baseURL: https://app.launchdarkly.com/api/v2
+  tags:
+  - Relay Proxy Configurations
+  properties:
+  - type: OpenAPI
+    url: openapi/launchdarkly-relay-proxy-configurations-api-openapi.yml
+  - type: Documentation
+    url: https://apidocs.launchdarkly.com/
+  - type: GraphQL
+    url: graphql/launchdarkly-graphql.md
+  - type: Documentation
+    url: https://launchdarkly.com/docs/sdk/relay-proxy
+- aid: launchdarkly:launchdarkly-releases-api
+  name: launchdarkly Releases API
+  description: Manage release pipelines for coordinating feature flag rollouts across environments.
+  humanURL: https://apidocs.launchdarkly.com/
+  baseURL: https://app.launchdarkly.com/api/v2
+  tags:
+  - Releases
+  properties:
+  - type: OpenAPI
+    url: openapi/launchdarkly-releases-api-openapi.yml
+  - type: Documentation
+    url: https://apidocs.launchdarkly.com/
+  - type: GraphQL
+    url: graphql/launchdarkly-graphql.md
+  - type: Documentation
+    url: https://launchdarkly.com/docs/sdk/relay-proxy
+- aid: launchdarkly:launchdarkly-segments-api
+  name: launchdarkly Segments API
+  description: Create and manage user segments for targeting groups of contexts with feature flags.
+  humanURL: https://apidocs.launchdarkly.com/
+  baseURL: https://app.launchdarkly.com/api/v2
+  tags:
+  - Segments
+  properties:
+  - type: OpenAPI
+    url: openapi/launchdarkly-segments-api-openapi.yml
+  - type: Documentation
+    url: https://apidocs.launchdarkly.com/
+  - type: GraphQL
+    url: graphql/launchdarkly-graphql.md
+  - type: Documentation
+    url: https://launchdarkly.com/docs/sdk/relay-proxy
+- aid: launchdarkly:launchdarkly-server-side-evaluation-api
+  name: launchdarkly Server-Side Evaluation API
+  description: Flag evaluation endpoints for server-side SDKs using SDK keys for authentication.
+  humanURL: https://apidocs.launchdarkly.com/
+  baseURL: https://app.launchdarkly.com/api/v2
+  tags:
+  - Server-Side Evaluation
+  properties:
+  - type: OpenAPI
+    url: openapi/launchdarkly-server-side-evaluation-api-openapi.yml
+  - type: Documentation
+    url: https://apidocs.launchdarkly.com/
+  - type: GraphQL
+    url: graphql/launchdarkly-graphql.md
+  - type: Documentation
+    url: https://launchdarkly.com/docs/sdk/relay-proxy
+- aid: launchdarkly:launchdarkly-server-side-streaming-api
+  name: launchdarkly Server-Side Streaming API
+  description: >-
+    Server-Sent Events streaming endpoints for server-side SDKs to receive real-time flag updates.
+  humanURL: https://apidocs.launchdarkly.com/
+  baseURL: https://app.launchdarkly.com/api/v2
+  tags:
+  - Server-Side Streaming
+  properties:
+  - type: OpenAPI
+    url: openapi/launchdarkly-server-side-streaming-api-openapi.yml
+  - type: Documentation
+    url: https://apidocs.launchdarkly.com/
+  - type: GraphQL
+    url: graphql/launchdarkly-graphql.md
+  - type: Documentation
+    url: https://launchdarkly.com/docs/sdk/relay-proxy
+- aid: launchdarkly:launchdarkly-status-api
+  name: launchdarkly Status API
+  description: >-
+    Health and status monitoring endpoints for the Relay Proxy. No authentication is required for these
+    endpoints.
+  humanURL: https://apidocs.launchdarkly.com/
+  baseURL: https://app.launchdarkly.com/api/v2
+  tags:
+  - Status
+  properties:
+  - type: OpenAPI
+    url: openapi/launchdarkly-status-api-openapi.yml
+  - type: Documentation
+    url: https://apidocs.launchdarkly.com/
+  - type: GraphQL
+    url: graphql/launchdarkly-graphql.md
+  - type: Documentation
+    url: https://launchdarkly.com/docs/sdk/relay-proxy
+- aid: launchdarkly:launchdarkly-tags-api
+  name: launchdarkly Tags API
+  description: The Tags API from launchdarkly — 1 operation(s) for tags.
+  humanURL: https://apidocs.launchdarkly.com/
+  baseURL: https://app.launchdarkly.com/api/v2
+  tags:
+  - Tags
+  properties:
+  - type: OpenAPI
+    url: openapi/launchdarkly-tags-api-openapi.yml
+  - type: Documentation
+    url: https://apidocs.launchdarkly.com/
+  - type: GraphQL
+    url: graphql/launchdarkly-graphql.md
+  - type: Documentation
+    url: https://launchdarkly.com/docs/sdk/relay-proxy
+- aid: launchdarkly:launchdarkly-teams-api
+  name: launchdarkly Teams API
+  description: Organize account members into teams for collaborative flag management and permissions.
+  humanURL: https://apidocs.launchdarkly.com/
+  baseURL: https://app.launchdarkly.com/api/v2
+  tags:
+  - Teams
+  properties:
+  - type: OpenAPI
+    url: openapi/launchdarkly-teams-api-openapi.yml
+  - type: Documentation
+    url: https://apidocs.launchdarkly.com/
+  - type: GraphQL
+    url: graphql/launchdarkly-graphql.md
+  - type: Documentation
+    url: https://launchdarkly.com/docs/sdk/relay-proxy
+- aid: launchdarkly:launchdarkly-webhooks-api
+  name: launchdarkly Webhooks API
+  description: >-
+    Configure webhooks to receive HTTP POST notifications when changes occur in LaunchDarkly.
+  humanURL: https://apidocs.launchdarkly.com/
+  baseURL: https://app.launchdarkly.com/api/v2
+  tags:
+  - Webhooks
+  properties:
+  - type: OpenAPI
+    url: openapi/launchdarkly-webhooks-api-openapi.yml
+  - type: Documentation
+    url: https://apidocs.launchdarkly.com/
+  - type: GraphQL
+    url: graphql/launchdarkly-graphql.md
+  - type: Documentation
+    url: https://launchdarkly.com/docs/sdk/relay-proxy
+- aid: launchdarkly:launchdarkly-workflows-api
+  name: launchdarkly Workflows API
+  description: Create and manage automated workflows for scheduling and orchestrating flag changes.
+  humanURL: https://apidocs.launchdarkly.com/
+  baseURL: https://app.launchdarkly.com/api/v2
+  tags:
+  - Workflows
+  properties:
+  - type: OpenAPI
+    url: openapi/launchdarkly-workflows-api-openapi.yml
+  - type: Documentation
+    url: https://apidocs.launchdarkly.com/
+  - type: GraphQL
+    url: graphql/launchdarkly-graphql.md
+  - type: Documentation
+    url: https://launchdarkly.com/docs/sdk/relay-proxy
 common:
 - type: AgenticAccess
   url: agentic-access/launchdarkly-agentic-access.yml
