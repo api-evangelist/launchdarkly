@@ -1,0 +1,84 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "LaunchDarkly Relay Proxy Access Tokens Experiments API",
+    "version": "8.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Experiments",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List experiments",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "http://localhost:8030/projects/:projectKey/environments/:environmentKey/experiments",
+            "params": [
+              {
+                "name": "projectKey",
+                "value": "",
+                "type": "path",
+                "description": "The project key identifying a LaunchDarkly project."
+              },
+              {
+                "name": "environmentKey",
+                "value": "",
+                "type": "path",
+                "description": "The environment key identifying a specific environment."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of experiments to return."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "Number of experiments to skip for pagination."
+              }
+            ]
+          },
+          "docs": "Returns a list of all experiments in the specified project and environment."
+        },
+        {
+          "info": {
+            "name": "Create an experiment",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://localhost:8030/projects/:projectKey/environments/:environmentKey/experiments",
+            "params": [
+              {
+                "name": "projectKey",
+                "value": "",
+                "type": "path",
+                "description": "The project key identifying a LaunchDarkly project."
+              },
+              {
+                "name": "environmentKey",
+                "value": "",
+                "type": "path",
+                "description": "The environment key identifying a specific environment."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new experiment in the specified project and environment."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

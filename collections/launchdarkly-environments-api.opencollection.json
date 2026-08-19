@@ -1,0 +1,151 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "LaunchDarkly Relay Proxy Access Tokens Environments API",
+    "version": "8.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Environments",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List environments",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "http://localhost:8030/projects/:projectKey/environments",
+            "params": [
+              {
+                "name": "projectKey",
+                "value": "",
+                "type": "path",
+                "description": "The project key identifying a LaunchDarkly project."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of environments to return."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "Number of environments to skip for pagination."
+              }
+            ]
+          },
+          "docs": "Returns a list of all environments within the specified project."
+        },
+        {
+          "info": {
+            "name": "Create an environment",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://localhost:8030/projects/:projectKey/environments",
+            "params": [
+              {
+                "name": "projectKey",
+                "value": "",
+                "type": "path",
+                "description": "The project key identifying a LaunchDarkly project."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new environment in the specified project."
+        },
+        {
+          "info": {
+            "name": "Get an environment",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "http://localhost:8030/projects/:projectKey/environments/:environmentKey",
+            "params": [
+              {
+                "name": "projectKey",
+                "value": "",
+                "type": "path",
+                "description": "The project key identifying a LaunchDarkly project."
+              },
+              {
+                "name": "environmentKey",
+                "value": "",
+                "type": "path",
+                "description": "The environment key identifying a specific environment."
+              }
+            ]
+          },
+          "docs": "Returns a single environment by its key within the specified project."
+        },
+        {
+          "info": {
+            "name": "Update an environment",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "http://localhost:8030/projects/:projectKey/environments/:environmentKey",
+            "params": [
+              {
+                "name": "projectKey",
+                "value": "",
+                "type": "path",
+                "description": "The project key identifying a LaunchDarkly project."
+              },
+              {
+                "name": "environmentKey",
+                "value": "",
+                "type": "path",
+                "description": "The environment key identifying a specific environment."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates an environment using a JSON Patch representation."
+        },
+        {
+          "info": {
+            "name": "Delete an environment",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "http://localhost:8030/projects/:projectKey/environments/:environmentKey",
+            "params": [
+              {
+                "name": "projectKey",
+                "value": "",
+                "type": "path",
+                "description": "The project key identifying a LaunchDarkly project."
+              },
+              {
+                "name": "environmentKey",
+                "value": "",
+                "type": "path",
+                "description": "The environment key identifying a specific environment."
+              }
+            ]
+          },
+          "docs": "Permanently deletes an environment from the specified project."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,125 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "LaunchDarkly Relay Proxy Access Tokens Projects API",
+    "version": "8.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Projects",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List projects",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "http://localhost:8030/projects",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of projects to return."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "Number of projects to skip for pagination."
+              },
+              {
+                "name": "filter",
+                "value": "",
+                "type": "query",
+                "description": "A filter expression to apply to the project list."
+              }
+            ]
+          },
+          "docs": "Returns a list of all projects in the LaunchDarkly account."
+        },
+        {
+          "info": {
+            "name": "Create a project",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://localhost:8030/projects",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new project with the specified key, name, and default environments."
+        },
+        {
+          "info": {
+            "name": "Get a project",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "http://localhost:8030/projects/:projectKey",
+            "params": [
+              {
+                "name": "projectKey",
+                "value": "",
+                "type": "path",
+                "description": "The project key identifying a LaunchDarkly project."
+              }
+            ]
+          },
+          "docs": "Returns a single project by its key, including its environments and configuration."
+        },
+        {
+          "info": {
+            "name": "Update a project",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "http://localhost:8030/projects/:projectKey",
+            "params": [
+              {
+                "name": "projectKey",
+                "value": "",
+                "type": "path",
+                "description": "The project key identifying a LaunchDarkly project."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates a project using a JSON Patch representation."
+        },
+        {
+          "info": {
+            "name": "Delete a project",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "http://localhost:8030/projects/:projectKey",
+            "params": [
+              {
+                "name": "projectKey",
+                "value": "",
+                "type": "path",
+                "description": "The project key identifying a LaunchDarkly project."
+              }
+            ]
+          },
+          "docs": "Permanently deletes a project and all of its associated feature flags, environments, and other resources."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

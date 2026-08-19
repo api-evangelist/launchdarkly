@@ -1,0 +1,60 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "LaunchDarkly Relay Proxy Access Tokens Releases API",
+    "version": "8.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Releases",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List release pipelines",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "http://localhost:8030/projects/:projectKey/release-pipelines",
+            "params": [
+              {
+                "name": "projectKey",
+                "value": "",
+                "type": "path",
+                "description": "The project key identifying a LaunchDarkly project."
+              }
+            ]
+          },
+          "docs": "Returns a list of all release pipelines in the specified project."
+        },
+        {
+          "info": {
+            "name": "Create a release pipeline",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://localhost:8030/projects/:projectKey/release-pipelines",
+            "params": [
+              {
+                "name": "projectKey",
+                "value": "",
+                "type": "path",
+                "description": "The project key identifying a LaunchDarkly project."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new release pipeline in the specified project for coordinating feature flag rollouts across environments."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

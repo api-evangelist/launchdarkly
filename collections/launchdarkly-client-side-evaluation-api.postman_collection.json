@@ -1,0 +1,236 @@
+{
+  "item": [
+    {
+      "id": "d77b59be-d480-436b-8521-fbf888f80034",
+      "name": "Client-Side Evaluation",
+      "description": {
+        "content": "Flag evaluation endpoints for client-side and mobile SDKs using environment IDs or mobile keys for authentication.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "4d097ed1-ef35-4a9e-9bb9-4a6dc2f84178",
+          "name": "Evaluate all flags for a client-side context (GET)",
+          "request": {
+            "name": "Evaluate all flags for a client-side context (GET)",
+            "description": {
+              "content": "Evaluates all client-side enabled feature flags for the given context. Uses the environment ID in the URL path for authentication.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "sdk",
+                "evalx",
+                ":envId",
+                "contexts",
+                ":contextBase64"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "envId",
+                  "description": "(Required) The client-side environment ID."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "contextBase64",
+                  "description": "(Required) A base64-encoded JSON representation of the evaluation context."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "8d37b89c-4625-4b7e-b76d-f00e14cd3015",
+              "name": "Successful response with all client-side flag evaluations.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "sdk",
+                    "evalx",
+                    ":envId",
+                    "contexts",
+                    ":contextBase64"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "envId",
+                      "description": "(Required) The client-side environment ID."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "contextBase64",
+                      "description": "(Required) A base64-encoded JSON representation of the evaluation context."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"key_0\": {\n    \"value\": {},\n    \"variation\": 8461,\n    \"version\": 716,\n    \"trackEvents\": true,\n    \"trackReason\": false,\n    \"reason\": {\n      \"kind\": \"RULE_MATCH\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "09110b55-ff65-4046-b410-f424ec51b405",
+              "name": "Unauthorized. Invalid environment ID.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "sdk",
+                    "evalx",
+                    ":envId",
+                    "contexts",
+                    ":contextBase64"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "envId",
+                      "description": "(Required) The client-side environment ID."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "contextBase64",
+                      "description": "(Required) A base64-encoded JSON representation of the evaluation context."
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "9a92d608-d8e8-438f-8c2f-cc4df3a164f7",
+              "name": "Service unavailable. Flag data not yet available.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "sdk",
+                    "evalx",
+                    ":envId",
+                    "contexts",
+                    ":contextBase64"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "envId",
+                      "description": "(Required) The client-side environment ID."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "contextBase64",
+                      "description": "(Required) A base64-encoded JSON representation of the evaluation context."
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "http://localhost:8030",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "6be36a2c-c5a5-408a-a997-3f0f7e7f14ab",
+    "name": "LaunchDarkly Relay Proxy Access Tokens Client-Side Evaluation API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The LaunchDarkly Relay Proxy is a small Go application that connects to the LaunchDarkly streaming API and proxies that connection to SDK clients within an organization's network. It exposes endpoints for status monitoring, flag evaluation, and SDK streaming that mirror the LaunchDarkly service endpoints. Instead of each server making outbound connections to LaunchDarkly's streaming service, multiple servers connect to the local Relay Proxy which maintains a single upstream connection.\n\nContact Support:\n Name: LaunchDarkly Support",
+      "type": "text/plain"
+    }
+  }
+}

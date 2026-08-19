@@ -1,0 +1,102 @@
+{
+  "item": [
+    {
+      "id": "ef8b8efb-7777-4c71-a34d-d7fdf2acdbee",
+      "name": "Status",
+      "description": {
+        "content": "Health and status monitoring endpoints for the Relay Proxy. No authentication is required for these endpoints.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "6858afd9-7e35-47a9-8d7e-e5080e731a33",
+          "name": "Get Relay Proxy status",
+          "request": {
+            "name": "Get Relay Proxy status",
+            "description": {
+              "content": "Returns the overall health status of the Relay Proxy and detailed connection status for each configured environment. No authentication is required. The top-level status is \"healthy\" if all environments are connected, or \"degraded\" if any environment is disconnected.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "status"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "3e7bcad6-8375-46bb-b1c7-5d8f104b5296",
+              "name": "Successful response containing the Relay Proxy status.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "status"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"degraded\",\n  \"environments\": {\n    \"key_0\": {\n      \"status\": \"connected\",\n      \"connectionStatus\": {\n        \"state\": \"VALID\",\n        \"stateSince\": 8443,\n        \"lastError\": {\n          \"kind\": \"string\",\n          \"time\": 4999\n        }\n      },\n      \"sdkKey\": \"string\",\n      \"envId\": \"string\",\n      \"envKey\": \"string\",\n      \"envName\": \"string\",\n      \"projKey\": \"string\",\n      \"projName\": \"string\"\n    }\n  },\n  \"version\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "http://localhost:8030",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "8a52cfdf-e772-40ea-83ef-9fc89889a90a",
+    "name": "LaunchDarkly Relay Proxy Access Tokens Status API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The LaunchDarkly Relay Proxy is a small Go application that connects to the LaunchDarkly streaming API and proxies that connection to SDK clients within an organization's network. It exposes endpoints for status monitoring, flag evaluation, and SDK streaming that mirror the LaunchDarkly service endpoints. Instead of each server making outbound connections to LaunchDarkly's streaming service, multiple servers connect to the local Relay Proxy which maintains a single upstream connection.\n\nContact Support:\n Name: LaunchDarkly Support",
+      "type": "text/plain"
+    }
+  }
+}

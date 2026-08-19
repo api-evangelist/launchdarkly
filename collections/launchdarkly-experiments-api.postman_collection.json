@@ -1,0 +1,517 @@
+{
+  "item": [
+    {
+      "id": "37bb0fd5-2099-491d-acaf-32459358e316",
+      "name": "Experiments",
+      "description": {
+        "content": "Create and manage experiments to measure the impact of feature flag variations on metrics.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "3f1aebbc-f3fa-423a-b464-1ada6c385660",
+          "name": "List experiments",
+          "request": {
+            "name": "List experiments",
+            "description": {
+              "content": "Returns a list of all experiments in the specified project and environment.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "projects",
+                ":projectKey",
+                "environments",
+                ":environmentKey",
+                "experiments"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "<integer>",
+                  "description": "Maximum number of experiments to return."
+                },
+                {
+                  "disabled": false,
+                  "key": "offset",
+                  "value": "<integer>",
+                  "description": "Number of experiments to skip for pagination."
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "projectKey",
+                  "description": "(Required) The project key identifying a LaunchDarkly project."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "environmentKey",
+                  "description": "(Required) The environment key identifying a specific environment."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "efa0fe11-a869-46ad-8f32-e9abd5d7a8d6",
+              "name": "Successful response containing a list of experiments.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "projects",
+                    ":projectKey",
+                    "environments",
+                    ":environmentKey",
+                    "experiments"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "offset",
+                      "value": "<integer>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "projectKey",
+                      "description": "(Required) The project key identifying a LaunchDarkly project."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "environmentKey",
+                      "description": "(Required) The environment key identifying a specific environment."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"items\": [\n    {\n      \"_id\": \"string\",\n      \"key\": \"string\",\n      \"name\": \"string\",\n      \"description\": \"string\",\n      \"_creationDate\": 8842,\n      \"currentIteration\": {\n        \"_id\": \"string\",\n        \"status\": \"string\",\n        \"startDate\": 3950,\n        \"endDate\": 1662\n      },\n      \"_links\": {\n        \"self\": {\n          \"href\": \"string\",\n          \"type\": \"string\"\n        }\n      }\n    },\n    {\n      \"_id\": \"string\",\n      \"key\": \"string\",\n      \"name\": \"string\",\n      \"description\": \"string\",\n      \"_creationDate\": 8928,\n      \"currentIteration\": {\n        \"_id\": \"string\",\n        \"status\": \"string\",\n        \"startDate\": 3461,\n        \"endDate\": 938\n      },\n      \"_links\": {\n        \"self\": {\n          \"href\": \"string\",\n          \"type\": \"string\"\n        }\n      }\n    }\n  ],\n  \"totalCount\": 9192,\n  \"_links\": {\n    \"self\": {\n      \"href\": \"string\",\n      \"type\": \"string\"\n    },\n    \"key_0\": {\n      \"href\": \"string\",\n      \"type\": \"string\"\n    },\n    \"key_1\": {\n      \"href\": \"string\",\n      \"type\": \"string\"\n    },\n    \"key_2\": {\n      \"href\": \"string\",\n      \"type\": \"string\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "51b4f005-c9e6-4c23-9740-3ace572f7676",
+              "name": "Unauthorized. Invalid or missing access token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "projects",
+                    ":projectKey",
+                    "environments",
+                    ":environmentKey",
+                    "experiments"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "offset",
+                      "value": "<integer>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "projectKey",
+                      "description": "(Required) The project key identifying a LaunchDarkly project."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "environmentKey",
+                      "description": "(Required) The environment key identifying a specific environment."
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "c73dd5cc-2eea-4ba0-9474-672c3caf96ec",
+              "name": "Project or environment not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "projects",
+                    ":projectKey",
+                    "environments",
+                    ":environmentKey",
+                    "experiments"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "offset",
+                      "value": "<integer>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "projectKey",
+                      "description": "(Required) The project key identifying a LaunchDarkly project."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "environmentKey",
+                      "description": "(Required) The environment key identifying a specific environment."
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "99e6940e-6375-4a0e-96b4-c50593f9a615",
+          "name": "Create an experiment",
+          "request": {
+            "name": "Create an experiment",
+            "description": {
+              "content": "Creates a new experiment in the specified project and environment.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "projects",
+                ":projectKey",
+                "environments",
+                ":environmentKey",
+                "experiments"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "projectKey",
+                  "description": "(Required) The project key identifying a LaunchDarkly project."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "environmentKey",
+                  "description": "(Required) The environment key identifying a specific environment."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"<string>\",\n  \"key\": \"<string>\",\n  \"description\": \"<string>\",\n  \"maintainerId\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "b30c617d-2588-4fe7-9858-b937a77b2b8c",
+              "name": "Experiment created successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "projects",
+                    ":projectKey",
+                    "environments",
+                    ":environmentKey",
+                    "experiments"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "projectKey",
+                      "description": "(Required) The project key identifying a LaunchDarkly project."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "environmentKey",
+                      "description": "(Required) The environment key identifying a specific environment."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\",\n  \"key\": \"<string>\",\n  \"description\": \"<string>\",\n  \"maintainerId\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"_id\": \"string\",\n  \"key\": \"string\",\n  \"name\": \"string\",\n  \"description\": \"string\",\n  \"_creationDate\": 7691,\n  \"currentIteration\": {\n    \"_id\": \"string\",\n    \"status\": \"string\",\n    \"startDate\": 2108,\n    \"endDate\": 1837\n  },\n  \"_links\": {\n    \"self\": {\n      \"href\": \"string\",\n      \"type\": \"string\"\n    },\n    \"key_0\": {\n      \"href\": \"string\",\n      \"type\": \"string\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "77f7c2f9-ec8c-4607-9fc8-a2994d926138",
+              "name": "Invalid request body.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "projects",
+                    ":projectKey",
+                    "environments",
+                    ":environmentKey",
+                    "experiments"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "projectKey",
+                      "description": "(Required) The project key identifying a LaunchDarkly project."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "environmentKey",
+                      "description": "(Required) The environment key identifying a specific environment."
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\",\n  \"key\": \"<string>\",\n  \"description\": \"<string>\",\n  \"maintainerId\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "c9071fa5-fc16-449b-ba8b-aad5991b9d8d",
+              "name": "Unauthorized. Invalid or missing access token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "projects",
+                    ":projectKey",
+                    "environments",
+                    ":environmentKey",
+                    "experiments"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "projectKey",
+                      "description": "(Required) The project key identifying a LaunchDarkly project."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "environmentKey",
+                      "description": "(Required) The environment key identifying a specific environment."
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\",\n  \"key\": \"<string>\",\n  \"description\": \"<string>\",\n  \"maintainerId\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "http://localhost:8030",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "a7ca71b0-05da-4e66-8239-c87c128797ca",
+    "name": "LaunchDarkly Relay Proxy Access Tokens Experiments API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The LaunchDarkly Relay Proxy is a small Go application that connects to the LaunchDarkly streaming API and proxies that connection to SDK clients within an organization's network. It exposes endpoints for status monitoring, flag evaluation, and SDK streaming that mirror the LaunchDarkly service endpoints. Instead of each server making outbound connections to LaunchDarkly's streaming service, multiple servers connect to the local Relay Proxy which maintains a single upstream connection.\n\nContact Support:\n Name: LaunchDarkly Support",
+      "type": "text/plain"
+    }
+  }
+}

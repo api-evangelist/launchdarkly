@@ -1,0 +1,248 @@
+{
+  "item": [
+    {
+      "id": "4df153d4-1bdd-4563-b5b5-e8dc48172fcb",
+      "name": "Server-Side Evaluation",
+      "description": {
+        "content": "Flag evaluation endpoints for server-side SDKs using SDK keys for authentication.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "2609e03a-4b65-4918-a4ae-fc6a7f8b3541",
+          "name": "Evaluate all flags for a context (GET)",
+          "request": {
+            "name": "Evaluate all flags for a context (GET)",
+            "description": {
+              "content": "Evaluates all feature flags for the given context and returns the results. The context is provided as a base64-encoded JSON object in the URL path. Requires an SDK key in the Authorization header.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "sdk",
+                "evalx",
+                "contexts",
+                ":contextBase64"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "contextBase64",
+                  "description": "(Required) A base64-encoded JSON representation of the evaluation context."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "key",
+                  "value": "Authorization"
+                },
+                {
+                  "key": "value",
+                  "value": "{{apiKey}}"
+                },
+                {
+                  "key": "in",
+                  "value": "header"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "f2c98609-b40a-4b53-a77f-11fd958cb6d3",
+              "name": "Successful response with all flag evaluations for the context.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "sdk",
+                    "evalx",
+                    "contexts",
+                    ":contextBase64"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "contextBase64",
+                      "description": "(Required) A base64-encoded JSON representation of the evaluation context."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"key_0\": {\n    \"value\": {},\n    \"variation\": 7490,\n    \"version\": 306,\n    \"trackEvents\": true,\n    \"trackReason\": true,\n    \"reason\": {\n      \"kind\": \"RULE_MATCH\"\n    }\n  },\n  \"key_1\": {\n    \"value\": {},\n    \"variation\": 9120,\n    \"version\": 7793,\n    \"trackEvents\": false,\n    \"trackReason\": false,\n    \"reason\": {\n      \"kind\": \"PREREQUISITE_FAILED\"\n    }\n  },\n  \"key_2\": {\n    \"value\": {},\n    \"variation\": 3743,\n    \"version\": 8370,\n    \"trackEvents\": false,\n    \"trackReason\": true,\n    \"reason\": {\n      \"kind\": \"ERROR\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "66077eb6-24ec-4f8f-8433-0a749fabc076",
+              "name": "Unauthorized. The SDK key does not match any environment configured in the Relay Proxy.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "sdk",
+                    "evalx",
+                    "contexts",
+                    ":contextBase64"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "contextBase64",
+                      "description": "(Required) A base64-encoded JSON representation of the evaluation context."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "f821af66-4c01-40d5-ace9-c3a2d07c7d37",
+              "name": "Service unavailable. The Relay Proxy has not yet received flag data from LaunchDarkly for this environment.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "sdk",
+                    "evalx",
+                    "contexts",
+                    ":contextBase64"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "contextBase64",
+                      "description": "(Required) A base64-encoded JSON representation of the evaluation context."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "http://localhost:8030",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "607c86f7-50e1-48c1-bcb5-86f812efb81c",
+    "name": "LaunchDarkly Relay Proxy Access Tokens Server-Side Evaluation API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The LaunchDarkly Relay Proxy is a small Go application that connects to the LaunchDarkly streaming API and proxies that connection to SDK clients within an organization's network. It exposes endpoints for status monitoring, flag evaluation, and SDK streaming that mirror the LaunchDarkly service endpoints. Instead of each server making outbound connections to LaunchDarkly's streaming service, multiple servers connect to the local Relay Proxy which maintains a single upstream connection.\n\nContact Support:\n Name: LaunchDarkly Support",
+      "type": "text/plain"
+    }
+  }
+}

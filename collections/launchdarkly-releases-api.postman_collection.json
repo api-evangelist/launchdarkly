@@ -1,0 +1,405 @@
+{
+  "item": [
+    {
+      "id": "6705aa24-6d1c-458f-b20a-8165e5068062",
+      "name": "Releases",
+      "description": {
+        "content": "Manage release pipelines for coordinating feature flag rollouts across environments.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "0ddefaa2-981d-4367-9a76-33bb5c638b08",
+          "name": "List release pipelines",
+          "request": {
+            "name": "List release pipelines",
+            "description": {
+              "content": "Returns a list of all release pipelines in the specified project.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "projects",
+                ":projectKey",
+                "release-pipelines"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "projectKey",
+                  "description": "(Required) The project key identifying a LaunchDarkly project."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "17d5e358-fdfa-4f93-a727-284dc8e12639",
+              "name": "Successful response containing release pipelines.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "projects",
+                    ":projectKey",
+                    "release-pipelines"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "projectKey",
+                      "description": "(Required) The project key identifying a LaunchDarkly project."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"items\": [\n    {\n      \"key\": \"string\",\n      \"name\": \"string\",\n      \"description\": \"string\",\n      \"phases\": [\n        {\n          \"_id\": \"string\",\n          \"name\": \"string\",\n          \"audiences\": [\n            {\n              \"environmentKey\": \"string\",\n              \"name\": \"string\"\n            },\n            {\n              \"environmentKey\": \"string\",\n              \"name\": \"string\"\n            }\n          ]\n        },\n        {\n          \"_id\": \"string\",\n          \"name\": \"string\",\n          \"audiences\": [\n            {\n              \"environmentKey\": \"string\",\n              \"name\": \"string\"\n            },\n            {\n              \"environmentKey\": \"string\",\n              \"name\": \"string\"\n            }\n          ]\n        }\n      ],\n      \"_links\": {\n        \"self\": {\n          \"href\": \"string\",\n          \"type\": \"string\"\n        },\n        \"key_0\": {\n          \"href\": \"string\",\n          \"type\": \"string\"\n        },\n        \"key_1\": {\n          \"href\": \"string\",\n          \"type\": \"string\"\n        },\n        \"key_2\": {\n          \"href\": \"string\",\n          \"type\": \"string\"\n        },\n        \"key_3\": {\n          \"href\": \"string\",\n          \"type\": \"string\"\n        }\n      }\n    },\n    {\n      \"key\": \"string\",\n      \"name\": \"string\",\n      \"description\": \"string\",\n      \"phases\": [\n        {\n          \"_id\": \"string\",\n          \"name\": \"string\",\n          \"audiences\": [\n            {\n              \"environmentKey\": \"string\",\n              \"name\": \"string\"\n            },\n            {\n              \"environmentKey\": \"string\",\n              \"name\": \"string\"\n            }\n          ]\n        },\n        {\n          \"_id\": \"string\",\n          \"name\": \"string\",\n          \"audiences\": [\n            {\n              \"environmentKey\": \"string\",\n              \"name\": \"string\"\n            },\n            {\n              \"environmentKey\": \"string\",\n              \"name\": \"string\"\n            }\n          ]\n        }\n      ],\n      \"_links\": {\n        \"self\": {\n          \"href\": \"string\",\n          \"type\": \"string\"\n        },\n        \"key_0\": {\n          \"href\": \"string\",\n          \"type\": \"string\"\n        },\n        \"key_1\": {\n          \"href\": \"string\",\n          \"type\": \"string\"\n        },\n        \"key_2\": {\n          \"href\": \"string\",\n          \"type\": \"string\"\n        }\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "caa7a5db-0642-4196-801f-5429a36885dc",
+              "name": "Unauthorized. Invalid or missing access token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "projects",
+                    ":projectKey",
+                    "release-pipelines"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "projectKey",
+                      "description": "(Required) The project key identifying a LaunchDarkly project."
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "071c1c92-c236-422d-9b2f-3c1aaf61abb5",
+              "name": "Project not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "projects",
+                    ":projectKey",
+                    "release-pipelines"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "projectKey",
+                      "description": "(Required) The project key identifying a LaunchDarkly project."
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "5c6d47db-baf4-4951-8714-0e8057bce996",
+          "name": "Create a release pipeline",
+          "request": {
+            "name": "Create a release pipeline",
+            "description": {
+              "content": "Creates a new release pipeline in the specified project for coordinating feature flag rollouts across environments.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "projects",
+                ":projectKey",
+                "release-pipelines"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "projectKey",
+                  "description": "(Required) The project key identifying a LaunchDarkly project."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"<string>\",\n  \"key\": \"<string>\",\n  \"phases\": [\n    {\n      \"audiences\": [\n        {\n          \"environmentKey\": \"<string>\",\n          \"name\": \"<string>\"\n        },\n        {\n          \"environmentKey\": \"<string>\",\n          \"name\": \"<string>\"\n        }\n      ],\n      \"name\": \"<string>\"\n    },\n    {\n      \"audiences\": [\n        {\n          \"environmentKey\": \"<string>\",\n          \"name\": \"<string>\"\n        },\n        {\n          \"environmentKey\": \"<string>\",\n          \"name\": \"<string>\"\n        }\n      ],\n      \"name\": \"<string>\"\n    }\n  ],\n  \"description\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "3f089004-2376-4998-9d2b-0e61055aaf83",
+              "name": "Release pipeline created successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "projects",
+                    ":projectKey",
+                    "release-pipelines"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "projectKey",
+                      "description": "(Required) The project key identifying a LaunchDarkly project."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\",\n  \"key\": \"<string>\",\n  \"phases\": [\n    {\n      \"audiences\": [\n        {\n          \"environmentKey\": \"<string>\",\n          \"name\": \"<string>\"\n        },\n        {\n          \"environmentKey\": \"<string>\",\n          \"name\": \"<string>\"\n        }\n      ],\n      \"name\": \"<string>\"\n    },\n    {\n      \"audiences\": [\n        {\n          \"environmentKey\": \"<string>\",\n          \"name\": \"<string>\"\n        },\n        {\n          \"environmentKey\": \"<string>\",\n          \"name\": \"<string>\"\n        }\n      ],\n      \"name\": \"<string>\"\n    }\n  ],\n  \"description\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"key\": \"string\",\n  \"name\": \"string\",\n  \"description\": \"string\",\n  \"phases\": [\n    {\n      \"_id\": \"string\",\n      \"name\": \"string\",\n      \"audiences\": [\n        {\n          \"environmentKey\": \"string\",\n          \"name\": \"string\"\n        },\n        {\n          \"environmentKey\": \"string\",\n          \"name\": \"string\"\n        }\n      ]\n    },\n    {\n      \"_id\": \"string\",\n      \"name\": \"string\",\n      \"audiences\": [\n        {\n          \"environmentKey\": \"string\",\n          \"name\": \"string\"\n        },\n        {\n          \"environmentKey\": \"string\",\n          \"name\": \"string\"\n        }\n      ]\n    }\n  ],\n  \"_links\": {\n    \"self\": {\n      \"href\": \"string\",\n      \"type\": \"string\"\n    },\n    \"key_0\": {\n      \"href\": \"string\",\n      \"type\": \"string\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a6c58d8d-858a-4aec-848d-5a0567e77107",
+              "name": "Invalid request body.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "projects",
+                    ":projectKey",
+                    "release-pipelines"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "projectKey",
+                      "description": "(Required) The project key identifying a LaunchDarkly project."
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\",\n  \"key\": \"<string>\",\n  \"phases\": [\n    {\n      \"audiences\": [\n        {\n          \"environmentKey\": \"<string>\",\n          \"name\": \"<string>\"\n        },\n        {\n          \"environmentKey\": \"<string>\",\n          \"name\": \"<string>\"\n        }\n      ],\n      \"name\": \"<string>\"\n    },\n    {\n      \"audiences\": [\n        {\n          \"environmentKey\": \"<string>\",\n          \"name\": \"<string>\"\n        },\n        {\n          \"environmentKey\": \"<string>\",\n          \"name\": \"<string>\"\n        }\n      ],\n      \"name\": \"<string>\"\n    }\n  ],\n  \"description\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "55792180-2ba6-42cb-8bff-e4f06d33329f",
+              "name": "Unauthorized. Invalid or missing access token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "projects",
+                    ":projectKey",
+                    "release-pipelines"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "projectKey",
+                      "description": "(Required) The project key identifying a LaunchDarkly project."
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\",\n  \"key\": \"<string>\",\n  \"phases\": [\n    {\n      \"audiences\": [\n        {\n          \"environmentKey\": \"<string>\",\n          \"name\": \"<string>\"\n        },\n        {\n          \"environmentKey\": \"<string>\",\n          \"name\": \"<string>\"\n        }\n      ],\n      \"name\": \"<string>\"\n    },\n    {\n      \"audiences\": [\n        {\n          \"environmentKey\": \"<string>\",\n          \"name\": \"<string>\"\n        },\n        {\n          \"environmentKey\": \"<string>\",\n          \"name\": \"<string>\"\n        }\n      ],\n      \"name\": \"<string>\"\n    }\n  ],\n  \"description\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "http://localhost:8030",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "c5e7a2a3-360a-4b87-a881-f2f9602efc31",
+    "name": "LaunchDarkly Relay Proxy Access Tokens Releases API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The LaunchDarkly Relay Proxy is a small Go application that connects to the LaunchDarkly streaming API and proxies that connection to SDK clients within an organization's network. It exposes endpoints for status monitoring, flag evaluation, and SDK streaming that mirror the LaunchDarkly service endpoints. Instead of each server making outbound connections to LaunchDarkly's streaming service, multiple servers connect to the local Relay Proxy which maintains a single upstream connection.\n\nContact Support:\n Name: LaunchDarkly Support",
+      "type": "text/plain"
+    }
+  }
+}

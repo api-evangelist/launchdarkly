@@ -1,0 +1,303 @@
+{
+  "item": [
+    {
+      "id": "d4d3a55c-0d7c-4dc4-a897-b6524b9e568d",
+      "name": "Relay Proxy Configurations",
+      "description": {
+        "content": "Manage automatic configuration entries for LaunchDarkly Relay Proxy instances.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "1f75594c-008e-4d00-b8f5-a290230a0ef1",
+          "name": "List Relay Proxy configurations",
+          "request": {
+            "name": "List Relay Proxy configurations",
+            "description": {
+              "content": "Returns a list of all Relay Proxy automatic configuration entries.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "account",
+                "relay-auto-configs"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "28099efb-4f20-471c-8f95-13583b8c4617",
+              "name": "Successful response containing Relay Proxy configurations.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "account",
+                    "relay-auto-configs"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"items\": [\n    {\n      \"_id\": \"string\",\n      \"name\": \"string\",\n      \"fullKey\": \"string\",\n      \"displayKey\": \"string\",\n      \"creationDate\": 4316,\n      \"lastModified\": 588,\n      \"policy\": [\n        {\n          \"effect\": \"deny\",\n          \"resources\": [\n            \"string\",\n            \"string\"\n          ],\n          \"notResources\": [\n            \"string\",\n            \"string\"\n          ],\n          \"actions\": [\n            \"string\",\n            \"string\"\n          ],\n          \"notActions\": [\n            \"string\",\n            \"string\"\n          ]\n        },\n        {\n          \"effect\": \"allow\",\n          \"resources\": [\n            \"string\",\n            \"string\"\n          ],\n          \"notResources\": [\n            \"string\",\n            \"string\"\n          ],\n          \"actions\": [\n            \"string\",\n            \"string\"\n          ],\n          \"notActions\": [\n            \"string\",\n            \"string\"\n          ]\n        }\n      ],\n      \"_links\": {\n        \"self\": {\n          \"href\": \"string\",\n          \"type\": \"string\"\n        },\n        \"key_0\": {\n          \"href\": \"string\",\n          \"type\": \"string\"\n        }\n      }\n    },\n    {\n      \"_id\": \"string\",\n      \"name\": \"string\",\n      \"fullKey\": \"string\",\n      \"displayKey\": \"string\",\n      \"creationDate\": 1923,\n      \"lastModified\": 7883,\n      \"policy\": [\n        {\n          \"effect\": \"deny\",\n          \"resources\": [\n            \"string\",\n            \"string\"\n          ],\n          \"notResources\": [\n            \"string\",\n            \"string\"\n          ],\n          \"actions\": [\n            \"string\",\n            \"string\"\n          ],\n          \"notActions\": [\n            \"string\",\n            \"string\"\n          ]\n        },\n        {\n          \"effect\": \"allow\",\n          \"resources\": [\n            \"string\",\n            \"string\"\n          ],\n          \"notResources\": [\n            \"string\",\n            \"string\"\n          ],\n          \"actions\": [\n            \"string\",\n            \"string\"\n          ],\n          \"notActions\": [\n            \"string\",\n            \"string\"\n          ]\n        }\n      ],\n      \"_links\": {\n        \"self\": {\n          \"href\": \"string\",\n          \"type\": \"string\"\n        },\n        \"key_0\": {\n          \"href\": \"string\",\n          \"type\": \"string\"\n        },\n        \"key_1\": {\n          \"href\": \"string\",\n          \"type\": \"string\"\n        }\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ad07cf08-7c31-4410-b7d4-a71ca25ca898",
+              "name": "Unauthorized. Invalid or missing access token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "account",
+                    "relay-auto-configs"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "fac272f6-3ae2-4294-9e5d-0d175282924c",
+          "name": "Create a Relay Proxy configuration",
+          "request": {
+            "name": "Create a Relay Proxy configuration",
+            "description": {
+              "content": "Creates a new Relay Proxy automatic configuration entry that generates a unique key for Relay Proxy instances.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "account",
+                "relay-auto-configs"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"<string>\",\n  \"policy\": [\n    {\n      \"effect\": \"<string>\",\n      \"resources\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"notResources\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"actions\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"notActions\": [\n        \"<string>\",\n        \"<string>\"\n      ]\n    },\n    {\n      \"effect\": \"<string>\",\n      \"resources\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"notResources\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"actions\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"notActions\": [\n        \"<string>\",\n        \"<string>\"\n      ]\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "60c5f623-1150-4971-9e40-0cfa2329a253",
+              "name": "Relay Proxy configuration created successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "account",
+                    "relay-auto-configs"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\",\n  \"policy\": [\n    {\n      \"effect\": \"deny\",\n      \"resources\": [\n        \"string\",\n        \"string\"\n      ],\n      \"notResources\": [\n        \"string\",\n        \"string\"\n      ],\n      \"actions\": [\n        \"string\",\n        \"string\"\n      ],\n      \"notActions\": [\n        \"string\",\n        \"string\"\n      ]\n    },\n    {\n      \"effect\": \"deny\",\n      \"resources\": [\n        \"string\",\n        \"string\"\n      ],\n      \"notResources\": [\n        \"string\",\n        \"string\"\n      ],\n      \"actions\": [\n        \"string\",\n        \"string\"\n      ],\n      \"notActions\": [\n        \"string\",\n        \"string\"\n      ]\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"_id\": \"string\",\n  \"name\": \"string\",\n  \"fullKey\": \"string\",\n  \"displayKey\": \"string\",\n  \"creationDate\": 7830,\n  \"lastModified\": 7934,\n  \"policy\": [\n    {\n      \"effect\": \"allow\",\n      \"resources\": [\n        \"string\",\n        \"string\"\n      ],\n      \"notResources\": [\n        \"string\",\n        \"string\"\n      ],\n      \"actions\": [\n        \"string\",\n        \"string\"\n      ],\n      \"notActions\": [\n        \"string\",\n        \"string\"\n      ]\n    },\n    {\n      \"effect\": \"deny\",\n      \"resources\": [\n        \"string\",\n        \"string\"\n      ],\n      \"notResources\": [\n        \"string\",\n        \"string\"\n      ],\n      \"actions\": [\n        \"string\",\n        \"string\"\n      ],\n      \"notActions\": [\n        \"string\",\n        \"string\"\n      ]\n    }\n  ],\n  \"_links\": {\n    \"self\": {\n      \"href\": \"string\",\n      \"type\": \"string\"\n    },\n    \"key_0\": {\n      \"href\": \"string\",\n      \"type\": \"string\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "37c06fe2-323e-4ec5-84a3-936aad0b563b",
+              "name": "Invalid request body.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "account",
+                    "relay-auto-configs"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\",\n  \"policy\": [\n    {\n      \"effect\": \"deny\",\n      \"resources\": [\n        \"string\",\n        \"string\"\n      ],\n      \"notResources\": [\n        \"string\",\n        \"string\"\n      ],\n      \"actions\": [\n        \"string\",\n        \"string\"\n      ],\n      \"notActions\": [\n        \"string\",\n        \"string\"\n      ]\n    },\n    {\n      \"effect\": \"deny\",\n      \"resources\": [\n        \"string\",\n        \"string\"\n      ],\n      \"notResources\": [\n        \"string\",\n        \"string\"\n      ],\n      \"actions\": [\n        \"string\",\n        \"string\"\n      ],\n      \"notActions\": [\n        \"string\",\n        \"string\"\n      ]\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "45d51f6d-81f3-4ff1-babc-32e82a19c8f8",
+              "name": "Unauthorized. Invalid or missing access token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "account",
+                    "relay-auto-configs"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\",\n  \"policy\": [\n    {\n      \"effect\": \"deny\",\n      \"resources\": [\n        \"string\",\n        \"string\"\n      ],\n      \"notResources\": [\n        \"string\",\n        \"string\"\n      ],\n      \"actions\": [\n        \"string\",\n        \"string\"\n      ],\n      \"notActions\": [\n        \"string\",\n        \"string\"\n      ]\n    },\n    {\n      \"effect\": \"deny\",\n      \"resources\": [\n        \"string\",\n        \"string\"\n      ],\n      \"notResources\": [\n        \"string\",\n        \"string\"\n      ],\n      \"actions\": [\n        \"string\",\n        \"string\"\n      ],\n      \"notActions\": [\n        \"string\",\n        \"string\"\n      ]\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "http://localhost:8030",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "d86b3cbd-2109-49d3-b7e1-5b86a2410d32",
+    "name": "LaunchDarkly Relay Proxy Access Tokens Relay Proxy Configurations API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The LaunchDarkly Relay Proxy is a small Go application that connects to the LaunchDarkly streaming API and proxies that connection to SDK clients within an organization's network. It exposes endpoints for status monitoring, flag evaluation, and SDK streaming that mirror the LaunchDarkly service endpoints. Instead of each server making outbound connections to LaunchDarkly's streaming service, multiple servers connect to the local Relay Proxy which maintains a single upstream connection.\n\nContact Support:\n Name: LaunchDarkly Support",
+      "type": "text/plain"
+    }
+  }
+}

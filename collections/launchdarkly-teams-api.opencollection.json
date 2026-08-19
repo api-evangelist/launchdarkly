@@ -1,0 +1,64 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "LaunchDarkly Relay Proxy Access Tokens Teams API",
+    "version": "8.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Teams",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List teams",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "http://localhost:8030/teams",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of teams to return."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "Number of teams to skip for pagination."
+              },
+              {
+                "name": "filter",
+                "value": "",
+                "type": "query",
+                "description": "A filter expression to apply to the team list."
+              }
+            ]
+          },
+          "docs": "Returns a list of all teams in the LaunchDarkly account."
+        },
+        {
+          "info": {
+            "name": "Create a team",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://localhost:8030/teams",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new team with the specified name and member list."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

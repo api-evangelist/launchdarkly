@@ -1,0 +1,208 @@
+{
+  "item": [
+    {
+      "id": "ce721be2-cb8f-4439-97f2-57710a8347df",
+      "name": "PHP Polling",
+      "description": {
+        "content": "Polling endpoints for PHP server-side SDKs which do not support streaming mode.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "ba6ddc14-8ac2-4097-b9ef-d8b2d81f25f8",
+          "name": "Get latest all flags (PHP polling)",
+          "request": {
+            "name": "Get latest all flags (PHP polling)",
+            "description": {
+              "content": "Returns the latest flag data for PHP server-side SDKs that use polling mode instead of streaming. Requires an SDK key in the Authorization header.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "sdk",
+                "latest-all"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "key",
+                  "value": "Authorization"
+                },
+                {
+                  "key": "value",
+                  "value": "{{apiKey}}"
+                },
+                {
+                  "key": "in",
+                  "value": "header"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "0c93eb2b-e167-450c-8d1b-c6381c72e9ed",
+              "name": "Successful response containing the latest flag data.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "sdk",
+                    "latest-all"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"flags\": {\n    \"key_0\": {}\n  },\n  \"segments\": {\n    \"key_0\": {}\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f54eb7af-0f74-4856-af20-eeace15b8e93",
+              "name": "Unauthorized. Invalid SDK key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "sdk",
+                    "latest-all"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "64e4549b-e2ad-41c4-917f-35d0206d7684",
+              "name": "Service unavailable. Flag data not yet available.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "sdk",
+                    "latest-all"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "http://localhost:8030",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "d9286094-6810-469e-945a-948d938f2590",
+    "name": "LaunchDarkly Relay Proxy Access Tokens PHP Polling API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The LaunchDarkly Relay Proxy is a small Go application that connects to the LaunchDarkly streaming API and proxies that connection to SDK clients within an organization's network. It exposes endpoints for status monitoring, flag evaluation, and SDK streaming that mirror the LaunchDarkly service endpoints. Instead of each server making outbound connections to LaunchDarkly's streaming service, multiple servers connect to the local Relay Proxy which maintains a single upstream connection.\n\nContact Support:\n Name: LaunchDarkly Support",
+      "type": "text/plain"
+    }
+  }
+}

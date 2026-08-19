@@ -1,0 +1,43 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "LaunchDarkly Relay Proxy Access Tokens Client-Side Evaluation API",
+    "version": "8.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Client-Side Evaluation",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Evaluate all flags for a client-side context (GET)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "http://localhost:8030/sdk/evalx/:envId/contexts/:contextBase64",
+            "params": [
+              {
+                "name": "envId",
+                "value": "",
+                "type": "path",
+                "description": "The client-side environment ID."
+              },
+              {
+                "name": "contextBase64",
+                "value": "",
+                "type": "path",
+                "description": "A base64-encoded JSON representation of the evaluation context."
+              }
+            ]
+          },
+          "docs": "Evaluates all client-side enabled feature flags for the given context. Uses the environment ID in the URL path for authentication."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

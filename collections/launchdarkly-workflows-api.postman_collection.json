@@ -1,0 +1,272 @@
+{
+  "item": [
+    {
+      "id": "c9746bf5-3dd1-43bb-b7b7-384ec0fde635",
+      "name": "Workflows",
+      "description": {
+        "content": "Create and manage automated workflows for scheduling and orchestrating flag changes.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "b5cf3e02-b375-4722-880c-4b2480330c4e",
+          "name": "List workflows",
+          "request": {
+            "name": "List workflows",
+            "description": {
+              "content": "Returns a list of all workflows for the specified feature flag in the given environment.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "projects",
+                ":projectKey",
+                "flags",
+                ":flagKey",
+                "environments",
+                ":environmentKey",
+                "workflows"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "projectKey",
+                  "description": "(Required) The project key identifying a LaunchDarkly project."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "flagKey",
+                  "description": "(Required) The feature flag key identifying a specific flag."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "environmentKey",
+                  "description": "(Required) The environment key identifying a specific environment."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "d6986f50-5ef0-4e04-ad87-71b886c8ea48",
+              "name": "Successful response containing workflows.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "projects",
+                    ":projectKey",
+                    "flags",
+                    ":flagKey",
+                    "environments",
+                    ":environmentKey",
+                    "workflows"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "projectKey",
+                      "description": "(Required) The project key identifying a LaunchDarkly project."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "flagKey",
+                      "description": "(Required) The feature flag key identifying a specific flag."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "environmentKey",
+                      "description": "(Required) The environment key identifying a specific environment."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"items\": [\n    {\n      \"_id\": \"string\",\n      \"name\": \"string\",\n      \"_links\": {\n        \"self\": {\n          \"href\": \"string\",\n          \"type\": \"string\"\n        },\n        \"key_0\": {\n          \"href\": \"string\",\n          \"type\": \"string\"\n        },\n        \"key_1\": {\n          \"href\": \"string\",\n          \"type\": \"string\"\n        },\n        \"key_2\": {\n          \"href\": \"string\",\n          \"type\": \"string\"\n        }\n      }\n    },\n    {\n      \"_id\": \"string\",\n      \"name\": \"string\",\n      \"_links\": {\n        \"self\": {\n          \"href\": \"string\",\n          \"type\": \"string\"\n        },\n        \"key_0\": {\n          \"href\": \"string\",\n          \"type\": \"string\"\n        }\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d85e9a91-6fd4-4f93-80f0-be1a368d1e50",
+              "name": "Unauthorized. Invalid or missing access token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "projects",
+                    ":projectKey",
+                    "flags",
+                    ":flagKey",
+                    "environments",
+                    ":environmentKey",
+                    "workflows"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "projectKey",
+                      "description": "(Required) The project key identifying a LaunchDarkly project."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "flagKey",
+                      "description": "(Required) The feature flag key identifying a specific flag."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "environmentKey",
+                      "description": "(Required) The environment key identifying a specific environment."
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "e8be62f0-4262-4804-aebc-00a48334015e",
+              "name": "Flag or environment not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "projects",
+                    ":projectKey",
+                    "flags",
+                    ":flagKey",
+                    "environments",
+                    ":environmentKey",
+                    "workflows"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "projectKey",
+                      "description": "(Required) The project key identifying a LaunchDarkly project."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "flagKey",
+                      "description": "(Required) The feature flag key identifying a specific flag."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "environmentKey",
+                      "description": "(Required) The environment key identifying a specific environment."
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "http://localhost:8030",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "276cee38-2f0e-4932-98ca-94faec5d2d06",
+    "name": "LaunchDarkly Relay Proxy Access Tokens Workflows API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The LaunchDarkly Relay Proxy is a small Go application that connects to the LaunchDarkly streaming API and proxies that connection to SDK clients within an organization's network. It exposes endpoints for status monitoring, flag evaluation, and SDK streaming that mirror the LaunchDarkly service endpoints. Instead of each server making outbound connections to LaunchDarkly's streaming service, multiple servers connect to the local Relay Proxy which maintains a single upstream connection.\n\nContact Support:\n Name: LaunchDarkly Support",
+      "type": "text/plain"
+    }
+  }
+}

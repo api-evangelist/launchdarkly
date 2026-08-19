@@ -1,0 +1,84 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "LaunchDarkly Relay Proxy Access Tokens Approvals API",
+    "version": "8.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Approvals",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List approval requests for a flag",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "http://localhost:8030/flags/:projectKey/:flagKey/approval-requests/:environmentKey",
+            "params": [
+              {
+                "name": "projectKey",
+                "value": "",
+                "type": "path",
+                "description": "The project key identifying a LaunchDarkly project."
+              },
+              {
+                "name": "flagKey",
+                "value": "",
+                "type": "path",
+                "description": "The feature flag key identifying a specific flag."
+              },
+              {
+                "name": "environmentKey",
+                "value": "",
+                "type": "path",
+                "description": "The environment key identifying a specific environment."
+              }
+            ]
+          },
+          "docs": "Returns a list of all approval requests for the specified feature flag in the given environment."
+        },
+        {
+          "info": {
+            "name": "Create an approval request",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://localhost:8030/flags/:projectKey/:flagKey/approval-requests/:environmentKey",
+            "params": [
+              {
+                "name": "projectKey",
+                "value": "",
+                "type": "path",
+                "description": "The project key identifying a LaunchDarkly project."
+              },
+              {
+                "name": "flagKey",
+                "value": "",
+                "type": "path",
+                "description": "The feature flag key identifying a specific flag."
+              },
+              {
+                "name": "environmentKey",
+                "value": "",
+                "type": "path",
+                "description": "The environment key identifying a specific environment."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new approval request for a pending change to the specified feature flag."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

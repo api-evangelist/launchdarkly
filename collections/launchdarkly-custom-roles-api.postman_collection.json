@@ -1,0 +1,333 @@
+{
+  "item": [
+    {
+      "id": "bab9eea4-db94-4f53-a69a-d05fc1262aab",
+      "name": "Custom Roles",
+      "description": {
+        "content": "Define custom roles with fine-grained permissions using resource specifiers and actions.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "dad33870-d9a8-483a-ac6b-2d9c10063c03",
+          "name": "List custom roles",
+          "request": {
+            "name": "List custom roles",
+            "description": {
+              "content": "Returns a list of all custom roles defined in the LaunchDarkly account.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "roles"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "30765d20-481f-495b-a885-080442855078",
+              "name": "Successful response containing a list of custom roles.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "roles"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"items\": [\n    {\n      \"_id\": \"string\",\n      \"key\": \"string\",\n      \"name\": \"string\",\n      \"description\": \"string\",\n      \"policy\": [\n        {\n          \"effect\": \"allow\",\n          \"resources\": [\n            \"string\",\n            \"string\"\n          ],\n          \"notResources\": [\n            \"string\",\n            \"string\"\n          ],\n          \"actions\": [\n            \"string\",\n            \"string\"\n          ],\n          \"notActions\": [\n            \"string\",\n            \"string\"\n          ]\n        },\n        {\n          \"effect\": \"deny\",\n          \"resources\": [\n            \"string\",\n            \"string\"\n          ],\n          \"notResources\": [\n            \"string\",\n            \"string\"\n          ],\n          \"actions\": [\n            \"string\",\n            \"string\"\n          ],\n          \"notActions\": [\n            \"string\",\n            \"string\"\n          ]\n        }\n      ],\n      \"_links\": {\n        \"self\": {\n          \"href\": \"string\",\n          \"type\": \"string\"\n        },\n        \"key_0\": {\n          \"href\": \"string\",\n          \"type\": \"string\"\n        }\n      }\n    },\n    {\n      \"_id\": \"string\",\n      \"key\": \"string\",\n      \"name\": \"string\",\n      \"description\": \"string\",\n      \"policy\": [\n        {\n          \"effect\": \"allow\",\n          \"resources\": [\n            \"string\",\n            \"string\"\n          ],\n          \"notResources\": [\n            \"string\",\n            \"string\"\n          ],\n          \"actions\": [\n            \"string\",\n            \"string\"\n          ],\n          \"notActions\": [\n            \"string\",\n            \"string\"\n          ]\n        },\n        {\n          \"effect\": \"allow\",\n          \"resources\": [\n            \"string\",\n            \"string\"\n          ],\n          \"notResources\": [\n            \"string\",\n            \"string\"\n          ],\n          \"actions\": [\n            \"string\",\n            \"string\"\n          ],\n          \"notActions\": [\n            \"string\",\n            \"string\"\n          ]\n        }\n      ],\n      \"_links\": {\n        \"self\": {\n          \"href\": \"string\",\n          \"type\": \"string\"\n        },\n        \"key_0\": {\n          \"href\": \"string\",\n          \"type\": \"string\"\n        },\n        \"key_1\": {\n          \"href\": \"string\",\n          \"type\": \"string\"\n        },\n        \"key_2\": {\n          \"href\": \"string\",\n          \"type\": \"string\"\n        }\n      }\n    }\n  ],\n  \"_links\": {\n    \"self\": {\n      \"href\": \"string\",\n      \"type\": \"string\"\n    },\n    \"key_0\": {\n      \"href\": \"string\",\n      \"type\": \"string\"\n    },\n    \"key_1\": {\n      \"href\": \"string\",\n      \"type\": \"string\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "59ae9332-c113-4e96-943f-d4783524fb3d",
+              "name": "Unauthorized. Invalid or missing access token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "roles"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "aba9c3e3-5615-41fb-acc2-2f8731019eea",
+          "name": "Create a custom role",
+          "request": {
+            "name": "Create a custom role",
+            "description": {
+              "content": "Creates a new custom role with the specified permissions policy.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "roles"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"<string>\",\n  \"key\": \"<string>\",\n  \"policy\": [\n    {\n      \"effect\": \"<string>\",\n      \"resources\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"notResources\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"actions\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"notActions\": [\n        \"<string>\",\n        \"<string>\"\n      ]\n    },\n    {\n      \"effect\": \"<string>\",\n      \"resources\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"notResources\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"actions\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"notActions\": [\n        \"<string>\",\n        \"<string>\"\n      ]\n    }\n  ],\n  \"description\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "235bb539-cad2-492c-925b-3d5141067714",
+              "name": "Custom role created successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "roles"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\",\n  \"key\": \"<string>\",\n  \"policy\": [\n    {\n      \"effect\": \"allow\",\n      \"resources\": [\n        \"string\",\n        \"string\"\n      ],\n      \"notResources\": [\n        \"string\",\n        \"string\"\n      ],\n      \"actions\": [\n        \"string\",\n        \"string\"\n      ],\n      \"notActions\": [\n        \"string\",\n        \"string\"\n      ]\n    },\n    {\n      \"effect\": \"deny\",\n      \"resources\": [\n        \"string\",\n        \"string\"\n      ],\n      \"notResources\": [\n        \"string\",\n        \"string\"\n      ],\n      \"actions\": [\n        \"string\",\n        \"string\"\n      ],\n      \"notActions\": [\n        \"string\",\n        \"string\"\n      ]\n    }\n  ],\n  \"description\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"_id\": \"string\",\n  \"key\": \"string\",\n  \"name\": \"string\",\n  \"description\": \"string\",\n  \"policy\": [\n    {\n      \"effect\": \"deny\",\n      \"resources\": [\n        \"string\",\n        \"string\"\n      ],\n      \"notResources\": [\n        \"string\",\n        \"string\"\n      ],\n      \"actions\": [\n        \"string\",\n        \"string\"\n      ],\n      \"notActions\": [\n        \"string\",\n        \"string\"\n      ]\n    },\n    {\n      \"effect\": \"deny\",\n      \"resources\": [\n        \"string\",\n        \"string\"\n      ],\n      \"notResources\": [\n        \"string\",\n        \"string\"\n      ],\n      \"actions\": [\n        \"string\",\n        \"string\"\n      ],\n      \"notActions\": [\n        \"string\",\n        \"string\"\n      ]\n    }\n  ],\n  \"_links\": {\n    \"self\": {\n      \"href\": \"string\",\n      \"type\": \"string\"\n    },\n    \"key_0\": {\n      \"href\": \"string\",\n      \"type\": \"string\"\n    },\n    \"key_1\": {\n      \"href\": \"string\",\n      \"type\": \"string\"\n    },\n    \"key_2\": {\n      \"href\": \"string\",\n      \"type\": \"string\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "89f79a88-9d16-4986-935e-6b33a0fb5b26",
+              "name": "Invalid request body.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "roles"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\",\n  \"key\": \"<string>\",\n  \"policy\": [\n    {\n      \"effect\": \"allow\",\n      \"resources\": [\n        \"string\",\n        \"string\"\n      ],\n      \"notResources\": [\n        \"string\",\n        \"string\"\n      ],\n      \"actions\": [\n        \"string\",\n        \"string\"\n      ],\n      \"notActions\": [\n        \"string\",\n        \"string\"\n      ]\n    },\n    {\n      \"effect\": \"deny\",\n      \"resources\": [\n        \"string\",\n        \"string\"\n      ],\n      \"notResources\": [\n        \"string\",\n        \"string\"\n      ],\n      \"actions\": [\n        \"string\",\n        \"string\"\n      ],\n      \"notActions\": [\n        \"string\",\n        \"string\"\n      ]\n    }\n  ],\n  \"description\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "7fdd7b6f-f9b4-4307-bd07-6686a988d647",
+              "name": "Unauthorized. Invalid or missing access token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "roles"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\",\n  \"key\": \"<string>\",\n  \"policy\": [\n    {\n      \"effect\": \"allow\",\n      \"resources\": [\n        \"string\",\n        \"string\"\n      ],\n      \"notResources\": [\n        \"string\",\n        \"string\"\n      ],\n      \"actions\": [\n        \"string\",\n        \"string\"\n      ],\n      \"notActions\": [\n        \"string\",\n        \"string\"\n      ]\n    },\n    {\n      \"effect\": \"deny\",\n      \"resources\": [\n        \"string\",\n        \"string\"\n      ],\n      \"notResources\": [\n        \"string\",\n        \"string\"\n      ],\n      \"actions\": [\n        \"string\",\n        \"string\"\n      ],\n      \"notActions\": [\n        \"string\",\n        \"string\"\n      ]\n    }\n  ],\n  \"description\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "dceee50d-f0ea-4bc3-b3a4-ffdf29249814",
+              "name": "A custom role with the given key already exists.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "roles"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\",\n  \"key\": \"<string>\",\n  \"policy\": [\n    {\n      \"effect\": \"allow\",\n      \"resources\": [\n        \"string\",\n        \"string\"\n      ],\n      \"notResources\": [\n        \"string\",\n        \"string\"\n      ],\n      \"actions\": [\n        \"string\",\n        \"string\"\n      ],\n      \"notActions\": [\n        \"string\",\n        \"string\"\n      ]\n    },\n    {\n      \"effect\": \"deny\",\n      \"resources\": [\n        \"string\",\n        \"string\"\n      ],\n      \"notResources\": [\n        \"string\",\n        \"string\"\n      ],\n      \"actions\": [\n        \"string\",\n        \"string\"\n      ],\n      \"notActions\": [\n        \"string\",\n        \"string\"\n      ]\n    }\n  ],\n  \"description\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "http://localhost:8030",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "73dab1ae-77de-4c8d-8f64-3f77f64cc3c9",
+    "name": "LaunchDarkly Relay Proxy Access Tokens Custom Roles API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The LaunchDarkly Relay Proxy is a small Go application that connects to the LaunchDarkly streaming API and proxies that connection to SDK clients within an organization's network. It exposes endpoints for status monitoring, flag evaluation, and SDK streaming that mirror the LaunchDarkly service endpoints. Instead of each server making outbound connections to LaunchDarkly's streaming service, multiple servers connect to the local Relay Proxy which maintains a single upstream connection.\n\nContact Support:\n Name: LaunchDarkly Support",
+      "type": "text/plain"
+    }
+  }
+}

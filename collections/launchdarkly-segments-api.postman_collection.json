@@ -1,0 +1,1326 @@
+{
+  "item": [
+    {
+      "id": "882027b7-dc99-4d09-99b5-06f56e0d964e",
+      "name": "Segments",
+      "description": {
+        "content": "Create and manage user segments for targeting groups of contexts with feature flags.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "f671ac53-c627-40c7-a876-70cc1c14e70c",
+          "name": "List segments",
+          "request": {
+            "name": "List segments",
+            "description": {
+              "content": "Returns a list of all user segments in the specified project and environment.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "segments",
+                ":projectKey",
+                ":environmentKey"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "<integer>",
+                  "description": "Maximum number of segments to return."
+                },
+                {
+                  "disabled": false,
+                  "key": "offset",
+                  "value": "<integer>",
+                  "description": "Number of segments to skip for pagination."
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "projectKey",
+                  "description": "(Required) The project key identifying a LaunchDarkly project."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "environmentKey",
+                  "description": "(Required) The environment key identifying a specific environment."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "ac0a46ba-a230-47a5-a79d-93f745ddaf41",
+              "name": "Successful response containing a list of segments.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "segments",
+                    ":projectKey",
+                    ":environmentKey"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "offset",
+                      "value": "<integer>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "projectKey",
+                      "description": "(Required) The project key identifying a LaunchDarkly project."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "environmentKey",
+                      "description": "(Required) The environment key identifying a specific environment."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"items\": [\n    {\n      \"key\": \"string\",\n      \"name\": \"string\",\n      \"description\": \"string\",\n      \"tags\": [\n        \"string\",\n        \"string\"\n      ],\n      \"creationDate\": 141,\n      \"included\": [\n        \"string\",\n        \"string\"\n      ],\n      \"excluded\": [\n        \"string\",\n        \"string\"\n      ],\n      \"rules\": [\n        {\n          \"_id\": \"string\",\n          \"clauses\": [\n            {\n              \"attribute\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"op\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"values\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"negate\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"contextKind\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            {\n              \"attribute\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"op\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"values\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"negate\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"contextKind\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          ],\n          \"weight\": 8378,\n          \"bucketBy\": \"string\"\n        },\n        {\n          \"_id\": \"string\",\n          \"clauses\": [\n            {\n              \"attribute\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"op\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"values\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"negate\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"contextKind\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            {\n              \"attribute\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"op\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"values\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"negate\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"contextKind\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          ],\n          \"weight\": 5505,\n          \"bucketBy\": \"string\"\n        }\n      ],\n      \"version\": 7505,\n      \"_links\": {\n        \"self\": {\n          \"href\": \"string\",\n          \"type\": \"string\"\n        },\n        \"key_0\": {\n          \"href\": \"string\",\n          \"type\": \"string\"\n        }\n      }\n    },\n    {\n      \"key\": \"string\",\n      \"name\": \"string\",\n      \"description\": \"string\",\n      \"tags\": [\n        \"string\",\n        \"string\"\n      ],\n      \"creationDate\": 9929,\n      \"included\": [\n        \"string\",\n        \"string\"\n      ],\n      \"excluded\": [\n        \"string\",\n        \"string\"\n      ],\n      \"rules\": [\n        {\n          \"_id\": \"string\",\n          \"clauses\": [\n            {\n              \"attribute\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"op\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"values\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"negate\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"contextKind\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            {\n              \"attribute\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"op\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"values\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"negate\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"contextKind\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          ],\n          \"weight\": 4463,\n          \"bucketBy\": \"string\"\n        },\n        {\n          \"_id\": \"string\",\n          \"clauses\": [\n            {\n              \"attribute\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"op\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"values\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"negate\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"contextKind\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            {\n              \"attribute\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"op\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"values\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"negate\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"contextKind\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          ],\n          \"weight\": 5340,\n          \"bucketBy\": \"string\"\n        }\n      ],\n      \"version\": 8337,\n      \"_links\": {\n        \"self\": {\n          \"href\": \"string\",\n          \"type\": \"string\"\n        },\n        \"key_0\": {\n          \"href\": \"string\",\n          \"type\": \"string\"\n        },\n        \"key_1\": {\n          \"href\": \"string\",\n          \"type\": \"string\"\n        }\n      }\n    }\n  ],\n  \"totalCount\": 2094,\n  \"_links\": {\n    \"self\": {\n      \"href\": \"string\",\n      \"type\": \"string\"\n    },\n    \"key_0\": {\n      \"href\": \"string\",\n      \"type\": \"string\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "08e38cf7-4162-4e5f-85e0-cb705eed9d60",
+              "name": "Unauthorized. Invalid or missing access token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "segments",
+                    ":projectKey",
+                    ":environmentKey"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "offset",
+                      "value": "<integer>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "projectKey",
+                      "description": "(Required) The project key identifying a LaunchDarkly project."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "environmentKey",
+                      "description": "(Required) The environment key identifying a specific environment."
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "42835c30-ca15-4e13-a8af-77b1e75154e2",
+              "name": "Project or environment not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "segments",
+                    ":projectKey",
+                    ":environmentKey"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "offset",
+                      "value": "<integer>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "projectKey",
+                      "description": "(Required) The project key identifying a LaunchDarkly project."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "environmentKey",
+                      "description": "(Required) The environment key identifying a specific environment."
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "f1ccad90-fdb6-48ec-bb58-d57d8a203474",
+          "name": "Create a segment",
+          "request": {
+            "name": "Create a segment",
+            "description": {
+              "content": "Creates a new user segment in the specified project and environment.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "segments",
+                ":projectKey",
+                ":environmentKey"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "projectKey",
+                  "description": "(Required) The project key identifying a LaunchDarkly project."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "environmentKey",
+                  "description": "(Required) The environment key identifying a specific environment."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"<string>\",\n  \"key\": \"<string>\",\n  \"description\": \"<string>\",\n  \"tags\": [\n    \"<string>\",\n    \"<string>\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "c2a3f912-35fa-4ec0-b1cd-b315846c43a0",
+              "name": "Segment created successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "segments",
+                    ":projectKey",
+                    ":environmentKey"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "projectKey",
+                      "description": "(Required) The project key identifying a LaunchDarkly project."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "environmentKey",
+                      "description": "(Required) The environment key identifying a specific environment."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\",\n  \"key\": \"<string>\",\n  \"description\": \"<string>\",\n  \"tags\": [\n    \"<string>\",\n    \"<string>\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"key\": \"string\",\n  \"name\": \"string\",\n  \"description\": \"string\",\n  \"tags\": [\n    \"string\",\n    \"string\"\n  ],\n  \"creationDate\": 6626,\n  \"included\": [\n    \"string\",\n    \"string\"\n  ],\n  \"excluded\": [\n    \"string\",\n    \"string\"\n  ],\n  \"rules\": [\n    {\n      \"_id\": \"string\",\n      \"clauses\": [\n        {\n          \"attribute\": \"string\",\n          \"op\": \"before\",\n          \"negate\": false,\n          \"contextKind\": \"string\"\n        },\n        {\n          \"attribute\": \"string\",\n          \"op\": \"greaterThan\",\n          \"negate\": true,\n          \"contextKind\": \"string\"\n        }\n      ],\n      \"weight\": 5300,\n      \"bucketBy\": \"string\"\n    },\n    {\n      \"_id\": \"string\",\n      \"clauses\": [\n        {\n          \"attribute\": \"string\",\n          \"op\": \"greaterThan\",\n          \"negate\": false,\n          \"contextKind\": \"string\"\n        },\n        {\n          \"attribute\": \"string\",\n          \"op\": \"endsWith\",\n          \"negate\": true,\n          \"contextKind\": \"string\"\n        }\n      ],\n      \"weight\": 9472,\n      \"bucketBy\": \"string\"\n    }\n  ],\n  \"version\": 2766,\n  \"_links\": {\n    \"self\": {\n      \"href\": \"string\",\n      \"type\": \"string\"\n    },\n    \"key_0\": {\n      \"href\": \"string\",\n      \"type\": \"string\"\n    },\n    \"key_1\": {\n      \"href\": \"string\",\n      \"type\": \"string\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "40b44ccb-32c7-46b2-adf4-82b469e77812",
+              "name": "Invalid request body.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "segments",
+                    ":projectKey",
+                    ":environmentKey"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "projectKey",
+                      "description": "(Required) The project key identifying a LaunchDarkly project."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "environmentKey",
+                      "description": "(Required) The environment key identifying a specific environment."
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\",\n  \"key\": \"<string>\",\n  \"description\": \"<string>\",\n  \"tags\": [\n    \"<string>\",\n    \"<string>\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "72ec8c4b-2373-43ae-a48c-98416b706478",
+              "name": "Unauthorized. Invalid or missing access token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "segments",
+                    ":projectKey",
+                    ":environmentKey"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "projectKey",
+                      "description": "(Required) The project key identifying a LaunchDarkly project."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "environmentKey",
+                      "description": "(Required) The environment key identifying a specific environment."
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\",\n  \"key\": \"<string>\",\n  \"description\": \"<string>\",\n  \"tags\": [\n    \"<string>\",\n    \"<string>\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "e645900c-1279-4cff-9355-62f57ed9571d",
+              "name": "A segment with the given key already exists.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "segments",
+                    ":projectKey",
+                    ":environmentKey"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "projectKey",
+                      "description": "(Required) The project key identifying a LaunchDarkly project."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "environmentKey",
+                      "description": "(Required) The environment key identifying a specific environment."
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\",\n  \"key\": \"<string>\",\n  \"description\": \"<string>\",\n  \"tags\": [\n    \"<string>\",\n    \"<string>\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "a1dadcb9-88e7-4004-a568-002f0f1bc3cd",
+          "name": "Get a segment",
+          "request": {
+            "name": "Get a segment",
+            "description": {
+              "content": "Returns a single user segment by its key.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "segments",
+                ":projectKey",
+                ":environmentKey",
+                ":segmentKey"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "projectKey",
+                  "description": "(Required) The project key identifying a LaunchDarkly project."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "environmentKey",
+                  "description": "(Required) The environment key identifying a specific environment."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "segmentKey",
+                  "description": "(Required) The segment key identifying a specific user segment."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "f4144e3c-7471-472c-9b06-25533a701486",
+              "name": "Successful response containing the segment.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "segments",
+                    ":projectKey",
+                    ":environmentKey",
+                    ":segmentKey"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "projectKey",
+                      "description": "(Required) The project key identifying a LaunchDarkly project."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "environmentKey",
+                      "description": "(Required) The environment key identifying a specific environment."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "segmentKey",
+                      "description": "(Required) The segment key identifying a specific user segment."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"key\": \"string\",\n  \"name\": \"string\",\n  \"description\": \"string\",\n  \"tags\": [\n    \"string\",\n    \"string\"\n  ],\n  \"creationDate\": 6626,\n  \"included\": [\n    \"string\",\n    \"string\"\n  ],\n  \"excluded\": [\n    \"string\",\n    \"string\"\n  ],\n  \"rules\": [\n    {\n      \"_id\": \"string\",\n      \"clauses\": [\n        {\n          \"attribute\": \"string\",\n          \"op\": \"before\",\n          \"negate\": false,\n          \"contextKind\": \"string\"\n        },\n        {\n          \"attribute\": \"string\",\n          \"op\": \"greaterThan\",\n          \"negate\": true,\n          \"contextKind\": \"string\"\n        }\n      ],\n      \"weight\": 5300,\n      \"bucketBy\": \"string\"\n    },\n    {\n      \"_id\": \"string\",\n      \"clauses\": [\n        {\n          \"attribute\": \"string\",\n          \"op\": \"greaterThan\",\n          \"negate\": false,\n          \"contextKind\": \"string\"\n        },\n        {\n          \"attribute\": \"string\",\n          \"op\": \"endsWith\",\n          \"negate\": true,\n          \"contextKind\": \"string\"\n        }\n      ],\n      \"weight\": 9472,\n      \"bucketBy\": \"string\"\n    }\n  ],\n  \"version\": 2766,\n  \"_links\": {\n    \"self\": {\n      \"href\": \"string\",\n      \"type\": \"string\"\n    },\n    \"key_0\": {\n      \"href\": \"string\",\n      \"type\": \"string\"\n    },\n    \"key_1\": {\n      \"href\": \"string\",\n      \"type\": \"string\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "2551e79d-63c2-4502-b5cb-706c80a5541a",
+              "name": "Unauthorized. Invalid or missing access token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "segments",
+                    ":projectKey",
+                    ":environmentKey",
+                    ":segmentKey"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "projectKey",
+                      "description": "(Required) The project key identifying a LaunchDarkly project."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "environmentKey",
+                      "description": "(Required) The environment key identifying a specific environment."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "segmentKey",
+                      "description": "(Required) The segment key identifying a specific user segment."
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "67a61bd6-a0ff-4b83-a30c-862eb2c93dde",
+              "name": "Segment not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "segments",
+                    ":projectKey",
+                    ":environmentKey",
+                    ":segmentKey"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "projectKey",
+                      "description": "(Required) The project key identifying a LaunchDarkly project."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "environmentKey",
+                      "description": "(Required) The environment key identifying a specific environment."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "segmentKey",
+                      "description": "(Required) The segment key identifying a specific user segment."
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "e960d47a-edf3-47a3-ac81-49356fb33a76",
+          "name": "Update a segment",
+          "request": {
+            "name": "Update a segment",
+            "description": {
+              "content": "Updates a segment using a JSON Patch or semantic patch representation.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "segments",
+                ":projectKey",
+                ":environmentKey",
+                ":segmentKey"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "projectKey",
+                  "description": "(Required) The project key identifying a LaunchDarkly project."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "environmentKey",
+                  "description": "(Required) The environment key identifying a specific environment."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "segmentKey",
+                  "description": "(Required) The segment key identifying a specific user segment."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PATCH",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"patch\": [\n    {\n      \"op\": \"<string>\",\n      \"path\": \"<string>\",\n      \"value\": {}\n    },\n    {\n      \"op\": \"<string>\",\n      \"path\": \"<string>\",\n      \"value\": {}\n    }\n  ],\n  \"comment\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "95642dd9-1438-4cab-80da-26ed78bc53ef",
+              "name": "Segment updated successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "segments",
+                    ":projectKey",
+                    ":environmentKey",
+                    ":segmentKey"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "projectKey",
+                      "description": "(Required) The project key identifying a LaunchDarkly project."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "environmentKey",
+                      "description": "(Required) The environment key identifying a specific environment."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "segmentKey",
+                      "description": "(Required) The segment key identifying a specific user segment."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"patch\": [\n    {\n      \"op\": \"<string>\",\n      \"path\": \"<string>\",\n      \"value\": {}\n    },\n    {\n      \"op\": \"<string>\",\n      \"path\": \"<string>\",\n      \"value\": {}\n    }\n  ],\n  \"comment\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"key\": \"string\",\n  \"name\": \"string\",\n  \"description\": \"string\",\n  \"tags\": [\n    \"string\",\n    \"string\"\n  ],\n  \"creationDate\": 6626,\n  \"included\": [\n    \"string\",\n    \"string\"\n  ],\n  \"excluded\": [\n    \"string\",\n    \"string\"\n  ],\n  \"rules\": [\n    {\n      \"_id\": \"string\",\n      \"clauses\": [\n        {\n          \"attribute\": \"string\",\n          \"op\": \"before\",\n          \"negate\": false,\n          \"contextKind\": \"string\"\n        },\n        {\n          \"attribute\": \"string\",\n          \"op\": \"greaterThan\",\n          \"negate\": true,\n          \"contextKind\": \"string\"\n        }\n      ],\n      \"weight\": 5300,\n      \"bucketBy\": \"string\"\n    },\n    {\n      \"_id\": \"string\",\n      \"clauses\": [\n        {\n          \"attribute\": \"string\",\n          \"op\": \"greaterThan\",\n          \"negate\": false,\n          \"contextKind\": \"string\"\n        },\n        {\n          \"attribute\": \"string\",\n          \"op\": \"endsWith\",\n          \"negate\": true,\n          \"contextKind\": \"string\"\n        }\n      ],\n      \"weight\": 9472,\n      \"bucketBy\": \"string\"\n    }\n  ],\n  \"version\": 2766,\n  \"_links\": {\n    \"self\": {\n      \"href\": \"string\",\n      \"type\": \"string\"\n    },\n    \"key_0\": {\n      \"href\": \"string\",\n      \"type\": \"string\"\n    },\n    \"key_1\": {\n      \"href\": \"string\",\n      \"type\": \"string\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f1f2b58e-2b33-4baa-a210-e34173d60212",
+              "name": "Invalid patch request.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "segments",
+                    ":projectKey",
+                    ":environmentKey",
+                    ":segmentKey"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "projectKey",
+                      "description": "(Required) The project key identifying a LaunchDarkly project."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "environmentKey",
+                      "description": "(Required) The environment key identifying a specific environment."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "segmentKey",
+                      "description": "(Required) The segment key identifying a specific user segment."
+                    }
+                  ]
+                },
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"patch\": [\n    {\n      \"op\": \"<string>\",\n      \"path\": \"<string>\",\n      \"value\": {}\n    },\n    {\n      \"op\": \"<string>\",\n      \"path\": \"<string>\",\n      \"value\": {}\n    }\n  ],\n  \"comment\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "ce7e3ff6-4922-49f1-a46f-b70796ce744c",
+              "name": "Unauthorized. Invalid or missing access token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "segments",
+                    ":projectKey",
+                    ":environmentKey",
+                    ":segmentKey"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "projectKey",
+                      "description": "(Required) The project key identifying a LaunchDarkly project."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "environmentKey",
+                      "description": "(Required) The environment key identifying a specific environment."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "segmentKey",
+                      "description": "(Required) The segment key identifying a specific user segment."
+                    }
+                  ]
+                },
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"patch\": [\n    {\n      \"op\": \"<string>\",\n      \"path\": \"<string>\",\n      \"value\": {}\n    },\n    {\n      \"op\": \"<string>\",\n      \"path\": \"<string>\",\n      \"value\": {}\n    }\n  ],\n  \"comment\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "2b6311cf-0f16-4f75-bbaf-44174d40f99a",
+              "name": "Segment not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "segments",
+                    ":projectKey",
+                    ":environmentKey",
+                    ":segmentKey"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "projectKey",
+                      "description": "(Required) The project key identifying a LaunchDarkly project."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "environmentKey",
+                      "description": "(Required) The environment key identifying a specific environment."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "segmentKey",
+                      "description": "(Required) The segment key identifying a specific user segment."
+                    }
+                  ]
+                },
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"patch\": [\n    {\n      \"op\": \"<string>\",\n      \"path\": \"<string>\",\n      \"value\": {}\n    },\n    {\n      \"op\": \"<string>\",\n      \"path\": \"<string>\",\n      \"value\": {}\n    }\n  ],\n  \"comment\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "67cade46-f30a-4557-b2dc-271ca38d32a2",
+          "name": "Delete a segment",
+          "request": {
+            "name": "Delete a segment",
+            "description": {
+              "content": "Permanently deletes a user segment.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "segments",
+                ":projectKey",
+                ":environmentKey",
+                ":segmentKey"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "projectKey",
+                  "description": "(Required) The project key identifying a LaunchDarkly project."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "environmentKey",
+                  "description": "(Required) The environment key identifying a specific environment."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "segmentKey",
+                  "description": "(Required) The segment key identifying a specific user segment."
+                }
+              ]
+            },
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "01d17ceb-82d7-4edc-bd56-9bfe398ce645",
+              "name": "Segment deleted successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "segments",
+                    ":projectKey",
+                    ":environmentKey",
+                    ":segmentKey"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "projectKey",
+                      "description": "(Required) The project key identifying a LaunchDarkly project."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "environmentKey",
+                      "description": "(Required) The environment key identifying a specific environment."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "segmentKey",
+                      "description": "(Required) The segment key identifying a specific user segment."
+                    }
+                  ]
+                },
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "No Content",
+              "code": 204,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "ce4e2484-229d-4aaa-9116-5921a998edbd",
+              "name": "Unauthorized. Invalid or missing access token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "segments",
+                    ":projectKey",
+                    ":environmentKey",
+                    ":segmentKey"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "projectKey",
+                      "description": "(Required) The project key identifying a LaunchDarkly project."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "environmentKey",
+                      "description": "(Required) The environment key identifying a specific environment."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "segmentKey",
+                      "description": "(Required) The segment key identifying a specific user segment."
+                    }
+                  ]
+                },
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "b3a65013-6165-460d-b023-cd0bda9a4ca2",
+              "name": "Segment not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "segments",
+                    ":projectKey",
+                    ":environmentKey",
+                    ":segmentKey"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "projectKey",
+                      "description": "(Required) The project key identifying a LaunchDarkly project."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "environmentKey",
+                      "description": "(Required) The environment key identifying a specific environment."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "segmentKey",
+                      "description": "(Required) The segment key identifying a specific user segment."
+                    }
+                  ]
+                },
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "http://localhost:8030",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "0e260b64-c5a7-407a-8f98-d06c80faba7e",
+    "name": "LaunchDarkly Relay Proxy Access Tokens Segments API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The LaunchDarkly Relay Proxy is a small Go application that connects to the LaunchDarkly streaming API and proxies that connection to SDK clients within an organization's network. It exposes endpoints for status monitoring, flag evaluation, and SDK streaming that mirror the LaunchDarkly service endpoints. Instead of each server making outbound connections to LaunchDarkly's streaming service, multiple servers connect to the local Relay Proxy which maintains a single upstream connection.\n\nContact Support:\n Name: LaunchDarkly Support",
+      "type": "text/plain"
+    }
+  }
+}

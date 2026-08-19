@@ -1,0 +1,49 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "LaunchDarkly Relay Proxy Access Tokens Workflows API",
+    "version": "8.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Workflows",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List workflows",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "http://localhost:8030/projects/:projectKey/flags/:flagKey/environments/:environmentKey/workflows",
+            "params": [
+              {
+                "name": "projectKey",
+                "value": "",
+                "type": "path",
+                "description": "The project key identifying a LaunchDarkly project."
+              },
+              {
+                "name": "flagKey",
+                "value": "",
+                "type": "path",
+                "description": "The feature flag key identifying a specific flag."
+              },
+              {
+                "name": "environmentKey",
+                "value": "",
+                "type": "path",
+                "description": "The environment key identifying a specific environment."
+              }
+            ]
+          },
+          "docs": "Returns a list of all workflows for the specified feature flag in the given environment."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

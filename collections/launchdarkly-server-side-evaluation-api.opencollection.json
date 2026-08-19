@@ -1,0 +1,43 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "LaunchDarkly Relay Proxy Access Tokens Server-Side Evaluation API",
+    "version": "8.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Server-Side Evaluation",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Evaluate all flags for a context (GET)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "http://localhost:8030/sdk/evalx/contexts/:contextBase64",
+            "params": [
+              {
+                "name": "contextBase64",
+                "value": "",
+                "type": "path",
+                "description": "A base64-encoded JSON representation of the evaluation context."
+              }
+            ],
+            "auth": {
+              "type": "apikey",
+              "key": "Authorization",
+              "value": "{{Authorization}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Evaluates all feature flags for the given context and returns the results. The context is provided as a base64-encoded JSON object in the URL path. Requires an SDK key in the Authorization header."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,29 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "LaunchDarkly Relay Proxy Access Tokens Status API",
+    "version": "8.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Status",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get Relay Proxy status",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "http://localhost:8030/status"
+          },
+          "docs": "Returns the overall health status of the Relay Proxy and detailed connection status for each configured environment. No authentication is required. The top-level status is \"healthy\" if all environments are connected, or \"degraded\" if any environment is disconnected."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

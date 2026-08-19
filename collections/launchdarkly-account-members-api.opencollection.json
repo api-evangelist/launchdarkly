@@ -1,0 +1,64 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "LaunchDarkly Relay Proxy Access Tokens Account Members API",
+    "version": "8.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Account Members",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List account members",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "http://localhost:8030/members",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of members to return."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "Number of members to skip for pagination."
+              },
+              {
+                "name": "filter",
+                "value": "",
+                "type": "query",
+                "description": "A filter expression to apply to the member list."
+              }
+            ]
+          },
+          "docs": "Returns a paginated list of all members in the LaunchDarkly account."
+        },
+        {
+          "info": {
+            "name": "Invite a new member",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://localhost:8030/members",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Sends an invitation to a new member to join the LaunchDarkly account."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

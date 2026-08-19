@@ -1,0 +1,443 @@
+{
+  "item": [
+    {
+      "id": "f8dad82e-b9c2-47c1-8904-820951bd4c06",
+      "name": "Metrics",
+      "description": {
+        "content": "Define and manage metrics used to measure experiment outcomes and feature flag impact.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "66c0a572-5723-4701-b1d3-64360372e4ae",
+          "name": "List metrics",
+          "request": {
+            "name": "List metrics",
+            "description": {
+              "content": "Returns a list of all metrics defined in the specified project.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "metrics",
+                ":projectKey"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "projectKey",
+                  "description": "(Required) The project key identifying a LaunchDarkly project."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "7012ec47-4854-42ea-b51c-941620a3d4d9",
+              "name": "Successful response containing a list of metrics.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "metrics",
+                    ":projectKey"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "projectKey",
+                      "description": "(Required) The project key identifying a LaunchDarkly project."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"items\": [\n    {\n      \"_id\": \"string\",\n      \"key\": \"string\",\n      \"name\": \"string\",\n      \"description\": \"string\",\n      \"kind\": \"pageview\",\n      \"tags\": [\n        \"string\",\n        \"string\"\n      ],\n      \"creationDate\": 7807,\n      \"_links\": {\n        \"self\": {\n          \"href\": \"string\",\n          \"type\": \"string\"\n        },\n        \"key_0\": {\n          \"href\": \"string\",\n          \"type\": \"string\"\n        },\n        \"key_1\": {\n          \"href\": \"string\",\n          \"type\": \"string\"\n        },\n        \"key_2\": {\n          \"href\": \"string\",\n          \"type\": \"string\"\n        },\n        \"key_3\": {\n          \"href\": \"string\",\n          \"type\": \"string\"\n        },\n        \"key_4\": {\n          \"href\": \"string\",\n          \"type\": \"string\"\n        }\n      }\n    },\n    {\n      \"_id\": \"string\",\n      \"key\": \"string\",\n      \"name\": \"string\",\n      \"description\": \"string\",\n      \"kind\": \"pageview\",\n      \"tags\": [\n        \"string\",\n        \"string\"\n      ],\n      \"creationDate\": 169,\n      \"_links\": {\n        \"self\": {\n          \"href\": \"string\",\n          \"type\": \"string\"\n        },\n        \"key_0\": {\n          \"href\": \"string\",\n          \"type\": \"string\"\n        }\n      }\n    }\n  ],\n  \"_links\": {\n    \"self\": {\n      \"href\": \"string\",\n      \"type\": \"string\"\n    },\n    \"key_0\": {\n      \"href\": \"string\",\n      \"type\": \"string\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "91b744e6-8fe0-4876-b2b4-1a7565492396",
+              "name": "Unauthorized. Invalid or missing access token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "metrics",
+                    ":projectKey"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "projectKey",
+                      "description": "(Required) The project key identifying a LaunchDarkly project."
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "d36251e5-331b-469a-b25b-ed38c27560c8",
+              "name": "Project not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "metrics",
+                    ":projectKey"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "projectKey",
+                      "description": "(Required) The project key identifying a LaunchDarkly project."
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "3b78dd86-d835-4a17-bee3-4cbea565a56d",
+          "name": "Create a metric",
+          "request": {
+            "name": "Create a metric",
+            "description": {
+              "content": "Creates a new metric in the specified project for use in experiments and monitoring.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "metrics",
+                ":projectKey"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "projectKey",
+                  "description": "(Required) The project key identifying a LaunchDarkly project."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"<string>\",\n  \"key\": \"<string>\",\n  \"kind\": \"<string>\",\n  \"description\": \"<string>\",\n  \"tags\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"selector\": \"<string>\",\n  \"urls\": [\n    {\n      \"kind\": \"<string>\",\n      \"url\": \"<string>\"\n    },\n    {\n      \"kind\": \"<string>\",\n      \"url\": \"<string>\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "0b844864-0c6a-4926-9cbc-8a01009e3efa",
+              "name": "Metric created successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "metrics",
+                    ":projectKey"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "projectKey",
+                      "description": "(Required) The project key identifying a LaunchDarkly project."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\",\n  \"key\": \"<string>\",\n  \"kind\": \"<string>\",\n  \"description\": \"<string>\",\n  \"tags\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"selector\": \"<string>\",\n  \"urls\": [\n    {\n      \"kind\": \"<string>\",\n      \"url\": \"<string>\"\n    },\n    {\n      \"kind\": \"<string>\",\n      \"url\": \"<string>\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"_id\": \"string\",\n  \"key\": \"string\",\n  \"name\": \"string\",\n  \"description\": \"string\",\n  \"kind\": \"custom\",\n  \"tags\": [\n    \"string\",\n    \"string\"\n  ],\n  \"creationDate\": 8169,\n  \"_links\": {\n    \"self\": {\n      \"href\": \"string\",\n      \"type\": \"string\"\n    },\n    \"key_0\": {\n      \"href\": \"string\",\n      \"type\": \"string\"\n    },\n    \"key_1\": {\n      \"href\": \"string\",\n      \"type\": \"string\"\n    },\n    \"key_2\": {\n      \"href\": \"string\",\n      \"type\": \"string\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "8c97e95d-c5b4-4bc2-a6f8-5a6320908b1b",
+              "name": "Invalid request body.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "metrics",
+                    ":projectKey"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "projectKey",
+                      "description": "(Required) The project key identifying a LaunchDarkly project."
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\",\n  \"key\": \"<string>\",\n  \"kind\": \"<string>\",\n  \"description\": \"<string>\",\n  \"tags\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"selector\": \"<string>\",\n  \"urls\": [\n    {\n      \"kind\": \"<string>\",\n      \"url\": \"<string>\"\n    },\n    {\n      \"kind\": \"<string>\",\n      \"url\": \"<string>\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "ccc10936-86f8-470e-bd08-3f7ceda9ec72",
+              "name": "Unauthorized. Invalid or missing access token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "metrics",
+                    ":projectKey"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "projectKey",
+                      "description": "(Required) The project key identifying a LaunchDarkly project."
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\",\n  \"key\": \"<string>\",\n  \"kind\": \"<string>\",\n  \"description\": \"<string>\",\n  \"tags\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"selector\": \"<string>\",\n  \"urls\": [\n    {\n      \"kind\": \"<string>\",\n      \"url\": \"<string>\"\n    },\n    {\n      \"kind\": \"<string>\",\n      \"url\": \"<string>\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "49a7223a-69ee-4b06-8189-3c44d4731579",
+              "name": "A metric with the given key already exists.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "metrics",
+                    ":projectKey"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "projectKey",
+                      "description": "(Required) The project key identifying a LaunchDarkly project."
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\",\n  \"key\": \"<string>\",\n  \"kind\": \"<string>\",\n  \"description\": \"<string>\",\n  \"tags\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"selector\": \"<string>\",\n  \"urls\": [\n    {\n      \"kind\": \"<string>\",\n      \"url\": \"<string>\"\n    },\n    {\n      \"kind\": \"<string>\",\n      \"url\": \"<string>\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "http://localhost:8030",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "067caea1-aa23-47c6-ac87-f24cc9b784e0",
+    "name": "LaunchDarkly Relay Proxy Access Tokens Metrics API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The LaunchDarkly Relay Proxy is a small Go application that connects to the LaunchDarkly streaming API and proxies that connection to SDK clients within an organization's network. It exposes endpoints for status monitoring, flag evaluation, and SDK streaming that mirror the LaunchDarkly service endpoints. Instead of each server making outbound connections to LaunchDarkly's streaming service, multiple servers connect to the local Relay Proxy which maintains a single upstream connection.\n\nContact Support:\n Name: LaunchDarkly Support",
+      "type": "text/plain"
+    }
+  }
+}

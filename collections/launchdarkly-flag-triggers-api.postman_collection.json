@@ -1,0 +1,533 @@
+{
+  "item": [
+    {
+      "id": "fb024288-7d1b-4442-a110-f5c09c50815e",
+      "name": "Flag Triggers",
+      "description": {
+        "content": "Create triggers that allow external services to toggle feature flags via unique webhook URLs.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "354aef20-7e30-4a24-8618-9434fbd18ff5",
+          "name": "List flag triggers",
+          "request": {
+            "name": "List flag triggers",
+            "description": {
+              "content": "Returns a list of all triggers for the specified feature flag in the given environment.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "flags",
+                ":projectKey",
+                ":flagKey",
+                "triggers",
+                ":environmentKey"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "projectKey",
+                  "description": "(Required) The project key identifying a LaunchDarkly project."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "flagKey",
+                  "description": "(Required) The feature flag key identifying a specific flag."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "environmentKey",
+                  "description": "(Required) The environment key identifying a specific environment."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "d55a8f5a-1267-4898-945d-92a54b6fc514",
+              "name": "Successful response containing a list of flag triggers.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "flags",
+                    ":projectKey",
+                    ":flagKey",
+                    "triggers",
+                    ":environmentKey"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "projectKey",
+                      "description": "(Required) The project key identifying a LaunchDarkly project."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "flagKey",
+                      "description": "(Required) The feature flag key identifying a specific flag."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "environmentKey",
+                      "description": "(Required) The environment key identifying a specific environment."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"items\": [\n    {\n      \"_id\": \"string\",\n      \"_version\": 6871,\n      \"triggerUrl\": \"https://rBcHrhcBySiydlvezYkBS.pjvrBjwM0Po0l2pjaL9ye-Jz-MdJkvnS1-uOOfeub2EiZbB-Y.hhwwd-j0.HwrVaKQI\",\n      \"enabled\": true,\n      \"instructions\": [\n        {\n          \"kind\": \"turnFlagOn\"\n        },\n        {\n          \"kind\": \"turnFlagOn\"\n        }\n      ],\n      \"_links\": {\n        \"self\": {\n          \"href\": \"string\",\n          \"type\": \"string\"\n        },\n        \"key_0\": {\n          \"href\": \"string\",\n          \"type\": \"string\"\n        },\n        \"key_1\": {\n          \"href\": \"string\",\n          \"type\": \"string\"\n        }\n      }\n    },\n    {\n      \"_id\": \"string\",\n      \"_version\": 1825,\n      \"triggerUrl\": \"http://qMPuTmzTpPldKAGHySpplkreRhM.fmihuAVDE4muF77iPrtZ2H-EtG34zH-zy-ZJH8xfR+ADOojk,T5i4,ywm\",\n      \"enabled\": true,\n      \"instructions\": [\n        {\n          \"kind\": \"turnFlagOn\"\n        },\n        {\n          \"kind\": \"turnFlagOn\"\n        }\n      ],\n      \"_links\": {\n        \"self\": {\n          \"href\": \"string\",\n          \"type\": \"string\"\n        },\n        \"key_0\": {\n          \"href\": \"string\",\n          \"type\": \"string\"\n        }\n      }\n    }\n  ],\n  \"_links\": {\n    \"self\": {\n      \"href\": \"string\",\n      \"type\": \"string\"\n    },\n    \"key_0\": {\n      \"href\": \"string\",\n      \"type\": \"string\"\n    },\n    \"key_1\": {\n      \"href\": \"string\",\n      \"type\": \"string\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "4c107cce-94f4-4e1d-a422-4e282cbb9d86",
+              "name": "Unauthorized. Invalid or missing access token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "flags",
+                    ":projectKey",
+                    ":flagKey",
+                    "triggers",
+                    ":environmentKey"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "projectKey",
+                      "description": "(Required) The project key identifying a LaunchDarkly project."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "flagKey",
+                      "description": "(Required) The feature flag key identifying a specific flag."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "environmentKey",
+                      "description": "(Required) The environment key identifying a specific environment."
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "edbd081e-8b44-4877-a682-adc9ba2ef95e",
+              "name": "Flag or environment not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "flags",
+                    ":projectKey",
+                    ":flagKey",
+                    "triggers",
+                    ":environmentKey"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "projectKey",
+                      "description": "(Required) The project key identifying a LaunchDarkly project."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "flagKey",
+                      "description": "(Required) The feature flag key identifying a specific flag."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "environmentKey",
+                      "description": "(Required) The environment key identifying a specific environment."
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "379317a4-77f8-4843-a921-4a709c804e0f",
+          "name": "Create a flag trigger",
+          "request": {
+            "name": "Create a flag trigger",
+            "description": {
+              "content": "Creates a new trigger for the specified feature flag that generates a unique URL for external services to toggle the flag.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "flags",
+                ":projectKey",
+                ":flagKey",
+                "triggers",
+                ":environmentKey"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "projectKey",
+                  "description": "(Required) The project key identifying a LaunchDarkly project."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "flagKey",
+                  "description": "(Required) The feature flag key identifying a specific flag."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "environmentKey",
+                  "description": "(Required) The environment key identifying a specific environment."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"instructions\": [\n    {\n      \"kind\": \"<string>\"\n    },\n    {\n      \"kind\": \"<string>\"\n    }\n  ],\n  \"comment\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "f4c30edc-7b12-49f7-8db6-d2c2f4972817",
+              "name": "Flag trigger created successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "flags",
+                    ":projectKey",
+                    ":flagKey",
+                    "triggers",
+                    ":environmentKey"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "projectKey",
+                      "description": "(Required) The project key identifying a LaunchDarkly project."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "flagKey",
+                      "description": "(Required) The feature flag key identifying a specific flag."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "environmentKey",
+                      "description": "(Required) The environment key identifying a specific environment."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"instructions\": [\n    {\n      \"kind\": \"<string>\"\n    },\n    {\n      \"kind\": \"<string>\"\n    }\n  ],\n  \"comment\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"_id\": \"string\",\n  \"_version\": 9064,\n  \"triggerUrl\": \"https://fstziqFrIwyhXrBvhGbmOKz.gpy5UZ6kLWLyMTcgy,vYOnSS.w\",\n  \"enabled\": false,\n  \"instructions\": [\n    {\n      \"kind\": \"turnFlagOn\"\n    },\n    {\n      \"kind\": \"turnFlagOn\"\n    }\n  ],\n  \"_links\": {\n    \"self\": {\n      \"href\": \"string\",\n      \"type\": \"string\"\n    },\n    \"key_0\": {\n      \"href\": \"string\",\n      \"type\": \"string\"\n    },\n    \"key_1\": {\n      \"href\": \"string\",\n      \"type\": \"string\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ba2612b4-5fc9-4655-892d-e714e0f4212e",
+              "name": "Invalid request body.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "flags",
+                    ":projectKey",
+                    ":flagKey",
+                    "triggers",
+                    ":environmentKey"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "projectKey",
+                      "description": "(Required) The project key identifying a LaunchDarkly project."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "flagKey",
+                      "description": "(Required) The feature flag key identifying a specific flag."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "environmentKey",
+                      "description": "(Required) The environment key identifying a specific environment."
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"instructions\": [\n    {\n      \"kind\": \"<string>\"\n    },\n    {\n      \"kind\": \"<string>\"\n    }\n  ],\n  \"comment\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "3d2d8dde-0fa7-4474-9a83-a6bbf133eb23",
+              "name": "Unauthorized. Invalid or missing access token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "flags",
+                    ":projectKey",
+                    ":flagKey",
+                    "triggers",
+                    ":environmentKey"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "projectKey",
+                      "description": "(Required) The project key identifying a LaunchDarkly project."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "flagKey",
+                      "description": "(Required) The feature flag key identifying a specific flag."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "environmentKey",
+                      "description": "(Required) The environment key identifying a specific environment."
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"instructions\": [\n    {\n      \"kind\": \"<string>\"\n    },\n    {\n      \"kind\": \"<string>\"\n    }\n  ],\n  \"comment\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "http://localhost:8030",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "81755e8d-2360-451e-9317-5a558cc7050a",
+    "name": "LaunchDarkly Relay Proxy Access Tokens Flag Triggers API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The LaunchDarkly Relay Proxy is a small Go application that connects to the LaunchDarkly streaming API and proxies that connection to SDK clients within an organization's network. It exposes endpoints for status monitoring, flag evaluation, and SDK streaming that mirror the LaunchDarkly service endpoints. Instead of each server making outbound connections to LaunchDarkly's streaming service, multiple servers connect to the local Relay Proxy which maintains a single upstream connection.\n\nContact Support:\n Name: LaunchDarkly Support",
+      "type": "text/plain"
+    }
+  }
+}

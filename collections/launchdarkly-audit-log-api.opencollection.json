@@ -1,0 +1,80 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "LaunchDarkly Relay Proxy Access Tokens Audit Log API",
+    "version": "8.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Audit Log",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List audit log entries",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "http://localhost:8030/auditlog",
+            "params": [
+              {
+                "name": "before",
+                "value": "",
+                "type": "query",
+                "description": "A timestamp filter returning entries before this time (Unix epoch milliseconds)."
+              },
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "A timestamp filter returning entries after this time (Unix epoch milliseconds)."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of entries to return."
+              },
+              {
+                "name": "q",
+                "value": "",
+                "type": "query",
+                "description": "A text filter for searching audit log entries."
+              },
+              {
+                "name": "spec",
+                "value": "",
+                "type": "query",
+                "description": "A resource specifier filter for narrowing entries to specific resource types."
+              }
+            ]
+          },
+          "docs": "Returns a paginated list of audit log entries recording all changes made to resources in the LaunchDarkly account."
+        },
+        {
+          "info": {
+            "name": "Get an audit log entry",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "http://localhost:8030/auditlog/:auditLogId",
+            "params": [
+              {
+                "name": "auditLogId",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the audit log entry."
+              }
+            ]
+          },
+          "docs": "Returns a single audit log entry by its identifier."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

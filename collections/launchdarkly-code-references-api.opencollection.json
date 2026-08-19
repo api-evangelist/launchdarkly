@@ -1,0 +1,29 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "LaunchDarkly Relay Proxy Access Tokens Code References API",
+    "version": "8.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Code References",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List code reference repositories",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "http://localhost:8030/code-refs/repositories"
+          },
+          "docs": "Returns a list of all repositories connected for code reference scanning."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

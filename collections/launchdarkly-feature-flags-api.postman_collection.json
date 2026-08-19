@@ -1,0 +1,1280 @@
+{
+  "item": [
+    {
+      "id": "569d05b0-1d75-4524-a36b-1a445eefb272",
+      "name": "Feature Flags",
+      "description": {
+        "content": "Create, update, and manage feature flags and their targeting rules across projects and environments.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "ba0f8957-ee2b-481c-b816-9fdb2aa8af13",
+          "name": "List feature flags",
+          "request": {
+            "name": "List feature flags",
+            "description": {
+              "content": "Returns a paginated list of all feature flags in the specified project. Supports filtering by tag, query string, and environment.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "flags",
+                ":projectKey"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "env",
+                  "value": "<string>",
+                  "description": "Filter configurations by environment key."
+                },
+                {
+                  "disabled": false,
+                  "key": "tag",
+                  "value": "<string>",
+                  "description": "Filter flags by tag."
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "<integer>",
+                  "description": "Maximum number of flags to return."
+                },
+                {
+                  "disabled": false,
+                  "key": "offset",
+                  "value": "<integer>",
+                  "description": "Number of flags to skip for pagination."
+                },
+                {
+                  "disabled": false,
+                  "key": "filter",
+                  "value": "<string>",
+                  "description": "A filter expression to apply to the flag list, supporting query, tags, and other fields."
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "projectKey",
+                  "description": "(Required) The project key identifying a LaunchDarkly project."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "2fdc6e95-afcd-4ffb-b701-ddecbd1d7c10",
+              "name": "Successful response containing a list of feature flags.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "flags",
+                    ":projectKey"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "env",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "tag",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "offset",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "filter",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "projectKey",
+                      "description": "(Required) The project key identifying a LaunchDarkly project."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"items\": [\n    {\n      \"key\": \"string\",\n      \"name\": \"string\",\n      \"description\": \"string\",\n      \"kind\": \"boolean\",\n      \"tags\": [\n        \"string\",\n        \"string\"\n      ],\n      \"creationDate\": 826,\n      \"variations\": [\n        {\n          \"_id\": \"string\",\n          \"value\": {},\n          \"name\": \"string\",\n          \"description\": \"string\"\n        },\n        {\n          \"_id\": \"string\",\n          \"value\": {},\n          \"name\": \"string\",\n          \"description\": \"string\"\n        }\n      ],\n      \"temporary\": false,\n      \"archived\": false,\n      \"environments\": {\n        \"key_0\": {\n          \"true\": true,\n          \"archived\": false,\n          \"salt\": \"string\",\n          \"sel\": \"string\",\n          \"lastModified\": 6969,\n          \"version\": 5578,\n          \"targets\": [\n            {\n              \"values\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"variation\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"contextKind\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            {\n              \"values\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"variation\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"contextKind\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          ],\n          \"rules\": [\n            {\n              \"_id\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"clauses\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"variation\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"rollout\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"trackEvents\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            {\n              \"_id\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"clauses\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"variation\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"rollout\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"trackEvents\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          ],\n          \"fallthrough\": {\n            \"variation\": 5887,\n            \"rollout\": {\n              \"variations\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"bucketBy\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"contextKind\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          },\n          \"offVariation\": 8834\n        }\n      },\n      \"_links\": {\n        \"self\": {\n          \"href\": \"string\",\n          \"type\": \"string\"\n        },\n        \"key_0\": {\n          \"href\": \"string\",\n          \"type\": \"string\"\n        },\n        \"key_1\": {\n          \"href\": \"string\",\n          \"type\": \"string\"\n        }\n      },\n      \"_version\": 4523\n    },\n    {\n      \"key\": \"string\",\n      \"name\": \"string\",\n      \"description\": \"string\",\n      \"kind\": \"boolean\",\n      \"tags\": [\n        \"string\",\n        \"string\"\n      ],\n      \"creationDate\": 9014,\n      \"variations\": [\n        {\n          \"_id\": \"string\",\n          \"value\": {},\n          \"name\": \"string\",\n          \"description\": \"string\"\n        },\n        {\n          \"_id\": \"string\",\n          \"value\": {},\n          \"name\": \"string\",\n          \"description\": \"string\"\n        }\n      ],\n      \"temporary\": true,\n      \"archived\": true,\n      \"environments\": {\n        \"key_0\": {\n          \"true\": true,\n          \"archived\": false,\n          \"salt\": \"string\",\n          \"sel\": \"string\",\n          \"lastModified\": 4943,\n          \"version\": 2174,\n          \"targets\": [\n            {\n              \"values\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"variation\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"contextKind\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            {\n              \"values\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"variation\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"contextKind\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          ],\n          \"rules\": [\n            {\n              \"_id\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"clauses\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"variation\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"rollout\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"trackEvents\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            {\n              \"_id\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"clauses\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"variation\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"rollout\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"trackEvents\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          ],\n          \"fallthrough\": {\n            \"variation\": 4486,\n            \"rollout\": {\n              \"variations\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"bucketBy\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"contextKind\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          },\n          \"offVariation\": 8314\n        }\n      },\n      \"_links\": {\n        \"self\": {\n          \"href\": \"string\",\n          \"type\": \"string\"\n        },\n        \"key_0\": {\n          \"href\": \"string\",\n          \"type\": \"string\"\n        }\n      },\n      \"_version\": 7304\n    }\n  ],\n  \"totalCount\": 8713,\n  \"_links\": {\n    \"self\": {\n      \"href\": \"string\",\n      \"type\": \"string\"\n    },\n    \"key_0\": {\n      \"href\": \"string\",\n      \"type\": \"string\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "96110bd5-d763-4645-a6dc-c621f0385842",
+              "name": "Unauthorized. Invalid or missing access token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "flags",
+                    ":projectKey"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "env",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "tag",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "offset",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "filter",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "projectKey",
+                      "description": "(Required) The project key identifying a LaunchDarkly project."
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "17eb121d-6637-453c-bc15-07e95dae7f6f",
+              "name": "Project not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "flags",
+                    ":projectKey"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "env",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "tag",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "offset",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "filter",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "projectKey",
+                      "description": "(Required) The project key identifying a LaunchDarkly project."
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "212b4ace-67e0-4135-bfd2-3dd6e375ac42",
+          "name": "Create a feature flag",
+          "request": {
+            "name": "Create a feature flag",
+            "description": {
+              "content": "Creates a new feature flag in the specified project with the provided configuration including key, name, variations, and default targeting rules.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "flags",
+                ":projectKey"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "projectKey",
+                  "description": "(Required) The project key identifying a LaunchDarkly project."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"<string>\",\n  \"key\": \"<string>\",\n  \"description\": \"<string>\",\n  \"tags\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"variations\": [\n    {\n      \"_id\": \"<string>\",\n      \"value\": {},\n      \"name\": \"<string>\",\n      \"description\": \"<string>\"\n    },\n    {\n      \"_id\": \"<string>\",\n      \"value\": {},\n      \"name\": \"<string>\",\n      \"description\": \"<string>\"\n    }\n  ],\n  \"temporary\": \"<boolean>\",\n  \"clientSideAvailability\": {\n    \"usingEnvironmentId\": \"<boolean>\",\n    \"usingMobileKey\": \"<boolean>\"\n  },\n  \"defaults\": {\n    \"onVariation\": \"<integer>\",\n    \"offVariation\": \"<integer>\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "73f5be10-f018-4db5-bdf7-d72b360a1397",
+              "name": "Feature flag created successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "flags",
+                    ":projectKey"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "projectKey",
+                      "description": "(Required) The project key identifying a LaunchDarkly project."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\",\n  \"key\": \"<string>\",\n  \"description\": \"<string>\",\n  \"tags\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"variations\": [\n    {\n      \"_id\": \"string\",\n      \"value\": {},\n      \"name\": \"string\",\n      \"description\": \"string\"\n    },\n    {\n      \"_id\": \"string\",\n      \"value\": {},\n      \"name\": \"string\",\n      \"description\": \"string\"\n    }\n  ],\n  \"temporary\": \"<boolean>\",\n  \"clientSideAvailability\": {\n    \"usingEnvironmentId\": \"<boolean>\",\n    \"usingMobileKey\": \"<boolean>\"\n  },\n  \"defaults\": {\n    \"onVariation\": \"<integer>\",\n    \"offVariation\": \"<integer>\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"key\": \"string\",\n  \"name\": \"string\",\n  \"description\": \"string\",\n  \"kind\": \"multivariate\",\n  \"tags\": [\n    \"string\",\n    \"string\"\n  ],\n  \"creationDate\": 755,\n  \"variations\": [\n    {\n      \"_id\": \"string\",\n      \"value\": {},\n      \"name\": \"string\",\n      \"description\": \"string\"\n    },\n    {\n      \"_id\": \"string\",\n      \"value\": {},\n      \"name\": \"string\",\n      \"description\": \"string\"\n    }\n  ],\n  \"temporary\": false,\n  \"archived\": false,\n  \"environments\": {\n    \"key_0\": {\n      \"true\": false,\n      \"archived\": true,\n      \"salt\": \"string\",\n      \"sel\": \"string\",\n      \"lastModified\": 6510,\n      \"version\": 1448,\n      \"targets\": [\n        {\n          \"values\": [\n            \"string\",\n            \"string\"\n          ],\n          \"variation\": 1509,\n          \"contextKind\": \"string\"\n        },\n        {\n          \"values\": [\n            \"string\",\n            \"string\"\n          ],\n          \"variation\": 3422,\n          \"contextKind\": \"string\"\n        }\n      ],\n      \"rules\": [\n        {\n          \"_id\": \"string\",\n          \"clauses\": [\n            {\n              \"attribute\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"op\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"values\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"negate\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"contextKind\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            {\n              \"attribute\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"op\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"values\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"negate\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"contextKind\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          ],\n          \"variation\": 9180,\n          \"rollout\": {\n            \"variations\": [\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            ],\n            \"bucketBy\": \"string\",\n            \"contextKind\": \"string\"\n          },\n          \"trackEvents\": false\n        },\n        {\n          \"_id\": \"string\",\n          \"clauses\": [\n            {\n              \"attribute\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"op\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"values\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"negate\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"contextKind\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            {\n              \"attribute\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"op\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"values\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"negate\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"contextKind\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          ],\n          \"variation\": 6361,\n          \"rollout\": {\n            \"variations\": [\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            ],\n            \"bucketBy\": \"string\",\n            \"contextKind\": \"string\"\n          },\n          \"trackEvents\": false\n        }\n      ],\n      \"fallthrough\": {\n        \"variation\": 6576,\n        \"rollout\": {\n          \"variations\": [\n            {\n              \"variation\": 6278,\n              \"weight\": 3898\n            },\n            {\n              \"variation\": 6702,\n              \"weight\": 123\n            }\n          ],\n          \"bucketBy\": \"string\",\n          \"contextKind\": \"string\"\n        }\n      },\n      \"offVariation\": 6810\n    },\n    \"key_1\": {\n      \"true\": true,\n      \"archived\": true,\n      \"salt\": \"string\",\n      \"sel\": \"string\",\n      \"lastModified\": 1778,\n      \"version\": 19,\n      \"targets\": [\n        {\n          \"values\": [\n            \"string\",\n            \"string\"\n          ],\n          \"variation\": 3557,\n          \"contextKind\": \"string\"\n        },\n        {\n          \"values\": [\n            \"string\",\n            \"string\"\n          ],\n          \"variation\": 8613,\n          \"contextKind\": \"string\"\n        }\n      ],\n      \"rules\": [\n        {\n          \"_id\": \"string\",\n          \"clauses\": [\n            {\n              \"attribute\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"op\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"values\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"negate\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"contextKind\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            {\n              \"attribute\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"op\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"values\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"negate\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"contextKind\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          ],\n          \"variation\": 4725,\n          \"rollout\": {\n            \"variations\": [\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            ],\n            \"bucketBy\": \"string\",\n            \"contextKind\": \"string\"\n          },\n          \"trackEvents\": true\n        },\n        {\n          \"_id\": \"string\",\n          \"clauses\": [\n            {\n              \"attribute\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"op\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"values\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"negate\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"contextKind\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            {\n              \"attribute\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"op\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"values\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"negate\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"contextKind\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          ],\n          \"variation\": 7110,\n          \"rollout\": {\n            \"variations\": [\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            ],\n            \"bucketBy\": \"string\",\n            \"contextKind\": \"string\"\n          },\n          \"trackEvents\": true\n        }\n      ],\n      \"fallthrough\": {\n        \"variation\": 4278,\n        \"rollout\": {\n          \"variations\": [\n            {\n              \"variation\": 2482,\n              \"weight\": 4444\n            },\n            {\n              \"variation\": 8999,\n              \"weight\": 5450\n            }\n          ],\n          \"bucketBy\": \"string\",\n          \"contextKind\": \"string\"\n        }\n      },\n      \"offVariation\": 4304\n    }\n  },\n  \"_links\": {\n    \"self\": {\n      \"href\": \"string\",\n      \"type\": \"string\"\n    }\n  },\n  \"_version\": 9756\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c421e0f5-275d-4db4-b479-f525e2c31c3f",
+              "name": "Invalid request body.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "flags",
+                    ":projectKey"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "projectKey",
+                      "description": "(Required) The project key identifying a LaunchDarkly project."
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\",\n  \"key\": \"<string>\",\n  \"description\": \"<string>\",\n  \"tags\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"variations\": [\n    {\n      \"_id\": \"string\",\n      \"value\": {},\n      \"name\": \"string\",\n      \"description\": \"string\"\n    },\n    {\n      \"_id\": \"string\",\n      \"value\": {},\n      \"name\": \"string\",\n      \"description\": \"string\"\n    }\n  ],\n  \"temporary\": \"<boolean>\",\n  \"clientSideAvailability\": {\n    \"usingEnvironmentId\": \"<boolean>\",\n    \"usingMobileKey\": \"<boolean>\"\n  },\n  \"defaults\": {\n    \"onVariation\": \"<integer>\",\n    \"offVariation\": \"<integer>\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "5f8666af-d239-418e-b52a-3085e0286d62",
+              "name": "Unauthorized. Invalid or missing access token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "flags",
+                    ":projectKey"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "projectKey",
+                      "description": "(Required) The project key identifying a LaunchDarkly project."
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\",\n  \"key\": \"<string>\",\n  \"description\": \"<string>\",\n  \"tags\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"variations\": [\n    {\n      \"_id\": \"string\",\n      \"value\": {},\n      \"name\": \"string\",\n      \"description\": \"string\"\n    },\n    {\n      \"_id\": \"string\",\n      \"value\": {},\n      \"name\": \"string\",\n      \"description\": \"string\"\n    }\n  ],\n  \"temporary\": \"<boolean>\",\n  \"clientSideAvailability\": {\n    \"usingEnvironmentId\": \"<boolean>\",\n    \"usingMobileKey\": \"<boolean>\"\n  },\n  \"defaults\": {\n    \"onVariation\": \"<integer>\",\n    \"offVariation\": \"<integer>\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "cfb443d7-38b1-4a5d-937b-22f7ac8411b3",
+              "name": "A flag with the given key already exists.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "flags",
+                    ":projectKey"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "projectKey",
+                      "description": "(Required) The project key identifying a LaunchDarkly project."
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\",\n  \"key\": \"<string>\",\n  \"description\": \"<string>\",\n  \"tags\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"variations\": [\n    {\n      \"_id\": \"string\",\n      \"value\": {},\n      \"name\": \"string\",\n      \"description\": \"string\"\n    },\n    {\n      \"_id\": \"string\",\n      \"value\": {},\n      \"name\": \"string\",\n      \"description\": \"string\"\n    }\n  ],\n  \"temporary\": \"<boolean>\",\n  \"clientSideAvailability\": {\n    \"usingEnvironmentId\": \"<boolean>\",\n    \"usingMobileKey\": \"<boolean>\"\n  },\n  \"defaults\": {\n    \"onVariation\": \"<integer>\",\n    \"offVariation\": \"<integer>\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "533d8339-d7b7-4d49-bf37-197d211a38ff",
+          "name": "Get a feature flag",
+          "request": {
+            "name": "Get a feature flag",
+            "description": {
+              "content": "Returns a single feature flag by its key, including all environment-specific configurations and targeting rules.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "flags",
+                ":projectKey",
+                ":flagKey"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "env",
+                  "value": "<string>",
+                  "description": "Filter configurations by environment key."
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "projectKey",
+                  "description": "(Required) The project key identifying a LaunchDarkly project."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "flagKey",
+                  "description": "(Required) The feature flag key identifying a specific flag."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "e84e0806-d3ec-4347-8eb8-cfc8c9c39048",
+              "name": "Successful response containing the feature flag.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "flags",
+                    ":projectKey",
+                    ":flagKey"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "env",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "projectKey",
+                      "description": "(Required) The project key identifying a LaunchDarkly project."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "flagKey",
+                      "description": "(Required) The feature flag key identifying a specific flag."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"key\": \"string\",\n  \"name\": \"string\",\n  \"description\": \"string\",\n  \"kind\": \"multivariate\",\n  \"tags\": [\n    \"string\",\n    \"string\"\n  ],\n  \"creationDate\": 755,\n  \"variations\": [\n    {\n      \"_id\": \"string\",\n      \"value\": {},\n      \"name\": \"string\",\n      \"description\": \"string\"\n    },\n    {\n      \"_id\": \"string\",\n      \"value\": {},\n      \"name\": \"string\",\n      \"description\": \"string\"\n    }\n  ],\n  \"temporary\": false,\n  \"archived\": false,\n  \"environments\": {\n    \"key_0\": {\n      \"true\": false,\n      \"archived\": true,\n      \"salt\": \"string\",\n      \"sel\": \"string\",\n      \"lastModified\": 6510,\n      \"version\": 1448,\n      \"targets\": [\n        {\n          \"values\": [\n            \"string\",\n            \"string\"\n          ],\n          \"variation\": 1509,\n          \"contextKind\": \"string\"\n        },\n        {\n          \"values\": [\n            \"string\",\n            \"string\"\n          ],\n          \"variation\": 3422,\n          \"contextKind\": \"string\"\n        }\n      ],\n      \"rules\": [\n        {\n          \"_id\": \"string\",\n          \"clauses\": [\n            {\n              \"attribute\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"op\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"values\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"negate\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"contextKind\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            {\n              \"attribute\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"op\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"values\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"negate\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"contextKind\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          ],\n          \"variation\": 9180,\n          \"rollout\": {\n            \"variations\": [\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            ],\n            \"bucketBy\": \"string\",\n            \"contextKind\": \"string\"\n          },\n          \"trackEvents\": false\n        },\n        {\n          \"_id\": \"string\",\n          \"clauses\": [\n            {\n              \"attribute\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"op\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"values\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"negate\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"contextKind\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            {\n              \"attribute\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"op\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"values\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"negate\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"contextKind\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          ],\n          \"variation\": 6361,\n          \"rollout\": {\n            \"variations\": [\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            ],\n            \"bucketBy\": \"string\",\n            \"contextKind\": \"string\"\n          },\n          \"trackEvents\": false\n        }\n      ],\n      \"fallthrough\": {\n        \"variation\": 6576,\n        \"rollout\": {\n          \"variations\": [\n            {\n              \"variation\": 6278,\n              \"weight\": 3898\n            },\n            {\n              \"variation\": 6702,\n              \"weight\": 123\n            }\n          ],\n          \"bucketBy\": \"string\",\n          \"contextKind\": \"string\"\n        }\n      },\n      \"offVariation\": 6810\n    },\n    \"key_1\": {\n      \"true\": true,\n      \"archived\": true,\n      \"salt\": \"string\",\n      \"sel\": \"string\",\n      \"lastModified\": 1778,\n      \"version\": 19,\n      \"targets\": [\n        {\n          \"values\": [\n            \"string\",\n            \"string\"\n          ],\n          \"variation\": 3557,\n          \"contextKind\": \"string\"\n        },\n        {\n          \"values\": [\n            \"string\",\n            \"string\"\n          ],\n          \"variation\": 8613,\n          \"contextKind\": \"string\"\n        }\n      ],\n      \"rules\": [\n        {\n          \"_id\": \"string\",\n          \"clauses\": [\n            {\n              \"attribute\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"op\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"values\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"negate\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"contextKind\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            {\n              \"attribute\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"op\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"values\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"negate\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"contextKind\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          ],\n          \"variation\": 4725,\n          \"rollout\": {\n            \"variations\": [\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            ],\n            \"bucketBy\": \"string\",\n            \"contextKind\": \"string\"\n          },\n          \"trackEvents\": true\n        },\n        {\n          \"_id\": \"string\",\n          \"clauses\": [\n            {\n              \"attribute\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"op\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"values\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"negate\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"contextKind\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            {\n              \"attribute\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"op\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"values\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"negate\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"contextKind\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          ],\n          \"variation\": 7110,\n          \"rollout\": {\n            \"variations\": [\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            ],\n            \"bucketBy\": \"string\",\n            \"contextKind\": \"string\"\n          },\n          \"trackEvents\": true\n        }\n      ],\n      \"fallthrough\": {\n        \"variation\": 4278,\n        \"rollout\": {\n          \"variations\": [\n            {\n              \"variation\": 2482,\n              \"weight\": 4444\n            },\n            {\n              \"variation\": 8999,\n              \"weight\": 5450\n            }\n          ],\n          \"bucketBy\": \"string\",\n          \"contextKind\": \"string\"\n        }\n      },\n      \"offVariation\": 4304\n    }\n  },\n  \"_links\": {\n    \"self\": {\n      \"href\": \"string\",\n      \"type\": \"string\"\n    }\n  },\n  \"_version\": 9756\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b4a6abc8-fdf5-4f8b-948e-d1d301caaf49",
+              "name": "Unauthorized. Invalid or missing access token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "flags",
+                    ":projectKey",
+                    ":flagKey"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "env",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "projectKey",
+                      "description": "(Required) The project key identifying a LaunchDarkly project."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "flagKey",
+                      "description": "(Required) The feature flag key identifying a specific flag."
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "deadf5f9-dfdf-4934-aae4-7d24cb752dba",
+              "name": "Flag or project not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "flags",
+                    ":projectKey",
+                    ":flagKey"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "env",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "projectKey",
+                      "description": "(Required) The project key identifying a LaunchDarkly project."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "flagKey",
+                      "description": "(Required) The feature flag key identifying a specific flag."
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "49851d3f-7dd0-4d67-928c-58c4023eaf03",
+          "name": "Update a feature flag",
+          "request": {
+            "name": "Update a feature flag",
+            "description": {
+              "content": "Updates a feature flag using a JSON Patch or semantic patch representation. Supports modifying targeting rules, variations, prerequisites, and other flag settings.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "flags",
+                ":projectKey",
+                ":flagKey"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "projectKey",
+                  "description": "(Required) The project key identifying a LaunchDarkly project."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "flagKey",
+                  "description": "(Required) The feature flag key identifying a specific flag."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PATCH",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"patch\": [\n    {\n      \"op\": \"<string>\",\n      \"path\": \"<string>\",\n      \"value\": {}\n    },\n    {\n      \"op\": \"<string>\",\n      \"path\": \"<string>\",\n      \"value\": {}\n    }\n  ],\n  \"comment\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "c88e037c-a50b-40a3-bc12-12c6492054b4",
+              "name": "Feature flag updated successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "flags",
+                    ":projectKey",
+                    ":flagKey"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "projectKey",
+                      "description": "(Required) The project key identifying a LaunchDarkly project."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "flagKey",
+                      "description": "(Required) The feature flag key identifying a specific flag."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"patch\": [\n    {\n      \"op\": \"<string>\",\n      \"path\": \"<string>\",\n      \"value\": {}\n    },\n    {\n      \"op\": \"<string>\",\n      \"path\": \"<string>\",\n      \"value\": {}\n    }\n  ],\n  \"comment\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"key\": \"string\",\n  \"name\": \"string\",\n  \"description\": \"string\",\n  \"kind\": \"multivariate\",\n  \"tags\": [\n    \"string\",\n    \"string\"\n  ],\n  \"creationDate\": 755,\n  \"variations\": [\n    {\n      \"_id\": \"string\",\n      \"value\": {},\n      \"name\": \"string\",\n      \"description\": \"string\"\n    },\n    {\n      \"_id\": \"string\",\n      \"value\": {},\n      \"name\": \"string\",\n      \"description\": \"string\"\n    }\n  ],\n  \"temporary\": false,\n  \"archived\": false,\n  \"environments\": {\n    \"key_0\": {\n      \"true\": false,\n      \"archived\": true,\n      \"salt\": \"string\",\n      \"sel\": \"string\",\n      \"lastModified\": 6510,\n      \"version\": 1448,\n      \"targets\": [\n        {\n          \"values\": [\n            \"string\",\n            \"string\"\n          ],\n          \"variation\": 1509,\n          \"contextKind\": \"string\"\n        },\n        {\n          \"values\": [\n            \"string\",\n            \"string\"\n          ],\n          \"variation\": 3422,\n          \"contextKind\": \"string\"\n        }\n      ],\n      \"rules\": [\n        {\n          \"_id\": \"string\",\n          \"clauses\": [\n            {\n              \"attribute\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"op\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"values\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"negate\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"contextKind\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            {\n              \"attribute\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"op\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"values\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"negate\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"contextKind\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          ],\n          \"variation\": 9180,\n          \"rollout\": {\n            \"variations\": [\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            ],\n            \"bucketBy\": \"string\",\n            \"contextKind\": \"string\"\n          },\n          \"trackEvents\": false\n        },\n        {\n          \"_id\": \"string\",\n          \"clauses\": [\n            {\n              \"attribute\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"op\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"values\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"negate\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"contextKind\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            {\n              \"attribute\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"op\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"values\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"negate\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"contextKind\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          ],\n          \"variation\": 6361,\n          \"rollout\": {\n            \"variations\": [\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            ],\n            \"bucketBy\": \"string\",\n            \"contextKind\": \"string\"\n          },\n          \"trackEvents\": false\n        }\n      ],\n      \"fallthrough\": {\n        \"variation\": 6576,\n        \"rollout\": {\n          \"variations\": [\n            {\n              \"variation\": 6278,\n              \"weight\": 3898\n            },\n            {\n              \"variation\": 6702,\n              \"weight\": 123\n            }\n          ],\n          \"bucketBy\": \"string\",\n          \"contextKind\": \"string\"\n        }\n      },\n      \"offVariation\": 6810\n    },\n    \"key_1\": {\n      \"true\": true,\n      \"archived\": true,\n      \"salt\": \"string\",\n      \"sel\": \"string\",\n      \"lastModified\": 1778,\n      \"version\": 19,\n      \"targets\": [\n        {\n          \"values\": [\n            \"string\",\n            \"string\"\n          ],\n          \"variation\": 3557,\n          \"contextKind\": \"string\"\n        },\n        {\n          \"values\": [\n            \"string\",\n            \"string\"\n          ],\n          \"variation\": 8613,\n          \"contextKind\": \"string\"\n        }\n      ],\n      \"rules\": [\n        {\n          \"_id\": \"string\",\n          \"clauses\": [\n            {\n              \"attribute\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"op\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"values\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"negate\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"contextKind\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            {\n              \"attribute\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"op\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"values\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"negate\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"contextKind\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          ],\n          \"variation\": 4725,\n          \"rollout\": {\n            \"variations\": [\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            ],\n            \"bucketBy\": \"string\",\n            \"contextKind\": \"string\"\n          },\n          \"trackEvents\": true\n        },\n        {\n          \"_id\": \"string\",\n          \"clauses\": [\n            {\n              \"attribute\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"op\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"values\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"negate\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"contextKind\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            {\n              \"attribute\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"op\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"values\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"negate\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"contextKind\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          ],\n          \"variation\": 7110,\n          \"rollout\": {\n            \"variations\": [\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            ],\n            \"bucketBy\": \"string\",\n            \"contextKind\": \"string\"\n          },\n          \"trackEvents\": true\n        }\n      ],\n      \"fallthrough\": {\n        \"variation\": 4278,\n        \"rollout\": {\n          \"variations\": [\n            {\n              \"variation\": 2482,\n              \"weight\": 4444\n            },\n            {\n              \"variation\": 8999,\n              \"weight\": 5450\n            }\n          ],\n          \"bucketBy\": \"string\",\n          \"contextKind\": \"string\"\n        }\n      },\n      \"offVariation\": 4304\n    }\n  },\n  \"_links\": {\n    \"self\": {\n      \"href\": \"string\",\n      \"type\": \"string\"\n    }\n  },\n  \"_version\": 9756\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "52a8a42a-2f66-4f58-99fa-ad8845aec670",
+              "name": "Invalid patch request.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "flags",
+                    ":projectKey",
+                    ":flagKey"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "projectKey",
+                      "description": "(Required) The project key identifying a LaunchDarkly project."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "flagKey",
+                      "description": "(Required) The feature flag key identifying a specific flag."
+                    }
+                  ]
+                },
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"patch\": [\n    {\n      \"op\": \"<string>\",\n      \"path\": \"<string>\",\n      \"value\": {}\n    },\n    {\n      \"op\": \"<string>\",\n      \"path\": \"<string>\",\n      \"value\": {}\n    }\n  ],\n  \"comment\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "cf84ca79-9e51-4da3-a52d-3b6f0ccbb76a",
+              "name": "Unauthorized. Invalid or missing access token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "flags",
+                    ":projectKey",
+                    ":flagKey"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "projectKey",
+                      "description": "(Required) The project key identifying a LaunchDarkly project."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "flagKey",
+                      "description": "(Required) The feature flag key identifying a specific flag."
+                    }
+                  ]
+                },
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"patch\": [\n    {\n      \"op\": \"<string>\",\n      \"path\": \"<string>\",\n      \"value\": {}\n    },\n    {\n      \"op\": \"<string>\",\n      \"path\": \"<string>\",\n      \"value\": {}\n    }\n  ],\n  \"comment\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "aeb76868-dedb-4725-8135-f6a7cd512804",
+              "name": "Flag or project not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "flags",
+                    ":projectKey",
+                    ":flagKey"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "projectKey",
+                      "description": "(Required) The project key identifying a LaunchDarkly project."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "flagKey",
+                      "description": "(Required) The feature flag key identifying a specific flag."
+                    }
+                  ]
+                },
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"patch\": [\n    {\n      \"op\": \"<string>\",\n      \"path\": \"<string>\",\n      \"value\": {}\n    },\n    {\n      \"op\": \"<string>\",\n      \"path\": \"<string>\",\n      \"value\": {}\n    }\n  ],\n  \"comment\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "e39c76b0-0bea-4c69-8844-332f6f7a0ae2",
+              "name": "Conflict due to concurrent modification.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "flags",
+                    ":projectKey",
+                    ":flagKey"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "projectKey",
+                      "description": "(Required) The project key identifying a LaunchDarkly project."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "flagKey",
+                      "description": "(Required) The feature flag key identifying a specific flag."
+                    }
+                  ]
+                },
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"patch\": [\n    {\n      \"op\": \"<string>\",\n      \"path\": \"<string>\",\n      \"value\": {}\n    },\n    {\n      \"op\": \"<string>\",\n      \"path\": \"<string>\",\n      \"value\": {}\n    }\n  ],\n  \"comment\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "a5dae6e6-137d-4dc3-9a33-1421e4ad13e5",
+          "name": "Delete a feature flag",
+          "request": {
+            "name": "Delete a feature flag",
+            "description": {
+              "content": "Permanently deletes a feature flag and all of its associated targeting rules and environment configurations.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "flags",
+                ":projectKey",
+                ":flagKey"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "projectKey",
+                  "description": "(Required) The project key identifying a LaunchDarkly project."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "flagKey",
+                  "description": "(Required) The feature flag key identifying a specific flag."
+                }
+              ]
+            },
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "bb186e67-9be9-4817-91c3-d3e669ff243d",
+              "name": "Feature flag deleted successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "flags",
+                    ":projectKey",
+                    ":flagKey"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "projectKey",
+                      "description": "(Required) The project key identifying a LaunchDarkly project."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "flagKey",
+                      "description": "(Required) The feature flag key identifying a specific flag."
+                    }
+                  ]
+                },
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "No Content",
+              "code": 204,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "807d2ed8-31be-41fd-9798-380eca85d6cb",
+              "name": "Unauthorized. Invalid or missing access token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "flags",
+                    ":projectKey",
+                    ":flagKey"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "projectKey",
+                      "description": "(Required) The project key identifying a LaunchDarkly project."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "flagKey",
+                      "description": "(Required) The feature flag key identifying a specific flag."
+                    }
+                  ]
+                },
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "d09adff3-2d80-406e-9b7c-1424f74fce78",
+              "name": "Flag or project not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "flags",
+                    ":projectKey",
+                    ":flagKey"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "projectKey",
+                      "description": "(Required) The project key identifying a LaunchDarkly project."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "flagKey",
+                      "description": "(Required) The feature flag key identifying a specific flag."
+                    }
+                  ]
+                },
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "http://localhost:8030",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "c8cdaf74-cb54-41ae-b75a-fad06695525e",
+    "name": "LaunchDarkly Relay Proxy Access Tokens Feature Flags API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The LaunchDarkly Relay Proxy is a small Go application that connects to the LaunchDarkly streaming API and proxies that connection to SDK clients within an organization's network. It exposes endpoints for status monitoring, flag evaluation, and SDK streaming that mirror the LaunchDarkly service endpoints. Instead of each server making outbound connections to LaunchDarkly's streaming service, multiple servers connect to the local Relay Proxy which maintains a single upstream connection.\n\nContact Support:\n Name: LaunchDarkly Support",
+      "type": "text/plain"
+    }
+  }
+}

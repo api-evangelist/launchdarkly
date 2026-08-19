@@ -1,0 +1,44 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "LaunchDarkly Relay Proxy Access Tokens API",
+    "version": "8.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Access Tokens",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List access tokens",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "http://localhost:8030/tokens"
+          },
+          "docs": "Returns a list of all personal and service access tokens in the LaunchDarkly account."
+        },
+        {
+          "info": {
+            "name": "Create an access token",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://localhost:8030/tokens",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new personal or service access token."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

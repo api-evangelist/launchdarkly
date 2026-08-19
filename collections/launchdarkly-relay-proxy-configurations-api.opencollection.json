@@ -1,0 +1,44 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "LaunchDarkly Relay Proxy Access Tokens Relay Proxy Configurations API",
+    "version": "8.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Relay Proxy Configurations",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List Relay Proxy configurations",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "http://localhost:8030/account/relay-auto-configs"
+          },
+          "docs": "Returns a list of all Relay Proxy automatic configuration entries."
+        },
+        {
+          "info": {
+            "name": "Create a Relay Proxy configuration",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://localhost:8030/account/relay-auto-configs",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new Relay Proxy automatic configuration entry that generates a unique key for Relay Proxy instances."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

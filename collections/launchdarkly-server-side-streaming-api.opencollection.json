@@ -1,0 +1,52 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "LaunchDarkly Relay Proxy Access Tokens Server-Side Streaming API",
+    "version": "8.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Server-Side Streaming",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Stream all flag data (server-side)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "http://localhost:8030/all",
+            "auth": {
+              "type": "apikey",
+              "key": "Authorization",
+              "value": "{{Authorization}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Establishes a Server-Sent Events (SSE) stream that delivers real-time flag data updates for server-side SDKs. Requires an SDK key in the Authorization header."
+        },
+        {
+          "info": {
+            "name": "Stream flag updates (server-side)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "http://localhost:8030/flags",
+            "auth": {
+              "type": "apikey",
+              "key": "Authorization",
+              "value": "{{Authorization}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Establishes a Server-Sent Events (SSE) stream that delivers only flag updates (not segments) for server-side SDKs."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

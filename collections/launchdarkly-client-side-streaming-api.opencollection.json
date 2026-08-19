@@ -1,0 +1,43 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "LaunchDarkly Relay Proxy Access Tokens Client-Side Streaming API",
+    "version": "8.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Client-Side Streaming",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Stream evaluated flags (client-side)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "http://localhost:8030/eval/:envId/:contextBase64",
+            "params": [
+              {
+                "name": "envId",
+                "value": "",
+                "type": "path",
+                "description": "The client-side environment ID."
+              },
+              {
+                "name": "contextBase64",
+                "value": "",
+                "type": "path",
+                "description": "A base64-encoded JSON representation of the evaluation context."
+              }
+            ]
+          },
+          "docs": "Establishes a Server-Sent Events (SSE) stream that delivers evaluated flag values for the given context to client-side SDKs."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

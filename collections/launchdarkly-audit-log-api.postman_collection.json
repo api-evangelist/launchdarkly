@@ -1,0 +1,368 @@
+{
+  "item": [
+    {
+      "id": "e01bd0be-196b-48bc-afd7-e9010b2410dc",
+      "name": "Audit Log",
+      "description": {
+        "content": "Access the change history of all modifications made to resources in the LaunchDarkly account.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "d89740ec-061e-4f31-924c-b6c4a9637854",
+          "name": "List audit log entries",
+          "request": {
+            "name": "List audit log entries",
+            "description": {
+              "content": "Returns a paginated list of audit log entries recording all changes made to resources in the LaunchDarkly account.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "auditlog"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "before",
+                  "value": "<long>",
+                  "description": "A timestamp filter returning entries before this time (Unix epoch milliseconds)."
+                },
+                {
+                  "disabled": false,
+                  "key": "after",
+                  "value": "<long>",
+                  "description": "A timestamp filter returning entries after this time (Unix epoch milliseconds)."
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "<integer>",
+                  "description": "Maximum number of entries to return."
+                },
+                {
+                  "disabled": false,
+                  "key": "q",
+                  "value": "<string>",
+                  "description": "A text filter for searching audit log entries."
+                },
+                {
+                  "disabled": false,
+                  "key": "spec",
+                  "value": "<string>",
+                  "description": "A resource specifier filter for narrowing entries to specific resource types."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "c82ac61a-447c-4f8c-87ce-f31b245406c9",
+              "name": "Successful response containing audit log entries.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "auditlog"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "before",
+                      "value": "<long>"
+                    },
+                    {
+                      "key": "after",
+                      "value": "<long>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "q",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "spec",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"items\": [\n    {\n      \"_id\": \"string\",\n      \"date\": 3210,\n      \"kind\": \"string\",\n      \"name\": \"string\",\n      \"description\": \"string\",\n      \"shortDescription\": \"string\",\n      \"member\": {\n        \"_id\": \"string\",\n        \"email\": \"kw1C3djBaME@aEtfnetweCHOJcOAsCzSIY.qrm\",\n        \"firstName\": \"string\",\n        \"lastName\": \"string\",\n        \"_links\": {\n          \"self\": {\n            \"href\": \"string\",\n            \"type\": \"string\"\n          },\n          \"key_0\": {\n            \"href\": \"string\",\n            \"type\": \"string\"\n          }\n        }\n      },\n      \"accesses\": [\n        {\n          \"action\": \"string\",\n          \"resource\": \"string\"\n        },\n        {\n          \"action\": \"string\",\n          \"resource\": \"string\"\n        }\n      ],\n      \"_links\": {\n        \"self\": {\n          \"href\": \"string\",\n          \"type\": \"string\"\n        },\n        \"key_0\": {\n          \"href\": \"string\",\n          \"type\": \"string\"\n        }\n      }\n    },\n    {\n      \"_id\": \"string\",\n      \"date\": 7388,\n      \"kind\": \"string\",\n      \"name\": \"string\",\n      \"description\": \"string\",\n      \"shortDescription\": \"string\",\n      \"member\": {\n        \"_id\": \"string\",\n        \"email\": \"7yYWndHVcW36sxk@KHIUIlHE.ikgg\",\n        \"firstName\": \"string\",\n        \"lastName\": \"string\",\n        \"_links\": {\n          \"self\": {\n            \"href\": \"string\",\n            \"type\": \"string\"\n          },\n          \"key_0\": {\n            \"href\": \"string\",\n            \"type\": \"string\"\n          },\n          \"key_1\": {\n            \"href\": \"string\",\n            \"type\": \"string\"\n          },\n          \"key_2\": {\n            \"href\": \"string\",\n            \"type\": \"string\"\n          }\n        }\n      },\n      \"accesses\": [\n        {\n          \"action\": \"string\",\n          \"resource\": \"string\"\n        },\n        {\n          \"action\": \"string\",\n          \"resource\": \"string\"\n        }\n      ],\n      \"_links\": {\n        \"self\": {\n          \"href\": \"string\",\n          \"type\": \"string\"\n        },\n        \"key_0\": {\n          \"href\": \"string\",\n          \"type\": \"string\"\n        },\n        \"key_1\": {\n          \"href\": \"string\",\n          \"type\": \"string\"\n        },\n        \"key_2\": {\n          \"href\": \"string\",\n          \"type\": \"string\"\n        }\n      }\n    }\n  ],\n  \"_links\": {\n    \"self\": {\n      \"href\": \"string\",\n      \"type\": \"string\"\n    },\n    \"key_0\": {\n      \"href\": \"string\",\n      \"type\": \"string\"\n    },\n    \"key_1\": {\n      \"href\": \"string\",\n      \"type\": \"string\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7b463106-29d5-40b0-84cd-4818bdd6a02e",
+              "name": "Unauthorized. Invalid or missing access token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "auditlog"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "before",
+                      "value": "<long>"
+                    },
+                    {
+                      "key": "after",
+                      "value": "<long>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "q",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "spec",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "ba65054e-958a-43ba-9299-6654c0ae042b",
+          "name": "Get an audit log entry",
+          "request": {
+            "name": "Get an audit log entry",
+            "description": {
+              "content": "Returns a single audit log entry by its identifier.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "auditlog",
+                ":auditLogId"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "auditLogId",
+                  "description": "(Required) The unique identifier of the audit log entry."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "1474c788-8bd1-4224-bc84-ae9af5cf9e3a",
+              "name": "Successful response containing the audit log entry.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "auditlog",
+                    ":auditLogId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "auditLogId",
+                      "description": "(Required) The unique identifier of the audit log entry."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"_id\": \"string\",\n  \"date\": 9388,\n  \"kind\": \"string\",\n  \"name\": \"string\",\n  \"description\": \"string\",\n  \"shortDescription\": \"string\",\n  \"member\": {\n    \"_id\": \"string\",\n    \"email\": \"qaAs1wfM8Qvu@UBvTNEnox.dwa\",\n    \"firstName\": \"string\",\n    \"lastName\": \"string\",\n    \"_links\": {\n      \"self\": {\n        \"href\": \"string\",\n        \"type\": \"string\"\n      },\n      \"key_0\": {\n        \"href\": \"string\",\n        \"type\": \"string\"\n      }\n    }\n  },\n  \"accesses\": [\n    {\n      \"action\": \"string\",\n      \"resource\": \"string\"\n    },\n    {\n      \"action\": \"string\",\n      \"resource\": \"string\"\n    }\n  ],\n  \"_links\": {\n    \"self\": {\n      \"href\": \"string\",\n      \"type\": \"string\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "2ee915e9-4fed-4339-b593-b1135b7ce31c",
+              "name": "Unauthorized. Invalid or missing access token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "auditlog",
+                    ":auditLogId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "auditLogId",
+                      "description": "(Required) The unique identifier of the audit log entry."
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "3ca332db-b9d6-47d2-8691-5d081e486bb2",
+              "name": "Audit log entry not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "auditlog",
+                    ":auditLogId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "auditLogId",
+                      "description": "(Required) The unique identifier of the audit log entry."
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "http://localhost:8030",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "1930acb4-383b-490e-9365-d2ce46d87a37",
+    "name": "LaunchDarkly Relay Proxy Access Tokens Audit Log API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The LaunchDarkly Relay Proxy is a small Go application that connects to the LaunchDarkly streaming API and proxies that connection to SDK clients within an organization's network. It exposes endpoints for status monitoring, flag evaluation, and SDK streaming that mirror the LaunchDarkly service endpoints. Instead of each server making outbound connections to LaunchDarkly's streaming service, multiple servers connect to the local Relay Proxy which maintains a single upstream connection.\n\nContact Support:\n Name: LaunchDarkly Support",
+      "type": "text/plain"
+    }
+  }
+}

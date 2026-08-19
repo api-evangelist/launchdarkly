@@ -1,0 +1,859 @@
+{
+  "item": [
+    {
+      "id": "7110bd7f-34f3-49d8-b286-6173c2191da8",
+      "name": "Webhooks",
+      "description": {
+        "content": "Configure webhooks to receive HTTP POST notifications when changes occur in LaunchDarkly.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "65e94c3b-21da-4f1c-93bf-ec98080311b1",
+          "name": "List webhooks",
+          "request": {
+            "name": "List webhooks",
+            "description": {
+              "content": "Returns a list of all webhooks configured in the LaunchDarkly account.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "webhooks"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "b423c9df-c0bd-407d-b2f4-6c591f4e435c",
+              "name": "Successful response containing a list of webhooks.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "webhooks"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"items\": [\n    {\n      \"_id\": \"string\",\n      \"url\": \"https://Eybo.gto2S4BJdBmXWPBk\",\n      \"secret\": \"string\",\n      \"true\": true,\n      \"name\": \"string\",\n      \"tags\": [\n        \"string\",\n        \"string\"\n      ],\n      \"statements\": [\n        {\n          \"effect\": \"allow\",\n          \"resources\": [\n            \"string\",\n            \"string\"\n          ],\n          \"notResources\": [\n            \"string\",\n            \"string\"\n          ],\n          \"actions\": [\n            \"string\",\n            \"string\"\n          ],\n          \"notActions\": [\n            \"string\",\n            \"string\"\n          ]\n        },\n        {\n          \"effect\": \"deny\",\n          \"resources\": [\n            \"string\",\n            \"string\"\n          ],\n          \"notResources\": [\n            \"string\",\n            \"string\"\n          ],\n          \"actions\": [\n            \"string\",\n            \"string\"\n          ],\n          \"notActions\": [\n            \"string\",\n            \"string\"\n          ]\n        }\n      ],\n      \"_links\": {\n        \"self\": {\n          \"href\": \"string\",\n          \"type\": \"string\"\n        },\n        \"key_0\": {\n          \"href\": \"string\",\n          \"type\": \"string\"\n        }\n      }\n    },\n    {\n      \"_id\": \"string\",\n      \"url\": \"http://EGikwSraeeFrMEoocAdu.eusuKqlZCYo4I034zPuztPq\",\n      \"secret\": \"string\",\n      \"true\": true,\n      \"name\": \"string\",\n      \"tags\": [\n        \"string\",\n        \"string\"\n      ],\n      \"statements\": [\n        {\n          \"effect\": \"deny\",\n          \"resources\": [\n            \"string\",\n            \"string\"\n          ],\n          \"notResources\": [\n            \"string\",\n            \"string\"\n          ],\n          \"actions\": [\n            \"string\",\n            \"string\"\n          ],\n          \"notActions\": [\n            \"string\",\n            \"string\"\n          ]\n        },\n        {\n          \"effect\": \"allow\",\n          \"resources\": [\n            \"string\",\n            \"string\"\n          ],\n          \"notResources\": [\n            \"string\",\n            \"string\"\n          ],\n          \"actions\": [\n            \"string\",\n            \"string\"\n          ],\n          \"notActions\": [\n            \"string\",\n            \"string\"\n          ]\n        }\n      ],\n      \"_links\": {\n        \"self\": {\n          \"href\": \"string\",\n          \"type\": \"string\"\n        }\n      }\n    }\n  ],\n  \"_links\": {\n    \"self\": {\n      \"href\": \"string\",\n      \"type\": \"string\"\n    },\n    \"key_0\": {\n      \"href\": \"string\",\n      \"type\": \"string\"\n    },\n    \"key_1\": {\n      \"href\": \"string\",\n      \"type\": \"string\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "440b6d52-6586-418e-b089-3e867c749be8",
+              "name": "Unauthorized. Invalid or missing access token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "webhooks"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "3e49b8bf-5abb-43d1-bcec-ebbc3a3ce3c7",
+          "name": "Create a webhook",
+          "request": {
+            "name": "Create a webhook",
+            "description": {
+              "content": "Creates a new webhook subscription that will receive HTTP POST notifications when changes occur in LaunchDarkly.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "webhooks"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"url\": \"<uri>\",\n  \"true\": \"<boolean>\",\n  \"secret\": \"<string>\",\n  \"name\": \"<string>\",\n  \"tags\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"statements\": [\n    {\n      \"effect\": \"<string>\",\n      \"resources\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"notResources\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"actions\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"notActions\": [\n        \"<string>\",\n        \"<string>\"\n      ]\n    },\n    {\n      \"effect\": \"<string>\",\n      \"resources\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"notResources\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"actions\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"notActions\": [\n        \"<string>\",\n        \"<string>\"\n      ]\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "c6d45df2-5d37-44a7-8fa0-8d7b3d7f6678",
+              "name": "Webhook created successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "webhooks"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"url\": \"<uri>\",\n  \"true\": \"<boolean>\",\n  \"secret\": \"<string>\",\n  \"name\": \"<string>\",\n  \"tags\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"statements\": [\n    {\n      \"effect\": \"deny\",\n      \"resources\": [\n        \"string\",\n        \"string\"\n      ],\n      \"notResources\": [\n        \"string\",\n        \"string\"\n      ],\n      \"actions\": [\n        \"string\",\n        \"string\"\n      ],\n      \"notActions\": [\n        \"string\",\n        \"string\"\n      ]\n    },\n    {\n      \"effect\": \"allow\",\n      \"resources\": [\n        \"string\",\n        \"string\"\n      ],\n      \"notResources\": [\n        \"string\",\n        \"string\"\n      ],\n      \"actions\": [\n        \"string\",\n        \"string\"\n      ],\n      \"notActions\": [\n        \"string\",\n        \"string\"\n      ]\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"_id\": \"string\",\n  \"url\": \"http://WdQAYyJoFpYSwCAJftdKMc.dcFYKNRg00M3xRDwQ.wnJ6DxIL+eS.yWYuShvu4MsT+C\",\n  \"secret\": \"string\",\n  \"true\": false,\n  \"name\": \"string\",\n  \"tags\": [\n    \"string\",\n    \"string\"\n  ],\n  \"statements\": [\n    {\n      \"effect\": \"deny\",\n      \"resources\": [\n        \"string\",\n        \"string\"\n      ],\n      \"notResources\": [\n        \"string\",\n        \"string\"\n      ],\n      \"actions\": [\n        \"string\",\n        \"string\"\n      ],\n      \"notActions\": [\n        \"string\",\n        \"string\"\n      ]\n    },\n    {\n      \"effect\": \"deny\",\n      \"resources\": [\n        \"string\",\n        \"string\"\n      ],\n      \"notResources\": [\n        \"string\",\n        \"string\"\n      ],\n      \"actions\": [\n        \"string\",\n        \"string\"\n      ],\n      \"notActions\": [\n        \"string\",\n        \"string\"\n      ]\n    }\n  ],\n  \"_links\": {\n    \"self\": {\n      \"href\": \"string\",\n      \"type\": \"string\"\n    },\n    \"key_0\": {\n      \"href\": \"string\",\n      \"type\": \"string\"\n    },\n    \"key_1\": {\n      \"href\": \"string\",\n      \"type\": \"string\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "92959668-fafc-48cc-bc82-c19516747bf6",
+              "name": "Invalid request body.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "webhooks"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"url\": \"<uri>\",\n  \"true\": \"<boolean>\",\n  \"secret\": \"<string>\",\n  \"name\": \"<string>\",\n  \"tags\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"statements\": [\n    {\n      \"effect\": \"deny\",\n      \"resources\": [\n        \"string\",\n        \"string\"\n      ],\n      \"notResources\": [\n        \"string\",\n        \"string\"\n      ],\n      \"actions\": [\n        \"string\",\n        \"string\"\n      ],\n      \"notActions\": [\n        \"string\",\n        \"string\"\n      ]\n    },\n    {\n      \"effect\": \"allow\",\n      \"resources\": [\n        \"string\",\n        \"string\"\n      ],\n      \"notResources\": [\n        \"string\",\n        \"string\"\n      ],\n      \"actions\": [\n        \"string\",\n        \"string\"\n      ],\n      \"notActions\": [\n        \"string\",\n        \"string\"\n      ]\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "bd713639-e80a-479c-a292-7abc09d79054",
+              "name": "Unauthorized. Invalid or missing access token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "webhooks"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"url\": \"<uri>\",\n  \"true\": \"<boolean>\",\n  \"secret\": \"<string>\",\n  \"name\": \"<string>\",\n  \"tags\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"statements\": [\n    {\n      \"effect\": \"deny\",\n      \"resources\": [\n        \"string\",\n        \"string\"\n      ],\n      \"notResources\": [\n        \"string\",\n        \"string\"\n      ],\n      \"actions\": [\n        \"string\",\n        \"string\"\n      ],\n      \"notActions\": [\n        \"string\",\n        \"string\"\n      ]\n    },\n    {\n      \"effect\": \"allow\",\n      \"resources\": [\n        \"string\",\n        \"string\"\n      ],\n      \"notResources\": [\n        \"string\",\n        \"string\"\n      ],\n      \"actions\": [\n        \"string\",\n        \"string\"\n      ],\n      \"notActions\": [\n        \"string\",\n        \"string\"\n      ]\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "cac43c44-40fc-4468-b655-4d5d81353de6",
+          "name": "Get a webhook",
+          "request": {
+            "name": "Get a webhook",
+            "description": {
+              "content": "Returns a single webhook by its identifier.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "webhooks",
+                ":webhookId"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "webhookId",
+                  "description": "(Required) The unique identifier of a webhook."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "ed7758a6-93aa-4bd5-b28a-34b2267366e0",
+              "name": "Successful response containing the webhook.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "webhooks",
+                    ":webhookId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "webhookId",
+                      "description": "(Required) The unique identifier of a webhook."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"_id\": \"string\",\n  \"url\": \"http://WdQAYyJoFpYSwCAJftdKMc.dcFYKNRg00M3xRDwQ.wnJ6DxIL+eS.yWYuShvu4MsT+C\",\n  \"secret\": \"string\",\n  \"true\": false,\n  \"name\": \"string\",\n  \"tags\": [\n    \"string\",\n    \"string\"\n  ],\n  \"statements\": [\n    {\n      \"effect\": \"deny\",\n      \"resources\": [\n        \"string\",\n        \"string\"\n      ],\n      \"notResources\": [\n        \"string\",\n        \"string\"\n      ],\n      \"actions\": [\n        \"string\",\n        \"string\"\n      ],\n      \"notActions\": [\n        \"string\",\n        \"string\"\n      ]\n    },\n    {\n      \"effect\": \"deny\",\n      \"resources\": [\n        \"string\",\n        \"string\"\n      ],\n      \"notResources\": [\n        \"string\",\n        \"string\"\n      ],\n      \"actions\": [\n        \"string\",\n        \"string\"\n      ],\n      \"notActions\": [\n        \"string\",\n        \"string\"\n      ]\n    }\n  ],\n  \"_links\": {\n    \"self\": {\n      \"href\": \"string\",\n      \"type\": \"string\"\n    },\n    \"key_0\": {\n      \"href\": \"string\",\n      \"type\": \"string\"\n    },\n    \"key_1\": {\n      \"href\": \"string\",\n      \"type\": \"string\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "5f26f55e-ecb8-49fb-9156-ed014e22cef3",
+              "name": "Unauthorized. Invalid or missing access token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "webhooks",
+                    ":webhookId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "webhookId",
+                      "description": "(Required) The unique identifier of a webhook."
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "ba94961f-d8bc-4a0d-8e02-1accd21d71d4",
+              "name": "Webhook not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "webhooks",
+                    ":webhookId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "webhookId",
+                      "description": "(Required) The unique identifier of a webhook."
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "84a22426-1954-41a1-8bee-3b2a9d2fb9c1",
+          "name": "Update a webhook",
+          "request": {
+            "name": "Update a webhook",
+            "description": {
+              "content": "Updates a webhook using a JSON Patch representation.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "webhooks",
+                ":webhookId"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "webhookId",
+                  "description": "(Required) The unique identifier of a webhook."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PATCH",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"patch\": [\n    {\n      \"op\": \"<string>\",\n      \"path\": \"<string>\",\n      \"value\": {}\n    },\n    {\n      \"op\": \"<string>\",\n      \"path\": \"<string>\",\n      \"value\": {}\n    }\n  ],\n  \"comment\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "22f5a15d-6070-4489-81e0-b909c6225e7f",
+              "name": "Webhook updated successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "webhooks",
+                    ":webhookId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "webhookId",
+                      "description": "(Required) The unique identifier of a webhook."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"patch\": [\n    {\n      \"op\": \"<string>\",\n      \"path\": \"<string>\",\n      \"value\": {}\n    },\n    {\n      \"op\": \"<string>\",\n      \"path\": \"<string>\",\n      \"value\": {}\n    }\n  ],\n  \"comment\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"_id\": \"string\",\n  \"url\": \"http://WdQAYyJoFpYSwCAJftdKMc.dcFYKNRg00M3xRDwQ.wnJ6DxIL+eS.yWYuShvu4MsT+C\",\n  \"secret\": \"string\",\n  \"true\": false,\n  \"name\": \"string\",\n  \"tags\": [\n    \"string\",\n    \"string\"\n  ],\n  \"statements\": [\n    {\n      \"effect\": \"deny\",\n      \"resources\": [\n        \"string\",\n        \"string\"\n      ],\n      \"notResources\": [\n        \"string\",\n        \"string\"\n      ],\n      \"actions\": [\n        \"string\",\n        \"string\"\n      ],\n      \"notActions\": [\n        \"string\",\n        \"string\"\n      ]\n    },\n    {\n      \"effect\": \"deny\",\n      \"resources\": [\n        \"string\",\n        \"string\"\n      ],\n      \"notResources\": [\n        \"string\",\n        \"string\"\n      ],\n      \"actions\": [\n        \"string\",\n        \"string\"\n      ],\n      \"notActions\": [\n        \"string\",\n        \"string\"\n      ]\n    }\n  ],\n  \"_links\": {\n    \"self\": {\n      \"href\": \"string\",\n      \"type\": \"string\"\n    },\n    \"key_0\": {\n      \"href\": \"string\",\n      \"type\": \"string\"\n    },\n    \"key_1\": {\n      \"href\": \"string\",\n      \"type\": \"string\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9fbeb088-89d0-457b-8035-159f4fe2ba9a",
+              "name": "Invalid patch request.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "webhooks",
+                    ":webhookId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "webhookId",
+                      "description": "(Required) The unique identifier of a webhook."
+                    }
+                  ]
+                },
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"patch\": [\n    {\n      \"op\": \"<string>\",\n      \"path\": \"<string>\",\n      \"value\": {}\n    },\n    {\n      \"op\": \"<string>\",\n      \"path\": \"<string>\",\n      \"value\": {}\n    }\n  ],\n  \"comment\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "bcd42b25-e316-4df6-899c-dd18a6783fac",
+              "name": "Unauthorized. Invalid or missing access token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "webhooks",
+                    ":webhookId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "webhookId",
+                      "description": "(Required) The unique identifier of a webhook."
+                    }
+                  ]
+                },
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"patch\": [\n    {\n      \"op\": \"<string>\",\n      \"path\": \"<string>\",\n      \"value\": {}\n    },\n    {\n      \"op\": \"<string>\",\n      \"path\": \"<string>\",\n      \"value\": {}\n    }\n  ],\n  \"comment\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "c19b6068-0ed0-4861-ad9c-04d675888d0c",
+              "name": "Webhook not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "webhooks",
+                    ":webhookId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "webhookId",
+                      "description": "(Required) The unique identifier of a webhook."
+                    }
+                  ]
+                },
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"patch\": [\n    {\n      \"op\": \"<string>\",\n      \"path\": \"<string>\",\n      \"value\": {}\n    },\n    {\n      \"op\": \"<string>\",\n      \"path\": \"<string>\",\n      \"value\": {}\n    }\n  ],\n  \"comment\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "9ebf480c-0ad3-40ed-8aa3-8525882484a8",
+          "name": "Delete a webhook",
+          "request": {
+            "name": "Delete a webhook",
+            "description": {
+              "content": "Permanently deletes a webhook subscription.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "webhooks",
+                ":webhookId"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "webhookId",
+                  "description": "(Required) The unique identifier of a webhook."
+                }
+              ]
+            },
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "ce23237e-dfde-4061-924d-10fb81c3fc07",
+              "name": "Webhook deleted successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "webhooks",
+                    ":webhookId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "webhookId",
+                      "description": "(Required) The unique identifier of a webhook."
+                    }
+                  ]
+                },
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "No Content",
+              "code": 204,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "c2242795-8e82-4c1f-a03c-8c87f26c4a15",
+              "name": "Unauthorized. Invalid or missing access token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "webhooks",
+                    ":webhookId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "webhookId",
+                      "description": "(Required) The unique identifier of a webhook."
+                    }
+                  ]
+                },
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "6e4a8ecb-8c8c-4c0d-a7e0-224323247814",
+              "name": "Webhook not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "webhooks",
+                    ":webhookId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "webhookId",
+                      "description": "(Required) The unique identifier of a webhook."
+                    }
+                  ]
+                },
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "http://localhost:8030",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "e27eb896-bc49-4c9c-8df8-8ba9cca11d5e",
+    "name": "LaunchDarkly Relay Proxy Access Tokens Webhooks API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The LaunchDarkly Relay Proxy is a small Go application that connects to the LaunchDarkly streaming API and proxies that connection to SDK clients within an organization's network. It exposes endpoints for status monitoring, flag evaluation, and SDK streaming that mirror the LaunchDarkly service endpoints. Instead of each server making outbound connections to LaunchDarkly's streaming service, multiple servers connect to the local Relay Proxy which maintains a single upstream connection.\n\nContact Support:\n Name: LaunchDarkly Support",
+      "type": "text/plain"
+    }
+  }
+}

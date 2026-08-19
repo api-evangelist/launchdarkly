@@ -1,0 +1,941 @@
+{
+  "item": [
+    {
+      "id": "ad6fe583-1947-4c9f-923a-db14289826b8",
+      "name": "Projects",
+      "description": {
+        "content": "Manage projects that organize feature flags and other resources.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "081532cd-229a-4756-af33-b813a39a904c",
+          "name": "List projects",
+          "request": {
+            "name": "List projects",
+            "description": {
+              "content": "Returns a list of all projects in the LaunchDarkly account.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "projects"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "<integer>",
+                  "description": "Maximum number of projects to return."
+                },
+                {
+                  "disabled": false,
+                  "key": "offset",
+                  "value": "<integer>",
+                  "description": "Number of projects to skip for pagination."
+                },
+                {
+                  "disabled": false,
+                  "key": "filter",
+                  "value": "<string>",
+                  "description": "A filter expression to apply to the project list."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "ae9e1e53-cb85-43fb-9ddc-05f1f9524add",
+              "name": "Successful response containing a list of projects.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "projects"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "offset",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "filter",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"items\": [\n    {\n      \"_id\": \"string\",\n      \"key\": \"string\",\n      \"name\": \"string\",\n      \"tags\": [\n        \"string\",\n        \"string\"\n      ],\n      \"environments\": {\n        \"items\": [\n          {\n            \"_id\": \"string\",\n            \"key\": \"string\",\n            \"name\": \"string\",\n            \"color\": \"94eCDD\",\n            \"apiKey\": \"string\",\n            \"mobileKey\": \"string\",\n            \"defaultTtl\": 5362,\n            \"secureMode\": false,\n            \"tags\": [\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            ],\n            \"_links\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          {\n            \"_id\": \"string\",\n            \"key\": \"string\",\n            \"name\": \"string\",\n            \"color\": \"1bcd29\",\n            \"apiKey\": \"string\",\n            \"mobileKey\": \"string\",\n            \"defaultTtl\": 6899,\n            \"secureMode\": false,\n            \"tags\": [\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            ],\n            \"_links\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        ],\n        \"totalCount\": 4293,\n        \"_links\": {\n          \"self\": {\n            \"href\": \"string\",\n            \"type\": \"string\"\n          },\n          \"key_0\": {\n            \"href\": \"string\",\n            \"type\": \"string\"\n          }\n        }\n      },\n      \"_links\": {\n        \"self\": {\n          \"href\": \"string\",\n          \"type\": \"string\"\n        },\n        \"key_0\": {\n          \"href\": \"string\",\n          \"type\": \"string\"\n        },\n        \"key_1\": {\n          \"href\": \"string\",\n          \"type\": \"string\"\n        }\n      }\n    },\n    {\n      \"_id\": \"string\",\n      \"key\": \"string\",\n      \"name\": \"string\",\n      \"tags\": [\n        \"string\",\n        \"string\"\n      ],\n      \"environments\": {\n        \"items\": [\n          {\n            \"_id\": \"string\",\n            \"key\": \"string\",\n            \"name\": \"string\",\n            \"color\": \"a530Cb\",\n            \"apiKey\": \"string\",\n            \"mobileKey\": \"string\",\n            \"defaultTtl\": 5710,\n            \"secureMode\": true,\n            \"tags\": [\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            ],\n            \"_links\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          {\n            \"_id\": \"string\",\n            \"key\": \"string\",\n            \"name\": \"string\",\n            \"color\": \"BDfCE8\",\n            \"apiKey\": \"string\",\n            \"mobileKey\": \"string\",\n            \"defaultTtl\": 3780,\n            \"secureMode\": true,\n            \"tags\": [\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            ],\n            \"_links\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        ],\n        \"totalCount\": 9340,\n        \"_links\": {\n          \"self\": {\n            \"href\": \"string\",\n            \"type\": \"string\"\n          },\n          \"key_0\": {\n            \"href\": \"string\",\n            \"type\": \"string\"\n          },\n          \"key_1\": {\n            \"href\": \"string\",\n            \"type\": \"string\"\n          },\n          \"key_2\": {\n            \"href\": \"string\",\n            \"type\": \"string\"\n          },\n          \"key_3\": {\n            \"href\": \"string\",\n            \"type\": \"string\"\n          }\n        }\n      },\n      \"_links\": {\n        \"self\": {\n          \"href\": \"string\",\n          \"type\": \"string\"\n        },\n        \"key_0\": {\n          \"href\": \"string\",\n          \"type\": \"string\"\n        }\n      }\n    }\n  ],\n  \"totalCount\": 1058,\n  \"_links\": {\n    \"self\": {\n      \"href\": \"string\",\n      \"type\": \"string\"\n    },\n    \"key_0\": {\n      \"href\": \"string\",\n      \"type\": \"string\"\n    },\n    \"key_1\": {\n      \"href\": \"string\",\n      \"type\": \"string\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c08885b1-5821-41c1-acd7-3d7180a35f6a",
+              "name": "Unauthorized. Invalid or missing access token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "projects"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "offset",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "filter",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "4af1fd69-30f0-457d-92c8-054cbcba4f50",
+          "name": "Create a project",
+          "request": {
+            "name": "Create a project",
+            "description": {
+              "content": "Creates a new project with the specified key, name, and default environments.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "projects"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"<string>\",\n  \"key\": \"<string>\",\n  \"tags\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"environments\": [\n    {\n      \"name\": \"<string>\",\n      \"key\": \"<string>\",\n      \"color\": \"<string>\",\n      \"defaultTtl\": \"<integer>\",\n      \"secureMode\": \"<boolean>\",\n      \"tags\": [\n        \"<string>\",\n        \"<string>\"\n      ]\n    },\n    {\n      \"name\": \"<string>\",\n      \"key\": \"<string>\",\n      \"color\": \"<string>\",\n      \"defaultTtl\": \"<integer>\",\n      \"secureMode\": \"<boolean>\",\n      \"tags\": [\n        \"<string>\",\n        \"<string>\"\n      ]\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "a866079b-3b14-482b-b1e2-dfc5aaee2517",
+              "name": "Project created successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "projects"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\",\n  \"key\": \"<string>\",\n  \"tags\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"environments\": [\n    {\n      \"name\": \"string\",\n      \"key\": \"hab3na6e\",\n      \"color\": \"BAdE18\",\n      \"defaultTtl\": 7309,\n      \"secureMode\": false,\n      \"tags\": [\n        \"string\",\n        \"string\"\n      ]\n    },\n    {\n      \"name\": \"string\",\n      \"key\": \"ll3zrhm7z\",\n      \"color\": \"16F40b\",\n      \"defaultTtl\": 8117,\n      \"secureMode\": true,\n      \"tags\": [\n        \"string\",\n        \"string\"\n      ]\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"_id\": \"string\",\n  \"key\": \"string\",\n  \"name\": \"string\",\n  \"tags\": [\n    \"string\",\n    \"string\"\n  ],\n  \"environments\": {\n    \"items\": [\n      {\n        \"_id\": \"string\",\n        \"key\": \"string\",\n        \"name\": \"string\",\n        \"color\": \"0d94AF\",\n        \"apiKey\": \"string\",\n        \"mobileKey\": \"string\",\n        \"defaultTtl\": 996,\n        \"secureMode\": false,\n        \"tags\": [\n          \"string\",\n          \"string\"\n        ],\n        \"_links\": {\n          \"self\": {\n            \"href\": \"string\",\n            \"type\": \"string\"\n          },\n          \"key_0\": {\n            \"href\": \"string\",\n            \"type\": \"string\"\n          }\n        }\n      },\n      {\n        \"_id\": \"string\",\n        \"key\": \"string\",\n        \"name\": \"string\",\n        \"color\": \"fc9aCF\",\n        \"apiKey\": \"string\",\n        \"mobileKey\": \"string\",\n        \"defaultTtl\": 1243,\n        \"secureMode\": true,\n        \"tags\": [\n          \"string\",\n          \"string\"\n        ],\n        \"_links\": {\n          \"self\": {\n            \"href\": \"string\",\n            \"type\": \"string\"\n          }\n        }\n      }\n    ],\n    \"totalCount\": 212,\n    \"_links\": {\n      \"self\": {\n        \"href\": \"string\",\n        \"type\": \"string\"\n      },\n      \"key_0\": {\n        \"href\": \"string\",\n        \"type\": \"string\"\n      }\n    }\n  },\n  \"_links\": {\n    \"self\": {\n      \"href\": \"string\",\n      \"type\": \"string\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "253a4a26-8e19-46b7-a048-7b8c700c421e",
+              "name": "Invalid request body.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "projects"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\",\n  \"key\": \"<string>\",\n  \"tags\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"environments\": [\n    {\n      \"name\": \"string\",\n      \"key\": \"hab3na6e\",\n      \"color\": \"BAdE18\",\n      \"defaultTtl\": 7309,\n      \"secureMode\": false,\n      \"tags\": [\n        \"string\",\n        \"string\"\n      ]\n    },\n    {\n      \"name\": \"string\",\n      \"key\": \"ll3zrhm7z\",\n      \"color\": \"16F40b\",\n      \"defaultTtl\": 8117,\n      \"secureMode\": true,\n      \"tags\": [\n        \"string\",\n        \"string\"\n      ]\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "f4cdca2b-4a2b-4756-a3d7-fd5a95a7e9f2",
+              "name": "Unauthorized. Invalid or missing access token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "projects"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\",\n  \"key\": \"<string>\",\n  \"tags\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"environments\": [\n    {\n      \"name\": \"string\",\n      \"key\": \"hab3na6e\",\n      \"color\": \"BAdE18\",\n      \"defaultTtl\": 7309,\n      \"secureMode\": false,\n      \"tags\": [\n        \"string\",\n        \"string\"\n      ]\n    },\n    {\n      \"name\": \"string\",\n      \"key\": \"ll3zrhm7z\",\n      \"color\": \"16F40b\",\n      \"defaultTtl\": 8117,\n      \"secureMode\": true,\n      \"tags\": [\n        \"string\",\n        \"string\"\n      ]\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "b6ed1e87-94f8-4aec-9211-24e12060c23b",
+              "name": "A project with the given key already exists.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "projects"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\",\n  \"key\": \"<string>\",\n  \"tags\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"environments\": [\n    {\n      \"name\": \"string\",\n      \"key\": \"hab3na6e\",\n      \"color\": \"BAdE18\",\n      \"defaultTtl\": 7309,\n      \"secureMode\": false,\n      \"tags\": [\n        \"string\",\n        \"string\"\n      ]\n    },\n    {\n      \"name\": \"string\",\n      \"key\": \"ll3zrhm7z\",\n      \"color\": \"16F40b\",\n      \"defaultTtl\": 8117,\n      \"secureMode\": true,\n      \"tags\": [\n        \"string\",\n        \"string\"\n      ]\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "a30ecb61-8278-467d-9cdb-069e60bb3849",
+          "name": "Get a project",
+          "request": {
+            "name": "Get a project",
+            "description": {
+              "content": "Returns a single project by its key, including its environments and configuration.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "projects",
+                ":projectKey"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "projectKey",
+                  "description": "(Required) The project key identifying a LaunchDarkly project."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "041b80bc-be9b-40a6-a20b-4f7f725de034",
+              "name": "Successful response containing the project.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "projects",
+                    ":projectKey"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "projectKey",
+                      "description": "(Required) The project key identifying a LaunchDarkly project."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"_id\": \"string\",\n  \"key\": \"string\",\n  \"name\": \"string\",\n  \"tags\": [\n    \"string\",\n    \"string\"\n  ],\n  \"environments\": {\n    \"items\": [\n      {\n        \"_id\": \"string\",\n        \"key\": \"string\",\n        \"name\": \"string\",\n        \"color\": \"0d94AF\",\n        \"apiKey\": \"string\",\n        \"mobileKey\": \"string\",\n        \"defaultTtl\": 996,\n        \"secureMode\": false,\n        \"tags\": [\n          \"string\",\n          \"string\"\n        ],\n        \"_links\": {\n          \"self\": {\n            \"href\": \"string\",\n            \"type\": \"string\"\n          },\n          \"key_0\": {\n            \"href\": \"string\",\n            \"type\": \"string\"\n          }\n        }\n      },\n      {\n        \"_id\": \"string\",\n        \"key\": \"string\",\n        \"name\": \"string\",\n        \"color\": \"fc9aCF\",\n        \"apiKey\": \"string\",\n        \"mobileKey\": \"string\",\n        \"defaultTtl\": 1243,\n        \"secureMode\": true,\n        \"tags\": [\n          \"string\",\n          \"string\"\n        ],\n        \"_links\": {\n          \"self\": {\n            \"href\": \"string\",\n            \"type\": \"string\"\n          }\n        }\n      }\n    ],\n    \"totalCount\": 212,\n    \"_links\": {\n      \"self\": {\n        \"href\": \"string\",\n        \"type\": \"string\"\n      },\n      \"key_0\": {\n        \"href\": \"string\",\n        \"type\": \"string\"\n      }\n    }\n  },\n  \"_links\": {\n    \"self\": {\n      \"href\": \"string\",\n      \"type\": \"string\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "64932872-aa33-4062-ab6e-bca0b21cee4d",
+              "name": "Unauthorized. Invalid or missing access token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "projects",
+                    ":projectKey"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "projectKey",
+                      "description": "(Required) The project key identifying a LaunchDarkly project."
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "ed6c4fe4-4643-47fc-b43a-ca7182f64b2f",
+              "name": "Project not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "projects",
+                    ":projectKey"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "projectKey",
+                      "description": "(Required) The project key identifying a LaunchDarkly project."
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "966d2d37-142a-4bec-947b-541f156c5784",
+          "name": "Update a project",
+          "request": {
+            "name": "Update a project",
+            "description": {
+              "content": "Updates a project using a JSON Patch representation.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "projects",
+                ":projectKey"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "projectKey",
+                  "description": "(Required) The project key identifying a LaunchDarkly project."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PATCH",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"patch\": [\n    {\n      \"op\": \"<string>\",\n      \"path\": \"<string>\",\n      \"value\": {}\n    },\n    {\n      \"op\": \"<string>\",\n      \"path\": \"<string>\",\n      \"value\": {}\n    }\n  ],\n  \"comment\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "148ab443-f084-4e8e-a192-69b0f40f5ba7",
+              "name": "Project updated successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "projects",
+                    ":projectKey"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "projectKey",
+                      "description": "(Required) The project key identifying a LaunchDarkly project."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"patch\": [\n    {\n      \"op\": \"<string>\",\n      \"path\": \"<string>\",\n      \"value\": {}\n    },\n    {\n      \"op\": \"<string>\",\n      \"path\": \"<string>\",\n      \"value\": {}\n    }\n  ],\n  \"comment\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"_id\": \"string\",\n  \"key\": \"string\",\n  \"name\": \"string\",\n  \"tags\": [\n    \"string\",\n    \"string\"\n  ],\n  \"environments\": {\n    \"items\": [\n      {\n        \"_id\": \"string\",\n        \"key\": \"string\",\n        \"name\": \"string\",\n        \"color\": \"0d94AF\",\n        \"apiKey\": \"string\",\n        \"mobileKey\": \"string\",\n        \"defaultTtl\": 996,\n        \"secureMode\": false,\n        \"tags\": [\n          \"string\",\n          \"string\"\n        ],\n        \"_links\": {\n          \"self\": {\n            \"href\": \"string\",\n            \"type\": \"string\"\n          },\n          \"key_0\": {\n            \"href\": \"string\",\n            \"type\": \"string\"\n          }\n        }\n      },\n      {\n        \"_id\": \"string\",\n        \"key\": \"string\",\n        \"name\": \"string\",\n        \"color\": \"fc9aCF\",\n        \"apiKey\": \"string\",\n        \"mobileKey\": \"string\",\n        \"defaultTtl\": 1243,\n        \"secureMode\": true,\n        \"tags\": [\n          \"string\",\n          \"string\"\n        ],\n        \"_links\": {\n          \"self\": {\n            \"href\": \"string\",\n            \"type\": \"string\"\n          }\n        }\n      }\n    ],\n    \"totalCount\": 212,\n    \"_links\": {\n      \"self\": {\n        \"href\": \"string\",\n        \"type\": \"string\"\n      },\n      \"key_0\": {\n        \"href\": \"string\",\n        \"type\": \"string\"\n      }\n    }\n  },\n  \"_links\": {\n    \"self\": {\n      \"href\": \"string\",\n      \"type\": \"string\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ada58606-eec7-406c-a1de-591c3688c309",
+              "name": "Invalid patch request.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "projects",
+                    ":projectKey"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "projectKey",
+                      "description": "(Required) The project key identifying a LaunchDarkly project."
+                    }
+                  ]
+                },
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"patch\": [\n    {\n      \"op\": \"<string>\",\n      \"path\": \"<string>\",\n      \"value\": {}\n    },\n    {\n      \"op\": \"<string>\",\n      \"path\": \"<string>\",\n      \"value\": {}\n    }\n  ],\n  \"comment\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "c3c69d29-64e5-428b-8dd8-07e9f12e38be",
+              "name": "Unauthorized. Invalid or missing access token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "projects",
+                    ":projectKey"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "projectKey",
+                      "description": "(Required) The project key identifying a LaunchDarkly project."
+                    }
+                  ]
+                },
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"patch\": [\n    {\n      \"op\": \"<string>\",\n      \"path\": \"<string>\",\n      \"value\": {}\n    },\n    {\n      \"op\": \"<string>\",\n      \"path\": \"<string>\",\n      \"value\": {}\n    }\n  ],\n  \"comment\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "4f462b79-8901-41a8-a244-4e583a175f08",
+              "name": "Project not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "projects",
+                    ":projectKey"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "projectKey",
+                      "description": "(Required) The project key identifying a LaunchDarkly project."
+                    }
+                  ]
+                },
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"patch\": [\n    {\n      \"op\": \"<string>\",\n      \"path\": \"<string>\",\n      \"value\": {}\n    },\n    {\n      \"op\": \"<string>\",\n      \"path\": \"<string>\",\n      \"value\": {}\n    }\n  ],\n  \"comment\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "8ed3372d-7a89-4fc2-a908-8f0ba38da012",
+          "name": "Delete a project",
+          "request": {
+            "name": "Delete a project",
+            "description": {
+              "content": "Permanently deletes a project and all of its associated feature flags, environments, and other resources.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "projects",
+                ":projectKey"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "projectKey",
+                  "description": "(Required) The project key identifying a LaunchDarkly project."
+                }
+              ]
+            },
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "502f292d-765b-4d62-878e-155f53da10d3",
+              "name": "Project deleted successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "projects",
+                    ":projectKey"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "projectKey",
+                      "description": "(Required) The project key identifying a LaunchDarkly project."
+                    }
+                  ]
+                },
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "No Content",
+              "code": 204,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "7cfdb22a-6cbf-4659-84bd-50b73e7135cf",
+              "name": "Unauthorized. Invalid or missing access token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "projects",
+                    ":projectKey"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "projectKey",
+                      "description": "(Required) The project key identifying a LaunchDarkly project."
+                    }
+                  ]
+                },
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "a8ff21c7-e077-4313-80f2-be7392eabf8a",
+              "name": "Project not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "projects",
+                    ":projectKey"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "projectKey",
+                      "description": "(Required) The project key identifying a LaunchDarkly project."
+                    }
+                  ]
+                },
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "http://localhost:8030",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "386e2760-f7e0-493c-ba7f-e9876540e06b",
+    "name": "LaunchDarkly Relay Proxy Access Tokens Projects API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The LaunchDarkly Relay Proxy is a small Go application that connects to the LaunchDarkly streaming API and proxies that connection to SDK clients within an organization's network. It exposes endpoints for status monitoring, flag evaluation, and SDK streaming that mirror the LaunchDarkly service endpoints. Instead of each server making outbound connections to LaunchDarkly's streaming service, multiple servers connect to the local Relay Proxy which maintains a single upstream connection.\n\nContact Support:\n Name: LaunchDarkly Support",
+      "type": "text/plain"
+    }
+  }
+}

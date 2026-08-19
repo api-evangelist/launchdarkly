@@ -1,0 +1,175 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "LaunchDarkly Relay Proxy Access Tokens Feature Flags API",
+    "version": "8.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Feature Flags",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List feature flags",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "http://localhost:8030/flags/:projectKey",
+            "params": [
+              {
+                "name": "projectKey",
+                "value": "",
+                "type": "path",
+                "description": "The project key identifying a LaunchDarkly project."
+              },
+              {
+                "name": "env",
+                "value": "",
+                "type": "query",
+                "description": "Filter configurations by environment key."
+              },
+              {
+                "name": "tag",
+                "value": "",
+                "type": "query",
+                "description": "Filter flags by tag."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of flags to return."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "Number of flags to skip for pagination."
+              },
+              {
+                "name": "filter",
+                "value": "",
+                "type": "query",
+                "description": "A filter expression to apply to the flag list, supporting query, tags, and other fields."
+              }
+            ]
+          },
+          "docs": "Returns a paginated list of all feature flags in the specified project. Supports filtering by tag, query string, and environment."
+        },
+        {
+          "info": {
+            "name": "Create a feature flag",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://localhost:8030/flags/:projectKey",
+            "params": [
+              {
+                "name": "projectKey",
+                "value": "",
+                "type": "path",
+                "description": "The project key identifying a LaunchDarkly project."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new feature flag in the specified project with the provided configuration including key, name, variations, and default targeting rules."
+        },
+        {
+          "info": {
+            "name": "Get a feature flag",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "http://localhost:8030/flags/:projectKey/:flagKey",
+            "params": [
+              {
+                "name": "projectKey",
+                "value": "",
+                "type": "path",
+                "description": "The project key identifying a LaunchDarkly project."
+              },
+              {
+                "name": "flagKey",
+                "value": "",
+                "type": "path",
+                "description": "The feature flag key identifying a specific flag."
+              },
+              {
+                "name": "env",
+                "value": "",
+                "type": "query",
+                "description": "Filter configurations by environment key."
+              }
+            ]
+          },
+          "docs": "Returns a single feature flag by its key, including all environment-specific configurations and targeting rules."
+        },
+        {
+          "info": {
+            "name": "Update a feature flag",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "http://localhost:8030/flags/:projectKey/:flagKey",
+            "params": [
+              {
+                "name": "projectKey",
+                "value": "",
+                "type": "path",
+                "description": "The project key identifying a LaunchDarkly project."
+              },
+              {
+                "name": "flagKey",
+                "value": "",
+                "type": "path",
+                "description": "The feature flag key identifying a specific flag."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates a feature flag using a JSON Patch or semantic patch representation. Supports modifying targeting rules, variations, prerequisites, and other flag settings."
+        },
+        {
+          "info": {
+            "name": "Delete a feature flag",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "http://localhost:8030/flags/:projectKey/:flagKey",
+            "params": [
+              {
+                "name": "projectKey",
+                "value": "",
+                "type": "path",
+                "description": "The project key identifying a LaunchDarkly project."
+              },
+              {
+                "name": "flagKey",
+                "value": "",
+                "type": "path",
+                "description": "The feature flag key identifying a specific flag."
+              }
+            ]
+          },
+          "docs": "Permanently deletes a feature flag and all of its associated targeting rules and environment configurations."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

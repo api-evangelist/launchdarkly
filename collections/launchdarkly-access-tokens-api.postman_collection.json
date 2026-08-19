@@ -1,0 +1,296 @@
+{
+  "item": [
+    {
+      "id": "d16977e4-b398-4d81-b65d-40ccbd6dbbe3",
+      "name": "Access Tokens",
+      "description": {
+        "content": "Create and manage personal and service access tokens used to authenticate API requests.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "814af69b-4c7a-4ee4-bf11-4e6946cd2798",
+          "name": "List access tokens",
+          "request": {
+            "name": "List access tokens",
+            "description": {
+              "content": "Returns a list of all personal and service access tokens in the LaunchDarkly account.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "tokens"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "3ea22006-364f-47c0-a49a-92824d276fe0",
+              "name": "Successful response containing a list of access tokens.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "tokens"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"items\": [\n    {\n      \"_id\": \"string\",\n      \"name\": \"string\",\n      \"role\": \"string\",\n      \"customRoleIds\": [\n        \"string\",\n        \"string\"\n      ],\n      \"token\": \"string\",\n      \"serviceToken\": false,\n      \"defaultApiVersion\": 9732,\n      \"creationDate\": 9695,\n      \"lastUsed\": 1467,\n      \"_links\": {\n        \"self\": {\n          \"href\": \"string\",\n          \"type\": \"string\"\n        },\n        \"key_0\": {\n          \"href\": \"string\",\n          \"type\": \"string\"\n        }\n      }\n    },\n    {\n      \"_id\": \"string\",\n      \"name\": \"string\",\n      \"role\": \"string\",\n      \"customRoleIds\": [\n        \"string\",\n        \"string\"\n      ],\n      \"token\": \"string\",\n      \"serviceToken\": true,\n      \"defaultApiVersion\": 7539,\n      \"creationDate\": 7139,\n      \"lastUsed\": 2767,\n      \"_links\": {\n        \"self\": {\n          \"href\": \"string\",\n          \"type\": \"string\"\n        }\n      }\n    }\n  ],\n  \"_links\": {\n    \"self\": {\n      \"href\": \"string\",\n      \"type\": \"string\"\n    },\n    \"key_0\": {\n      \"href\": \"string\",\n      \"type\": \"string\"\n    },\n    \"key_1\": {\n      \"href\": \"string\",\n      \"type\": \"string\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a0a61694-3217-4d77-ae1e-53b8459e7470",
+              "name": "Unauthorized. Invalid or missing access token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "tokens"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "e35ca222-a8a2-4f00-afd6-4c95b856be4f",
+          "name": "Create an access token",
+          "request": {
+            "name": "Create an access token",
+            "description": {
+              "content": "Creates a new personal or service access token.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "tokens"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"<string>\",\n  \"role\": \"<string>\",\n  \"customRoleIds\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"serviceToken\": \"<boolean>\",\n  \"defaultApiVersion\": \"<integer>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "fe2df5f2-eed4-4e25-b3cc-2dd2367a8113",
+              "name": "Access token created successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "tokens"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\",\n  \"role\": \"<string>\",\n  \"customRoleIds\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"serviceToken\": \"<boolean>\",\n  \"defaultApiVersion\": \"<integer>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"_id\": \"string\",\n  \"name\": \"string\",\n  \"role\": \"string\",\n  \"customRoleIds\": [\n    \"string\",\n    \"string\"\n  ],\n  \"token\": \"string\",\n  \"serviceToken\": false,\n  \"defaultApiVersion\": 1983,\n  \"creationDate\": 1336,\n  \"lastUsed\": 6958,\n  \"_links\": {\n    \"self\": {\n      \"href\": \"string\",\n      \"type\": \"string\"\n    },\n    \"key_0\": {\n      \"href\": \"string\",\n      \"type\": \"string\"\n    },\n    \"key_1\": {\n      \"href\": \"string\",\n      \"type\": \"string\"\n    },\n    \"key_2\": {\n      \"href\": \"string\",\n      \"type\": \"string\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9cba21e2-6124-4037-9c13-e29a7eb9a58d",
+              "name": "Invalid request body.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "tokens"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\",\n  \"role\": \"<string>\",\n  \"customRoleIds\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"serviceToken\": \"<boolean>\",\n  \"defaultApiVersion\": \"<integer>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "7c32a1c7-04f7-4137-9a79-4b140c1c7cf8",
+              "name": "Unauthorized. Invalid or missing access token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "tokens"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\",\n  \"role\": \"<string>\",\n  \"customRoleIds\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"serviceToken\": \"<boolean>\",\n  \"defaultApiVersion\": \"<integer>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "http://localhost:8030",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "d8785aeb-3bbc-4474-a5d5-5d7fe2c0fb3d",
+    "name": "LaunchDarkly Relay Proxy Access Tokens API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The LaunchDarkly Relay Proxy is a small Go application that connects to the LaunchDarkly streaming API and proxies that connection to SDK clients within an organization's network. It exposes endpoints for status monitoring, flag evaluation, and SDK streaming that mirror the LaunchDarkly service endpoints. Instead of each server making outbound connections to LaunchDarkly's streaming service, multiple servers connect to the local Relay Proxy which maintains a single upstream connection.\n\nContact Support:\n Name: LaunchDarkly Support",
+      "type": "text/plain"
+    }
+  }
+}

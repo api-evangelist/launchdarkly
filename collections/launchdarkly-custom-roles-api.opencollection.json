@@ -1,0 +1,44 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "LaunchDarkly Relay Proxy Access Tokens Custom Roles API",
+    "version": "8.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Custom Roles",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List custom roles",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "http://localhost:8030/roles"
+          },
+          "docs": "Returns a list of all custom roles defined in the LaunchDarkly account."
+        },
+        {
+          "info": {
+            "name": "Create a custom role",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://localhost:8030/roles",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new custom role with the specified permissions policy."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
