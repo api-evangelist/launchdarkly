@@ -1,0 +1,42 @@
+openapi: 3.2.0
+info:
+  title: LaunchDarkly Dev Server Backup API
+  description: "LaunchDarkly Dev Server provides a simplified, local feature flagging server that can be used with LanchDarkly SDKs.\nThis API allows for the syncing of flags with a remote LaunchDarkly project and to configure local overrides of \nthose flags.\n"
+  version: 1.0.0
+servers:
+- url: http://localhost:8765/dev
+tags:
+- name: Backup
+paths:
+  /backup:
+    get:
+      summary: get the backup
+      operationId: getBackup
+      responses:
+        200:
+          $ref: '#/components/responses/DbBackup'
+      tags:
+      - Backup
+    post:
+      summary: post backup
+      operationId: restoreBackup
+      requestBody:
+        content:
+          application/vnd.sqlite3:
+            schema:
+              type: string
+              format: binary
+      responses:
+        200:
+          description: Backup restored
+      tags:
+      - Backup
+components:
+  responses:
+    DbBackup:
+      description: A backup of the local sqlite database
+      content:
+        application/vnd.sqlite3:
+          schema:
+            type: string
+            format: binary

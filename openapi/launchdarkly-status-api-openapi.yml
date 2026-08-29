@@ -1,6 +1,6 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: LaunchDarkly Relay Proxy Access Tokens Status API
+  title: LaunchDarkly Relay Proxy Status API
   description: The LaunchDarkly Relay Proxy is a small Go application that connects to the LaunchDarkly streaming API and proxies that connection to SDK clients within an organization's network. It exposes endpoints for status monitoring, flag evaluation, and SDK streaming that mirror the LaunchDarkly service endpoints. Instead of each server making outbound connections to LaunchDarkly's streaming service, multiple servers connect to the local Relay Proxy which maintains a single upstream connection.
   version: '8.0'
   contact:
@@ -32,24 +32,6 @@ paths:
                 $ref: '#/components/schemas/RelayProxyStatus'
 components:
   schemas:
-    RelayProxyStatus:
-      type: object
-      description: The overall status of the Relay Proxy and its environments.
-      properties:
-        status:
-          type: string
-          description: The overall health status of the Relay Proxy.
-          enum:
-          - healthy
-          - degraded
-        environments:
-          type: object
-          description: A map of environment names to their connection status.
-          additionalProperties:
-            $ref: '#/components/schemas/EnvironmentStatus'
-        version:
-          type: string
-          description: The version of the Relay Proxy.
     EnvironmentStatus:
       type: object
       description: The connection status of a single environment.
@@ -105,6 +87,24 @@ components:
         projName:
           type: string
           description: The project name.
+    RelayProxyStatus:
+      type: object
+      description: The overall status of the Relay Proxy and its environments.
+      properties:
+        status:
+          type: string
+          description: The overall health status of the Relay Proxy.
+          enum:
+          - healthy
+          - degraded
+        environments:
+          type: object
+          description: A map of environment names to their connection status.
+          additionalProperties:
+            $ref: '#/components/schemas/EnvironmentStatus'
+        version:
+          type: string
+          description: The version of the Relay Proxy.
   securitySchemes:
     sdkKeyAuth:
       type: apiKey

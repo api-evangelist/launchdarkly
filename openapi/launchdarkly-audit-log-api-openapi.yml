@@ -1,17 +1,20 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: LaunchDarkly Relay Proxy Access Tokens Audit Log API
-  description: The LaunchDarkly Relay Proxy is a small Go application that connects to the LaunchDarkly streaming API and proxies that connection to SDK clients within an organization's network. It exposes endpoints for status monitoring, flag evaluation, and SDK streaming that mirror the LaunchDarkly service endpoints. Instead of each server making outbound connections to LaunchDarkly's streaming service, multiple servers connect to the local Relay Proxy which maintains a single upstream connection.
-  version: '8.0'
+  title: LaunchDarkly REST Audit Log API
+  description: The LaunchDarkly REST API provides programmatic access to the full LaunchDarkly feature management platform. Developers can create, update, and manage feature flags, targeting rules, user segments, projects, environments, and team members. The API also supports scheduled flag changes, release pipelines, experimentation, approval workflows, and webhook integrations. Authentication is handled via personal or service access tokens, and the API follows a versioned scheme with the current default version being 20240415.
+  version: '20240415'
   contact:
     name: LaunchDarkly Support
     url: https://support.launchdarkly.com
+  termsOfService: https://launchdarkly.com/policies/terms-of-service
   license:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
 servers:
-- url: http://localhost:8030
-  description: Default Relay Proxy instance
+- url: https://app.launchdarkly.com/api/v2
+  description: LaunchDarkly Production API
+security:
+- bearerAuth: []
 tags:
 - name: Audit Log
   description: Access the change history of all modifications made to resources in the LaunchDarkly account.
@@ -87,36 +90,29 @@ paths:
           description: Audit log entry not found.
 components:
   schemas:
-    AuditLogEntries:
+    Links:
       type: object
-      description: A paginated collection of audit log entries.
+      description: HATEOAS links for navigating related resources.
       properties:
-        items:
-          type: array
-          description: The list of audit log entries.
-          items:
-            $ref: '#/components/schemas/AuditLogEntry'
-        _links:
-          $ref: '#/components/schemas/Links'
-    MemberSummary:
-      type: object
-      description: A summary of a member who performed an action.
-      properties:
-        _id:
-          type: string
-          description: The unique identifier of the member.
-        email:
-          type: string
-          format: email
-          description: The email address of the member.
-        firstName:
-          type: string
-          description: The first name of the member.
-        lastName:
-          type: string
-          description: The last name of the member.
-        _links:
-          $ref: '#/components/schemas/Links'
+        self:
+          type: object
+          description: A link to this resource.
+          properties:
+            href:
+              type: string
+              description: The URL of this resource.
+            type:
+              type: string
+              description: The media type.
+      additionalProperties:
+        type: object
+        properties:
+          href:
+            type: string
+            description: The URL of the linked resource.
+          type:
+            type: string
+            description: The media type.
     AuditLogEntry:
       type: object
       description: A single audit log entry recording a change to a resource.
@@ -156,40 +152,41 @@ components:
                 description: The resource specifier.
         _links:
           $ref: '#/components/schemas/Links'
-    Links:
+    AuditLogEntries:
       type: object
-      description: HATEOAS links for navigating related resources.
+      description: A paginated collection of audit log entries.
       properties:
-        self:
-          type: object
-          description: A link to this resource.
-          properties:
-            href:
-              type: string
-              description: The URL of this resource.
-            type:
-              type: string
-              description: The media type.
-      additionalProperties:
-        type: object
-        properties:
-          href:
-            type: string
-            description: The URL of the linked resource.
-          type:
-            type: string
-            description: The media type.
+        items:
+          type: array
+          description: The list of audit log entries.
+          items:
+            $ref: '#/components/schemas/AuditLogEntry'
+        _links:
+          $ref: '#/components/schemas/Links'
+    MemberSummary:
+      type: object
+      description: A summary of a member who performed an action.
+      properties:
+        _id:
+          type: string
+          description: The unique identifier of the member.
+        email:
+          type: string
+          format: email
+          description: The email address of the member.
+        firstName:
+          type: string
+          description: The first name of the member.
+        lastName:
+          type: string
+          description: The last name of the member.
+        _links:
+          $ref: '#/components/schemas/Links'
   securitySchemes:
-    sdkKeyAuth:
-      type: apiKey
-      in: header
-      name: Authorization
-      description: Server-side SDK key for authenticating with the Relay Proxy.
-    mobileKeyAuth:
-      type: apiKey
-      in: header
-      name: Authorization
-      description: Mobile SDK key for authenticating with the Relay Proxy.
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: LaunchDarkly API access token. Create personal or service tokens in the LaunchDarkly dashboard under Account Settings.
 externalDocs:
-  description: Relay Proxy Documentation
-  url: https://launchdarkly.com/docs/sdk/relay-proxy
+  description: LaunchDarkly API Documentation
+  url: https://apidocs.launchdarkly.com/

@@ -1,6 +1,6 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: LaunchDarkly Relay Proxy Access Tokens Server-Side Evaluation API
+  title: LaunchDarkly Relay Proxy Server-Side Evaluation API
   description: The LaunchDarkly Relay Proxy is a small Go application that connects to the LaunchDarkly streaming API and proxies that connection to SDK clients within an organization's network. It exposes endpoints for status monitoring, flag evaluation, and SDK streaming that mirror the LaunchDarkly service endpoints. Instead of each server making outbound connections to LaunchDarkly's streaming service, multiple servers connect to the local Relay Proxy which maintains a single upstream connection.
   version: '8.0'
   contact:
@@ -40,11 +40,6 @@ paths:
           description: Service unavailable. The Relay Proxy has not yet received flag data from LaunchDarkly for this environment.
 components:
   schemas:
-    FlagEvaluations:
-      type: object
-      description: A map of flag keys to their evaluated results for a context.
-      additionalProperties:
-        $ref: '#/components/schemas/FlagEvaluation'
     FlagEvaluation:
       type: object
       description: The evaluated result of a single feature flag.
@@ -77,6 +72,11 @@ components:
               - RULE_MATCH
               - PREREQUISITE_FAILED
               - ERROR
+    FlagEvaluations:
+      type: object
+      description: A map of flag keys to their evaluated results for a context.
+      additionalProperties:
+        $ref: '#/components/schemas/FlagEvaluation'
   parameters:
     ContextBase64:
       name: contextBase64

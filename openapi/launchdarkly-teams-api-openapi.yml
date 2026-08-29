@@ -1,17 +1,20 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: LaunchDarkly Relay Proxy Access Tokens Teams API
-  description: The LaunchDarkly Relay Proxy is a small Go application that connects to the LaunchDarkly streaming API and proxies that connection to SDK clients within an organization's network. It exposes endpoints for status monitoring, flag evaluation, and SDK streaming that mirror the LaunchDarkly service endpoints. Instead of each server making outbound connections to LaunchDarkly's streaming service, multiple servers connect to the local Relay Proxy which maintains a single upstream connection.
-  version: '8.0'
+  title: LaunchDarkly REST Teams API
+  description: The LaunchDarkly REST API provides programmatic access to the full LaunchDarkly feature management platform. Developers can create, update, and manage feature flags, targeting rules, user segments, projects, environments, and team members. The API also supports scheduled flag changes, release pipelines, experimentation, approval workflows, and webhook integrations. Authentication is handled via personal or service access tokens, and the API follows a versioned scheme with the current default version being 20240415.
+  version: '20240415'
   contact:
     name: LaunchDarkly Support
     url: https://support.launchdarkly.com
+  termsOfService: https://launchdarkly.com/policies/terms-of-service
   license:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
 servers:
-- url: http://localhost:8030
-  description: Default Relay Proxy instance
+- url: https://app.launchdarkly.com/api/v2
+  description: LaunchDarkly Production API
+security:
+- bearerAuth: []
 tags:
 - name: Teams
   description: Organize account members into teams for collaborative flag management and permissions.
@@ -75,46 +78,29 @@ paths:
           description: A team with the given key already exists.
 components:
   schemas:
-    Teams:
+    Links:
       type: object
-      description: A paginated collection of teams.
+      description: HATEOAS links for navigating related resources.
       properties:
-        items:
-          type: array
-          description: The list of teams.
-          items:
-            $ref: '#/components/schemas/Team'
-        totalCount:
-          type: integer
-          description: The total number of teams.
-        _links:
-          $ref: '#/components/schemas/Links'
-    TeamBody:
-      type: object
-      description: The request body for creating a new team.
-      required:
-      - name
-      - key
-      properties:
-        name:
-          type: string
-          description: The human-readable name of the team.
-        key:
-          type: string
-          description: The team key.
-        description:
-          type: string
-          description: A description of the team.
-        memberIDs:
-          type: array
-          description: Member identifiers to add to the team.
-          items:
+        self:
+          type: object
+          description: A link to this resource.
+          properties:
+            href:
+              type: string
+              description: The URL of this resource.
+            type:
+              type: string
+              description: The media type.
+      additionalProperties:
+        type: object
+        properties:
+          href:
             type: string
-        customRoleKeys:
-          type: array
-          description: Custom role keys to assign to the team.
-          items:
+            description: The URL of the linked resource.
+          type:
             type: string
+            description: The media type.
     Team:
       type: object
       description: A team of account members.
@@ -149,40 +135,51 @@ components:
             type: string
         _links:
           $ref: '#/components/schemas/Links'
-    Links:
+    TeamBody:
       type: object
-      description: HATEOAS links for navigating related resources.
+      description: The request body for creating a new team.
+      required:
+      - name
+      - key
       properties:
-        self:
-          type: object
-          description: A link to this resource.
-          properties:
-            href:
-              type: string
-              description: The URL of this resource.
-            type:
-              type: string
-              description: The media type.
-      additionalProperties:
-        type: object
-        properties:
-          href:
+        name:
+          type: string
+          description: The human-readable name of the team.
+        key:
+          type: string
+          description: The team key.
+        description:
+          type: string
+          description: A description of the team.
+        memberIDs:
+          type: array
+          description: Member identifiers to add to the team.
+          items:
             type: string
-            description: The URL of the linked resource.
-          type:
+        customRoleKeys:
+          type: array
+          description: Custom role keys to assign to the team.
+          items:
             type: string
-            description: The media type.
+    Teams:
+      type: object
+      description: A paginated collection of teams.
+      properties:
+        items:
+          type: array
+          description: The list of teams.
+          items:
+            $ref: '#/components/schemas/Team'
+        totalCount:
+          type: integer
+          description: The total number of teams.
+        _links:
+          $ref: '#/components/schemas/Links'
   securitySchemes:
-    sdkKeyAuth:
-      type: apiKey
-      in: header
-      name: Authorization
-      description: Server-side SDK key for authenticating with the Relay Proxy.
-    mobileKeyAuth:
-      type: apiKey
-      in: header
-      name: Authorization
-      description: Mobile SDK key for authenticating with the Relay Proxy.
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: LaunchDarkly API access token. Create personal or service tokens in the LaunchDarkly dashboard under Account Settings.
 externalDocs:
-  description: Relay Proxy Documentation
-  url: https://launchdarkly.com/docs/sdk/relay-proxy
+  description: LaunchDarkly API Documentation
+  url: https://apidocs.launchdarkly.com/

@@ -1,17 +1,20 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: LaunchDarkly Relay Proxy Access Tokens Relay Proxy Configurations API
-  description: The LaunchDarkly Relay Proxy is a small Go application that connects to the LaunchDarkly streaming API and proxies that connection to SDK clients within an organization's network. It exposes endpoints for status monitoring, flag evaluation, and SDK streaming that mirror the LaunchDarkly service endpoints. Instead of each server making outbound connections to LaunchDarkly's streaming service, multiple servers connect to the local Relay Proxy which maintains a single upstream connection.
-  version: '8.0'
+  title: LaunchDarkly REST Relay Proxy Configurations API
+  description: The LaunchDarkly REST API provides programmatic access to the full LaunchDarkly feature management platform. Developers can create, update, and manage feature flags, targeting rules, user segments, projects, environments, and team members. The API also supports scheduled flag changes, release pipelines, experimentation, approval workflows, and webhook integrations. Authentication is handled via personal or service access tokens, and the API follows a versioned scheme with the current default version being 20240415.
+  version: '20240415'
   contact:
     name: LaunchDarkly Support
     url: https://support.launchdarkly.com
+  termsOfService: https://launchdarkly.com/policies/terms-of-service
   license:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
 servers:
-- url: http://localhost:8030
-  description: Default Relay Proxy instance
+- url: https://app.launchdarkly.com/api/v2
+  description: LaunchDarkly Production API
+security:
+- bearerAuth: []
 tags:
 - name: Relay Proxy Configurations
   description: Manage automatic configuration entries for LaunchDarkly Relay Proxy instances.
@@ -57,36 +60,21 @@ paths:
           description: Unauthorized. Invalid or missing access token.
 components:
   schemas:
-    Statement:
+    RelayProxyConfigBody:
       type: object
-      description: A policy statement controlling resource access or event filtering.
+      description: The request body for creating a Relay Proxy configuration.
+      required:
+      - name
+      - policy
       properties:
-        effect:
+        name:
           type: string
-          description: Whether this statement allows or denies the action.
-          enum:
-          - allow
-          - deny
-        resources:
+          description: A human-readable name for the configuration.
+        policy:
           type: array
-          description: Resource specifiers this statement applies to.
+          description: Policy statements controlling access.
           items:
-            type: string
-        notResources:
-          type: array
-          description: Resource specifiers this statement does not apply to.
-          items:
-            type: string
-        actions:
-          type: array
-          description: The actions this statement applies to.
-          items:
-            type: string
-        notActions:
-          type: array
-          description: The actions this statement does not apply to.
-          items:
-            type: string
+            $ref: '#/components/schemas/Statement'
     RelayProxyConfig:
       type: object
       description: A Relay Proxy automatic configuration entry.
@@ -118,21 +106,36 @@ components:
             $ref: '#/components/schemas/Statement'
         _links:
           $ref: '#/components/schemas/Links'
-    RelayProxyConfigBody:
+    Statement:
       type: object
-      description: The request body for creating a Relay Proxy configuration.
-      required:
-      - name
-      - policy
+      description: A policy statement controlling resource access or event filtering.
       properties:
-        name:
+        effect:
           type: string
-          description: A human-readable name for the configuration.
-        policy:
+          description: Whether this statement allows or denies the action.
+          enum:
+          - allow
+          - deny
+        resources:
           type: array
-          description: Policy statements controlling access.
+          description: Resource specifiers this statement applies to.
           items:
-            $ref: '#/components/schemas/Statement'
+            type: string
+        notResources:
+          type: array
+          description: Resource specifiers this statement does not apply to.
+          items:
+            type: string
+        actions:
+          type: array
+          description: The actions this statement applies to.
+          items:
+            type: string
+        notActions:
+          type: array
+          description: The actions this statement does not apply to.
+          items:
+            type: string
     RelayProxyConfigs:
       type: object
       description: A collection of Relay Proxy configurations.
@@ -166,16 +169,10 @@ components:
             type: string
             description: The media type.
   securitySchemes:
-    sdkKeyAuth:
-      type: apiKey
-      in: header
-      name: Authorization
-      description: Server-side SDK key for authenticating with the Relay Proxy.
-    mobileKeyAuth:
-      type: apiKey
-      in: header
-      name: Authorization
-      description: Mobile SDK key for authenticating with the Relay Proxy.
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: LaunchDarkly API access token. Create personal or service tokens in the LaunchDarkly dashboard under Account Settings.
 externalDocs:
-  description: Relay Proxy Documentation
-  url: https://launchdarkly.com/docs/sdk/relay-proxy
+  description: LaunchDarkly API Documentation
+  url: https://apidocs.launchdarkly.com/
