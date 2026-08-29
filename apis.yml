@@ -1,4 +1,17 @@
 aid: launchdarkly
+deliveryModel:
+  model: unknown
+  open_source: unknown
+  commercial: true
+  callable_host: false
+  label: Delivery model not determined — needs a product licence on record
+  confidence: low
+  source:
+  - openapi
+  - pricing
+  - repository-unlicensed
+  generated: '2026-08-28'
+  method: derived
 specificationVersion: '0.23'
 accessModel:
   pricing: freemium
@@ -38,11 +51,12 @@ apis:
     url: asyncapi/launchdarkly-webhooks-asyncapi.yml
   - type: Webhooks
     url: asyncapi/launchdarkly-webhooks-asyncapi.yml
-  description: The LaunchDarkly Webhooks API allows developers to build custom integrations that subscribe to activity
-    events within LaunchDarkly. When actions occur such as flag changes, project creation, or environment modifications,
-    LaunchDarkly sends HTTP POST payloads to configured webhook URLs. This enables use cases like updating external
-    issue trackers, notifying support systems of feature rollouts, and triggering downstream automation workflows
-    based on feature flag lifecycle events.
+  description: >-
+    The LaunchDarkly Webhooks API allows developers to build custom integrations that subscribe to activity
+    events within LaunchDarkly. When actions occur such as flag changes, project creation, or environment
+    modifications, LaunchDarkly sends HTTP POST payloads to configured webhook URLs. This enables use
+    cases like updating external issue trackers, notifying support systems of feature rollouts, and triggering
+    downstream automation workflows based on feature flag lifecycle events.
 - aid: launchdarkly:launchdarkly-access-tokens-api
   name: launchdarkly Access Tokens API
   description: Create and manage personal and service access tokens used to authenticate API requests.
@@ -73,7 +87,8 @@ apis:
     url: https://launchdarkly.com/docs/sdk/relay-proxy
 - aid: launchdarkly:launchdarkly-approvals-api
   name: launchdarkly Approvals API
-  description: Manage approval requests and workflows for flag changes that require review before deployment.
+  description: >-
+    Manage approval requests and workflows for flag changes that require review before deployment.
   humanURL: https://launchdarkly.com/docs/api
   baseURL: https://app.launchdarkly.com/api/v2
   tags:
@@ -87,7 +102,8 @@ apis:
     url: https://launchdarkly.com/docs/sdk/relay-proxy
 - aid: launchdarkly:launchdarkly-audit-log-api
   name: launchdarkly Audit Log API
-  description: Access the change history of all modifications made to resources in the LaunchDarkly account.
+  description: >-
+    Access the change history of all modifications made to resources in the LaunchDarkly account.
   humanURL: https://launchdarkly.com/docs/api
   baseURL: https://app.launchdarkly.com/api/v2
   tags:
@@ -101,7 +117,8 @@ apis:
     url: https://launchdarkly.com/docs/sdk/relay-proxy
 - aid: launchdarkly:launchdarkly-client-side-evaluation-api
   name: launchdarkly Client-Side Evaluation API
-  description: Flag evaluation endpoints for client-side and mobile SDKs using environment IDs or mobile keys for
+  description: >-
+    Flag evaluation endpoints for client-side and mobile SDKs using environment IDs or mobile keys for
     authentication.
   humanURL: https://launchdarkly.com/docs/api
   baseURL: https://app.launchdarkly.com/api/v2
@@ -116,8 +133,8 @@ apis:
     url: https://launchdarkly.com/docs/sdk/relay-proxy
 - aid: launchdarkly:launchdarkly-client-side-streaming-api
   name: launchdarkly Client-Side Streaming API
-  description: Server-Sent Events streaming endpoints for client-side and mobile SDKs to receive real-time flag
-    updates.
+  description: >-
+    Server-Sent Events streaming endpoints for client-side and mobile SDKs to receive real-time flag updates.
   humanURL: https://launchdarkly.com/docs/api
   baseURL: https://app.launchdarkly.com/api/v2
   tags:
@@ -173,7 +190,8 @@ apis:
     url: https://launchdarkly.com/docs/sdk/relay-proxy
 - aid: launchdarkly:launchdarkly-experiments-api
   name: launchdarkly Experiments API
-  description: Create and manage experiments to measure the impact of feature flag variations on metrics.
+  description: >-
+    Create and manage experiments to measure the impact of feature flag variations on metrics.
   humanURL: https://launchdarkly.com/docs/api
   baseURL: https://app.launchdarkly.com/api/v2
   tags:
@@ -187,7 +205,8 @@ apis:
     url: https://launchdarkly.com/docs/sdk/relay-proxy
 - aid: launchdarkly:launchdarkly-feature-flags-api
   name: launchdarkly Feature Flags API
-  description: Create, update, and manage feature flags and their targeting rules across projects and environments.
+  description: >-
+    Create, update, and manage feature flags and their targeting rules across projects and environments.
   humanURL: https://launchdarkly.com/docs/api
   baseURL: https://app.launchdarkly.com/api/v2
   tags:
@@ -201,7 +220,8 @@ apis:
     url: https://launchdarkly.com/docs/sdk/relay-proxy
 - aid: launchdarkly:launchdarkly-flag-triggers-api
   name: launchdarkly Flag Triggers API
-  description: Create triggers that allow external services to toggle feature flags via unique webhook URLs.
+  description: >-
+    Create triggers that allow external services to toggle feature flags via unique webhook URLs.
   humanURL: https://launchdarkly.com/docs/api
   baseURL: https://app.launchdarkly.com/api/v2
   tags:
@@ -215,7 +235,8 @@ apis:
     url: https://launchdarkly.com/docs/sdk/relay-proxy
 - aid: launchdarkly:launchdarkly-integration-audit-log-subscriptions-api
   name: launchdarkly Integration Audit Log Subscriptions API
-  description: Manage integrations that subscribe to audit log events and forward them to external tools.
+  description: >-
+    Manage integrations that subscribe to audit log events and forward them to external tools.
   humanURL: https://launchdarkly.com/docs/api
   baseURL: https://app.launchdarkly.com/api/v2
   tags:
@@ -329,7 +350,8 @@ apis:
     url: https://launchdarkly.com/docs/sdk/relay-proxy
 - aid: launchdarkly:launchdarkly-server-side-streaming-api
   name: launchdarkly Server-Side Streaming API
-  description: Server-Sent Events streaming endpoints for server-side SDKs to receive real-time flag updates.
+  description: >-
+    Server-Sent Events streaming endpoints for server-side SDKs to receive real-time flag updates.
   humanURL: https://launchdarkly.com/docs/api
   baseURL: https://app.launchdarkly.com/api/v2
   tags:
@@ -343,7 +365,8 @@ apis:
     url: https://launchdarkly.com/docs/sdk/relay-proxy
 - aid: launchdarkly:launchdarkly-status-api
   name: launchdarkly Status API
-  description: Health and status monitoring endpoints for the Relay Proxy. No authentication is required for these
+  description: >-
+    Health and status monitoring endpoints for the Relay Proxy. No authentication is required for these
     endpoints.
   humanURL: https://launchdarkly.com/docs/api
   baseURL: https://app.launchdarkly.com/api/v2
@@ -388,7 +411,8 @@ apis:
     url: https://launchdarkly.com/docs/sdk/relay-proxy
 - aid: launchdarkly:launchdarkly-webhooks-api
   name: launchdarkly Webhooks API
-  description: Configure webhooks to receive HTTP POST notifications when changes occur in LaunchDarkly.
+  description: >-
+    Configure webhooks to receive HTTP POST notifications when changes occur in LaunchDarkly.
   humanURL: https://launchdarkly.com/docs/api
   baseURL: https://app.launchdarkly.com/api/v2
   tags:
@@ -418,12 +442,13 @@ apis:
     url: https://launchdarkly.com/docs/sdk/relay-proxy
 - aid: launchdarkly:launchdarkly-mcp-server
   name: LaunchDarkly MCP Server
-  description: LaunchDarkly operates a first-party hosted Model Context Protocol server at https://mcp.launchdarkly.com/mcp/launchdarkly,
+  description: >-
+    LaunchDarkly operates a first-party hosted Model Context Protocol server at https://mcp.launchdarkly.com/mcp/launchdarkly,
     reachable by any MCP client over streamable HTTP and authorized with OAuth 2.0 (dynamic client registration,
-    PKCE). It exposes 125 tools across feature management, AgentControl, experimentation, metrics and observability,
-    each carrying MCP annotations that declare whether it is read-only, idempotent or destructive. A stdio server
-    is also published to npm as @launchdarkly/mcp-server for the federal and EU instances, where the hosted server
-    is not available.
+    PKCE). It exposes 125 tools across feature management, AgentControl, experimentation, metrics and
+    observability, each carrying MCP annotations that declare whether it is read-only, idempotent or destructive.
+    A stdio server is also published to npm as @launchdarkly/mcp-server for the federal and EU instances,
+    where the hosted server is not available.
   humanURL: https://launchdarkly.com/docs/home/getting-started/mcp
   baseURL: https://mcp.launchdarkly.com/mcp/launchdarkly
   tags:
@@ -444,23 +469,32 @@ apis:
     url: authentication/launchdarkly-authentication.yml
   - type: OAuthScopes
     url: scopes/launchdarkly-scopes.yml
-- aid: launchdarkly:launchdarkly-dev-server-api
-  name: LaunchDarkly Dev Server API
-  description: The LaunchDarkly CLI ships a locally-run dev-server that syncs feature flags from a real source environment
-    and then serves them offline over the same streaming interface the hosted service uses, with per-flag overrides.
-    It exposes its own 15-operation HTTP+JSON API, contracted by a first-party OpenAPI published in the ldcli repository,
-    including SQLite snapshot and restore of the entire local flag state. It is intended for local development,
-    CI and preview environments, and the provider states explicitly that it must not be used in production.
-  humanURL: https://launchdarkly.com/docs/guides/flags/ldcli-dev-server-reference
-  baseURL: http://localhost:8765/dev
+- aid: launchdarkly:launchdarkly-backup-api
+  name: LaunchDarkly Backup API
+  description: The Backup API from LaunchDarkly — 1 operation(s) for backup.
+  humanURL: https://launchdarkly.com/docs/api/webhooks
+  baseURL: https://app.launchdarkly.com/api/v2
   tags:
-  - Feature Flags
-  - Testing
-  - Local Development
-  - CLI
+  - Backup
   properties:
   - type: OpenAPI
-    url: openapi/launchdarkly-dev-server-openapi.yml
+    url: openapi/launchdarkly-backup-api-openapi.yml
+  - type: Documentation
+    url: https://launchdarkly.com/docs/guides/flags/ldcli-dev-server-reference
+  - type: Sandbox
+    url: sandbox/launchdarkly-sandbox.yml
+  - type: SourceCode
+    url: https://github.com/launchdarkly/ldcli
+- aid: launchdarkly:launchdarkly-debug-sessions-api
+  name: LaunchDarkly Debug Sessions API
+  description: The Debug Sessions API from LaunchDarkly — 3 operation(s) for debug sessions.
+  humanURL: https://launchdarkly.com/docs/api/webhooks
+  baseURL: https://app.launchdarkly.com/api/v2
+  tags:
+  - Debug Sessions
+  properties:
+  - type: OpenAPI
+    url: openapi/launchdarkly-debug-sessions-api-openapi.yml
   - type: Documentation
     url: https://launchdarkly.com/docs/guides/flags/ldcli-dev-server-reference
   - type: Sandbox
