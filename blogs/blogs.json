@@ -4,10 +4,18 @@
     {
       "source": "https://launchdarkly.com/blog/feed/",
       "feed_url": "https://launchdarkly.com/blog/feed/",
-      "title": "LaunchDarkly Blog RSS Feed",
-      "saved": 1
+      "title": "",
+      "saved": 0,
+      "method": "feed"
+    },
+    {
+      "source": "https://launchdarkly.com/privacy/",
+      "feed_url": "https://launchdarkly.com/privacy/",
+      "title": "",
+      "saved": 0,
+      "method": "none"
     }
   ],
-  "fetched": "2026-08-22T20:08:02Z",
-  "post_count": 71
+  "fetched": "2026-08-30T22:33:40Z",
+  "post_count": 77
 }
