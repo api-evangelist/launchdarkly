@@ -1,0 +1,1310 @@
+specification: API Commons Tool Crosswalk
+specificationVersion: '0.1'
+provider: LaunchDarkly
+providerId: launchdarkly
+generated: '2026-08-27'
+method: derived
+source: MCP tool inventory read verbatim from the provider-published install page https://mcp.launchdarkly.com/mcp/launchdarkly/install
+  (125 tools with names, descriptions, required inputs and MCP annotations), bound against the live REST
+  contract at https://app.launchdarkly.com/api/v2/openapi.json (401 operations).
+note: The live MCP endpoint is OAuth-gated (HTTP 401 on an anonymous tools/list), so tool inputSchemas
+  could not be introspected. Bindings are therefore by normalized name and by documented semantics, and
+  confidence is recorded honestly per row rather than asserted uniformly. Where a binding is high, the
+  tool inherits that operation's parameters and requestBody as its real input schema.
+surfaces:
+  openapi:
+    url: https://app.launchdarkly.com/api/v2/openapi.json
+    file: openapi/launchdarkly-rest-api-openapi.json
+    gated: false
+    operations: 401
+  mcp:
+    url: https://mcp.launchdarkly.com/mcp/launchdarkly
+    gated: true
+    auth: oauth
+    tools: 125
+    note: tools/list returns 401 with WWW-Authenticate resource_metadata pointing at /.well-known/oauth-protected-resource/mcp/launchdarkly
+  graphql:
+    endpoint: null
+    gated: null
+    note: LaunchDarkly publishes no GraphQL API. graphql/ in this repo holds a REST-derived conceptual
+      schema, not a provider surface.
+coverage:
+  mcp_tools: 125
+  rest_operations: 401
+  bound: 58
+  mcp_only: 67
+  rest_only: 348
+  confidence:
+    high: 56
+    medium: 2
+    low: 0
+crosswalk:
+- tool: get-context-instances
+  category: account
+  rest:
+  - getContextInstances
+  binding: exact-operationId
+  confidence: high
+  annotations:
+  - Read-only
+  - Idempotent
+  inputs: []
+- tool: search-contexts
+  category: account
+  rest:
+  - searchContexts
+  binding: documented-semantics
+  confidence: high
+  annotations:
+  - Read-only
+  - Idempotent
+  inputs: []
+- tool: get-service-connections-usage
+  category: account
+  rest:
+  - getServiceConnectionsUsage
+  binding: exact-operationId
+  confidence: high
+  annotations:
+  - Read-only
+  - Idempotent
+  inputs: []
+- tool: list-projects
+  category: account
+  rest:
+  - getProjects
+  binding: name-normalized
+  confidence: high
+  annotations:
+  - Read-only
+  - Idempotent
+  inputs: []
+- tool: get-segment
+  category: feature-management
+  rest:
+  - getSegment
+  binding: name-normalized
+  confidence: high
+  annotations:
+  - Read-only
+  - Idempotent
+  inputs: []
+- tool: create-segment
+  category: feature-management
+  rest:
+  - postSegment
+  binding: name-normalized
+  confidence: high
+  annotations: []
+  inputs: []
+- tool: list-segments
+  category: feature-management
+  rest:
+  - getSegments
+  binding: name-normalized
+  confidence: high
+  annotations:
+  - Read-only
+  - Idempotent
+  inputs: []
+- tool: delete-prompt-snippet
+  category: agentcontrol
+  rest:
+  - deletePromptSnippet
+  binding: exact-operationId
+  confidence: high
+  annotations:
+  - Destructive
+  inputs: []
+- tool: update-prompt-snippet
+  category: agentcontrol
+  rest:
+  - patchPromptSnippet
+  binding: name-normalized
+  confidence: high
+  annotations:
+  - Idempotent
+  inputs: []
+- tool: create-prompt-snippet
+  category: agentcontrol
+  rest:
+  - postPromptSnippet
+  binding: name-normalized
+  confidence: high
+  annotations: []
+  inputs: []
+- tool: get-prompt-snippet
+  category: agentcontrol
+  rest:
+  - getPromptSnippet
+  binding: exact-operationId
+  confidence: high
+  annotations:
+  - Read-only
+  - Idempotent
+  inputs: []
+- tool: list-prompt-snippets
+  category: agentcontrol
+  rest:
+  - listPromptSnippets
+  binding: name-normalized
+  confidence: high
+  annotations:
+  - Read-only
+  - Idempotent
+  inputs: []
+- tool: update-experiment
+  category: experimentation
+  rest:
+  - patchExperiment
+  binding: name-normalized
+  confidence: high
+  annotations:
+  - Destructive
+  inputs:
+  - flagSettings
+  - flags
+  - metrics
+  - treatments
+- tool: create-experiment
+  category: experimentation
+  rest:
+  - createExperiment
+  binding: exact-operationId
+  confidence: high
+  annotations: []
+  inputs: []
+- tool: get-experiment
+  category: experimentation
+  rest:
+  - getExperiment
+  binding: name-normalized
+  confidence: high
+  annotations:
+  - Read-only
+  - Idempotent
+  inputs: []
+- tool: list-experiments
+  category: experimentation
+  rest:
+  - getExperiments
+  binding: name-normalized
+  confidence: high
+  annotations:
+  - Read-only
+  - Idempotent
+  inputs: []
+- tool: delete-ai-tool
+  category: agentcontrol
+  rest:
+  - deleteAITool
+  binding: exact-operationId
+  confidence: high
+  annotations:
+  - Destructive
+  inputs: []
+- tool: update-ai-tool
+  category: agentcontrol
+  rest:
+  - patchAITool
+  binding: name-normalized
+  confidence: high
+  annotations:
+  - Idempotent
+  inputs: []
+- tool: toggle-agentcontrol-config
+  category: agentcontrol
+  rest:
+  - patchAIConfig
+  binding: documented-semantics
+  confidence: high
+  annotations:
+  - Idempotent
+  inputs: []
+  note: Enable/disable is a patch on the AgentControl config.
+- tool: get-environment
+  category: account
+  rest:
+  - getEnvironment
+  binding: exact-operationId
+  confidence: high
+  annotations:
+  - Read-only
+  - Idempotent
+  inputs: []
+- tool: get-project
+  category: account
+  rest:
+  - getProject
+  binding: name-normalized
+  confidence: high
+  annotations:
+  - Read-only
+  - Idempotent
+  inputs: []
+- tool: create-project
+  category: account
+  rest:
+  - postProject
+  binding: name-normalized
+  confidence: high
+  annotations: []
+  inputs: []
+- tool: list-release-policies
+  category: feature-management
+  rest:
+  - GetReleasePolicies
+  binding: name-normalized
+  confidence: high
+  annotations:
+  - Read-only
+  - Idempotent
+  inputs: []
+- tool: create-metric
+  category: experimentation
+  rest:
+  - postMetric
+  binding: name-normalized
+  confidence: high
+  annotations: []
+  inputs: []
+- tool: get-metric
+  category: experimentation
+  rest:
+  - getMetric
+  binding: name-normalized
+  confidence: high
+  annotations:
+  - Read-only
+  - Idempotent
+  inputs: []
+- tool: list-metrics
+  category: experimentation
+  rest:
+  - getMetrics
+  binding: name-normalized
+  confidence: high
+  annotations:
+  - Read-only
+  - Idempotent
+  inputs: []
+- tool: delete-agent-graph
+  category: agentcontrol
+  rest:
+  - deleteAgentGraph
+  binding: exact-operationId
+  confidence: high
+  annotations:
+  - Destructive
+  inputs: []
+- tool: update-agent-graph
+  category: agentcontrol
+  rest:
+  - patchAgentGraph
+  binding: name-normalized
+  confidence: high
+  annotations:
+  - Destructive
+  inputs: []
+- tool: create-agent-graph
+  category: agentcontrol
+  rest:
+  - postAgentGraph
+  binding: name-normalized
+  confidence: high
+  annotations: []
+  inputs: []
+- tool: get-agent-graph
+  category: agentcontrol
+  rest:
+  - getAgentGraph
+  binding: exact-operationId
+  confidence: high
+  annotations:
+  - Read-only
+  - Idempotent
+  inputs: []
+- tool: list-agent-graphs
+  category: agentcontrol
+  rest:
+  - listAgentGraphs
+  binding: name-normalized
+  confidence: high
+  annotations:
+  - Read-only
+  - Idempotent
+  inputs: []
+- tool: invite-members
+  category: account
+  rest:
+  - postMembers
+  binding: name-normalized
+  confidence: high
+  annotations:
+  - Open-world
+  inputs: []
+- tool: find-members
+  category: account
+  rest:
+  - getMember
+  - getMembers
+  binding: name-normalized
+  confidence: medium
+  annotations:
+  - Read-only
+  - Idempotent
+  inputs: []
+- tool: create-ai-tool
+  category: agentcontrol
+  rest:
+  - postAITool
+  binding: name-normalized
+  confidence: high
+  annotations: []
+  inputs: []
+- tool: get-ai-tool
+  category: agentcontrol
+  rest:
+  - getAITool
+  binding: exact-operationId
+  confidence: high
+  annotations:
+  - Read-only
+  - Idempotent
+  inputs: []
+- tool: list-ai-tools
+  category: agentcontrol
+  rest:
+  - listAITools
+  binding: name-normalized
+  confidence: high
+  annotations:
+  - Read-only
+  - Idempotent
+  inputs: []
+- tool: get-agentcontrol-config-targeting
+  category: agentcontrol
+  rest:
+  - getAIConfigTargeting
+  binding: name-normalized
+  confidence: high
+  annotations:
+  - Read-only
+  - Idempotent
+  inputs: []
+- tool: clone-agentcontrol-config-variation
+  category: agentcontrol
+  rest:
+  - postAIConfigVariation
+  binding: name-normalized
+  confidence: high
+  annotations: []
+  inputs: []
+- tool: delete-agentcontrol-config-variation
+  category: agentcontrol
+  rest:
+  - deleteAIConfigVariation
+  binding: name-normalized
+  confidence: high
+  annotations:
+  - Destructive
+  inputs: []
+- tool: update-agentcontrol-config-variation
+  category: agentcontrol
+  rest:
+  - patchAIConfigVariation
+  binding: name-normalized
+  confidence: high
+  annotations:
+  - Destructive
+  inputs: []
+- tool: create-agentcontrol-config-variation
+  category: agentcontrol
+  rest:
+  - postAIConfigVariation
+  binding: name-normalized
+  confidence: high
+  annotations: []
+  inputs: []
+- tool: setup-agentcontrol-config
+  category: agentcontrol
+  rest:
+  - postAIConfig
+  binding: name-normalized
+  confidence: high
+  annotations: []
+  inputs: []
+- tool: delete-agentcontrol-config
+  category: agentcontrol
+  rest:
+  - deleteAIConfig
+  binding: name-normalized
+  confidence: high
+  annotations:
+  - Destructive
+  inputs: []
+- tool: update-agentcontrol-config
+  category: agentcontrol
+  rest:
+  - patchAIConfig
+  binding: name-normalized
+  confidence: high
+  annotations:
+  - Idempotent
+  inputs: []
+- tool: create-agentcontrol-config
+  category: agentcontrol
+  rest:
+  - postAIConfig
+  binding: name-normalized
+  confidence: high
+  annotations: []
+  inputs: []
+- tool: get-agentcontrol-config
+  category: agentcontrol
+  rest:
+  - getAIConfig
+  binding: name-normalized
+  confidence: high
+  annotations:
+  - Read-only
+  - Idempotent
+  inputs: []
+- tool: list-agentcontrol-configs
+  category: agentcontrol
+  rest:
+  - getAIConfigs
+  binding: name-normalized
+  confidence: high
+  annotations:
+  - Read-only
+  - Idempotent
+  inputs: []
+- tool: apply-approval-request
+  category: feature-management
+  rest:
+  - postApprovalRequest
+  binding: name-normalized
+  confidence: high
+  annotations:
+  - Destructive
+  inputs: []
+- tool: list-approval-requests
+  category: feature-management
+  rest:
+  - getApprovalRequests
+  binding: name-normalized
+  confidence: high
+  annotations:
+  - Read-only
+  - Idempotent
+  inputs: []
+- tool: create-approval-request
+  category: feature-management
+  rest:
+  - postApprovalRequest
+  binding: name-normalized
+  confidence: high
+  annotations: []
+  inputs: []
+- tool: manage-expiring-targets
+  category: feature-management
+  rest:
+  - patchExpiringTargets
+  binding: name-normalized
+  confidence: high
+  annotations:
+  - Destructive
+  inputs: []
+- tool: delete-flag
+  category: feature-management
+  rest:
+  - deleteFeatureFlag
+  binding: name-normalized
+  confidence: high
+  annotations:
+  - Destructive
+  inputs: []
+- tool: archive-flag
+  category: feature-management
+  rest:
+  - patchFeatureFlag
+  binding: documented-semantics
+  confidence: high
+  annotations:
+  - Destructive
+  - Idempotent
+  inputs: []
+  note: 'Archiving is a semantic-patch instruction (kind: archiveFlag) on patchFeatureFlag, not a distinct
+    operation.'
+- tool: toggle-flag
+  category: feature-management
+  rest:
+  - patchFeatureFlag
+  binding: documented-semantics
+  confidence: high
+  annotations:
+  - Idempotent
+  inputs: []
+  note: 'Toggling is a semantic-patch instruction (kind: turnFlagOn / turnFlagOff) on patchFeatureFlag.'
+- tool: update-flag-settings
+  category: feature-management
+  rest:
+  - patchFeatureFlag
+  binding: documented-semantics
+  confidence: medium
+  annotations:
+  - Idempotent
+  inputs: []
+  note: Tool updates flag-level settings; the closest public operation is patchFeatureFlag. Not putFlagSetting,
+    which is the DEPRECATED per-user flag setting endpoint.
+- tool: create-flag
+  category: feature-management
+  rest:
+  - postFeatureFlag
+  binding: name-normalized
+  confidence: high
+  annotations: []
+  inputs: []
+- tool: get-flag
+  category: feature-management
+  rest:
+  - getFeatureFlag
+  binding: name-normalized
+  confidence: high
+  annotations:
+  - Read-only
+  - Idempotent
+  inputs: []
+- tool: list-flags
+  category: feature-management
+  rest:
+  - getFeatureFlags
+  binding: name-normalized
+  confidence: high
+  annotations:
+  - Read-only
+  - Idempotent
+  inputs: []
+mcp_only:
+- tool: get-session-timestamp-event-chunk-url
+  category: observability
+  annotations:
+  - Read-only
+  - Idempotent
+  reason: observability / session-replay surface — not exposed by the v2 REST OpenAPI at all
+- tool: get-session-event-chunk-url
+  category: observability
+  annotations:
+  - Read-only
+  - Idempotent
+  reason: observability / session-replay surface — not exposed by the v2 REST OpenAPI at all
+- tool: get-session-event-chunks
+  category: observability
+  annotations:
+  - Read-only
+  - Idempotent
+  reason: observability / session-replay surface — not exposed by the v2 REST OpenAPI at all
+- tool: query-service-map
+  category: observability
+  annotations:
+  - Read-only
+  - Idempotent
+  reason: observability / session-replay surface — not exposed by the v2 REST OpenAPI at all
+- tool: delete-alert
+  category: observability
+  annotations:
+  - Destructive
+  reason: observability / session-replay surface — not exposed by the v2 REST OpenAPI at all
+- tool: toggle-alert
+  category: observability
+  annotations:
+  - Idempotent
+  reason: observability / session-replay surface — not exposed by the v2 REST OpenAPI at all
+- tool: update-alert
+  category: observability
+  annotations:
+  - Destructive
+  - Idempotent
+  reason: observability / session-replay surface — not exposed by the v2 REST OpenAPI at all
+- tool: create-alert
+  category: observability
+  annotations: []
+  reason: observability / session-replay surface — not exposed by the v2 REST OpenAPI at all
+- tool: get-alert-firing-history
+  category: observability
+  annotations:
+  - Read-only
+  - Idempotent
+  reason: observability / session-replay surface — not exposed by the v2 REST OpenAPI at all
+- tool: get-alert
+  category: observability
+  annotations:
+  - Read-only
+  - Idempotent
+  reason: observability / session-replay surface — not exposed by the v2 REST OpenAPI at all
+- tool: list-alerts
+  category: observability
+  annotations:
+  - Read-only
+  - Idempotent
+  reason: observability / session-replay surface — not exposed by the v2 REST OpenAPI at all
+- tool: delete-dashboard
+  category: observability
+  annotations:
+  - Destructive
+  reason: observability / session-replay surface — not exposed by the v2 REST OpenAPI at all
+- tool: vent
+  category: other
+  annotations: []
+  reason: no public REST operationId in the v2 OpenAPI corresponds to this tool
+- tool: get-doc
+  category: account
+  annotations:
+  - Read-only
+  - Idempotent
+  reason: composite or workflow tool with no single backing REST operation
+- tool: search-docs
+  category: account
+  annotations:
+  - Read-only
+  - Idempotent
+  reason: composite or workflow tool with no single backing REST operation
+- tool: match-release-policies
+  category: feature-management
+  annotations:
+  - Read-only
+  - Idempotent
+  reason: composite or workflow tool with no single backing REST operation
+- tool: create-automated-rollout-config
+  category: feature-management
+  annotations: []
+  reason: no public REST operationId in the v2 OpenAPI corresponds to this tool
+- tool: query-change-history
+  category: feature-management
+  annotations:
+  - Read-only
+  - Idempotent
+  reason: composite or workflow tool with no single backing REST operation
+- tool: update-segment-targets
+  category: feature-management
+  annotations:
+  - Destructive
+  reason: no public REST operationId in the v2 OpenAPI corresponds to this tool
+- tool: update-segment-rules
+  category: feature-management
+  annotations:
+  - Destructive
+  reason: no public REST operationId in the v2 OpenAPI corresponds to this tool
+- tool: update-playground
+  category: agentcontrol
+  annotations:
+  - Idempotent
+  reason: no public REST operationId in the v2 OpenAPI corresponds to this tool
+- tool: create-playground
+  category: agentcontrol
+  annotations: []
+  reason: no public REST operationId in the v2 OpenAPI corresponds to this tool
+- tool: get-playground
+  category: agentcontrol
+  annotations:
+  - Read-only
+  - Idempotent
+  reason: no public REST operationId in the v2 OpenAPI corresponds to this tool
+- tool: list-playgrounds
+  category: agentcontrol
+  annotations:
+  - Read-only
+  - Idempotent
+  reason: no public REST operationId in the v2 OpenAPI corresponds to this tool
+- tool: get-evaluation-run-summary
+  category: agentcontrol
+  annotations:
+  - Read-only
+  - Idempotent
+  reason: no public REST operationId in the v2 OpenAPI corresponds to this tool
+- tool: run-evaluation
+  category: agentcontrol
+  annotations: []
+  reason: composite or workflow tool with no single backing REST operation
+- tool: create-evaluation
+  category: agentcontrol
+  annotations: []
+  reason: no public REST operationId in the v2 OpenAPI corresponds to this tool
+- tool: get-evaluation
+  category: agentcontrol
+  annotations:
+  - Read-only
+  - Idempotent
+  reason: no public REST operationId in the v2 OpenAPI corresponds to this tool
+- tool: list-evaluations
+  category: agentcontrol
+  annotations:
+  - Read-only
+  - Idempotent
+  reason: no public REST operationId in the v2 OpenAPI corresponds to this tool
+- tool: delete-dataset
+  category: agentcontrol
+  annotations:
+  - Destructive
+  reason: no public REST operationId in the v2 OpenAPI corresponds to this tool
+- tool: create-dataset
+  category: agentcontrol
+  annotations: []
+  reason: no public REST operationId in the v2 OpenAPI corresponds to this tool
+- tool: get-dataset
+  category: agentcontrol
+  annotations:
+  - Read-only
+  - Idempotent
+  reason: no public REST operationId in the v2 OpenAPI corresponds to this tool
+- tool: list-datasets
+  category: agentcontrol
+  annotations:
+  - Read-only
+  - Idempotent
+  reason: no public REST operationId in the v2 OpenAPI corresponds to this tool
+- tool: stop-guarded-rollout
+  category: feature-management
+  annotations:
+  - Destructive
+  reason: composite or workflow tool with no single backing REST operation
+- tool: start-guarded-rollout
+  category: feature-management
+  annotations: []
+  reason: composite or workflow tool with no single backing REST operation
+- tool: get-experiment-metric-results
+  category: experimentation
+  annotations:
+  - Read-only
+  - Idempotent
+  reason: no public REST operationId in the v2 OpenAPI corresponds to this tool
+- tool: get-experiment-results
+  category: experimentation
+  annotations:
+  - Read-only
+  - Idempotent
+  reason: no public REST operationId in the v2 OpenAPI corresponds to this tool
+- tool: stop-experiment-iteration
+  category: experimentation
+  annotations:
+  - Destructive
+  reason: composite or workflow tool with no single backing REST operation
+- tool: save-and-start-experiment-iteration
+  category: experimentation
+  annotations:
+  - Destructive
+  reason: composite or workflow tool with no single backing REST operation
+- tool: start-experiment-iteration
+  category: experimentation
+  annotations:
+  - Destructive
+  reason: composite or workflow tool with no single backing REST operation
+- tool: get-keys
+  category: account
+  annotations:
+  - Read-only
+  - Idempotent
+  reason: no public REST operationId in the v2 OpenAPI corresponds to this tool
+- tool: preview-graph
+  category: agentcontrol
+  annotations:
+  - Read-only
+  - Idempotent
+  reason: composite or workflow tool with no single backing REST operation
+- tool: create-graph
+  category: agentcontrol
+  annotations: []
+  reason: no public REST operationId in the v2 OpenAPI corresponds to this tool
+- tool: create-dashboard
+  category: observability
+  annotations: []
+  reason: observability / session-replay surface — not exposed by the v2 REST OpenAPI at all
+- tool: get-dashboard
+  category: observability
+  annotations:
+  - Read-only
+  - Idempotent
+  reason: observability / session-replay surface — not exposed by the v2 REST OpenAPI at all
+- tool: list-dashboards
+  category: observability
+  annotations:
+  - Read-only
+  - Idempotent
+  reason: observability / session-replay surface — not exposed by the v2 REST OpenAPI at all
+- tool: query-flag-evaluations
+  category: agentcontrol
+  annotations:
+  - Read-only
+  - Idempotent
+  reason: composite or workflow tool with no single backing REST operation
+- tool: query-timeline-events
+  category: observability
+  annotations:
+  - Read-only
+  - Idempotent
+  reason: observability / session-replay surface — not exposed by the v2 REST OpenAPI at all
+- tool: query-sessions
+  category: observability
+  annotations:
+  - Read-only
+  - Idempotent
+  reason: observability / session-replay surface — not exposed by the v2 REST OpenAPI at all
+- tool: query-error-groups
+  category: observability
+  annotations:
+  - Read-only
+  - Idempotent
+  reason: observability / session-replay surface — not exposed by the v2 REST OpenAPI at all
+- tool: query-aggregations
+  category: observability
+  annotations:
+  - Read-only
+  - Idempotent
+  reason: observability / session-replay surface — not exposed by the v2 REST OpenAPI at all
+- tool: query-traces
+  category: observability
+  annotations:
+  - Read-only
+  - Idempotent
+  reason: observability / session-replay surface — not exposed by the v2 REST OpenAPI at all
+- tool: query-logs
+  category: observability
+  annotations:
+  - Read-only
+  - Idempotent
+  reason: observability / session-replay surface — not exposed by the v2 REST OpenAPI at all
+- tool: get-sdk-active
+  category: account
+  annotations:
+  - Read-only
+  - Idempotent
+  reason: no public REST operationId in the v2 OpenAPI corresponds to this tool
+- tool: list-metric-events
+  category: experimentation
+  annotations:
+  - Read-only
+  - Idempotent
+  reason: no public REST operationId in the v2 OpenAPI corresponds to this tool
+- tool: get-member-self
+  category: account
+  annotations:
+  - Read-only
+  - Idempotent
+  reason: no public REST operationId in the v2 OpenAPI corresponds to this tool
+- tool: update-agentcontrol-config-rollout
+  category: agentcontrol
+  annotations:
+  - Idempotent
+  reason: no public REST operationId in the v2 OpenAPI corresponds to this tool
+- tool: get-agentcontrol-config-health
+  category: agentcontrol
+  annotations:
+  - Read-only
+  - Idempotent
+  reason: no public REST operationId in the v2 OpenAPI corresponds to this tool
+- tool: check-removal-readiness
+  category: other
+  annotations:
+  - Read-only
+  - Idempotent
+  reason: composite or workflow tool with no single backing REST operation
+- tool: copy-flag-config
+  category: feature-management
+  annotations:
+  - Destructive
+  - Idempotent
+  reason: composite or workflow tool with no single backing REST operation
+- tool: update-prerequisites
+  category: feature-management
+  annotations:
+  - Destructive
+  reason: no public REST operationId in the v2 OpenAPI corresponds to this tool
+- tool: update-individual-targets
+  category: other
+  annotations:
+  - Destructive
+  reason: no public REST operationId in the v2 OpenAPI corresponds to this tool
+- tool: update-targeting-rules
+  category: feature-management
+  annotations:
+  - Destructive
+  reason: no public REST operationId in the v2 OpenAPI corresponds to this tool
+- tool: update-rollout
+  category: feature-management
+  annotations:
+  - Idempotent
+  reason: no public REST operationId in the v2 OpenAPI corresponds to this tool
+- tool: get-flag-status-across-envs
+  category: feature-management
+  annotations:
+  - Read-only
+  - Idempotent
+  reason: no public REST operationId in the v2 OpenAPI corresponds to this tool
+- tool: find-stale-flags
+  category: feature-management
+  annotations:
+  - Read-only
+  - Idempotent
+  reason: composite or workflow tool with no single backing REST operation
+- tool: get-flag-health
+  category: feature-management
+  annotations:
+  - Read-only
+  - Idempotent
+  reason: no public REST operationId in the v2 OpenAPI corresponds to this tool
+rest_only:
+  count: 348
+  note: 'REST operations with no corresponding MCP tool. The hosted MCP server is a deliberate subset:
+    it covers flags, segments, AgentControl, experiments, metrics, approvals and observability, and leaves
+    account administration, integrations, data export, audit log, code references, relay proxy configuration
+    and webhooks to the REST API.'
+  operationIds:
+  - DeleteReleasePolicy
+  - GetReleasePolicy
+  - PostReleasePoliciesOrder
+  - PostReleasePolicy
+  - PutReleasePolicy
+  - associateRepositoriesAndProjects
+  - copyFeatureFlag
+  - createAnnouncementPublic
+  - createBigSegmentExport
+  - createBigSegmentImport
+  - createBigSegmentStoreIntegration
+  - createDeploymentEvent
+  - createFlagImportConfiguration
+  - createFlagLink
+  - createInsightGroup
+  - createIntegrationConfiguration
+  - createIntegrationDeliveryConfiguration
+  - createIpAllowlistEntry
+  - createIteration
+  - createLayer
+  - createMetricGroup
+  - createOAuth2Client
+  - createReleaseForFlag
+  - createSubscription
+  - createTriggerWorkflow
+  - createView
+  - createWorkflowTemplate
+  - deleteAdaptiveTrigger
+  - deleteAgentOptimization
+  - deleteAgentOptimizationRun
+  - deleteAgentSkill
+  - deleteAnnouncementPublic
+  - deleteApplication
+  - deleteApplicationVersion
+  - deleteApprovalRequest
+  - deleteApprovalRequestForFlag
+  - deleteBigSegmentStoreIntegration
+  - deleteBranches
+  - deleteContextInstances
+  - deleteCustomRole
+  - deleteDestination
+  - deleteEnvironment
+  - deleteFlagConfigScheduledChanges
+  - deleteFlagFollower
+  - deleteFlagImportConfiguration
+  - deleteFlagLink
+  - deleteInsightGroup
+  - deleteIntegrationConfiguration
+  - deleteIntegrationDeliveryConfiguration
+  - deleteIpAllowlistEntry
+  - deleteMember
+  - deleteMetric
+  - deleteMetricGroup
+  - deleteModelConfig
+  - deleteOAuthClient
+  - deleteProject
+  - deleteRelayAutoConfig
+  - deleteReleaseByFlagKey
+  - deleteReleasePipeline
+  - deleteRepository
+  - deleteRepositoryProject
+  - deleteRestrictedModels
+  - deleteSdkKeyByKey
+  - deleteSegment
+  - deleteSubscription
+  - deleteTeam
+  - deleteToken
+  - deleteTriggerWorkflow
+  - deleteView
+  - deleteWebhook
+  - deleteWorkflow
+  - deleteWorkflowTemplate
+  - evaluateContextInstance
+  - getAIConfigMetrics
+  - getAIConfigMetricsByVariation
+  - getAIConfigQuickStats
+  - getAIConfigVariation
+  - getAIRunsUsage
+  - getAdaptiveTrigger
+  - getAgentOptimization
+  - getAgentSkill
+  - getAllHoldouts
+  - getAllIntegrationConfigurations
+  - getAllReleasePipelines
+  - getAllReleaseProgressionsForReleasePipeline
+  - getAllWebhooks
+  - getAnnouncementsPublic
+  - getApplication
+  - getApplicationVersions
+  - getApplications
+  - getApprovalForFlag
+  - getApprovalRequest
+  - getApprovalRequestSettings
+  - getApprovalsForFlag
+  - getAuditLogEntries
+  - getAuditLogEntry
+  - getBigSegmentExport
+  - getBigSegmentImport
+  - getBigSegmentStoreIntegration
+  - getBigSegmentStoreIntegrations
+  - getBranch
+  - getBranches
+  - getCallerIdentity
+  - getContextAttributeNames
+  - getContextAttributeValues
+  - getContextInstanceSegmentsMembershipByEnv
+  - getContextKindsByProjectKey
+  - getContexts
+  - getContextsClientsideUsage
+  - getContextsServersideUsage
+  - getContextsTotalUsage
+  - getCustomRole
+  - getCustomRoles
+  - getCustomWorkflow
+  - getDataExportEventsUsage
+  - getDependentFlags
+  - getDependentFlagsByEnv
+  - getDeployment
+  - getDeploymentFrequencyChart
+  - getDeployments
+  - getDestination
+  - getDestinations
+  - getEnvironmentsByProject
+  - getEvaluationsUsage
+  - getEventsUsage
+  - getExperimentationEventsUsage
+  - getExperimentationKeysUsage
+  - getExperimentationSettings
+  - getExperimentsAnyEnv
+  - getExpiringContextTargets
+  - getExpiringFlagsForUser
+  - getExpiringTargetsForSegment
+  - getExpiringUserTargets
+  - getExpiringUserTargetsForSegment
+  - getExtinctions
+  - getFeatureFlagScheduledChange
+  - getFeatureFlagStatus
+  - getFeatureFlagStatusAcrossEnvironments
+  - getFeatureFlagStatuses
+  - getFlagConfigScheduledChanges
+  - getFlagDefaultsByProject
+  - getFlagEvents
+  - getFlagFollowers
+  - getFlagImportConfiguration
+  - getFlagImportConfigurations
+  - getFlagLinks
+  - getFlagStatusChart
+  - getFollowersByProjEnv
+  - getHoldout
+  - getHoldoutById
+  - getInsightGroup
+  - getInsightGroups
+  - getInsightsRepositories
+  - getInsightsScores
+  - getIntegrationConfiguration
+  - getIntegrationDeliveryConfigurationByEnvironment
+  - getIntegrationDeliveryConfigurationById
+  - getIntegrationDeliveryConfigurations
+  - getIpAllowlist
+  - getIps
+  - getLayers
+  - getLeadTimeChart
+  - getLinkedResources
+  - getLinkedViews
+  - getMAUClientsideUsage
+  - getMAUTotalUsage
+  - getMauSdksByType
+  - getMauUsage
+  - getMauUsageByCategory
+  - getMetricGroup
+  - getMetricGroups
+  - getModelConfig
+  - getOAuthClientById
+  - getOAuthClients
+  - getObservabilityErrorsUsage
+  - getObservabilityLogsUsage
+  - getObservabilityMetricsUsage
+  - getObservabilitySessionsUsage
+  - getObservabilityTracesUsage
+  - getOpenapiSpec
+  - getPullRequests
+  - getRelayProxyConfig
+  - getRelayProxyConfigs
+  - getReleaseByFlagKey
+  - getReleaseFrequencyChart
+  - getReleasePipelineByKey
+  - getRepositories
+  - getRepository
+  - getRoot
+  - getRootStatistic
+  - getSdkAllVersions
+  - getSdkKeyByKey
+  - getSdkKeys
+  - getSdkVersionsDetails
+  - getSearchUsers
+  - getSegmentMembershipForContext
+  - getSegmentMembershipForUser
+  - getStaleFlagsChart
+  - getStatistics
+  - getStreamUsage
+  - getStreamUsageBySdkVersion
+  - getStreamUsageSdkversion
+  - getSubscriptionByID
+  - getSubscriptions
+  - getTags
+  - getTeam
+  - getTeamMaintainers
+  - getTeamRoles
+  - getTeams
+  - getToken
+  - getTokens
+  - getTriggerWorkflowById
+  - getTriggerWorkflows
+  - getUser
+  - getUserFlagSetting
+  - getUserFlagSettings
+  - getUsers
+  - getVegaAIUsage
+  - getVersions
+  - getView
+  - getViews
+  - getWarehouseExportUsage
+  - getWebhook
+  - getWorkflowTemplates
+  - getWorkflows
+  - linkResource
+  - listAIToolReferences
+  - listAIToolVersions
+  - listAdaptiveTriggers
+  - listAgentOptimizationResults
+  - listAgentOptimizationResultsByRunId
+  - listAgentOptimizationRuns
+  - listAgentOptimizations
+  - listAgentSkillReferences
+  - listAgentSkillVersions
+  - listAgentSkills
+  - listAllAgentOptimizationResults
+  - listModelConfigVersions
+  - listModelConfigs
+  - listPromptSnippetReferences
+  - listPromptSnippetVersions
+  - patchAIConfigTargeting
+  - patchAdaptiveTrigger
+  - patchAgentOptimization
+  - patchAgentOptimizationResult
+  - patchAgentSkill
+  - patchApplication
+  - patchApplicationVersion
+  - patchApprovalRequest
+  - patchApprovalRequestSettings
+  - patchBigSegmentStoreIntegration
+  - patchCustomRole
+  - patchDestination
+  - patchEnvironment
+  - patchExpiringFlagsForUser
+  - patchExpiringTargetsForSegment
+  - patchExpiringUserTargets
+  - patchExpiringUserTargetsForSegment
+  - patchFlagConfigApprovalRequest
+  - patchFlagConfigScheduledChange
+  - patchFlagDefaultsByProject
+  - patchFlagImportConfiguration
+  - patchHoldout
+  - patchInsightGroup
+  - patchIntegrationDeliveryConfiguration
+  - patchIpAllowlistConfig
+  - patchIpAllowlistEntry
+  - patchMember
+  - patchMembers
+  - patchMetric
+  - patchMetricGroup
+  - patchModelConfig
+  - patchOAuthClient
+  - patchProject
+  - patchRelayAutoConfig
+  - patchReleaseByFlagKey
+  - patchRepository
+  - patchSdkKeyByKey
+  - patchSegment
+  - patchTeam
+  - patchTeams
+  - patchToken
+  - patchTriggerWorkflow
+  - patchWebhook
+  - postAdaptiveTrigger
+  - postAgentOptimization
+  - postAgentOptimizationResult
+  - postAgentSkill
+  - postApprovalRequestApply
+  - postApprovalRequestApplyForFlag
+  - postApprovalRequestForFlag
+  - postApprovalRequestReview
+  - postApprovalRequestReviewForFlag
+  - postAuditLogEntries
+  - postAuditLogEntryCounts
+  - postCompleteWarehouseDestinationSetup
+  - postCustomRole
+  - postDestination
+  - postDisableAdaptiveTrigger
+  - postEnableAdaptiveTrigger
+  - postEnvironment
+  - postExtinction
+  - postFlagConfigScheduledChanges
+  - postFlagCopyConfigApprovalRequest
+  - postGenerateProjectEnvWarehouseDestinationKeyPair
+  - postGenerateTrustPolicy
+  - postGenerateWarehouseDestinationKeyPair
+  - postGenerateWarehouseDestinationSetupScript
+  - postHoldout
+  - postMemberTeams
+  - postMigrationSafetyIssues
+  - postModelConfig
+  - postRelayAutoConfig
+  - postReleasePipeline
+  - postRepository
+  - postRestrictedModels
+  - postSdkKey
+  - postTeam
+  - postTeamMembers
+  - postToken
+  - postWebhook
+  - postWorkflow
+  - putBranch
+  - putContextFlagSetting
+  - putContextKind
+  - putExperimentationSettings
+  - putFlagDefaultsByProject
+  - putFlagFollower
+  - putFlagSetting
+  - putReleasePipeline
+  - resetEnvironmentMobileKey
+  - resetEnvironmentSDKKey
+  - resetRelayAutoConfig
+  - resetToken
+  - searchContextInstances
+  - triggerFlagImportJob
+  - unlinkResource
+  - updateAnnouncementPublic
+  - updateBigSegmentContextTargets
+  - updateBigSegmentTargets
+  - updateDeployment
+  - updateFlagLink
+  - updateIntegrationConfiguration
+  - updateLayer
+  - updatePhaseStatus
+  - updateSubscription
+  - updateView
+  - validateIntegrationDeliveryConfiguration

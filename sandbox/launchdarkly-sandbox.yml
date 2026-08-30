@@ -1,0 +1,85 @@
+specification: API Commons Sandbox
+specificationVersion: '0.1'
+provider: LaunchDarkly
+providerId: launchdarkly
+generated: '2026-08-27'
+method: searched
+source:
+  - https://launchdarkly.com/docs/guides/flags/ldcli-dev-server-reference
+  - https://launchdarkly.com/docs/guides/flags/ldcli-dev-server
+  - https://launchdarkly.com/docs/guides/flags/testing-code
+  - https://launchdarkly.com/docs/home/flags/preview-rules
+docs: https://launchdarkly.com/docs/guides/flags/ldcli-dev-server
+model: local-server, not hosted-test-mode
+note: >-
+  LaunchDarkly has NO hosted test mode. There are no test-vs-live key prefixes, no test
+  cards or fixtures, and no separate sandbox base URL — because there is nothing to
+  simulate: a LaunchDarkly "test environment" is just an environment you created and
+  named test, on the same production API with the same credentials. What the provider
+  ships instead is a locally-run server, which is a different and in some ways stronger
+  answer, and it comes with its own published OpenAPI.
+surfaces:
+  - name: ldcli dev-server
+    kind: local server
+    start: ldcli dev-server start
+    base_url: http://localhost:8765/dev
+    contract: openapi/launchdarkly-dev-server-openapi.yml
+    contract_source: https://raw.githubusercontent.com/launchdarkly/ldcli/main/internal/dev_server/api/api.yaml
+    contract_http_status: 200
+    operations: 15
+    interfaces: [HTTP+JSON API, CLI commands, web UI]
+    persistence: SQLite, located under XDG_STATE_HOME
+    behaviour: >-
+      Syncs flags from a real LaunchDarkly source environment, then serves a single
+      variation per flag locally, with per-flag overrides. Supports the same low-latency
+      streaming updates as the hosted service, so an SDK talking to it behaves the same
+      way it would in production.
+    intended_for: [local development, CI, preview environments]
+    explicitly_not_for: production
+    key_operations:
+      - postAddProject
+      - postImportProject
+      - putOverrideFlag
+      - deleteFlagOverride
+      - deleteOverrides
+      - getDebugSessions
+      - getDebugSessionEvents
+      - getBackup
+      - restoreBackup
+    note: >-
+      getBackup / restoreBackup take a SQLite file (application/vnd.sqlite3), so a whole
+      local flag state can be snapshotted and restored — the closest thing to a reset
+      button in this provider's testing story.
+  - name: Test data sources
+    kind: in-process SDK feature
+    docs: https://launchdarkly.com/docs/sdk/features/test-data-sources
+    intended_for: unit tests
+    note: >-
+      The provider's stated recommendation for unit tests, in preference to the
+      dev-server. Flag values are set programmatically inside the test process; no
+      network, no credentials.
+  - name: Flags from files
+    kind: in-process SDK feature
+    docs: https://launchdarkly.com/docs/sdk/features/flags-from-files
+    intended_for: a single server-side application needing fixed flag values
+  - name: Test run (preview rules)
+    kind: hosted, read-only
+    docs: https://launchdarkly.com/docs/home/flags/preview-rules
+    note: >-
+      Evaluates which variation a specific context would receive for a flag, without
+      changing anything. This is the one hosted rehearsal facility LaunchDarkly offers —
+      a real dry run, scoped to evaluation rather than to writes.
+test_credentials:
+  published: false
+  note: >-
+    No published test tokens, test keys or seeded fixtures. The dev-server authenticates
+    with a real access token in order to sync real flags from a real environment; after
+    the initial sync it runs offline. There are no provider-published test values to
+    record here, and none are invented.
+production_isolation:
+  mechanism: environments
+  note: >-
+    Isolation in LaunchDarkly is achieved with environments (and SDK keys scoped to one
+    environment), not with a test mode. A wrong environmentKey in an API call is
+    therefore a production change, not a sandbox no-op — which is the single most
+    important safety fact about this provider for an autonomous agent.

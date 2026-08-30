@@ -1,0 +1,1287 @@
+specification: API Commons MCP Server
+specificationVersion: '0.1'
+provider: LaunchDarkly
+providerId: launchdarkly
+name: LaunchDarkly MCP Server
+generated: '2026-08-27'
+method: searched
+status: published
+source: https://launchdarkly.com/docs/home/getting-started/mcp
+docs:
+- https://launchdarkly.com/docs/home/getting-started/mcp
+- https://launchdarkly.com/docs/home/getting-started/mcp-hosted
+- https://launchdarkly.com/docs/home/getting-started/mcp-local
+description: LaunchDarkly operates a first-party hosted MCP server covering feature management, AgentControl
+  and observability, and also publishes a local stdio server for the federal and EU instances where the
+  hosted server is not available. Both are official.
+deployment:
+  mode: both
+  endpoint: https://mcp.launchdarkly.com/mcp/launchdarkly
+  transport: streamable-http
+  install: npx -y --package @launchdarkly/mcp-server -- mcp start --api-key <LAUNCHDARKLY_API_TOKEN>
+  package: https://www.npmjs.com/package/@launchdarkly/mcp-server
+  auth: oauth
+  verified: probed
+  note: Remote and local are DIFFERENT products here, not two ways to get the same thing. The hosted endpoint
+    is OAuth and reachable by an agent with no local install; the npx package is stdio, takes a static
+    API access token, and is the only option on the federal (app.launchdarkly.us) and EU (app.eu.launchdarkly.com)
+    instances, which the docs state do not support the hosted server.
+evidence:
+- probe: POST tools/list (anonymous)
+  url: https://mcp.launchdarkly.com/mcp/launchdarkly
+  http_status: 401
+  result: '{"error":{"code":-32001,"message":"unauthorized access"}} with WWW-Authenticate: Bearer resource_metadata="https://mcp.launchdarkly.com/.well-known/oauth-protected-resource/mcp/launchdarkly"'
+  checked: '2026-08-27'
+- probe: GET /.well-known/oauth-protected-resource/mcp/launchdarkly
+  url: https://mcp.launchdarkly.com/.well-known/oauth-protected-resource/mcp/launchdarkly
+  http_status: 200
+  result: RFC 9728 protected-resource metadata; saved to well-known/launchdarkly-mcp-oauth-protected-resource.json
+  checked: '2026-08-27'
+- probe: GET /.well-known/oauth-authorization-server
+  url: https://app.launchdarkly.com/.well-known/oauth-authorization-server
+  http_status: 200
+  result: 'RFC 8414 metadata: DCR at /trust/oauth/register/dcr, PKCE S256, scopes reader/writer/observability/offline_access'
+  checked: '2026-08-27'
+- probe: GET install page
+  url: https://mcp.launchdarkly.com/mcp/launchdarkly/install
+  http_status: 200
+  result: Provider-published page listing all 125 tools with descriptions, required inputs and MCP annotations
+  checked: '2026-08-27'
+authentication:
+  hosted:
+    type: oauth2
+    flow: authorization_code + PKCE (S256)
+    authorization_endpoint: https://app.launchdarkly.com/trust/oauth/authorize
+    token_endpoint: https://app.launchdarkly.com/trust/oauth/token
+    dynamic_client_registration: https://app.launchdarkly.com/trust/oauth/register/dcr
+    scopes:
+    - reader
+    - writer
+    - observability
+    - offline_access
+  local:
+    type: api-key
+    parameter: --api-key
+    credential: LaunchDarkly personal or service access token
+    recommended_role: Writer base role, or a custom role granting all actions on proj/*:env/*:flag/* and
+      proj/*:env/*:aiconfig/*
+    warning: The provider explicitly warns that putting the token in the client config file risks leaking
+      it into the conversation, and recommends an environment variable instead.
+tools:
+  count: 125
+  source: https://mcp.launchdarkly.com/mcp/launchdarkly/install
+  method: searched
+  note: Names, one-line summaries, required inputs and MCP annotations are taken verbatim from the provider-published
+    install page. Full inputSchemas require an authenticated tools/list and are NOT reproduced here —
+    see mcp/launchdarkly-tool-crosswalk.yml for the REST operations that carry the equivalent parameter
+    definitions.
+  by_category:
+    observability: 21
+    other: 3
+    account: 14
+    feature-management: 29
+    agentcontrol: 45
+    experimentation: 13
+  annotation_counts:
+    Read-only: 65
+    Idempotent: 78
+    Destructive: 26
+    Open-world: 1
+  inventory:
+  - tool: get-session-timestamp-event-chunk-url
+    category: observability
+    summary: Get a signed download URL for the rrweb event chunk covering a specific timestamp within
+      a session.
+    annotations:
+    - Read-only
+    - Idempotent
+    required_inputs:
+    - projectKey
+    - sessionSecureId
+    - timestamp
+  - tool: get-session-event-chunk-url
+    category: observability
+    summary: Get a signed download URL for one rrweb event chunk of a session.
+    annotations:
+    - Read-only
+    - Idempotent
+    required_inputs:
+    - index
+    - projectKey
+    - sessionSecureId
+  - tool: get-session-event-chunks
+    category: observability
+    summary: List the rrweb event chunks recorded for a session.
+    annotations:
+    - Read-only
+    - Idempotent
+    required_inputs:
+    - projectKey
+    - sessionSecureId
+  - tool: query-service-map
+    category: observability
+    summary: Query the service dependency map (service map) for a project.
+    annotations:
+    - Read-only
+    - Idempotent
+    required_inputs:
+    - dependencies
+    - endDate
+    - projectKey
+    - services
+    - startDate
+  - tool: delete-alert
+    category: observability
+    summary: Permanently delete an observability alert. THIS IS IRREVERSIBLE. Requires confirm=true to
+      execute. Use get-alert first to verify you are deleting the right alert.
+    annotations:
+    - Destructive
+    required_inputs:
+    - alert_id
+    - deleted
+  - tool: toggle-alert
+    category: observability
+    summary: Enable or disable an observability alert without changing its configuration.
+    annotations:
+    - Idempotent
+    required_inputs:
+    - alert_id
+    - enabled
+  - tool: update-alert
+    category: observability
+    summary: Update an existing observability alert. Only the fields you provide are changed; everything
+      else is preserved.
+    annotations:
+    - Destructive
+    - Idempotent
+    required_inputs:
+    - alert_updated
+  - tool: create-alert
+    category: observability
+    summary: Create a new observability alert that fires when a metric crosses a threshold.
+    annotations: []
+    required_inputs:
+    - alert_created
+    - alert_id
+    - alert_url
+  - tool: get-alert-firing-history
+    category: observability
+    summary: Show when an alert actually fired, and what state it is in now.
+    annotations:
+    - Read-only
+    - Idempotent
+    required_inputs:
+    - current_state
+    - firing_count
+    - firings
+    - last_fired_at
+  - tool: get-alert
+    category: observability
+    summary: Get detailed information about a specific observability alert.
+    annotations:
+    - Read-only
+    - Idempotent
+    required_inputs:
+    - alert_url
+    - destinations
+    - disabled
+    - message_content
+  - tool: list-alerts
+    category: observability
+    summary: List existing observability alerts for the project.
+    annotations:
+    - Read-only
+    - Idempotent
+    required_inputs:
+    - alerts
+    - total_count
+  - tool: delete-dashboard
+    category: observability
+    summary: Permanently delete a dashboard (visualization) and all of its graphs. THIS IS IRREVERSIBLE.
+      Requires confirm=true to execute. Use get-dashboard first to verify you are deleting the right dashboard.
+    annotations:
+    - Destructive
+    required_inputs:
+    - dashboard_id
+    - deleted
+  - tool: vent
+    category: other
+    summary: Report a missing capability, bug, parameter gap, or unclear error encountered while using
+      LaunchDarkly MCP tools. This feedback is collected and triaged to improve the toolset. Use this
+      when a tool is missing, returns an unexpected error, or lacks a needed parameter.
+    annotations: []
+    required_inputs: []
+  - tool: get-doc
+    category: account
+    summary: Fetch the full markdown content of a LaunchDarkly documentation page.
+    annotations:
+    - Read-only
+    - Idempotent
+    required_inputs: []
+  - tool: search-docs
+    category: account
+    summary: Search LaunchDarkly documentation to retrieve authoritative reference material for flags,
+      targeting rules, experiments, segments, AgentControl configs, SDKs, API fields, rollouts, metrics,
+      and more.
+    annotations:
+    - Read-only
+    - Idempotent
+    required_inputs:
+    - query
+  - tool: get-context-instances
+    category: account
+    summary: Get all stored instances of a specific context by kind and key. Returns every recorded occurrence
+      of the context, including its full attribute set (e.g., merchantCountryCode, disbursementRail) and
+      which SDK/application reported each instance.
+    annotations:
+    - Read-only
+    - Idempotent
+    required_inputs: []
+  - tool: search-contexts
+    category: account
+    summary: Search for stored LaunchDarkly contexts in an environment by kind, key, or attribute value.
+      Returns context records including their stored attributes (e.g., merchantCountryCode, disbursementRail)
+      and when the context was last seen.
+    annotations:
+    - Read-only
+    - Idempotent
+    required_inputs: []
+  - tool: get-service-connections-usage
+    category: account
+    summary: Get a time series of service connection minutes from your LaunchDarkly account. Use this
+      for capacity planning, cost analysis, and before/after deploy comparisons (e.g. compare daily incremental
+      minutes around a deploy date).
+    annotations:
+    - Read-only
+    - Idempotent
+    required_inputs: []
+  - tool: match-release-policies
+    category: feature-management
+    summary: Resolve which release policies would govern a flag in a given environment — a read-only dry-run
+      of the server-side policy matching logic. Does not create or modify anything.
+    annotations:
+    - Read-only
+    - Idempotent
+    required_inputs: []
+  - tool: create-automated-rollout-config
+    category: feature-management
+    summary: Record an automated rollout config in LaunchDarkly for a feature-flagged change.
+    annotations: []
+    required_inputs:
+    - config_id
+    - created
+    - environments
+    - flag_key
+    - required_application_keys
+    - warnings
+  - tool: list-projects
+    category: account
+    summary: 'List LaunchDarkly projects in the account. Use to discover project keys before calling project-scoped
+      tools. Filtering: use `query` to search by project name or key (case-insensitive), `tags` to filter
+      by tag (all must match). Sorting: use `sort` with `name` or `-name`. Pagination: responses include
+      `totalCount` and `pageInfo.offset`. To get the next page, set `offset` to the current offset + limit.'
+    annotations:
+    - Read-only
+    - Idempotent
+    required_inputs: []
+  - tool: query-change-history
+    category: feature-management
+    summary: Query the audit log to find what changed in a LaunchDarkly account. Returns a chronological
+      list of changes (newest first) with who made each change and what they did.
+    annotations:
+    - Read-only
+    - Idempotent
+    required_inputs:
+    - endDate
+    - env
+    - limit
+    - projectKey
+    - query
+    - resourceKey
+    - resourceKind
+    - startDate
+    - tags
+  - tool: update-segment-targets
+    category: feature-management
+    summary: 'Add or remove individual context keys from a segment''s included or excluded lists. Included
+      targets always match the segment. Excluded targets never match, even if rules would include them.
+      Supported kinds: addIncludedTargets, removeIncludedTargets, addExcludedTargets, removeExcludedTargets.
+      Each instruction requires contextKind and values. If the environment requires approval, the response
+      includes requiresApproval: true and the attempted instructions; call `create-approval-request` with
+      the returned instructions to submit it for review.'
+    annotations:
+    - Destructive
+    required_inputs: []
+  - tool: update-segment-rules
+    category: feature-management
+    summary: 'Add, remove, or modify attribute-based targeting rules on a segment. Rules evaluate context
+      attributes to determine segment membership. Clauses within a rule are ANDed; multiple rules use
+      OR logic. Supported kinds: addRule, removeRule, addClauses, removeClauses, updateClause, addValuesToClause,
+      removeValuesFromClause, reorderRules, updateRuleDescription, updateRuleRolloutAndContextKind. If
+      the environment requires approval, the response includes requiresApproval: true and the attempted
+      instructions; call `create-approval-request` with the returned instructions to submit it for review.'
+    annotations:
+    - Destructive
+    required_inputs: []
+  - tool: get-segment
+    category: feature-management
+    summary: Get detailed configuration for a single segment in an environment. Returns rules, included
+      targets, excluded targets, tags, and creation date. Use to verify segment state after creation or
+      updates.
+    annotations:
+    - Read-only
+    - Idempotent
+    required_inputs: []
+  - tool: create-segment
+    category: feature-management
+    summary: 'Create a new segment in a project environment. The segment is empty after creation — use
+      update-segment-rules to add targeting rules or update-segment-targets to add individual context
+      keys. Segment keys are immutable after creation: choose carefully. Pass viewKeys to link the new
+      segment to one or more views at creation time (Views are an Enterprise feature).'
+    annotations: []
+    required_inputs: []
+  - tool: list-segments
+    category: feature-management
+    summary: List segments in a project environment. Returns a paginated list with rule counts and target
+      counts. Use query to search by name or key, tags to filter by tag, or view to only include segments
+      linked to a view (Views are an Enterprise feature). Always list first to avoid creating duplicates.
+    annotations:
+    - Read-only
+    - Idempotent
+    required_inputs: []
+  - tool: delete-prompt-snippet
+    category: agentcontrol
+    summary: Permanently delete a prompt snippet. THIS IS IRREVERSIBLE. Any AgentControl Config variations
+      referencing this snippet will lose their reference. Requires confirm=true to execute.
+    annotations:
+    - Destructive
+    required_inputs: []
+  - tool: update-prompt-snippet
+    category: agentcontrol
+    summary: Update an existing prompt snippet. Creates a new version of the snippet. All fields are optional
+      — only provided fields are updated.
+    annotations:
+    - Idempotent
+    required_inputs: []
+  - tool: create-prompt-snippet
+    category: agentcontrol
+    summary: Create a new prompt snippet. A snippet is a reusable text block that can be referenced in
+      AgentControl Config variation prompts using {{snippet-key}} syntax. Provide a unique key, display
+      name, and the text content.
+    annotations: []
+    required_inputs: []
+  - tool: get-prompt-snippet
+    category: agentcontrol
+    summary: Get a specific prompt snippet by key. Returns the snippet's name, text content, tags, version,
+      and creation time.
+    annotations:
+    - Read-only
+    - Idempotent
+    required_inputs: []
+  - tool: list-prompt-snippets
+    category: agentcontrol
+    summary: List prompt snippets in a project. Prompt snippets are reusable text blocks that can be referenced
+      inside AgentControl Config variation prompts to keep common instructions consistent. Returns key,
+      name, text, version, and tags.
+    annotations:
+    - Read-only
+    - Idempotent
+    required_inputs: []
+  - tool: update-playground
+    category: agentcontrol
+    summary: Update an LLM playground's name, variants, or archived status. All fields are optional.
+    annotations:
+    - Idempotent
+    required_inputs: []
+  - tool: create-playground
+    category: agentcontrol
+    summary: Create a new LLM playground. A playground lets you compare AgentControl Config variations
+      side-by-side. Provide a name and variants — each variant references an evaluation definition (by
+      evaluationId) and a display position.
+    annotations: []
+    required_inputs: []
+  - tool: get-playground
+    category: agentcontrol
+    summary: Get details about a specific LLM playground, including its variants (evaluation definitions
+      and their positions).
+    annotations:
+    - Read-only
+    - Idempotent
+    required_inputs: []
+  - tool: list-playgrounds
+    category: agentcontrol
+    summary: List LLM playgrounds in a project. Returns playground names, variant counts, and timestamps.
+      Supports search by name and pagination.
+    annotations:
+    - Read-only
+    - Idempotent
+    required_inputs: []
+  - tool: get-evaluation-run-summary
+    category: agentcontrol
+    summary: Get the summary results of a completed evaluation run, including pass/fail counts and aggregate
+      scores.
+    annotations:
+    - Read-only
+    - Idempotent
+    required_inputs: []
+  - tool: run-evaluation
+    category: agentcontrol
+    summary: Start a new run of an AI evaluation. This executes the evaluation against the configured
+      dataset and judge criteria. Returns the run ID and status.
+    annotations: []
+    required_inputs: []
+  - tool: create-evaluation
+    category: agentcontrol
+    summary: Create a new AI evaluation definition. An evaluation defines a comparison between AgentControl
+      Config variations using a dataset and judge criteria. After creation, use run-evaluation to start
+      an evaluation run.
+    annotations: []
+    required_inputs: []
+  - tool: get-evaluation
+    category: agentcontrol
+    summary: Get details about a specific evaluation definition, including its configuration and last
+      run status.
+    annotations:
+    - Read-only
+    - Idempotent
+    required_inputs: []
+  - tool: list-evaluations
+    category: agentcontrol
+    summary: List AgentControl Config evaluations in a project. Returns evaluation definitions with their
+      names, associated config keys, and last run info.
+    annotations:
+    - Read-only
+    - Idempotent
+    required_inputs: []
+  - tool: delete-dataset
+    category: agentcontrol
+    summary: Permanently delete an offline dataset and its associated metadata. THIS IS IRREVERSIBLE.
+      Requires confirm=true to execute.
+    annotations:
+    - Destructive
+    required_inputs: []
+  - tool: create-dataset
+    category: agentcontrol
+    summary: Create a new offline dataset for AI evaluation. Provide a dataset name, filename, and format
+      (csv, json, or jsonl). The dataset is created in pending status and must be uploaded separately.
+      Returns the dataset ID and upload URL.
+    annotations: []
+    required_inputs: []
+  - tool: get-dataset
+    category: agentcontrol
+    summary: Get details about a specific offline dataset by ID, including its processing status and row
+      count.
+    annotations:
+    - Read-only
+    - Idempotent
+    required_inputs: []
+  - tool: list-datasets
+    category: agentcontrol
+    summary: List offline datasets for a project. Returns id, name, status, row count, and creation info
+      for each dataset. Datasets can be in pending, processing, completed, or failed status.
+    annotations:
+    - Read-only
+    - Idempotent
+    required_inputs: []
+  - tool: stop-guarded-rollout
+    category: feature-management
+    summary: 'Stop an active guarded rollout on a flag''s default rule (fallthrough). This immediately
+      halts the progressive rollout and locks the flag to its current state. If the environment requires
+      approval, the response includes requiresApproval: true and the attempted instructions; call `create-approval-request`
+      with the returned instructions to submit it for review.'
+    annotations:
+    - Destructive
+    required_inputs: []
+  - tool: start-guarded-rollout
+    category: feature-management
+    summary: 'Start a guarded rollout on a flag''s default rule (fallthrough). A guarded rollout progressively
+      increases traffic to the test variation through a series of stages while monitoring metrics for
+      regressions. Each stage specifies a rolloutWeight (percentage in thousandths, e.g. 10000 = 10%)
+      and a monitoring window in milliseconds. Metrics define what to monitor and whether to notify or
+      rollback on regression. Requires the flag to be on and not already have an active guarded rollout.
+      If the environment requires approval, the response includes requiresApproval: true and the attempted
+      instructions; call `create-approval-request` with the returned instructions to submit it for review.'
+    annotations: []
+    required_inputs: []
+  - tool: get-experiment-metric-results
+    category: experimentation
+    summary: 'Get detailed statistical results for a single metric on an experiment iteration. Returns,
+      per treatment: sample sizes (analyzedUnitCount, trafficCount, conversionCount), the observed mean
+      and standard deviation, and a `statistics` block with the lift versus control (relativeDifferences:
+      estimate plus lower/upper interval bounds and, for frequentist experiments, a per-comparison pValue),
+      the overall pValue, Bayesian probabilities (probabilityToBeBest, probabilityToBeatBaseline, expectedLoss),
+      and an isSignificant flag. Reads from LaunchDarkly''s internal analysis API. Defaults to the current
+      iteration and the latest analysis; pass iterationId to target a previous iteration. Use disableMultipleComparisonCorrection
+      / disableSequentialTesting to see uncorrected numbers. Use get-experiment-results for a cross-metric
+      overview, or get-experiment to discover metric keys.'
+    annotations:
+    - Read-only
+    - Idempotent
+    required_inputs: []
+  - tool: get-experiment-results
+    category: experimentation
+    summary: 'Get an overall results summary for an experiment, across every metric on the current iteration.
+      Discovers the iteration''s metrics, then fetches each metric''s analysis from LaunchDarkly''s internal
+      results API and returns a compact per-metric summary: which treatment is leading (isBest) — the
+      arm with the highest probability to beat the baseline for Bayesian experiments, or the lowest p-value
+      versus control for frequentist (note: not significance-gated, so a treatment can be flagged leading
+      even when nothing is significant) — each treatment''s lift versus control, whether it''s statistically
+      significant, and sample sizes. Pass iterationId to summarize a previous iteration. For the full
+      per-treatment statistics (intervals, p-values, Bayesian probabilities) on one metric, use get-experiment-metric-results.'
+    annotations:
+    - Read-only
+    - Idempotent
+    required_inputs: []
+  - tool: stop-experiment-iteration
+    category: experimentation
+    summary: 'Stop the currently running iteration of an experiment. Data collection ends and the iteration
+      moves to the `stopped` status. A winning treatment is required to stop: pass `winningTreatmentId`
+      (the `_id` of one of the iteration''s treatments, available from get-experiment) and an optional
+      `winningReason` explaining the call. If the experiment was inconclusive, declare the baseline/control
+      treatment as the winner.'
+    annotations:
+    - Destructive
+    required_inputs: []
+  - tool: save-and-start-experiment-iteration
+    category: experimentation
+    summary: Stop the current running iteration, create a new draft iteration with the provided field
+      updates applied, and start it — the API-recommended way to mutate treatments, metrics, methodology,
+      or other fields that are locked while an iteration is running. Provide `changeJustification` to
+      record why a new iteration is needed. Field inputs are the same as `update-experiment`; updates
+      are checked against the new iteration's not_started mutability rules. Fields not allowed in not_started
+      are returned under `skipped` rather than being sent.
+    annotations:
+    - Destructive
+    required_inputs: []
+  - tool: start-experiment-iteration
+    category: experimentation
+    summary: Start an experiment iteration. This begins data collection for the experiment's current draft
+      iteration and starts allocating live end-user traffic across its treatments. The experiment's flag
+      must be toggled on, a randomization unit must be set, and at least one treatment must have a non-zero
+      allocation percent.
+    annotations:
+    - Destructive
+    required_inputs: []
+  - tool: update-experiment
+    category: experimentation
+    summary: Update fields on an experiment or its current iteration. Which fields are mutable depends
+      on the current iteration's status (not_started, running, stopped). This tool first reads the experiment's
+      mutableFieldsByStatus, applies only the updates that are allowed for the current status via the
+      updateExperimentFields semantic patch, and returns any rejected fields under `skipped` with the
+      reason. If no provided field is mutable, the response includes `currentStatus` and `allowedFields`
+      so you can retry with valid inputs.
+    annotations:
+    - Destructive
+    required_inputs:
+    - flagSettings
+    - flags
+    - metrics
+    - treatments
+  - tool: create-experiment
+    category: experimentation
+    summary: Create a new experiment on a flag or AgentControl Config. An experiment measures the impact
+      of different variations on specified metrics. You must provide the initial iteration definition
+      including a hypothesis, metrics, treatments, and flag configuration. One treatment must be marked
+      as the baseline. Use `methodology` to pick the results-analysis approach (`bayesian` default, `frequentist`,
+      or `export_only` for data-export-only mode). Use `analysisConfig` to set thresholds and multiple-comparison
+      correction. Use `iteration.attributes` to declare slicing dimensions and `iteration.covariateId`
+      to enable stratified sampling.
+    annotations: []
+    required_inputs: []
+  - tool: get-experiment
+    category: experimentation
+    summary: Get detailed information about a specific experiment, including its treatments, metrics,
+      and current iteration status.
+    annotations:
+    - Read-only
+    - Idempotent
+    required_inputs: []
+  - tool: list-experiments
+    category: experimentation
+    summary: List experiments in a project, optionally filtered by environment. Returns key, name, description,
+      and current iteration status for each experiment.
+    annotations:
+    - Read-only
+    - Idempotent
+    required_inputs: []
+  - tool: delete-ai-tool
+    category: agentcontrol
+    summary: Permanently delete an AI tool definition. THIS IS IRREVERSIBLE. Any AgentControl Config variations
+      referencing this tool will lose the attachment. Requires confirm=true to execute.
+    annotations:
+    - Destructive
+    required_inputs: []
+  - tool: update-ai-tool
+    category: agentcontrol
+    summary: 'Update an AI tool definition''s description or schema. All fields are optional: only provided
+      fields are updated. The schema should be a raw JSON Schema object with type, properties, and required
+      fields.'
+    annotations:
+    - Idempotent
+    required_inputs: []
+  - tool: toggle-agentcontrol-config
+    category: agentcontrol
+    summary: 'Turn an AgentControl Config''s targeting on or off in a specific environment. Returns the
+      previous and new state. This is equivalent to ''turnFlagOn'' / ''turnFlagOff'' for feature flags.
+      If the environment requires approval, the response includes requiresApproval: true and the attempted
+      instructions; call `create-agentcontrol-config-approval` with the returned instructions to submit
+      it for review.'
+    annotations:
+    - Idempotent
+    required_inputs: []
+  - tool: get-keys
+    category: account
+    summary: Discover available data keys/dimensions for a product type.
+    annotations:
+    - Read-only
+    - Idempotent
+    required_inputs:
+    - key_count
+    - keys
+    - product_type
+  - tool: preview-graph
+    category: agentcontrol
+    summary: Preview a chart/graph inline WITHOUT saving it to a dashboard.
+    annotations:
+    - Read-only
+    - Idempotent
+    required_inputs:
+    - _hint
+    - bucketCount
+    - display
+    - endDate
+    - expressions
+    - groupBy
+    - metrics
+    - productType
+    - projectKey
+    - query
+    - startDate
+    - title
+    - type
+  - tool: create-graph
+    category: agentcontrol
+    summary: Add a chart/graph to an existing dashboard.
+    annotations: []
+    required_inputs:
+    - Count
+    - CountDistinct
+    - Sum
+  - tool: create-dashboard
+    category: observability
+    summary: Create a new empty dashboard (visualization) for organizing charts.
+    annotations: []
+    required_inputs:
+    - dashboard_created
+    - dashboard_id
+    - dashboard_url
+    - name
+  - tool: get-dashboard
+    category: observability
+    summary: Get detailed information about a specific dashboard including all its graphs.
+    annotations:
+    - Read-only
+    - Idempotent
+    required_inputs:
+    - dashboard_url
+    - graph_count
+    - graphs
+    - id
+    - name
+    - time_preset
+  - tool: list-dashboards
+    category: observability
+    summary: List existing dashboards (visualizations) for the project.
+    annotations:
+    - Read-only
+    - Idempotent
+    required_inputs:
+    - dashboards
+    - total_count
+  - tool: query-flag-evaluations
+    category: agentcontrol
+    summary: Query flag evaluations for a session.
+    annotations:
+    - Read-only
+    - Idempotent
+    required_inputs:
+    - direction
+    - endDate
+    - limit
+    - projectKey
+    - query
+    - sessionSecureId
+    - startDate
+  - tool: query-timeline-events
+    category: observability
+    summary: Query timeline indicator events for a session.
+    annotations:
+    - Read-only
+    - Idempotent
+    required_inputs:
+    - sessionSecureId
+  - tool: query-sessions
+    category: observability
+    summary: Query project sessions.
+    annotations:
+    - Read-only
+    - Idempotent
+    required_inputs:
+    - count
+    - endDate
+    - page
+    - projectKey
+    - query
+    - sortDesc
+    - sortField
+    - startDate
+  - tool: query-error-groups
+    category: observability
+    summary: Query project error groups.
+    annotations:
+    - Read-only
+    - Idempotent
+    required_inputs:
+    - count
+    - endDate
+    - page
+    - projectKey
+    - query
+    - startDate
+  - tool: query-aggregations
+    category: observability
+    summary: Retrieve bucketed, aggregated values over time for a product type.
+    annotations:
+    - Read-only
+    - Idempotent
+    required_inputs:
+    - Count
+    - CountDistinct
+    - aggregator
+    - column
+    - endDate
+    - expressions
+    - groupBy
+    - productType
+    - projectKey
+    - query
+    - startDate
+  - tool: query-traces
+    category: observability
+    summary: Query project traces.
+    annotations:
+    - Read-only
+    - Idempotent
+    required_inputs:
+    - direction
+    - endDate
+    - limit
+    - projectKey
+    - query
+    - sortColumn
+    - sortDirection
+    - startDate
+  - tool: query-logs
+    category: observability
+    summary: Query project logs.
+    annotations:
+    - Read-only
+    - Idempotent
+    required_inputs:
+    - direction
+    - endDate
+    - limit
+    - projectKey
+    - query
+    - startDate
+  - tool: get-sdk-active
+    category: account
+    summary: Check whether any SDKs have been active in a given environment. Returns true if any SDK has
+      initialized or sent events in the environment. Use this to verify that an environment is actually
+      in use before cleanup. Optionally filter by sdkName or sdkWrapperName to check a specific SDK.
+    annotations:
+    - Read-only
+    - Idempotent
+    required_inputs: []
+  - tool: get-environment
+    category: account
+    summary: 'Get a LaunchDarkly environment and its SDK keys: server-side SDK key, client-side ID, and
+      mobile key. Use this to retrieve the client-side ID needed to initialize a browser or mobile SDK.'
+    annotations:
+    - Read-only
+    - Idempotent
+    required_inputs: []
+  - tool: get-project
+    category: account
+    summary: Get a LaunchDarkly project with its environments and SDK keys. Use to retrieve SDK keys for
+      an existing project or verify a project exists.
+    annotations:
+    - Read-only
+    - Idempotent
+    required_inputs: []
+  - tool: create-project
+    category: account
+    summary: Create a new LaunchDarkly project. Returns the project with its environments and SDK keys.
+      Project keys must be lowercase with hyphens, starting with a letter. Production and Test environments
+      are created by default.
+    annotations: []
+    required_inputs: []
+  - tool: list-release-policies
+    category: feature-management
+    summary: List release policies for a project. Each policy defines preferred release methods and the
+      metrics or metric groups that automatically attach to guarded rollouts when the policy's conditions
+      match (e.g. specific environments or flag tags).
+    annotations:
+    - Read-only
+    - Idempotent
+    required_inputs: []
+  - tool: list-metric-events
+    category: experimentation
+    summary: List recent event keys received by a LaunchDarkly project — used to check which events are
+      actively flowing before creating a metric. Returns up to 50 event keys with last-seen timestamps.
+      If the event key you need isn't here, it may not be instrumented yet.
+    annotations:
+    - Read-only
+    - Idempotent
+    required_inputs: []
+  - tool: create-metric
+    category: experimentation
+    summary: Create a new metric in a LaunchDarkly project.
+    annotations: []
+    required_inputs: []
+  - tool: get-metric
+    category: experimentation
+    summary: 'Get full details for a single LaunchDarkly metric: measureType, eventKey, successCriteria,
+      unit, description, tags, creation date, and attached flag count. Use after create-metric to verify
+      the result, or to inspect an existing metric before modifying it.'
+    annotations:
+    - Read-only
+    - Idempotent
+    required_inputs: []
+  - tool: list-metrics
+    category: experimentation
+    summary: List metrics in a LaunchDarkly project. Returns key, name, measureType (count/occurrence/value),
+      eventKey, successCriteria, tags, and how many flags each metric is attached to.
+    annotations:
+    - Read-only
+    - Idempotent
+    required_inputs: []
+  - tool: delete-agent-graph
+    category: agentcontrol
+    summary: Permanently delete an agent graph and all of its edges. THIS IS IRREVERSIBLE. Requires confirm=true
+      to execute.
+    annotations:
+    - Destructive
+    required_inputs: []
+  - tool: update-agent-graph
+    category: agentcontrol
+    summary: Update an agent graph's metadata or structure. All fields are optional. If rootConfigKey
+      or edges are provided, both must be present and will fully replace the existing graph structure.
+      Pass name or description to update metadata only.
+    annotations:
+    - Destructive
+    required_inputs: []
+  - tool: create-agent-graph
+    category: agentcontrol
+    summary: Create a new agent graph in a project. An agent graph defines a directed graph of AgentControl
+      Configs for multi-agent workflows. Provide a rootConfigKey and edges to define the graph structure,
+      or create the graph with just metadata and add edges later via update-agent-graph. If rootConfigKey
+      or edges are provided, both must be present.
+    annotations: []
+    required_inputs: []
+  - tool: get-agent-graph
+    category: agentcontrol
+    summary: Get a specific agent graph by key, including its full edge structure. Each edge connects
+      a source AgentControl Config to a target AgentControl Config with optional handoff data.
+    annotations:
+    - Read-only
+    - Idempotent
+    required_inputs: []
+  - tool: list-agent-graphs
+    category: agentcontrol
+    summary: List all agent graphs in a project. Returns metadata for each graph including key, name,
+      description, and root config key. Does not include edge data — use get-agent-graph to retrieve full
+      graph structure.
+    annotations:
+    - Read-only
+    - Idempotent
+    required_inputs: []
+  - tool: invite-members
+    category: account
+    summary: Invite one or more people to the LaunchDarkly account by email. Each invitee receives an
+      email invitation to join. Optionally assign a role (reader, writer, admin) — defaults to reader
+      if not specified.
+    annotations:
+    - Open-world
+    required_inputs: []
+  - tool: find-members
+    category: account
+    summary: 'Search for LaunchDarkly account members and return their IDs. Supports flexible matching:'
+    annotations:
+    - Read-only
+    - Idempotent
+    required_inputs: []
+  - tool: get-member-self
+    category: account
+    summary: Return the member ID, profile, and team memberships for the currently authenticated user.
+      Use this whenever the user refers to themselves ('my metrics', 'created by me', 'assigned to me')
+      to resolve their member ID before calling tools that require a maintainerId or similar identifier,
+      or to resolve one of their team keys before calling tools that require a maintainerTeamKey. If the
+      member belongs to more than one team, ask which one to use rather than guessing. If the server returns
+      `token_expired`, re-authenticate the Launchdarkly MCP server connection in your MCP client and retry.
+    annotations:
+    - Read-only
+    - Idempotent
+    required_inputs: []
+  - tool: create-ai-tool
+    category: agentcontrol
+    summary: 'Create a new AI tool definition in a project. The schema should be a raw JSON Schema object
+      with type, properties, and required fields (e.g. {"type": "object", "properties": {...}}). Do NOT
+      use the OpenAI function calling wrapper format. After creation, attach the tool to a variation using
+      update-agentcontrol-config-variation.'
+    annotations: []
+    required_inputs: []
+  - tool: get-ai-tool
+    category: agentcontrol
+    summary: Get a single AI tool definition including its full schema. Use to inspect a tool's parameters
+      before attaching it to an AgentControl Config variation.
+    annotations:
+    - Read-only
+    - Idempotent
+    required_inputs: []
+  - tool: list-ai-tools
+    category: agentcontrol
+    summary: List AI tool definitions in a project. Returns each tool's key, description, and schema.
+      Tools are attached to AgentControl Config variations to give models function-calling capabilities.
+    annotations:
+    - Read-only
+    - Idempotent
+    required_inputs: []
+  - tool: update-agentcontrol-config-rollout
+    category: agentcontrol
+    summary: 'Update the default (fallthrough) rule for an AgentControl Config in an environment. Set
+      a percentage rollout across variations, or serve a single variation to all unmatched contexts. Weights
+      must sum to 100. Use human-friendly percentages (e.g., 80 for 80%). Accepts a variation key (from
+      get-agentcontrol-config) or variation name (from get-agentcontrol-config-targeting); the tool resolves
+      either to the internal variation _id (UUID) before patching. If the environment requires approval,
+      the response includes requiresApproval: true and the attempted instructions; call `create-agentcontrol-config-approval`
+      with the returned instructions to submit it for review.'
+    annotations:
+    - Idempotent
+    required_inputs: []
+  - tool: get-agentcontrol-config-targeting
+    category: agentcontrol
+    summary: Read the targeting configuration for an AgentControl Config in a specific environment. Returns
+      variations (with their _id UUIDs and names), individual targets, custom rules, fallthrough (default
+      rule), and off variation. The variation name returned here can be passed as 'variationKey' to update-agentcontrol-config-targeting,
+      update-agentcontrol-config-rollout, and update-agentcontrol-config-targets. Alternatively, use get-agentcontrol-config
+      to obtain the variation's slug key.
+    annotations:
+    - Read-only
+    - Idempotent
+    required_inputs: []
+  - tool: clone-agentcontrol-config-variation
+    category: agentcontrol
+    summary: 'Clone an existing AgentControl Config variation with selective overrides. Reads the source
+      variation, applies any provided overrides (model, instructions, messages, parameters, tools), and
+      creates a new variation. Returns both the source and created variation so you can compare the diff.
+      Use this for A/B experimentation: change one thing at a time while keeping everything else constant.'
+    annotations: []
+    required_inputs: []
+  - tool: delete-agentcontrol-config-variation
+    category: agentcontrol
+    summary: Permanently delete an AgentControl Config variation. THIS IS IRREVERSIBLE. Requires confirm=true
+      to execute.
+    annotations:
+    - Destructive
+    required_inputs: []
+  - tool: update-agentcontrol-config-variation
+    category: agentcontrol
+    summary: 'Update an AgentControl Config variation''s name, description, model, instructions/messages,
+      parameters, attached tools, or judge configuration. All fields are optional: only provided fields
+      are updated. Pass ''name'' to rename the variation in place without recreating it (avoids changing
+      the variation _id). To attach tools, pass the ''tools'' array with {key, version} entries (create
+      tools first with create-ai-tool). Pass an empty tools array to detach all tools. To attach judges,
+      pass judgeConfiguration with a judges array of {judgeConfigKey, samplingRate} entries. Pass an empty
+      judges array to detach all judges.'
+    annotations:
+    - Destructive
+    required_inputs: []
+  - tool: create-agentcontrol-config-variation
+    category: agentcontrol
+    summary: Create a variation for an AgentControl Config. A variation defines the model, prompts, parameters,
+      and tools. modelConfigKey must be in Provider.model-id format (e.g. OpenAI.gpt-4o, Anthropic.claude-sonnet-4-5)
+      for models to display correctly in the UI. Agent-mode configs use 'instructions' (a string); completion-mode
+      configs use 'messages' (an array of {role, content} objects). To attach AI tools, pass the 'tools'
+      array with {key, version} entries (create tools first with create-ai-tool). To attach judges, pass
+      judgeConfiguration with a judges array of {judgeConfigKey, samplingRate} entries.
+    annotations: []
+    required_inputs: []
+  - tool: get-agentcontrol-config-health
+    category: agentcontrol
+    summary: 'Health check for an AgentControl Config. Detects common issues: missing models (NO MODEL
+      in UI), missing prompts, orphaned tool references, and empty configs with no variations. Returns
+      a health verdict (healthy, warning, unhealthy) with specific issues and per-variation summaries.
+      Run before updating or experimenting with a config.'
+    annotations:
+    - Read-only
+    - Idempotent
+    required_inputs: []
+  - tool: setup-agentcontrol-config
+    category: agentcontrol
+    summary: 'Create an AgentControl Config with its first variation in one step. This is the recommended
+      way to set up a new AgentControl Config: it creates the config, adds a variation with model and
+      prompts, and verifies everything is configured correctly. Returns the full config detail with variation.
+      To attach AI tools, pass the ''tools'' array with {key, version} entries. IMPORTANT: evaluationMetricKey
+      (format: $ld:ai:judge:<suffix>) is REQUIRED when mode is ''judge''. Pass viewKeys to link the new
+      config to one or more views at creation time (Views are an Enterprise feature). Use create-agentcontrol-config
+      + create-agentcontrol-config-variation separately only when you need more control.'
+    annotations: []
+    required_inputs: []
+  - tool: delete-agentcontrol-config
+    category: agentcontrol
+    summary: 'Permanently delete an AgentControl Config. THIS IS IRREVERSIBLE. Requires confirm=true to
+      execute. Prefer archiving (update-agentcontrol-config with archived: true) when possible.'
+    annotations:
+    - Destructive
+    required_inputs: []
+  - tool: update-agentcontrol-config
+    category: agentcontrol
+    summary: 'Update an AgentControl Config''s metadata: name, description, tags, or archive status. Does
+      NOT modify variations: use update-agentcontrol-config-variation for model, prompt, or parameter
+      changes. Set archived: true to archive (reversible).'
+    annotations:
+    - Idempotent
+    required_inputs: []
+  - tool: create-agentcontrol-config
+    category: agentcontrol
+    summary: 'Create a new AgentControl Config in a project. This creates the config shell: use create-agentcontrol-config-variation
+      next to add a model, prompts, and parameters. Mode determines whether variations use ''instructions''
+      (agent), ''messages'' (completion), or ''messages'' (judge). Judge-mode configs evaluate other AgentControl
+      Config outputs. IMPORTANT: evaluationMetricKey (format: $ld:ai:judge:<suffix>) is REQUIRED when
+      mode is ''judge''; omitting it will cause a 400 error. For agent and completion mode it is not accepted.
+      Pass viewKeys to link the new config to one or more views at creation time (Views are an Enterprise
+      feature).'
+    annotations: []
+    required_inputs: []
+  - tool: get-agentcontrol-config
+    category: agentcontrol
+    summary: Get detailed configuration for a single AgentControl Config including all its variations.
+      Each variation includes its model, instructions or messages, parameters, attached tools, and judgeConfiguration
+      (attached judges with judgeConfigKey and samplingRate). For judge-mode configs the response also
+      includes evaluationMetricKey.
+    annotations:
+    - Read-only
+    - Idempotent
+    required_inputs: []
+  - tool: list-agentcontrol-configs
+    category: agentcontrol
+    summary: Search and browse AgentControl Configs in a project. Returns a paginated list with key, name,
+      mode (agent, completion, or judge), tags, variation count, and a `usedInGraphs` array listing the
+      agent graph keys that reference each config (as the graph root or as an edge source/target). An
+      empty `usedInGraphs` means the config is not referenced by any graph (orphaned). If graph usage
+      cannot be loaded, `usedInGraphs` is omitted entirely (rather than empty) so an absent field is never
+      mistaken for orphaned. Use query to search by name or key, tags to filter by tag, or view to only
+      include configs linked to a view (Views are an Enterprise feature).
+    annotations:
+    - Read-only
+    - Idempotent
+    required_inputs: []
+  - tool: apply-approval-request
+    category: feature-management
+    summary: 'Apply an already-approved flag approval request. This executes the changes that were approved
+      by reviewers. Only works on requests with reviewStatus ''approved''. Does NOT approve requests:
+      that must be done by a human reviewer. Use list-approval-requests to get the request id.'
+    annotations:
+    - Destructive
+    required_inputs: []
+  - tool: list-approval-requests
+    category: feature-management
+    summary: List pending approval requests for a flag in an environment. Shows status, review state,
+      and who requested the change. Use to check on approval progress after creating a request.
+    annotations:
+    - Read-only
+    - Idempotent
+    required_inputs: []
+  - tool: create-approval-request
+    category: feature-management
+    summary: 'Create an approval request for a flag change in an environment that requires approvals.
+      Requires at least one reviewer: notifyMemberIds and/or notifyTeamKeys. If the user named a person,
+      resolve them with find-members and pass the returned id. If they did not name anyone, ask who should
+      review before calling this tool. Provide the same semantic patch instructions you would use for
+      a direct change. The request will be reviewed by approvers before taking effect. Does NOT approve
+      the request: that must be done by a human reviewer.'
+    annotations: []
+    required_inputs: []
+  - tool: check-removal-readiness
+    category: other
+    summary: 'Detailed safety check before removing a feature flag. Checks dependencies, code references,
+      active targeting, expiring targets, and cross-environment status. Returns a readiness verdict: ''safe''
+      (proceed), ''caution'' (review warnings), or ''blocked'' (must resolve blockers first). Always run
+      this before archive-flag or delete-flag.'
+    annotations:
+    - Read-only
+    - Idempotent
+    required_inputs: []
+  - tool: manage-expiring-targets
+    category: feature-management
+    summary: List, add, update, or remove expiring targets on a flag. Expiring targets are automatically
+      removed from targeting after a specified date. Dates are shown as ISO strings with days-until-expiry
+      computed. Variation IDs are resolved to human-readable names.
+    annotations:
+    - Destructive
+    required_inputs: []
+  - tool: delete-flag
+    category: feature-management
+    summary: Permanently delete a feature flag. THIS IS IRREVERSIBLE. Requires confirm=true to execute.
+      Always call check-removal-readiness first and only delete if it returns 'safe'. Prefer archive-flag
+      (reversible) when possible.
+    annotations:
+    - Destructive
+    required_inputs: []
+  - tool: archive-flag
+    category: feature-management
+    summary: Archive a feature flag (reversible). This is a soft-delete that can be undone. Recommended
+      as the first step before permanent deletion. Always run check-removal-readiness before archiving.
+    annotations:
+    - Destructive
+    - Idempotent
+    required_inputs: []
+  - tool: copy-flag-config
+    category: feature-management
+    summary: 'Copy a flag''s targeting configuration from one environment to another. Common use: promote
+      from staging to production. Optionally select which aspects to copy: targeting, rules, offVariation,
+      prerequisites, on state. If the target environment requires approval, the response includes requiresApproval:
+      true and an approvalUrl; follow the approvalUrl to submit the copy request for review.'
+    annotations:
+    - Destructive
+    - Idempotent
+    required_inputs: []
+  - tool: update-prerequisites
+    category: feature-management
+    summary: 'Add or remove prerequisites for a flag in a specific environment. Prerequisites are other
+      flags that must evaluate to specific variations before this flag is evaluated. Use addPrerequisite
+      to migrate prerequisites onto a new flag, or removePrerequisite + addPrerequisite to update dependent
+      flags to point to a new key. If the environment requires approval, the response includes requiresApproval:
+      true and the attempted instructions; call `create-approval-request` with the returned instructions
+      to submit it for review.'
+    annotations:
+    - Destructive
+    required_inputs: []
+  - tool: update-individual-targets
+    category: other
+    summary: 'Add or remove specific users or contexts from individual flag targeting. Individual targets
+      are the highest priority: they override all rules. Supported instruction kinds: addTargets, removeTargets,
+      replaceTargets. To target non-user context kinds (e.g. organization), include contextKind on the
+      instruction (e.g. { kind: ''addTargets'', contextKind: ''organization'', values: [''org-123''],
+      variationId: ''<id>'' }). Note: addContextTargets and removeContextTargets are NOT supported by
+      the LD API; use addTargets/removeTargets with contextKind instead. Responses truncate long lists.
+      If the environment requires approval, the response includes requiresApproval: true and the attempted
+      instructions; call `create-approval-request` with the returned instructions to submit it for review.'
+    annotations:
+    - Destructive
+    required_inputs: []
+  - tool: update-targeting-rules
+    category: feature-management
+    summary: Add, remove, or modify custom targeting rules for a flag in an environment. Rules evaluate
+      top-to-bottom; first matching rule wins. Use get-flag to look up rule _ids, clause _ids, and variation
+      _ids before constructing instructions.
+    annotations:
+    - Destructive
+    required_inputs:
+    - addClauses
+    - addRule
+    - removeClauses
+    - removeRule
+    - reorderRules
+    - updateRuleVariationOrRollout
+  - tool: update-rollout
+    category: feature-management
+    summary: 'Change the default rule (fallthrough) for a flag. Set a percentage rollout across variations
+      or serve a single variation to all unmatched users. Weights must sum to 100. Use human-friendly
+      percentages (e.g., 80 for 80%). If the environment requires approval, the response includes requiresApproval:
+      true and the attempted instructions; call `create-approval-request` with the returned instructions
+      to submit it for review.'
+    annotations:
+    - Idempotent
+    required_inputs: []
+  - tool: toggle-flag
+    category: feature-management
+    summary: 'Turn a feature flag''s targeting on or off in a specific environment. Returns the previous
+      and new state. If the environment requires approval, the response includes requiresApproval: true
+      and the attempted instructions; call `create-approval-request` with the returned instructions to
+      submit it for review.'
+    annotations:
+    - Idempotent
+    required_inputs: []
+  - tool: update-flag-settings
+    category: feature-management
+    summary: 'Update a flag''s top-level settings: name, description, tags, temporary/permanent status,
+      maintainer, default variations, or custom properties. Does NOT modify per-environment targeting,
+      rollouts, or rules: use the targeting tools for those. Supported instruction kinds: updateName,
+      updateDescription, addTags, removeTags, markTemporary, markPermanent, updateMaintainerMember, updateMaintainerTeam,
+      addCustomProperties, replaceCustomProperties, removeCustomProperties, updateDefaultVariation. updateMaintainerTeam
+      takes the same Value shape as updateMaintainerMember but with a team key instead of a member id
+      (e.g. { kind: ''updateMaintainerTeam'', value: ''team-key'' }). Only include a maintainer instruction
+      when the user explicitly asked to change the maintainer — don''t reassign it as a side effect of
+      some other requested edit. addCustomProperties adds a new custom property: { kind, key, name, values[]
+      }. replaceCustomProperties replaces an existing custom property''s values: { kind, key, name, values[]
+      }. removeCustomProperties removes specific values from a custom property: { kind, key, values[]
+      }. updateDefaultVariation sets the flag-level default variation indices used when new environments
+      are provisioned: { kind, onVariation?: number, offVariation?: number } where onVariation/offVariation
+      are zero-based variation indices.'
+    annotations:
+    - Idempotent
+    required_inputs: []
+  - tool: create-flag
+    category: feature-management
+    summary: 'Create a new feature flag in a project. Defaults to a boolean temporary flag. After creation
+      the flag is OFF in all environments: use toggle-flag to enable it.'
+    annotations: []
+    required_inputs: []
+  - tool: get-flag-status-across-envs
+    category: feature-management
+    summary: Check a flag's lifecycle status across all environments. Returns per-environment state (active,
+      inactive, new, launched) and a summary of which environments the flag is active, inactive, or launched
+      in. Use before cleanup to verify the flag is inactive everywhere.
+    annotations:
+    - Read-only
+    - Idempotent
+    required_inputs: []
+  - tool: find-stale-flags
+    category: feature-management
+    summary: 'Find feature flags that are candidates for cleanup. Returns a prioritized list of stale
+      flags sorted by staleness (worst first). Categories: inactive_30d (no requests in period), launched_no_changes
+      (fully rolled out, no recent changes), never_requested (created but never evaluated). Defaults to
+      showing temporary flags inactive for 30+ days.'
+    annotations:
+    - Read-only
+    - Idempotent
+    required_inputs: []
+  - tool: get-flag-health
+    category: feature-management
+    summary: 'Get combined health view for a single flag: lifecycle state, last-requested timestamp, targeting
+      summary (rules count, targets count, on/off), age, and whether it''s temporary. Use this to assess
+      if a flag is stale or needs attention.'
+    annotations:
+    - Read-only
+    - Idempotent
+    required_inputs: []
+  - tool: get-flag
+    category: feature-management
+    summary: Get detailed configuration for a single feature flag scoped to a specific environment. Returns
+      the full targeting tree including rules, individual targets, fallthrough, prerequisites, and variation
+      details.
+    annotations:
+    - Read-only
+    - Idempotent
+    required_inputs: []
+  - tool: list-flags
+    category: feature-management
+    summary: Search and browse feature flags in a project. Returns a paginated list scoped to a single
+      environment.
+    annotations:
+    - Read-only
+    - Idempotent
+    required_inputs: []
+crosswalk: mcp/launchdarkly-tool-crosswalk.yml

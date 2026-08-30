@@ -1,0 +1,64 @@
+specification: API Commons OAuth Scopes
+specificationVersion: '0.1'
+provider: LaunchDarkly
+providerId: launchdarkly
+generated: '2026-08-27'
+method: probed
+source: https://app.launchdarkly.com/.well-known/oauth-authorization-server
+docs: https://launchdarkly.com/docs/home/account/api
+http_status: 200
+file: well-known/launchdarkly-oauth-authorization-server.json
+note: >-
+  These scopes come from LaunchDarkly's own RFC 8414 Authorization Server Metadata
+  document, fetched anonymously — not from prose. The v2 REST OpenAPI declares only an
+  ApiKey security scheme and no oauth2 securityScheme at all, so derive-oauth-scopes.py
+  finds nothing in the spec; the OAuth surface is real but lives outside the contract,
+  which is exactly the gap this artifact closes.
+authorization_server:
+  issuer: https://app.launchdarkly.com
+  authorization_endpoint: https://app.launchdarkly.com/trust/oauth/authorize
+  token_endpoint: https://app.launchdarkly.com/trust/oauth/token
+  registration_endpoint: https://app.launchdarkly.com/trust/oauth/register/dcr
+  revocation_endpoint: https://app.launchdarkly.com/trust/oauth/revoke
+  response_types_supported: [code]
+  grant_types_supported: [authorization_code, refresh_token, client_credentials]
+  token_endpoint_auth_methods_supported: [client_secret_basic, client_secret_post, none]
+  code_challenge_methods_supported: [S256]
+  dynamic_client_registration: true
+scopes:
+  - name: reader
+    description: >-
+      Read access across LaunchDarkly resources. Declared in scopes_supported; the
+      metadata document does not enumerate which resources, and the provider publishes
+      no per-scope permission table, so the resource mapping is not recorded here
+      rather than being invented.
+  - name: writer
+    description: >-
+      Write access across LaunchDarkly resources. Corresponds in spirit to the Writer
+      base role the MCP-server docs recommend for an access token.
+  - name: observability
+    description: >-
+      Access to the observability surface — sessions, errors, logs, traces, alerts and
+      dashboards. This is the surface the hosted MCP server exposes through its 21
+      observability tools, none of which have a public REST equivalent.
+  - name: offline_access
+    description: Standard OIDC/OAuth scope requesting a refresh token for long-lived agent sessions.
+scope_count: 4
+granularity: coarse
+finding: >-
+  Four coarse scopes for a 401-operation API. An agent granted `writer` can delete a
+  project, a flag and 50 other resource types; there is no way to grant flag-write
+  without also granting environment-delete. Fine-grained authorization exists in
+  LaunchDarkly, but it lives in custom roles attached to a token (resource specifiers
+  like proj/{key}:env/*:flag/*), not in the OAuth scope set — so the OAuth path is the
+  BLUNTER of the two authorization models this provider offers.
+alternative_authorization:
+  model: custom-roles
+  docs: https://launchdarkly.com/docs/home/account/roles
+  syntax: 'resources: ["proj/${roleAttribute/projectKey}:env/*:flag/*"], actions: ["*"]'
+  availability: Enterprise plan (custom roles and teams are an Enterprise feature per the pricing page)
+  note: >-
+    The provider's own MCP-server documentation publishes a recommended custom role for
+    an MCP access token, granting all actions on flags and AgentControl configs plus
+    viewProject, scoped to one project. That is the finest-grained authorization
+    LaunchDarkly documents for an agent.
