@@ -502,6 +502,8 @@ apis:
   - type: SourceCode
     url: https://github.com/launchdarkly/ldcli
 common:
+- type: Website
+  url: https://www.launchdarkly.com/
 - type: CapabilityMap
   url: capabilities/launchdarkly-capability-edges.yml
   name: LaunchDarkly Business Capability Map
