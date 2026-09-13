@@ -26,6 +26,11 @@ deployment:
     is OAuth and reachable by an agent with no local install; the npx package is stdio, takes a static
     API access token, and is the only option on the federal (app.launchdarkly.us) and EU (app.eu.launchdarkly.com)
     instances, which the docs state do not support the hosted server.
+  probe_prior: (never probed)
+  probe: gated
+  probe_why: RFC 9728 challenge on the MCP path only
+  checked: '2026-09-11'
+  source: claimed-backlog re-probe 2026-09-11
 evidence:
 - probe: POST tools/list (anonymous)
   url: https://mcp.launchdarkly.com/mcp/launchdarkly
