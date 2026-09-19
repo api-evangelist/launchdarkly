@@ -107,6 +107,8 @@ apis:
   humanURL: https://launchdarkly.com/docs/api
   baseURL: https://app.launchdarkly.com/api/v2
   tags:
+  - Audit Logs
+  tags_raw:
   - Audit Log
   properties:
   - type: OpenAPI
@@ -180,6 +182,8 @@ apis:
   humanURL: https://launchdarkly.com/docs/api
   baseURL: https://app.launchdarkly.com/api/v2
   tags:
+  - Environment
+  tags_raw:
   - Environments
   properties:
   - type: OpenAPI
