@@ -1,0 +1,222 @@
+specification: API Commons Data Model
+specificationVersion: '0.1'
+provider: LaunchDarkly
+providerId: launchdarkly
+generated: '2026-08-27'
+method: derived
+source: >-
+  Derived from the 737 component schemas and 252 path templates of the live contract at
+  https://app.launchdarkly.com/api/v2/openapi.json, following $ref edges and the
+  {projectKey}/{environmentKey}/{featureFlagKey} path hierarchy. Object semantics
+  cross-checked against https://launchdarkly.com/docs/home.
+scale:
+  schemas: 737
+  schemas_with_ref_edges: 423
+  key_bearing_schemas: 123
+  paths: 252
+  operations: 401
+identity:
+  style: human-authored keys, not opaque IDs
+  note: >-
+    LaunchDarkly's primary identifiers are customer-chosen string KEYS
+    (projectKey, environmentKey, featureFlagKey, segmentKey, experimentKey, metricKey),
+    not server-generated opaque IDs. There is no id-prefix convention to decode — a key
+    is whatever the customer typed. Only a few resource types use server IDs: access
+    tokens, webhooks, approval requests, triggers and destinations all take an `{id}`
+    path parameter.
+  consequence: >-
+    An agent cannot infer a resource type from an identifier the way it can with a
+    prefixed-ID API. Type must come from the path, and paths are positional: 95 of 252
+    paths begin /api/v2/projects/{projectKey}, and a dozen use three or four positional
+    keys with NO field names between them
+    (e.g. /api/v2/flags/{projectKey}/{environmentKey}/{featureFlagKey}/dependent-flags).
+    Getting the order wrong yields a plausible-looking 404, not a validation error.
+hierarchy:
+  root: Account
+  chain: Account > Project > Environment > (flag configuration)
+  note: >-
+    A feature flag is defined once per PROJECT and configured separately per ENVIRONMENT.
+    FeatureFlag holds the definition (variations, defaults, maintainer, lifecycle
+    state); FeatureFlagConfig holds the per-environment targeting. This split is the
+    single most important thing to understand about the model, and it is why so many
+    paths carry both a projectKey and an environmentKey.
+entities:
+  - name: Project
+    schema: Project
+    identifier: key
+    relationships:
+      - has_many: Environment
+        via: environments
+      - has_one: ClientSideAvailability
+        via: defaultClientSideAvailability
+      - has_one: Access
+        via: _access
+    note: The top-level container. 95 of 252 paths are scoped beneath it.
+  - name: Environment
+    schema: Environment
+    identifier: key
+    belongs_to: Project
+    relationships:
+      - has_one: ApprovalSettings
+        via: approvalSettings
+      - has_one: Access
+        via: _access
+    carries_secrets: [apiKey (SDK key), mobileKey, _id (client-side ID)]
+  - name: FeatureFlag
+    schema: FeatureFlag
+    identifier: key
+    belongs_to: Project
+    relationships:
+      - has_many: Variation
+        via: variations
+      - has_one: MemberSummary
+        via: _maintainer
+      - has_one: MaintainerTeam
+        via: _maintainerTeam
+      - has_one: Defaults
+        via: defaults
+      - has_one: ClientSideAvailability
+        via: clientSideAvailability
+      - has_one: ExperimentInfoRep
+        via: experiments
+      - has_one: StaleFlagData
+        via: stale
+      - has_one: FlagMigrationSettingsRep
+        via: migrationSettings
+      - has_one: CustomProperties
+        via: customProperties
+    lifecycle_fields: [creationDate, archivedDate, deprecatedDate]
+    note: >-
+      archivedDate and deprecatedDate on the definition are the machine-readable form of
+      the reversibility surface described in conventions/launchdarkly-conventions.yml —
+      a flag can be deprecated or archived without being deleted, and both states are
+      readable as timestamps.
+  - name: FeatureFlagConfig
+    schema: FeatureFlagConfig
+    identifier: composite (projectKey + environmentKey + featureFlagKey)
+    belongs_to: [FeatureFlag, Environment]
+    relationships:
+      - has_many: Target
+        via: targets
+      - has_many: Target
+        via: contextTargets
+      - has_many: Rule
+        via: rules
+      - has_one: VariationOrRolloutRep
+        via: fallthrough
+      - has_many: Prerequisite
+        via: prerequisites
+      - has_one: FlagConfigEvaluation
+        via: evaluation
+      - has_one: Link
+        via: _site
+    note: >-
+      The per-environment targeting state. `prerequisites` makes flags a DAG, not a flat
+      list — a flag can gate another flag, so deleting one can silently change the
+      evaluation of others.
+  - name: Segment
+    identifier: key
+    belongs_to: [Project, Environment]
+    note: Reusable targeting groups, including big/synced segments backed by a persistent store.
+  - name: Experiment
+    schema: Experiment
+    identifier: key
+    belongs_to: [Project, Environment]
+    relationships:
+      - has_one: IterationRep
+        via: currentIteration
+      - has_one: IterationRep
+        via: draftIteration
+      - has_many: IterationRep
+        via: previousIterations
+      - has_one: AnalysisConfigRep
+        via: analysisConfig
+      - has_one: MutableFieldsByStatusRep
+        via: mutableFieldsByStatus
+    note: >-
+      mutableFieldsByStatus is a rare and useful thing to find in a contract — the API
+      tells you which fields are editable in the experiment's CURRENT status, so an agent
+      can check before attempting a write instead of discovering it in a 400.
+  - name: Metric
+    identifier: key
+    belongs_to: Project
+    note: Grouped into MetricGroup; consumed by Experiment analysis and by guarded rollouts as guardrails.
+  - name: Member
+    schema: Member
+    identifier: _id
+    relationships:
+      - has_many: MemberTeamSummaryRep
+        via: teams
+      - has_many: MemberPermissionGrantSummaryRep
+        via: permissionGrants
+      - has_many: OAuthProviderKind
+        via: oauthProviders
+      - has_one: RoleAttributeMap
+        via: roleAttributes
+    note: >-
+      Writes are blocked when SCIM is enabled for the account — the contract says so on
+      the create, update and delete operations. An agent must read that state before
+      attempting member management.
+  - name: Team
+    schema: Team
+    identifier: key
+    relationships:
+      - has_one: TeamMembers
+        via: members
+      - has_one: TeamCustomRoles
+        via: roles
+      - has_one: TeamProjects
+        via: projects
+      - has_one: TeamMaintainers
+        via: maintainers
+  - name: CustomRole
+    identifier: key
+    note: >-
+      Carries the resource-specifier grammar (proj/{key}:env/*:flag/*) that is
+      LaunchDarkly's real authorization model — finer-grained than the four OAuth scopes.
+      See scopes/launchdarkly-scopes.yml.
+  - name: Token
+    schema: Token
+    identifier: _id
+    note: Pins an LD-API-Version at creation. See lifecycle/launchdarkly-lifecycle.yml.
+  - name: Webhook
+    identifier: _id
+    note: Payload shape is identical to AuditLogEntryRep. See asyncapi/launchdarkly-webhooks-asyncapi.yml.
+  - name: AuditLogEntryRep
+    identifier: _id
+    note: The change record for every mutation, and the payload webhooks deliver.
+  - name: Release / ReleasePipeline
+    schema: Release
+    relationships:
+      - has_many: PipelineReleasePhase
+        via: phases
+    note: Phased rollout across environments; _canceledAt records reversal.
+  - name: AIConfig
+    schema: AIConfig
+    identifier: key
+    belongs_to: Project
+    relationships:
+      - has_many: AIConfigVariation
+        via: variations
+      - has_many: AIConfigDependency
+        via: dependencies
+    note: >-
+      The AgentControl surface — prompts, models and tools versioned and targeted with the
+      same machinery as feature flags. It is the fastest-moving part of the model: 45 of
+      the 125 hosted MCP tools address it, and every one of the five most recent product
+      changelog entries is about it.
+common_wrappers:
+  - name: _links
+    shape: '{ rel: { href, type } }'
+    note: Hypermedia navigation, present on every representation.
+  - name: _site
+    note: Link to the HTML page for the resource in the LaunchDarkly app.
+  - name: _access
+    note: The calling token's allowed actions on this resource — an in-band authorization hint.
+  - name: UnixMillis
+    note: >-
+      Every timestamp in the model is a Unix epoch-milliseconds integer, not RFC 3339.
+      It is modelled as a named schema and $ref'd, so the convention is consistent —
+      but it is not ISO 8601 and will not parse as such.
+render: subway
+render_note: No subway/ diagram exists in this repo for LaunchDarkly; this file is the graph.

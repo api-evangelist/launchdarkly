@@ -1,0 +1,51 @@
+specification: API Commons Agent Skills
+specificationVersion: '0.1'
+provider: LaunchDarkly
+providerId: launchdarkly
+generated: '2026-08-27'
+method: generated
+source: >-
+  Authored by the API Evangelist enrichment pipeline. Every operationId referenced in
+  every skill was verified present in openapi/launchdarkly-rest-api-openapi.json,
+  harvested 2026-08-27 from https://app.launchdarkly.com/api/v2/openapi.json (HTTP 200,
+  OpenAPI 3.0.3, 401 operations). No operation, header, error code or reversal window in
+  these skills is invented; each traces to that contract, to
+  conventions/launchdarkly-conventions.yml, or to a docs URL cited in the skill.
+note: >-
+  LaunchDarkly publishes no AGENTS.md or first-party skill pack of its own. It does
+  publish a 125-tool hosted MCP server, which is the provider's own answer to this
+  problem — see mcp/launchdarkly-mcp.yml. These skills cover the REST path, which is what
+  an agent uses when it is not going through MCP, when it needs an operation the MCP
+  server does not expose (348 of 401 operations have no tool), or when it is running on
+  the federal or EU instance where the hosted MCP server is unavailable.
+skills:
+  - name: launchdarkly-ship-a-feature-flag
+    file: launchdarkly-ship-a-feature-flag.md
+    description: >-
+      Create a flag, target it in one environment, turn it on, and confirm. The core
+      CodeControl loop, with the semantic-patch Content-Type, the no-Bearer-prefix
+      authorization rule and the 30-day reversal window all stated inline.
+    operations: [getProjects, getProject, getEnvironment, postFeatureFlag, getFeatureFlag, patchFeatureFlag, getFeatureFlagStatus]
+    risk: write
+  - name: launchdarkly-governed-flag-change
+    file: launchdarkly-governed-flag-change.md
+    description: >-
+      Propose a change through an approval request or a scheduled change instead of
+      applying it directly. The safe write path for an agent in production, and the only
+      one with a clean withdrawal step.
+    operations: [postApprovalRequest, getApprovalRequests, getApprovalRequest, postApprovalRequestApply, deleteApprovalRequest, postFlagConfigScheduledChanges, getFlagConfigScheduledChanges, deleteFlagConfigScheduledChanges, getAuditLogEntries]
+    risk: write
+    entitlement: Enterprise
+  - name: launchdarkly-audit-and-clean-up-flags
+    file: launchdarkly-audit-and-clean-up-flags.md
+    description: >-
+      Find stale flags, check evaluation status in every environment and check dependent
+      flags before retiring anything, then deprecate or archive rather than delete.
+    operations: [getFeatureFlags, getFeatureFlag, getFeatureFlagStatuses, getFeatureFlagStatus, getDependentFlags, patchFeatureFlag, deleteFeatureFlag, getAuditLogEntries]
+    risk: read-then-write
+cross_references:
+  conventions: conventions/launchdarkly-conventions.yml
+  errors: errors/launchdarkly-problem-types.yml
+  rate_limits: rate-limits/launchdarkly-rate-limits.yml
+  authentication: authentication/launchdarkly-authentication.yml
+  mcp: mcp/launchdarkly-mcp.yml

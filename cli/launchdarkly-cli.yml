@@ -1,0 +1,111 @@
+specification: API Commons CLI
+specificationVersion: '0.1'
+provider: LaunchDarkly
+providerId: launchdarkly
+generated: '2026-08-27'
+method: searched
+source:
+  - https://launchdarkly.com/docs/home/getting-started/ldcli
+  - https://launchdarkly.com/docs/home/getting-started/ldcli-commands
+  - https://github.com/launchdarkly/ldcli
+docs: https://launchdarkly.com/docs/home/getting-started/ldcli
+name: ldcli
+description: >-
+  The official LaunchDarkly command line interface. Most of its surface is generated
+  resource commands that map one-to-one onto the REST API, so the CLI's command list and
+  the OpenAPI's operation list are the same surface in two shapes — the docs say so
+  outright: "These commands provide direct access to LaunchDarkly APIs."
+repository: https://github.com/launchdarkly/ldcli
+version: v3.11.0
+released: '2026-08-25'
+platforms: [macOS, Windows, Linux]
+install:
+  - method: homebrew
+    commands:
+      - brew tap launchdarkly/homebrew-tap
+      - brew install ldcli
+    upgrade: brew upgrade ldcli
+  - method: npm
+    command: npm install -g @launchdarkly/ldcli
+    upgrade: npm update -g @launchdarkly/ldcli
+  - method: docker
+    command: docker pull launchdarkly/ldcli
+  - method: source
+    command: git clone git@github.com:launchdarkly/ldcli.git && cd ldcli && go build
+    requires: A Go development environment
+  - method: binary
+    url: https://github.com/launchdarkly/ldcli/releases
+authentication:
+  docs: https://launchdarkly.com/docs/home/account/api-create
+  methods:
+  - method: interactive login
+    command: ldcli login
+    note: >-
+      Opens a login link in the LaunchDarkly UI, requests approval, and stores an access
+      token in the CLI config file. Run once.
+  - method: stored token
+    command: ldcli config --set access-token <your access token>
+  - method: per-command token
+    command: ldcli --access-token <your access token> <command> <flags>
+discovery:
+  - command: ldcli
+    description: List common commands.
+  - command: ldcli resources
+    description: >-
+      List ALL commands. This is the authoritative command inventory and it is generated
+      from the API, which is why this artifact records the discovery command rather than
+      transcribing a command list that would go stale on the next release.
+resources:
+  note: >-
+    Resource commands cover all LaunchDarkly resources. The groups below are the ones
+    named in the provider's own documentation; the full set is whatever
+    `ldcli resources` prints for the installed version.
+  documented:
+    - flags
+    - experiments
+    - metrics
+    - environments
+    - projects
+    - members
+    - teams
+conventions:
+  input:
+    inline: '-d ''{"name": "Example flag", "key": "example-flag"}'''
+    from_file: '-d "$(cat data.json)"'
+    note: JSON request bodies are passed the same way the REST API takes them.
+  output:
+    default: plaintext
+    json: --output json
+    persist: ldcli config --set output json
+    note: 'Plaintext default is human-shaped ("Successfully created Example flag (example-flag)"); an agent should always pass --output json.'
+  scoping_flags: [--project, --environment, --access-token]
+key_flows:
+  - name: Guided first-flag setup
+    command: ldcli setup
+    description: Step-by-step guide to create a flag, install an SDK and toggle the flag.
+  - name: Create a flag
+    command: 'ldcli flags create --project default -d ''{"name": "Example flag", "key": "example-flag"}'''
+    rest_equivalent: postFeatureFlag
+  - name: Create an experiment
+    command: 'ldcli experiments create --project default --environment production -d ''{...}'''
+    rest_equivalent: createExperiment
+  - name: List experiments
+    command: ldcli experiments list --project default --environment production
+    rest_equivalent: getExperiments
+  - name: Read SDK credentials
+    commands:
+      - "ldcli environments get --project <p> --environment <e> | jq '.apiKey'      # SDK key"
+      - "ldcli environments get --project <p> --environment <e> | jq '.mobileKey'   # mobile key"
+      - "ldcli environments get --project <p> --environment <e> | jq '._id'         # client-side ID"
+    rest_equivalent: getEnvironment
+    caution: >-
+      These three fields are live secrets (the client-side ID excepted). Any agent
+      running this command is handling credentials, not configuration.
+  - name: Local development server
+    command: ldcli dev-server
+    description: >-
+      Starts a local server that pulls flag values from a source LaunchDarkly environment
+      and lets you override them locally — the closest thing LaunchDarkly ships to a
+      sandbox for testing flag-dependent code without touching a real environment.
+    see: sandbox
+binary_distribution: packages/launchdarkly-packages.yml

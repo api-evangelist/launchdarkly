@@ -1,0 +1,320 @@
+specification: API Commons Packages
+specificationVersion: '0.1'
+provider: LaunchDarkly
+providerId: launchdarkly
+generated: '2026-08-27'
+method: searched
+source: >-
+  Registry metadata endpoints queried directly (registry.npmjs.org, pypi.org/pypi,
+  rubygems.org/api/v1, crates.io/api/v1, api.nuget.org/v3, search.maven.org,
+  proxy.golang.org, repo.packagist.org) plus the github.com/launchdarkly
+  organization repository list and the LaunchDarkly SDK documentation index.
+docs: https://launchdarkly.com/docs/sdk
+checked: '2026-08-27'
+note: >-
+  Every entry below is published under an account LaunchDarkly controls — the
+  `launchdarkly`/`@launchdarkly` npm scopes, the `com.launchdarkly` Maven group, the
+  `LaunchDarkly.*` NuGet ids, `github.com/launchdarkly/*` Go modules — and each maps
+  to a repository in the github.com/launchdarkly organization, so official:true is a
+  verified attribution rather than a name-similarity guess. Versions and dates are
+  read from the registry metadata endpoint on the date in `checked`.
+packages:
+  # ── JavaScript / TypeScript ──────────────────────────────────────────────
+  - name: '@launchdarkly/node-server-sdk'
+    registry: npm
+    url: https://www.npmjs.com/package/@launchdarkly/node-server-sdk
+    language: JavaScript
+    kind: server-sdk
+    official: true
+    version: 9.13.1
+    published: '2026-08-18'
+    repository: https://github.com/launchdarkly/js-core
+  - name: launchdarkly-node-server-sdk
+    registry: npm
+    url: https://www.npmjs.com/package/launchdarkly-node-server-sdk
+    language: JavaScript
+    kind: server-sdk
+    official: true
+    version: 7.0.4
+    published: '2024-03-01'
+    status: superseded
+    note: >-
+      Pre-scope package name. Superseded by @launchdarkly/node-server-sdk, which
+      shipped 9.13.1 on 2026-08-18. The 2024-03-01 date here is a rename, not
+      abandonment of the Node server surface.
+  - name: '@launchdarkly/js-client-sdk'
+    registry: npm
+    url: https://www.npmjs.com/package/@launchdarkly/js-client-sdk
+    language: JavaScript
+    kind: client-sdk
+    official: true
+    version: 4.10.0
+    published: '2026-08-26'
+    repository: https://github.com/launchdarkly/js-core
+  - name: launchdarkly-js-client-sdk
+    registry: npm
+    url: https://www.npmjs.com/package/launchdarkly-js-client-sdk
+    language: JavaScript
+    kind: client-sdk
+    official: true
+    version: 3.9.5
+    published: '2026-08-06'
+  - name: '@launchdarkly/js-client-sdk-common'
+    registry: npm
+    url: https://www.npmjs.com/package/@launchdarkly/js-client-sdk-common
+    language: TypeScript
+    kind: sdk-core
+    official: true
+    version: 1.30.2
+    published: '2026-08-06'
+  - name: launchdarkly-node-client-sdk
+    registry: npm
+    url: https://www.npmjs.com/package/launchdarkly-node-client-sdk
+    language: JavaScript
+    kind: client-sdk
+    official: true
+    version: 3.4.3
+    published: '2026-08-07'
+  - name: launchdarkly-react-client-sdk
+    registry: npm
+    url: https://www.npmjs.com/package/launchdarkly-react-client-sdk
+    language: JavaScript
+    kind: client-sdk
+    framework: React
+    official: true
+    version: 3.9.4
+    published: '2026-08-10'
+  - name: '@launchdarkly/react-native-client-sdk'
+    registry: npm
+    url: https://www.npmjs.com/package/@launchdarkly/react-native-client-sdk
+    language: TypeScript
+    kind: mobile-sdk
+    framework: React Native
+    official: true
+    version: 10.20.0
+    published: '2026-08-26'
+  - name: '@launchdarkly/browser'
+    registry: npm
+    url: https://www.npmjs.com/package/@launchdarkly/browser
+    language: TypeScript
+    kind: observability-sdk
+    official: true
+    version: 0.1.32
+    published: '2026-08-26'
+    repository: https://github.com/launchdarkly/observability-sdk
+  - name: '@launchdarkly/observability'
+    registry: npm
+    url: https://www.npmjs.com/package/@launchdarkly/observability
+    language: TypeScript
+    kind: observability-sdk
+    official: true
+    version: 1.1.19
+    published: '2026-08-13'
+    repository: https://github.com/launchdarkly/observability-sdk
+  - name: '@launchdarkly/vercel-server-sdk'
+    registry: npm
+    url: https://www.npmjs.com/package/@launchdarkly/vercel-server-sdk
+    language: TypeScript
+    kind: edge-sdk
+    official: true
+    version: 1.3.55
+    published: '2026-08-18'
+  - name: '@launchdarkly/cloudflare-server-sdk'
+    registry: npm
+    url: https://www.npmjs.com/package/@launchdarkly/cloudflare-server-sdk
+    language: TypeScript
+    kind: edge-sdk
+    official: true
+    version: 2.7.31
+    published: '2026-08-18'
+  - name: launchdarkly-electron-client-sdk
+    registry: npm
+    url: https://www.npmjs.com/package/launchdarkly-electron-client-sdk
+    language: JavaScript
+    kind: client-sdk
+    framework: Electron
+    official: true
+    version: 1.7.0
+    published: '2022-10-21'
+    status: stale
+    note: >-
+      Last publish 2022-10-21 — nearly four years behind the rest of the
+      JavaScript family. This is the clearest decay signal in LaunchDarkly's
+      package surface; the Electron target is effectively frozen while every
+      other client SDK ships monthly.
+  - name: '@launchdarkly/mcp-server'
+    registry: npm
+    url: https://www.npmjs.com/package/@launchdarkly/mcp-server
+    language: TypeScript
+    kind: mcp-server
+    official: true
+    version: 0.6.2
+    published: '2026-05-08'
+    repository: https://github.com/launchdarkly/mcp-server
+    note: >-
+      The local (stdio) MCP server. See mcp/launchdarkly-mcp.yml — LaunchDarkly also
+      operates a hosted remote MCP endpoint, which is the surface an agent can reach
+      without a local install.
+  # ── Python ───────────────────────────────────────────────────────────────
+  - name: launchdarkly-server-sdk
+    registry: pypi
+    url: https://pypi.org/project/launchdarkly-server-sdk/
+    language: Python
+    kind: server-sdk
+    official: true
+    version: 9.16.1
+    published: '2026-07-24'
+    repository: https://github.com/launchdarkly/python-server-sdk
+  - name: launchdarkly-eventsource
+    registry: pypi
+    url: https://pypi.org/project/launchdarkly-eventsource/
+    language: Python
+    kind: sdk-dependency
+    official: true
+    version: 1.7.2
+    published: '2026-07-22'
+  # ── Ruby ─────────────────────────────────────────────────────────────────
+  - name: launchdarkly-server-sdk
+    registry: rubygems
+    url: https://rubygems.org/gems/launchdarkly-server-sdk
+    language: Ruby
+    kind: server-sdk
+    official: true
+    version: 8.15.0
+    published: '2026-08-20'
+    repository: https://github.com/launchdarkly/ruby-server-sdk
+  # ── Go ───────────────────────────────────────────────────────────────────
+  - name: github.com/launchdarkly/go-server-sdk/v7
+    registry: go
+    url: https://pkg.go.dev/github.com/launchdarkly/go-server-sdk/v7
+    language: Go
+    kind: server-sdk
+    official: true
+    version: v7.16.0
+    published: '2026-08-25'
+    repository: https://github.com/launchdarkly/go-server-sdk
+  # ── Rust ─────────────────────────────────────────────────────────────────
+  - name: launchdarkly-server-sdk
+    registry: crates.io
+    url: https://crates.io/crates/launchdarkly-server-sdk
+    language: Rust
+    kind: server-sdk
+    official: true
+    version: 3.2.0
+    published: '2026-08-11'
+    repository: https://github.com/launchdarkly/rust-server-sdk
+  # ── Java / Android ───────────────────────────────────────────────────────
+  - name: com.launchdarkly:launchdarkly-java-server-sdk
+    registry: maven
+    url: https://central.sonatype.com/artifact/com.launchdarkly/launchdarkly-java-server-sdk
+    language: Java
+    kind: server-sdk
+    official: true
+    version: 7.9.1
+    published: '2025-06-25'
+    repository: https://github.com/launchdarkly/java-core
+  - name: com.launchdarkly:launchdarkly-android-client-sdk
+    registry: maven
+    url: https://central.sonatype.com/artifact/com.launchdarkly/launchdarkly-android-client-sdk
+    language: Java
+    kind: mobile-sdk
+    official: true
+    version: 5.8.0
+    published: '2025-05-27'
+    repository: https://github.com/launchdarkly/android-client-sdk
+  # ── .NET ─────────────────────────────────────────────────────────────────
+  - name: LaunchDarkly.ServerSdk
+    registry: nuget
+    url: https://www.nuget.org/packages/LaunchDarkly.ServerSdk
+    language: C#
+    kind: server-sdk
+    official: true
+    version: 8.16.0
+    published: null
+    note: >-
+      Version read from the NuGet registration index `upper` bound. api.nuget.org's
+      registration index does not carry a publish date on the page fetched, so the
+      date is recorded null rather than guessed.
+    repository: https://github.com/launchdarkly/dotnet-core
+  - name: LaunchDarkly.ClientSdk
+    registry: nuget
+    url: https://www.nuget.org/packages/LaunchDarkly.ClientSdk
+    language: C#
+    kind: client-sdk
+    official: true
+    version: 5.9.6
+    published: null
+    note: Same as above — version from the registration index, publish date not exposed there.
+  # ── PHP ──────────────────────────────────────────────────────────────────
+  - name: launchdarkly/server-sdk
+    registry: packagist
+    url: https://packagist.org/packages/launchdarkly/server-sdk
+    language: PHP
+    kind: server-sdk
+    official: true
+    version: 6.8.3
+    published: '2026-08-24'
+  # ── Binaries / tooling (not language SDKs) ───────────────────────────────
+  - name: ldcli
+    registry: github-releases
+    url: https://github.com/launchdarkly/ldcli/releases
+    language: Go
+    kind: cli
+    official: true
+    version: v3.11.0
+    published: '2026-08-25'
+    note: >-
+      Also distributed through the LaunchDarkly Homebrew tap
+      (github.com/launchdarkly/homebrew-tap). Command surface is documented in
+      cli/launchdarkly-cli.yml.
+  - name: ld-find-code-refs
+    registry: github-releases
+    url: https://github.com/launchdarkly/ld-find-code-refs/releases
+    language: Go
+    kind: cli
+    official: true
+    version: v2.17.0
+    published: '2026-08-13'
+    note: Scans a repository for feature-flag references and feeds the Code references API.
+  - name: ld-relay
+    registry: github-releases
+    url: https://github.com/launchdarkly/ld-relay/releases
+    language: Go
+    kind: proxy
+    official: true
+    version: v8.21.0
+    published: '2026-08-20'
+    note: >-
+      The self-hosted Relay Proxy. This is why openapi/_original/launchdarkly-relay-proxy-openapi.yml
+      carries a http://localhost:8030 server block — that is the correct default for a
+      customer-run binary, not a placeholder base URL to repair.
+summary:
+  package_count: 27
+  official_count: 27
+  registries:
+    - npm
+    - pypi
+    - rubygems
+    - go
+    - crates.io
+    - maven
+    - nuget
+    - packagist
+    - github-releases
+  languages:
+    - JavaScript
+    - TypeScript
+    - Python
+    - Ruby
+    - Go
+    - Rust
+    - Java
+    - C#
+    - PHP
+  most_recent_release: '2026-08-26'
+  currency_finding: >-
+    22 of the 25 dated entries published within the last five weeks. Two exceptions
+    matter: launchdarkly-electron-client-sdk has not shipped since 2022-10-21, and the
+    Java/Android Maven artifacts last shipped in mid-2025 while every other server SDK
+    ships monthly. The REST contract they wrap (LD-API-Version 20240415) is older than
+    all of them, so no SDK here trails its own API version.

@@ -1,0 +1,290 @@
+specification: API Commons Conventions
+specificationVersion: '0.1'
+provider: LaunchDarkly
+providerId: launchdarkly
+generated: '2026-08-27'
+method: searched
+source: >-
+  info.description of the live LaunchDarkly REST API contract at
+  https://app.launchdarkly.com/api/v2/openapi.json (32,572 characters of
+  cross-cutting semantics the provider maintains inside its own spec), plus
+  https://launchdarkly.com/docs/api and the linked policy pages.
+docs: https://launchdarkly.com/docs/api
+applies_to: LaunchDarkly REST API v2 (LD-API-Version 20240415)
+
+authentication:
+  style: opaque-token-in-authorization-header
+  header: Authorization
+  scheme: none
+  note: >-
+    The value of the Authorization header is the raw personal or service access
+    token — there is NO `Bearer ` prefix. Session cookies are also accepted for
+    browser testing. SDK keys, mobile keys and client-side IDs explicitly CANNOT
+    call the REST API; they are environment-scoped read-only SDK credentials.
+  oauth2:
+    supported: true
+    discovery: https://app.launchdarkly.com/.well-known/oauth-authorization-server
+    note: >-
+      OAuth 2.0 with dynamic client registration and PKCE backs the hosted MCP
+      server and third-party integrations. See scopes/launchdarkly-scopes.yml.
+  origin_validation:
+    applies_to: session-cookie authentication only
+    expected_origin: https://app.launchdarkly.com
+    note: A modified Origin header causes an error. Token auth does not require origin matching.
+  see: authentication/launchdarkly-authentication.yml
+
+versioning:
+  style: date-header
+  header: LD-API-Version
+  format: yyyymmdd
+  current: '20240415'
+  example: 'LD-API-Version: 20240415'
+  per_token_default: >-
+    Every access token pins an API version at creation. Tokens created before
+    versioning existed are pinned to 20160426.
+  guidance: >-
+    LaunchDarkly's stated best practice is to set the header explicitly in every
+    client and to rely on the token-pinned version only during manual testing.
+  beta_channel:
+    header: 'LD-API-Version: beta'
+    on_missing: HTTP 403
+    note: Beta resources may change without notice, including backwards-incompatibly.
+  see: lifecycle/launchdarkly-lifecycle.yml
+
+pagination:
+  style: limit-offset-with-hypermedia-links
+  params:
+    limit: Page size
+    offset: Zero-based item offset
+  response_fields:
+    items: Array of resource representations
+    _links: Object carrying first, last, next and prev links on paginated collections
+    totalCount: Present on many collections
+  note: >-
+    Default page sizes differ per resource and were changed in the 20240415
+    version — 25 for access tokens, 20 for custom roles, feature flags, segments
+    and workflows. Teams caps page size at 100.
+
+expansion:
+  style: comma-separated-expand-parameter
+  param: expand
+  example: '/api/v2/teams/{key}?expand=members,maintainers'
+  note: >-
+    Detailed representations omit some attributes by default. Each operation that
+    supports expansion documents its own allowed values. List responses are
+    "summary representations"; individual GETs are "detailed representations".
+
+hypermedia:
+  links_field: _links
+  site_field: _site
+  link_shape:
+    href: URL of the linked resource
+    type: Content type of the target
+  note: >-
+    LaunchDarkly's own stated navigation model is to follow links rather than
+    construct URLs. `_site` links point at the HTML page for the resource in the
+    LaunchDarkly app. Attributes that are not editable begin with an underscore.
+
+partial_updates:
+  verb: PATCH
+  formats:
+    - name: JSON Patch
+      rfc: RFC 6902
+      default: true
+      note: >-
+        Supports the `test` operation as an optimistic-concurrency precondition,
+        e.g. [{"op":"test","path":"/version","value":10},{"op":"replace",...}].
+        This is the closest thing LaunchDarkly offers to a conditional write.
+    - name: JSON Merge Patch
+      rfc: RFC 7386
+      default: false
+    - name: Semantic Patch
+      vendor: true
+      content_type: 'application/json; domain-model=launchdarkly.semanticpatch'
+      body: '{ "comment": "...", "environmentKey": "...", "instructions": [ {"kind": "turnFlagOn"} ] }'
+      atomicity: >-
+        All-or-nothing. If any instruction is invalid the endpoint returns an error
+        and changes nothing; if all are valid the resource is updated, or left
+        unchanged when it is already in the requested state.
+      on_missing_header: HTTP 400 (the semantic patch is parsed as a JSON patch)
+  comments:
+    supported: true
+    shape: '{ "comment": "...", "patch": [...] } / { "comment": "...", "merge": {...} }'
+    note: Comments surface in outgoing webhooks, the audit log and other integrations.
+
+method_overriding:
+  header: X-HTTP-Method-Override
+  verbs: [DELETE, PATCH, PUT]
+  note: Tunnels restricted verbs through POST for firewalls and HTTP clients that block them.
+
+content_negotiation:
+  request: 'application/json (required on PATCH, POST, PUT)'
+  response: application/json
+  note: All resources expect and return JSON, including error bodies.
+
+cors:
+  supported: true
+  allow_origin: Echoes the request Origin, or `*` when no Origin is sent
+  max_age: 300
+  note: Authenticated CORS calls work with either token or session auth; set withCredentials for session auth.
+
+error_envelope:
+  shape:
+    code: General class of error
+    message: Human-readable explanation
+    id: Unique identifier to quote to LaunchDarkly Support
+  rfc9457: false
+  content_type: application/json
+  note: >-
+    LaunchDarkly does NOT use RFC 9457 problem+json. The envelope is a flat
+    three-field object and has been stable across API versions.
+  see: errors/launchdarkly-problem-types.yml
+
+rate_limit_signaling:
+  status: 429
+  strategy: multiple concurrent limits, only the enforced ones emit headers
+  headers:
+    - X-Ratelimit-Global-Limit
+    - X-Ratelimit-Global-Remaining
+    - X-Ratelimit-Route-Limit
+    - X-Ratelimit-Route-Remaining
+    - X-Ratelimit-Reset
+    - X-Ratelimit-Auth-Token-Limit
+    - X-Ratelimit-Auth-Token-Remaining
+    - X-Ratelimit-Auth-Token-Reset
+    - Retry-After
+  note: >-
+    LaunchDarkly deliberately does not publish the numbers and instructs clients to
+    program against whichever headers are present rather than hardcoding a limit.
+    A missing header means that limit was not applied to that call, not that it
+    does not exist.
+  see: rate-limits/launchdarkly-rate-limits.yml
+
+request_id_tracing:
+  field: id
+  location: error response body
+  note: >-
+    The error `id` is the identifier LaunchDarkly Support asks for. No documented
+    request-id RESPONSE HEADER on successful calls, so an agent cannot correlate a
+    successful request after the fact — only a failed one.
+
+regions:
+  - name: Commercial (default)
+    base: https://app.launchdarkly.com
+  - name: Federal (US government)
+    base: https://app.launchdarkly.us
+    note: Declared as a second entry in the spec's servers[] block.
+  - name: European Union
+    base: https://app.eu.launchdarkly.com
+    note: EU data residency. The hosted MCP server is NOT available on this instance.
+
+idempotency:
+  supported: false
+  grade: na
+  evidence: >-
+    Probed the live 401-operation contract for an idempotency key: zero occurrences
+    of "idempot" anywhere in the spec, and no header parameters are declared at the
+    operation level at all. The docs' cross-cutting section documents CORS, method
+    overriding, rate limiting, versioning and patch formats — and no idempotency key.
+  nearest_equivalent: >-
+    JSON Patch `test` preconditions and semantic patch's all-or-nothing instruction
+    application. Both make a retry SAFE by making it conditional; neither makes a
+    retried POST return the first response. A dropped connection on
+    postFeatureFlag has no documented replay-safe retry.
+  note: >-
+    No Idempotency pointer is emitted in apis.yml for this provider. The MCP layer
+    annotates 78 of its 125 tools "Idempotent", but that is an MCP tool annotation
+    about the tool's effect, not an HTTP idempotency-key facility on the REST API.
+
+dry_run_mode:
+  supported: partial
+  grade: documented
+  evidence: >-
+    Semantic patch is validated as a whole before anything is applied, and the flag
+    version-restore workflow shows a code diff and a preview of the resulting version
+    before you commit to it. Approval requests (postApprovalRequest / postApprovalRequestApply)
+    separate proposing a change from executing it, which is a rehearsal in everything
+    but name.
+  note: No general-purpose ?dry_run= parameter or validate-only mode exists on the REST API.
+
+reversibility:
+  grade: verified
+  summary: >-
+    LaunchDarkly is unusually reversible for a write-heavy control-plane API, because
+    the product's whole premise is turning things back off. Three of the four reversal
+    paths below carry a window the provider states in its own docs, which is what
+    separates a documented reversal from a verified one.
+  surfaces:
+    - action: Change a flag's targeting or on/off state
+      operationId: patchFeatureFlag
+      reversal: Restore a previous flag version from the change-history tab
+      reversal_operationId: patchFeatureFlag
+      window: 30 days
+      window_stated: >-
+        "You can only restore states that existed within the last 30 days."
+      docs: https://launchdarkly.com/docs/home/releases/version-restore
+      caveats:
+        - Restoring version 3 while on version 5 creates version 6; it does not rewind the counter.
+        - You cannot restore a version identical to the current one.
+        - You cannot restore a version whose scheduled target date has already passed.
+        - You cannot roll back states controlled by experiments, guarded rollouts or progressive rollouts.
+    - action: Retire a flag from the live list
+      operationId: patchFeatureFlag
+      reversal: Un-deprecate — deprecated flags remain evaluable and restorable from the Deprecated filter
+      window: indefinite
+      window_stated: >-
+        Deprecating "hides it from the live Flags list without archiving or deleting
+        it. You can restore a deprecated flag if you need it."
+      docs: https://launchdarkly.com/docs/home/flags/deprecate
+    - action: Archive a flag
+      operationId: patchFeatureFlag
+      reversal: Restore from the archived flags list
+      window: null
+      window_stated: null
+      note: >-
+        The docs describe archived flags as restorable but state no retention window
+        for how long an archived flag remains restorable. Recorded as unstated rather
+        than assumed — do NOT infer the 30-day version-restore window applies here.
+      docs: https://launchdarkly.com/docs/home/flags/archive
+    - action: Delete a flag
+      operationId: deleteFeatureFlag
+      reversal: none  # no restore operation exists in the contract
+      window: null
+      note: >-
+        Deletion is terminal. The provider's own MCP server marks delete-flag
+        "Destructive" and gates it behind a confirmation argument, which is the
+        strongest signal available that there is no undo path.
+    - action: Start a guarded rollout
+      operationId: patchFeatureFlag
+      reversal: stop-guarded-rollout / automatic rollback on a guardrail metric regression
+      window: for the duration of the rollout
+      docs: https://launchdarkly.com/docs/home/releases
+      note: >-
+        The Guardian add-on automates the reversal — it monitors guardrail metrics
+        during a release and pauses or rolls back on regression without a human.
+    - action: Schedule a future flag change
+      operationId: postFlagConfigScheduledChanges
+      reversal: deleteFlagConfigScheduledChanges
+      window: any time before the scheduled target date
+      note: >-
+        Once the target date passes, the change has been applied and the scheduled
+        change can no longer be cancelled — and a version predating it can no longer
+        be restored either (see the version-restore caveats).
+    - action: Submit an approval request
+      operationId: postApprovalRequest
+      reversal: deleteApprovalRequest (withdraw before it is applied)
+      window: before postApprovalRequestApply is called
+  destructive_operations:
+    count: 52
+    note: >-
+      52 delete* operations in the contract. The provider's MCP layer classifies 26
+      of its 125 tools "Destructive" and 78 "Idempotent", which is the clearest
+      machine-readable statement of blast radius LaunchDarkly publishes anywhere.
+
+cross_references:
+  errors: errors/launchdarkly-problem-types.yml
+  lifecycle: lifecycle/launchdarkly-lifecycle.yml
+  authentication: authentication/launchdarkly-authentication.yml
+  scopes: scopes/launchdarkly-scopes.yml
+  rate_limits: rate-limits/launchdarkly-rate-limits.yml
+  conformance: conformance/launchdarkly-conformance.yml

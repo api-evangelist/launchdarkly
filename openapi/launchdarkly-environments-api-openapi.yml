@@ -1,7 +1,7 @@
 openapi: 3.2.0
 info:
   title: LaunchDarkly REST Environments API
-  description: The LaunchDarkly REST API provides programmatic access to the full LaunchDarkly feature management platform. Developers can create, update, and manage feature flags, targeting rules, user segments, projects, environments, and team members. The API also supports scheduled flag changes, release pipelines, experimentation, approval workflows, and webhook integrations. Authentication is handled via personal or service access tokens, and the API follows a versioned scheme with the current default version being 20240415.
+  description: The LaunchDarkly REST API provides programmatic access to the full LaunchDarkly feature management platform.
   version: '20240415'
   contact:
     name: LaunchDarkly Support
@@ -143,6 +143,37 @@ paths:
           description: Environment or project not found.
 components:
   schemas:
+    PatchOperation:
+      type: object
+      description: A JSON Patch or semantic patch request.
+      properties:
+        patch:
+          type: array
+          description: An array of JSON Patch operations.
+          items:
+            type: object
+            required:
+            - op
+            - path
+            properties:
+              op:
+                type: string
+                description: The patch operation type.
+                enum:
+                - add
+                - remove
+                - replace
+                - move
+                - copy
+                - test
+              path:
+                type: string
+                description: The JSON Pointer path to the target field.
+              value:
+                description: The value to apply for add or replace operations.
+        comment:
+          type: string
+          description: An optional comment describing the change.
     Environment:
       type: object
       description: An environment within a project, such as production or staging.
@@ -179,51 +210,29 @@ components:
             type: string
         _links:
           $ref: '#/components/schemas/Links'
-    PatchOperation:
+    Links:
       type: object
-      description: A JSON Patch or semantic patch request.
+      description: HATEOAS links for navigating related resources.
       properties:
-        patch:
-          type: array
-          description: An array of JSON Patch operations.
-          items:
-            type: object
-            required:
-            - op
-            - path
-            properties:
-              op:
-                type: string
-                description: The patch operation type.
-                enum:
-                - add
-                - remove
-                - replace
-                - move
-                - copy
-                - test
-              path:
-                type: string
-                description: The JSON Pointer path to the target field.
-              value:
-                description: The value to apply for add or replace operations.
-        comment:
-          type: string
-          description: An optional comment describing the change.
-    Environments:
-      type: object
-      description: A collection of environments.
-      properties:
-        items:
-          type: array
-          description: The list of environments.
-          items:
-            $ref: '#/components/schemas/Environment'
-        totalCount:
-          type: integer
-          description: The total number of environments.
-        _links:
-          $ref: '#/components/schemas/Links'
+        self:
+          type: object
+          description: A link to this resource.
+          properties:
+            href:
+              type: string
+              description: The URL of this resource.
+            type:
+              type: string
+              description: The media type.
+      additionalProperties:
+        type: object
+        properties:
+          href:
+            type: string
+            description: The URL of the linked resource.
+          type:
+            type: string
+            description: The media type.
     EnvironmentBody:
       type: object
       description: The request body for creating a new environment.
@@ -254,43 +263,34 @@ components:
           description: Tags to apply to the environment.
           items:
             type: string
-    Links:
+    Environments:
       type: object
-      description: HATEOAS links for navigating related resources.
+      description: A collection of environments.
       properties:
-        self:
-          type: object
-          description: A link to this resource.
-          properties:
-            href:
-              type: string
-              description: The URL of this resource.
-            type:
-              type: string
-              description: The media type.
-      additionalProperties:
-        type: object
-        properties:
-          href:
-            type: string
-            description: The URL of the linked resource.
-          type:
-            type: string
-            description: The media type.
+        items:
+          type: array
+          description: The list of environments.
+          items:
+            $ref: '#/components/schemas/Environment'
+        totalCount:
+          type: integer
+          description: The total number of environments.
+        _links:
+          $ref: '#/components/schemas/Links'
   parameters:
-    EnvironmentKey:
-      name: environmentKey
-      in: path
-      required: true
-      description: The environment key identifying a specific environment.
-      schema:
-        type: string
-        pattern: ^[a-z0-9]([a-z0-9-])*$
     ProjectKey:
       name: projectKey
       in: path
       required: true
       description: The project key identifying a LaunchDarkly project.
+      schema:
+        type: string
+        pattern: ^[a-z0-9]([a-z0-9-])*$
+    EnvironmentKey:
+      name: environmentKey
+      in: path
+      required: true
+      description: The environment key identifying a specific environment.
       schema:
         type: string
         pattern: ^[a-z0-9]([a-z0-9-])*$

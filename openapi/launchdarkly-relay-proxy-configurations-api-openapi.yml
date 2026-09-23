@@ -1,7 +1,7 @@
 openapi: 3.2.0
 info:
   title: LaunchDarkly REST Relay Proxy Configurations API
-  description: The LaunchDarkly REST API provides programmatic access to the full LaunchDarkly feature management platform. Developers can create, update, and manage feature flags, targeting rules, user segments, projects, environments, and team members. The API also supports scheduled flag changes, release pipelines, experimentation, approval workflows, and webhook integrations. Authentication is handled via personal or service access tokens, and the API follows a versioned scheme with the current default version being 20240415.
+  description: The LaunchDarkly REST API provides programmatic access to the full LaunchDarkly feature management platform.
   version: '20240415'
   contact:
     name: LaunchDarkly Support
@@ -60,6 +60,45 @@ paths:
           description: Unauthorized. Invalid or missing access token.
 components:
   schemas:
+    RelayProxyConfigs:
+      type: object
+      description: A collection of Relay Proxy configurations.
+      properties:
+        items:
+          type: array
+          description: The list of Relay Proxy configurations.
+          items:
+            $ref: '#/components/schemas/RelayProxyConfig'
+    Statement:
+      type: object
+      description: A policy statement controlling resource access or event filtering.
+      properties:
+        effect:
+          type: string
+          description: Whether this statement allows or denies the action.
+          enum:
+          - allow
+          - deny
+        resources:
+          type: array
+          description: Resource specifiers this statement applies to.
+          items:
+            type: string
+        notResources:
+          type: array
+          description: Resource specifiers this statement does not apply to.
+          items:
+            type: string
+        actions:
+          type: array
+          description: The actions this statement applies to.
+          items:
+            type: string
+        notActions:
+          type: array
+          description: The actions this statement does not apply to.
+          items:
+            type: string
     RelayProxyConfigBody:
       type: object
       description: The request body for creating a Relay Proxy configuration.
@@ -75,6 +114,29 @@ components:
           description: Policy statements controlling access.
           items:
             $ref: '#/components/schemas/Statement'
+    Links:
+      type: object
+      description: HATEOAS links for navigating related resources.
+      properties:
+        self:
+          type: object
+          description: A link to this resource.
+          properties:
+            href:
+              type: string
+              description: The URL of this resource.
+            type:
+              type: string
+              description: The media type.
+      additionalProperties:
+        type: object
+        properties:
+          href:
+            type: string
+            description: The URL of the linked resource.
+          type:
+            type: string
+            description: The media type.
     RelayProxyConfig:
       type: object
       description: A Relay Proxy automatic configuration entry.
@@ -106,68 +168,6 @@ components:
             $ref: '#/components/schemas/Statement'
         _links:
           $ref: '#/components/schemas/Links'
-    Statement:
-      type: object
-      description: A policy statement controlling resource access or event filtering.
-      properties:
-        effect:
-          type: string
-          description: Whether this statement allows or denies the action.
-          enum:
-          - allow
-          - deny
-        resources:
-          type: array
-          description: Resource specifiers this statement applies to.
-          items:
-            type: string
-        notResources:
-          type: array
-          description: Resource specifiers this statement does not apply to.
-          items:
-            type: string
-        actions:
-          type: array
-          description: The actions this statement applies to.
-          items:
-            type: string
-        notActions:
-          type: array
-          description: The actions this statement does not apply to.
-          items:
-            type: string
-    RelayProxyConfigs:
-      type: object
-      description: A collection of Relay Proxy configurations.
-      properties:
-        items:
-          type: array
-          description: The list of Relay Proxy configurations.
-          items:
-            $ref: '#/components/schemas/RelayProxyConfig'
-    Links:
-      type: object
-      description: HATEOAS links for navigating related resources.
-      properties:
-        self:
-          type: object
-          description: A link to this resource.
-          properties:
-            href:
-              type: string
-              description: The URL of this resource.
-            type:
-              type: string
-              description: The media type.
-      additionalProperties:
-        type: object
-        properties:
-          href:
-            type: string
-            description: The URL of the linked resource.
-          type:
-            type: string
-            description: The media type.
   securitySchemes:
     bearerAuth:
       type: http

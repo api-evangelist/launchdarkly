@@ -1,7 +1,7 @@
 openapi: 3.2.0
 info:
   title: LaunchDarkly REST Approvals API
-  description: The LaunchDarkly REST API provides programmatic access to the full LaunchDarkly feature management platform. Developers can create, update, and manage feature flags, targeting rules, user segments, projects, environments, and team members. The API also supports scheduled flag changes, release pipelines, experimentation, approval workflows, and webhook integrations. Authentication is handled via personal or service access tokens, and the API follows a versioned scheme with the current default version being 20240415.
+  description: The LaunchDarkly REST API provides programmatic access to the full LaunchDarkly feature management platform.
   version: '20240415'
   contact:
     name: LaunchDarkly Support
@@ -69,7 +69,88 @@ paths:
         '401':
           description: Unauthorized. Invalid or missing access token.
 components:
+  parameters:
+    FlagKey:
+      name: flagKey
+      in: path
+      required: true
+      description: The feature flag key identifying a specific flag.
+      schema:
+        type: string
+        pattern: ^[a-z0-9]([a-z0-9._-])*$
+    EnvironmentKey:
+      name: environmentKey
+      in: path
+      required: true
+      description: The environment key identifying a specific environment.
+      schema:
+        type: string
+        pattern: ^[a-z0-9]([a-z0-9-])*$
+    ProjectKey:
+      name: projectKey
+      in: path
+      required: true
+      description: The project key identifying a LaunchDarkly project.
+      schema:
+        type: string
+        pattern: ^[a-z0-9]([a-z0-9-])*$
   schemas:
+    ApprovalRequestBody:
+      type: object
+      description: The request body for creating a new approval request.
+      required:
+      - description
+      properties:
+        description:
+          type: string
+          description: A description of the proposed change.
+        instructions:
+          type: array
+          description: The semantic patch instructions for the proposed change.
+          items:
+            type: object
+        notifyMemberIds:
+          type: array
+          description: Member IDs to notify about this approval request.
+          items:
+            type: string
+        comment:
+          type: string
+          description: An optional comment on the approval request.
+    Links:
+      type: object
+      description: HATEOAS links for navigating related resources.
+      properties:
+        self:
+          type: object
+          description: A link to this resource.
+          properties:
+            href:
+              type: string
+              description: The URL of this resource.
+            type:
+              type: string
+              description: The media type.
+      additionalProperties:
+        type: object
+        properties:
+          href:
+            type: string
+            description: The URL of the linked resource.
+          type:
+            type: string
+            description: The media type.
+    ApprovalRequests:
+      type: object
+      description: A collection of approval requests.
+      properties:
+        items:
+          type: array
+          description: The list of approval requests.
+          items:
+            $ref: '#/components/schemas/ApprovalRequest'
+        _links:
+          $ref: '#/components/schemas/Links'
     ApprovalRequest:
       type: object
       description: An approval request for a pending flag change.
@@ -97,87 +178,6 @@ components:
           description: Unix epoch timestamp when the request was created.
         _links:
           $ref: '#/components/schemas/Links'
-    ApprovalRequestBody:
-      type: object
-      description: The request body for creating a new approval request.
-      required:
-      - description
-      properties:
-        description:
-          type: string
-          description: A description of the proposed change.
-        instructions:
-          type: array
-          description: The semantic patch instructions for the proposed change.
-          items:
-            type: object
-        notifyMemberIds:
-          type: array
-          description: Member IDs to notify about this approval request.
-          items:
-            type: string
-        comment:
-          type: string
-          description: An optional comment on the approval request.
-    ApprovalRequests:
-      type: object
-      description: A collection of approval requests.
-      properties:
-        items:
-          type: array
-          description: The list of approval requests.
-          items:
-            $ref: '#/components/schemas/ApprovalRequest'
-        _links:
-          $ref: '#/components/schemas/Links'
-    Links:
-      type: object
-      description: HATEOAS links for navigating related resources.
-      properties:
-        self:
-          type: object
-          description: A link to this resource.
-          properties:
-            href:
-              type: string
-              description: The URL of this resource.
-            type:
-              type: string
-              description: The media type.
-      additionalProperties:
-        type: object
-        properties:
-          href:
-            type: string
-            description: The URL of the linked resource.
-          type:
-            type: string
-            description: The media type.
-  parameters:
-    FlagKey:
-      name: flagKey
-      in: path
-      required: true
-      description: The feature flag key identifying a specific flag.
-      schema:
-        type: string
-        pattern: ^[a-z0-9]([a-z0-9._-])*$
-    EnvironmentKey:
-      name: environmentKey
-      in: path
-      required: true
-      description: The environment key identifying a specific environment.
-      schema:
-        type: string
-        pattern: ^[a-z0-9]([a-z0-9-])*$
-    ProjectKey:
-      name: projectKey
-      in: path
-      required: true
-      description: The project key identifying a LaunchDarkly project.
-      schema:
-        type: string
-        pattern: ^[a-z0-9]([a-z0-9-])*$
   securitySchemes:
     bearerAuth:
       type: http

@@ -1,7 +1,7 @@
 openapi: 3.2.0
 info:
   title: LaunchDarkly REST Teams API
-  description: The LaunchDarkly REST API provides programmatic access to the full LaunchDarkly feature management platform. Developers can create, update, and manage feature flags, targeting rules, user segments, projects, environments, and team members. The API also supports scheduled flag changes, release pipelines, experimentation, approval workflows, and webhook integrations. Authentication is handled via personal or service access tokens, and the API follows a versioned scheme with the current default version being 20240415.
+  description: The LaunchDarkly REST API provides programmatic access to the full LaunchDarkly feature management platform.
   version: '20240415'
   contact:
     name: LaunchDarkly Support
@@ -78,6 +78,32 @@ paths:
           description: A team with the given key already exists.
 components:
   schemas:
+    TeamBody:
+      type: object
+      description: The request body for creating a new team.
+      required:
+      - name
+      - key
+      properties:
+        name:
+          type: string
+          description: The human-readable name of the team.
+        key:
+          type: string
+          description: The team key.
+        description:
+          type: string
+          description: A description of the team.
+        memberIDs:
+          type: array
+          description: Member identifiers to add to the team.
+          items:
+            type: string
+        customRoleKeys:
+          type: array
+          description: Custom role keys to assign to the team.
+          items:
+            type: string
     Links:
       type: object
       description: HATEOAS links for navigating related resources.
@@ -101,6 +127,20 @@ components:
           type:
             type: string
             description: The media type.
+    Teams:
+      type: object
+      description: A paginated collection of teams.
+      properties:
+        items:
+          type: array
+          description: The list of teams.
+          items:
+            $ref: '#/components/schemas/Team'
+        totalCount:
+          type: integer
+          description: The total number of teams.
+        _links:
+          $ref: '#/components/schemas/Links'
     Team:
       type: object
       description: A team of account members.
@@ -133,46 +173,6 @@ components:
           description: Custom role keys assigned to this team.
           items:
             type: string
-        _links:
-          $ref: '#/components/schemas/Links'
-    TeamBody:
-      type: object
-      description: The request body for creating a new team.
-      required:
-      - name
-      - key
-      properties:
-        name:
-          type: string
-          description: The human-readable name of the team.
-        key:
-          type: string
-          description: The team key.
-        description:
-          type: string
-          description: A description of the team.
-        memberIDs:
-          type: array
-          description: Member identifiers to add to the team.
-          items:
-            type: string
-        customRoleKeys:
-          type: array
-          description: Custom role keys to assign to the team.
-          items:
-            type: string
-    Teams:
-      type: object
-      description: A paginated collection of teams.
-      properties:
-        items:
-          type: array
-          description: The list of teams.
-          items:
-            $ref: '#/components/schemas/Team'
-        totalCount:
-          type: integer
-          description: The total number of teams.
         _links:
           $ref: '#/components/schemas/Links'
   securitySchemes:

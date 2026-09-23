@@ -1,7 +1,7 @@
 openapi: 3.2.0
 info:
   title: LaunchDarkly REST Segments API
-  description: The LaunchDarkly REST API provides programmatic access to the full LaunchDarkly feature management platform. Developers can create, update, and manage feature flags, targeting rules, user segments, projects, environments, and team members. The API also supports scheduled flag changes, release pipelines, experimentation, approval workflows, and webhook integrations. Authentication is handled via personal or service access tokens, and the API follows a versioned scheme with the current default version being 20240415.
+  description: The LaunchDarkly REST API provides programmatic access to the full LaunchDarkly feature management platform.
   version: '20240415'
   contact:
     name: LaunchDarkly Support
@@ -148,6 +148,20 @@ paths:
           description: Segment not found.
 components:
   schemas:
+    Segments:
+      type: object
+      description: A paginated collection of user segments.
+      properties:
+        items:
+          type: array
+          description: The list of user segments.
+          items:
+            $ref: '#/components/schemas/Segment'
+        totalCount:
+          type: integer
+          description: The total number of segments.
+        _links:
+          $ref: '#/components/schemas/Links'
     PatchOperation:
       type: object
       description: A JSON Patch or semantic patch request.
@@ -179,60 +193,6 @@ components:
         comment:
           type: string
           description: An optional comment describing the change.
-    SegmentRule:
-      type: object
-      description: A targeting rule within a user segment.
-      properties:
-        _id:
-          type: string
-          description: The unique identifier for this rule.
-        clauses:
-          type: array
-          description: The conditions for this rule.
-          items:
-            $ref: '#/components/schemas/Clause'
-        weight:
-          type: integer
-          description: The percentage of matching contexts to include (0-100000 in thousandths of a percent).
-        bucketBy:
-          type: string
-          description: The attribute to bucket by for percentage inclusion.
-    Clause:
-      type: object
-      description: A condition clause used in targeting rules.
-      properties:
-        attribute:
-          type: string
-          description: The context attribute to evaluate.
-        op:
-          type: string
-          description: The comparison operator.
-          enum:
-          - in
-          - endsWith
-          - startsWith
-          - matches
-          - contains
-          - lessThan
-          - lessThanOrEqual
-          - greaterThan
-          - greaterThanOrEqual
-          - before
-          - after
-          - segmentMatch
-          - semVerEqual
-          - semVerLessThan
-          - semVerGreaterThan
-        values:
-          type: array
-          description: The values to compare against.
-          items: {}
-        negate:
-          type: boolean
-          description: Whether to negate the clause.
-        contextKind:
-          type: string
-          description: The context kind to evaluate.
     Segment:
       type: object
       description: A user segment for targeting groups of contexts.
@@ -319,20 +279,60 @@ components:
           description: Tags to apply to the segment.
           items:
             type: string
-    Segments:
+    SegmentRule:
       type: object
-      description: A paginated collection of user segments.
+      description: A targeting rule within a user segment.
       properties:
-        items:
+        _id:
+          type: string
+          description: The unique identifier for this rule.
+        clauses:
           type: array
-          description: The list of user segments.
+          description: The conditions for this rule.
           items:
-            $ref: '#/components/schemas/Segment'
-        totalCount:
+            $ref: '#/components/schemas/Clause'
+        weight:
           type: integer
-          description: The total number of segments.
-        _links:
-          $ref: '#/components/schemas/Links'
+          description: The percentage of matching contexts to include (0-100000 in thousandths of a percent).
+        bucketBy:
+          type: string
+          description: The attribute to bucket by for percentage inclusion.
+    Clause:
+      type: object
+      description: A condition clause used in targeting rules.
+      properties:
+        attribute:
+          type: string
+          description: The context attribute to evaluate.
+        op:
+          type: string
+          description: The comparison operator.
+          enum:
+          - in
+          - endsWith
+          - startsWith
+          - matches
+          - contains
+          - lessThan
+          - lessThanOrEqual
+          - greaterThan
+          - greaterThanOrEqual
+          - before
+          - after
+          - segmentMatch
+          - semVerEqual
+          - semVerLessThan
+          - semVerGreaterThan
+        values:
+          type: array
+          description: The values to compare against.
+          items: {}
+        negate:
+          type: boolean
+          description: Whether to negate the clause.
+        contextKind:
+          type: string
+          description: The context kind to evaluate.
   parameters:
     EnvironmentKey:
       name: environmentKey

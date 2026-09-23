@@ -1,7 +1,7 @@
 openapi: 3.2.0
 info:
   title: LaunchDarkly REST Account Members API
-  description: The LaunchDarkly REST API provides programmatic access to the full LaunchDarkly feature management platform. Developers can create, update, and manage feature flags, targeting rules, user segments, projects, environments, and team members. The API also supports scheduled flag changes, release pipelines, experimentation, approval workflows, and webhook integrations. Authentication is handled via personal or service access tokens, and the API follows a versioned scheme with the current default version being 20240415.
+  description: The LaunchDarkly REST API provides programmatic access to the full LaunchDarkly feature management platform.
   version: '20240415'
   contact:
     name: LaunchDarkly Support
@@ -78,20 +78,6 @@ paths:
           description: A member with this email already exists.
 components:
   schemas:
-    Members:
-      type: object
-      description: A paginated collection of account members.
-      properties:
-        items:
-          type: array
-          description: The list of account members.
-          items:
-            $ref: '#/components/schemas/Member'
-        totalCount:
-          type: integer
-          description: The total number of members.
-        _links:
-          $ref: '#/components/schemas/Links'
     Member:
       type: object
       description: An account member in the LaunchDarkly organization.
@@ -173,6 +159,20 @@ components:
           type:
             type: string
             description: The media type.
+    Members:
+      type: object
+      description: A paginated collection of account members.
+      properties:
+        items:
+          type: array
+          description: The list of account members.
+          items:
+            $ref: '#/components/schemas/Member'
+        totalCount:
+          type: integer
+          description: The total number of members.
+        _links:
+          $ref: '#/components/schemas/Links'
   securitySchemes:
     bearerAuth:
       type: http

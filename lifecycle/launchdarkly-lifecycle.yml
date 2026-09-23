@@ -1,0 +1,203 @@
+specification: API Commons Lifecycle
+specificationVersion: '0.1'
+provider: LaunchDarkly
+providerId: launchdarkly
+generated: '2026-08-27'
+method: searched
+source: >-
+  The versioning and API-version-changelog sections the provider maintains inside
+  info.description of https://app.launchdarkly.com/api/v2/openapi.json, the published
+  End of Life policy at https://launchdarkly.com/policies/end-of-life-policy/, the
+  Statuspage instance at https://status.launchdarkly.com/, and the deprecated flags
+  in the contract itself.
+docs: https://launchdarkly.com/docs/api
+
+versioning:
+  scheme: date-versioned-header
+  header: LD-API-Version
+  format: yyyymmdd
+  current: '20240415'
+  in_url: false
+  note: >-
+    The URL path segment /api/v2 has been stable since 2016 and is NOT the version
+    axis. Breaking changes ship as a new date version selected by header. Multiple
+    versions are supported simultaneously so consumers migrate at their own pace.
+  token_pinning: >-
+    Every access token pins a version at creation time, so an integration cannot be
+    broken by a version change it did not opt into. Tokens created before versioning
+    are pinned to 20160426.
+
+versions:
+  - version: '20240415'
+    released: '2024-04-15'
+    eol: null
+    status: current
+    breaking: true
+    changes:
+      - Several endpoints changed from unpaginated to paginated (limit/offset).
+      - List access tokens is now paginated, default limit 25.
+      - List account members - the accessCheck filter was removed.
+      - List custom roles is now paginated, default limit 20.
+      - >-
+        List feature flags is now paginated (default limit 20); the environments field
+        is only returned when filtered with filterEnv; the followerId, hasDataExport,
+        status, contextKindTargeted and segmentTargeted filters and the compare
+        parameter were removed.
+      - List segments is now paginated, default limit 20.
+      - List teams - expand no longer supports projects or roles; max page size is 100.
+      - Get workflows is now paginated (default limit 20); the _conflicts field was removed.
+  - version: '20220603'
+    released: '2022-06-03'
+    eol: '2025-04-15'
+    status: end-of-life
+    breaking: true
+    changes:
+      - List projects is now paginated (default limit 20) with filter and sort support.
+      - Project environments became an expandable field, omitted by default.
+  - version: '20210729'
+    released: '2021-07-29'
+    eol: '2023-06-03'
+    status: end-of-life
+    breaking: true
+    changes:
+      - Create approval request now returns 201 instead of 200.
+      - Get user now returns a user record, not a user.
+      - Added filtering and pagination for flags and members.
+      - Added endpoints for expiring user targets, scheduled changes, access tokens, Relay Proxy config, integrations, subscriptions and approvals.
+  - version: '20191212'
+    released: '2019-12-12'
+    eol: '2022-07-29'
+    status: end-of-life
+    breaking: true
+    changes:
+      - List feature flags defaults to summary representations.
+      - Added endpoints for flags, flag status, projects, environments, audit logs, members, users, custom roles, segments, usage, streams, events and data export.
+  - version: '20160426'
+    released: '2016-04-26'
+    eol: '2020-12-12'
+    status: end-of-life
+    changes:
+      - Initial versioning of the API. Tokens created before versioning are pinned here.
+
+deprecation_policy:
+  published: true
+  url: https://launchdarkly.com/policies/end-of-life-policy/
+  http_status: 200
+  mechanism: >-
+    Deprecation is expressed two ways: `deprecated: true` on individual operations in
+    the OpenAPI contract, and an EOL date per API version in the version changelog the
+    provider maintains inside that same contract. Both are machine-readable from a
+    single fetch.
+  rfc8594_sunset_header: false
+  rfc8594_deprecation_header: false
+  evidence: >-
+    Probed the live 401-operation contract: zero occurrences of "Sunset" or
+    "Deprecation" as header names, and no header parameters are declared at the
+    operation level. A client that follows RFC 8594 runtime signals will see nothing;
+    deprecation here is a design-time signal in the spec, not a runtime one on the wire.
+  eol_track_record: >-
+    Four versions have been retired on stated dates, each roughly two to three years
+    after release. This is a policy that has actually been executed, not merely published.
+
+deprecated_operations:
+  count: 12
+  source: 'deprecated: true in https://app.launchdarkly.com/api/v2/openapi.json'
+  theme: >-
+    Ten of the twelve are the pre-Contexts "Users" model — LaunchDarkly replaced users
+    with contexts, and the entire /api/v2/users/* and /api/v2/user-search/* surface is
+    deprecated in place rather than removed.
+  operations:
+    - operationId: getUsers
+      method: GET
+      path: /api/v2/users/{projectKey}/{environmentKey}
+      tag: Users
+    - operationId: getUser
+      method: GET
+      path: /api/v2/users/{projectKey}/{environmentKey}/{userKey}
+      tag: Users
+    - operationId: getSearchUsers
+      method: GET
+      path: /api/v2/user-search/{projectKey}/{environmentKey}
+      tag: Users
+    - operationId: getUserFlagSettings
+      method: GET
+      path: /api/v2/users/{projectKey}/{environmentKey}/{userKey}/flags
+      tag: User settings
+    - operationId: getUserFlagSetting
+      method: GET
+      path: /api/v2/users/{projectKey}/{environmentKey}/{userKey}/flags/{featureFlagKey}
+      tag: User settings
+    - operationId: putFlagSetting
+      method: PUT
+      path: /api/v2/users/{projectKey}/{environmentKey}/{userKey}/flags/{featureFlagKey}
+      tag: User settings
+    - operationId: getExpiringFlagsForUser
+      method: GET
+      path: /api/v2/users/{projectKey}/{userKey}/expiring-user-targets/{environmentKey}
+      tag: User settings
+    - operationId: patchExpiringFlagsForUser
+      method: PATCH
+      path: /api/v2/users/{projectKey}/{userKey}/expiring-user-targets/{environmentKey}
+      tag: User settings
+    - operationId: getMauUsage
+      method: GET
+      path: /api/v2/usage/mau
+      tag: Account usage (beta)
+    - operationId: getMauUsageByCategory
+      method: GET
+      path: /api/v2/usage/mau/bycategory
+      tag: Account usage (beta)
+    - operationId: createIteration
+      method: POST
+      path: /api/v2/projects/{projectKey}/environments/{environmentKey}/experiments/{experimentKey}/iterations
+      tag: Experiments
+    - operationId: resetToken
+      method: POST
+      path: /api/v2/tokens/{id}/reset
+      tag: Access tokens
+
+beta_channel:
+  mechanism: 'LD-API-Version: beta'
+  on_missing: HTTP 403
+  stability: >-
+    "Resources that are in beta are still undergoing testing and development. They may
+    change without notice, including becoming backwards incompatible."
+  scope: >-
+    24 of the 58 tags in the contract carry a (beta) suffix — Account usage,
+    Applications, Approvals, Feature flags, Flag import configurations, Flag links,
+    Insights (six separate tags), Integration delivery configurations, Integrations,
+    IP Allowlist, Metrics, Persistent store integrations, Release pipelines, Release
+    policies, Releases, SDK Keys, Teams, Users and Views. Beta is 41% of this API's
+    tag surface, not a fringe of it, and every one of those resources returns 403
+    without the header.
+
+status_page:
+  published: true
+  url: https://status.launchdarkly.com/
+  http_status: 200
+  machine_readable: true
+  api: https://status.launchdarkly.com/api/v2/summary.json
+  platform: Atlassian Statuspage
+  components: 51
+  note: >-
+    A full Statuspage v2 API is available unauthenticated — summary.json, status.json,
+    components.json, incidents.json — so an agent can read live component health, not
+    just a human-readable page. Components are decomposed per surface (Server-side
+    streaming API, Client-side streaming API, Flag Delivery Network, Flag targeting,
+    Data Export, Audit log, Authentication and 44 more).
+
+sla:
+  published: false
+  note: >-
+    No public numeric uptime SLA document was found. The pricing page publishes a
+    config-delivery-latency SLO per tier — under 300ms on Developer, under 200ms on
+    Foundation, and under 150ms as an SLA on Enterprise — which is a latency
+    commitment, not an availability commitment. Recorded as what it is.
+  source: https://launchdarkly.com/pricing/
+
+changelog:
+  api_version_changelog:
+    location: info.description of https://app.launchdarkly.com/api/v2/openapi.json
+    note: The authoritative record of breaking changes, with EOL dates.
+  product_changelog: https://launchdarkly.com/changelog/
+  see: changelog/launchdarkly-changelog.yml

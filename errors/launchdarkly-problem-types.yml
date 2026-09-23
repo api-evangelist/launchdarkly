@@ -1,0 +1,149 @@
+specification: API Commons Error Catalog
+specificationVersion: '0.1'
+provider: LaunchDarkly
+providerId: launchdarkly
+generated: '2026-08-27'
+method: derived
+source: >-
+  Derived from the 1,778 4xx/5xx responses declared across the 401 operations of the
+  live contract at https://app.launchdarkly.com/api/v2/openapi.json, enriched with the
+  HTTP status error table the provider maintains in info.description
+  (https://launchdarkly.com/docs/api#errors).
+docs: https://launchdarkly.com/docs/api
+format: vendor-json
+rfc9457: false
+media_type: application/json
+note: >-
+  LaunchDarkly does NOT emit RFC 9457 problem+json — zero occurrences of
+  application/problem+json in the contract; every one of the 1,778 error responses is
+  application/json carrying the vendor envelope below. This is a stable, documented,
+  self-consistent envelope, just not the IETF one, so a generic RFC 9457 client will
+  not parse it without a provider-specific adapter.
+envelope:
+  fields:
+    code:
+      type: string
+      required: true
+      description: The general class of error, e.g. invalid_request.
+    message:
+      type: string
+      required: true
+      description: Human-readable explanation of what went wrong.
+    id:
+      type: string
+      required: false
+      description: >-
+        Unique identifier for the specific call. Quote it to LaunchDarkly Support when
+        debugging. Present on some errors, not declared as required in the schema.
+  example: |
+    {
+      "code": "invalid_request",
+      "message": "A feature with that key already exists",
+      "id": "30ce6058-87da-11e4-b116-123b93f75cba"
+    }
+schemas:
+  - name: Error
+    occurrences: 411
+    note: The base two-field envelope (code, message). Required properties, per the spec.
+  - name: UnauthorizedErrorRep
+    occurrences: 282
+  - name: RateLimitedErrorRep
+    occurrences: 277
+  - name: ForbiddenErrorRep
+    occurrences: 257
+  - name: NotFoundErrorRep
+    occurrences: 232
+  - name: InvalidRequestErrorRep
+    occurrences: 196
+  - name: StatusConflictErrorRep
+    occurrences: 61
+  - name: MethodNotAllowedErrorRep
+    occurrences: 24
+  - name: ValidationFailedErrorRep
+    occurrences: 20
+  - name: StatusServiceUnavailable
+    occurrences: 14
+  - name: PatchFailedErrorRep
+    occurrences: 4
+    note: Specific to failed JSON/semantic patch application.
+statuses:
+  - status: 400
+    title: Invalid request
+    declared_on_operations: 298
+    description: The request cannot be understood.
+    remediation: Ensure JSON syntax in the request body is correct.
+    agent_note: >-
+      Also returned when a semantic patch is sent WITHOUT the
+      'Content-Type: application/json; domain-model=launchdarkly.semanticpatch'
+      header — the body is then parsed as a JSON patch and rejected.
+  - status: 401
+    title: Invalid access token
+    declared_on_operations: 294
+    description: Requestor is unauthorized or does not have permission for this API call.
+    remediation: Ensure the API access token is valid and has the appropriate permissions.
+    agent_note: >-
+      Also returned when a role lacks permission for a session-cookie-authenticated call.
+      Note that an SDK key or mobile key will always 401 here — those credentials cannot
+      call the REST API at all.
+  - status: 403
+    title: Forbidden
+    declared_on_operations: 355
+    description: Requestor does not have access to this resource.
+    remediation: Ensure the account member or access token has proper permissions set.
+    agent_note: >-
+      Also the response for calling a BETA resource without the 'LD-API-Version: beta'
+      header. A 403 on a beta endpoint is a missing header, not a missing permission.
+  - status: 404
+    title: Invalid resource identifier
+    declared_on_operations: 320
+    description: The requested resource is not valid.
+    remediation: Ensure the resource is correctly identified by ID or key.
+  - status: 405
+    title: Method not allowed
+    declared_on_operations: 24
+    description: The request method is not allowed on this resource.
+    remediation: Ensure the HTTP verb is correct, or use X-HTTP-Method-Override.
+  - status: 409
+    title: Conflict
+    declared_on_operations: 79
+    description: The request cannot be completed because it conflicts with a concurrent API request.
+    remediation: Retry the request.
+    agent_note: >-
+      This is the one status the provider explicitly says to retry. Because the API has
+      no idempotency key, an agent retrying a 409 on a POST must first re-read state to
+      confirm the concurrent request did not already do the work.
+  - status: 410
+    title: Gone
+    declared_on_operations: 1
+  - status: 413
+    title: Payload too large
+    declared_on_operations: 1
+  - status: 422
+    title: Unprocessable entity
+    declared_on_operations: 4
+    description: The update description cannot be understood.
+    remediation: >-
+      Ensure the request body matches the patch type in use — JSON patch, JSON merge
+      patch, or semantic patch.
+  - status: 429
+    title: Too many requests
+    declared_on_operations: 289
+    description: A rate limit was exceeded.
+    remediation: >-
+      Read whichever X-Ratelimit-* headers are present on the response and wait for the
+      reset. IP-based limits return Retry-After instead; wait at least that many seconds
+      and apply jitter and backoff.
+    see: rate-limits/launchdarkly-rate-limits.yml
+  - status: 500
+    title: Internal server error
+    declared_on_operations: 99
+  - status: 503
+    title: Service unavailable
+    declared_on_operations: 14
+coverage:
+  operations: 401
+  error_responses: 1778
+  distinct_statuses: 12
+  media_types:
+    application/json: 1778
+    application/problem+json: 0

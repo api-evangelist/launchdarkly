@@ -1,7 +1,7 @@
 openapi: 3.2.0
 info:
   title: LaunchDarkly REST Releases API
-  description: The LaunchDarkly REST API provides programmatic access to the full LaunchDarkly feature management platform. Developers can create, update, and manage feature flags, targeting rules, user segments, projects, environments, and team members. The API also supports scheduled flag changes, release pipelines, experimentation, approval workflows, and webhook integrations. Authentication is handled via personal or service access tokens, and the API follows a versioned scheme with the current default version being 20240415.
+  description: The LaunchDarkly REST API provides programmatic access to the full LaunchDarkly feature management platform.
   version: '20240415'
   contact:
     name: LaunchDarkly Support
@@ -66,6 +66,77 @@ paths:
           description: Unauthorized. Invalid or missing access token.
 components:
   schemas:
+    ReleasePipelines:
+      type: object
+      description: A collection of release pipelines.
+      properties:
+        items:
+          type: array
+          description: The list of release pipelines.
+          items:
+            $ref: '#/components/schemas/ReleasePipeline'
+    Links:
+      type: object
+      description: HATEOAS links for navigating related resources.
+      properties:
+        self:
+          type: object
+          description: A link to this resource.
+          properties:
+            href:
+              type: string
+              description: The URL of this resource.
+            type:
+              type: string
+              description: The media type.
+      additionalProperties:
+        type: object
+        properties:
+          href:
+            type: string
+            description: The URL of the linked resource.
+          type:
+            type: string
+            description: The media type.
+    ReleasePipeline:
+      type: object
+      description: A release pipeline for coordinating flag rollouts.
+      properties:
+        key:
+          type: string
+          description: The release pipeline key.
+        name:
+          type: string
+          description: The human-readable name of the release pipeline.
+        description:
+          type: string
+          description: A description of the release pipeline.
+        phases:
+          type: array
+          description: The ordered phases of the release pipeline.
+          items:
+            type: object
+            properties:
+              _id:
+                type: string
+                description: The phase identifier.
+              name:
+                type: string
+                description: The phase name.
+              audiences:
+                type: array
+                description: The audiences for this phase.
+                items:
+                  type: object
+                  properties:
+                    environmentKey:
+                      type: string
+                      description: The environment key.
+                    name:
+                      type: string
+                      description: The audience name.
+        _links:
+          $ref: '#/components/schemas/Links'
     ReleasePipelineBody:
       type: object
       description: The request body for creating a release pipeline.
@@ -108,77 +179,6 @@ components:
                     name:
                       type: string
                       description: The audience name.
-    Links:
-      type: object
-      description: HATEOAS links for navigating related resources.
-      properties:
-        self:
-          type: object
-          description: A link to this resource.
-          properties:
-            href:
-              type: string
-              description: The URL of this resource.
-            type:
-              type: string
-              description: The media type.
-      additionalProperties:
-        type: object
-        properties:
-          href:
-            type: string
-            description: The URL of the linked resource.
-          type:
-            type: string
-            description: The media type.
-    ReleasePipelines:
-      type: object
-      description: A collection of release pipelines.
-      properties:
-        items:
-          type: array
-          description: The list of release pipelines.
-          items:
-            $ref: '#/components/schemas/ReleasePipeline'
-    ReleasePipeline:
-      type: object
-      description: A release pipeline for coordinating flag rollouts.
-      properties:
-        key:
-          type: string
-          description: The release pipeline key.
-        name:
-          type: string
-          description: The human-readable name of the release pipeline.
-        description:
-          type: string
-          description: A description of the release pipeline.
-        phases:
-          type: array
-          description: The ordered phases of the release pipeline.
-          items:
-            type: object
-            properties:
-              _id:
-                type: string
-                description: The phase identifier.
-              name:
-                type: string
-                description: The phase name.
-              audiences:
-                type: array
-                description: The audiences for this phase.
-                items:
-                  type: object
-                  properties:
-                    environmentKey:
-                      type: string
-                      description: The environment key.
-                    name:
-                      type: string
-                      description: The audience name.
-        _links:
-          $ref: '#/components/schemas/Links'
   parameters:
     ProjectKey:
       name: projectKey

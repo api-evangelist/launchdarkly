@@ -39,6 +39,11 @@ paths:
           description: Service unavailable. Flag data not yet available.
 components:
   schemas:
+    FlagEvaluations:
+      type: object
+      description: A map of flag keys to their evaluated results for a context.
+      additionalProperties:
+        $ref: '#/components/schemas/FlagEvaluation'
     FlagEvaluation:
       type: object
       description: The evaluated result of a single feature flag.
@@ -71,11 +76,6 @@ components:
               - RULE_MATCH
               - PREREQUISITE_FAILED
               - ERROR
-    FlagEvaluations:
-      type: object
-      description: A map of flag keys to their evaluated results for a context.
-      additionalProperties:
-        $ref: '#/components/schemas/FlagEvaluation'
   parameters:
     EnvironmentId:
       name: envId

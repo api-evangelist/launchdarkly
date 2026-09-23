@@ -1,7 +1,7 @@
 openapi: 3.2.0
 info:
   title: LaunchDarkly REST Access Tokens API
-  description: The LaunchDarkly REST API provides programmatic access to the full LaunchDarkly feature management platform. Developers can create, update, and manage feature flags, targeting rules, user segments, projects, environments, and team members. The API also supports scheduled flag changes, release pipelines, experimentation, approval workflows, and webhook integrations. Authentication is handled via personal or service access tokens, and the API follows a versioned scheme with the current default version being 20240415.
+  description: The LaunchDarkly REST API provides programmatic access to the full LaunchDarkly feature management platform.
   version: '20240415'
   contact:
     name: LaunchDarkly Support
@@ -120,17 +120,6 @@ components:
           type:
             type: string
             description: The media type.
-    AccessTokens:
-      type: object
-      description: A collection of access tokens.
-      properties:
-        items:
-          type: array
-          description: The list of access tokens.
-          items:
-            $ref: '#/components/schemas/AccessToken'
-        _links:
-          $ref: '#/components/schemas/Links'
     AccessTokenBody:
       type: object
       description: The request body for creating a new access token.
@@ -158,6 +147,17 @@ components:
         defaultApiVersion:
           type: integer
           description: The default API version for this token.
+    AccessTokens:
+      type: object
+      description: A collection of access tokens.
+      properties:
+        items:
+          type: array
+          description: The list of access tokens.
+          items:
+            $ref: '#/components/schemas/AccessToken'
+        _links:
+          $ref: '#/components/schemas/Links'
   securitySchemes:
     bearerAuth:
       type: http

@@ -1,7 +1,7 @@
 openapi: 3.2.0
 info:
   title: LaunchDarkly REST Experiments API
-  description: The LaunchDarkly REST API provides programmatic access to the full LaunchDarkly feature management platform. Developers can create, update, and manage feature flags, targeting rules, user segments, projects, environments, and team members. The API also supports scheduled flag changes, release pipelines, experimentation, approval workflows, and webhook integrations. Authentication is handled via personal or service access tokens, and the API follows a versioned scheme with the current default version being 20240415.
+  description: The LaunchDarkly REST API provides programmatic access to the full LaunchDarkly feature management platform.
   version: '20240415'
   contact:
     name: LaunchDarkly Support
@@ -78,25 +78,6 @@ paths:
           description: Unauthorized. Invalid or missing access token.
 components:
   schemas:
-    ExperimentBody:
-      type: object
-      description: The request body for creating a new experiment.
-      required:
-      - name
-      - key
-      properties:
-        name:
-          type: string
-          description: The human-readable name of the experiment.
-        key:
-          type: string
-          description: The experiment key.
-        description:
-          type: string
-          description: A description of the experiment.
-        maintainerId:
-          type: string
-          description: The member ID of the experiment maintainer.
     Experiments:
       type: object
       description: A paginated collection of experiments.
@@ -174,6 +155,25 @@ components:
           type:
             type: string
             description: The media type.
+    ExperimentBody:
+      type: object
+      description: The request body for creating a new experiment.
+      required:
+      - name
+      - key
+      properties:
+        name:
+          type: string
+          description: The human-readable name of the experiment.
+        key:
+          type: string
+          description: The experiment key.
+        description:
+          type: string
+          description: A description of the experiment.
+        maintainerId:
+          type: string
+          description: The member ID of the experiment maintainer.
   parameters:
     EnvironmentKey:
       name: environmentKey

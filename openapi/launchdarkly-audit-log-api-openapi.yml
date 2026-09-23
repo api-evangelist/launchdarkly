@@ -1,7 +1,7 @@
 openapi: 3.2.0
 info:
   title: LaunchDarkly REST Audit Log API
-  description: The LaunchDarkly REST API provides programmatic access to the full LaunchDarkly feature management platform. Developers can create, update, and manage feature flags, targeting rules, user segments, projects, environments, and team members. The API also supports scheduled flag changes, release pipelines, experimentation, approval workflows, and webhook integrations. Authentication is handled via personal or service access tokens, and the API follows a versioned scheme with the current default version being 20240415.
+  description: The LaunchDarkly REST API provides programmatic access to the full LaunchDarkly feature management platform.
   version: '20240415'
   contact:
     name: LaunchDarkly Support
@@ -90,6 +90,17 @@ paths:
           description: Audit log entry not found.
 components:
   schemas:
+    AuditLogEntries:
+      type: object
+      description: A paginated collection of audit log entries.
+      properties:
+        items:
+          type: array
+          description: The list of audit log entries.
+          items:
+            $ref: '#/components/schemas/AuditLogEntry'
+        _links:
+          $ref: '#/components/schemas/Links'
     Links:
       type: object
       description: HATEOAS links for navigating related resources.
@@ -113,6 +124,25 @@ components:
           type:
             type: string
             description: The media type.
+    MemberSummary:
+      type: object
+      description: A summary of a member who performed an action.
+      properties:
+        _id:
+          type: string
+          description: The unique identifier of the member.
+        email:
+          type: string
+          format: email
+          description: The email address of the member.
+        firstName:
+          type: string
+          description: The first name of the member.
+        lastName:
+          type: string
+          description: The last name of the member.
+        _links:
+          $ref: '#/components/schemas/Links'
     AuditLogEntry:
       type: object
       description: A single audit log entry recording a change to a resource.
@@ -150,36 +180,6 @@ components:
               resource:
                 type: string
                 description: The resource specifier.
-        _links:
-          $ref: '#/components/schemas/Links'
-    AuditLogEntries:
-      type: object
-      description: A paginated collection of audit log entries.
-      properties:
-        items:
-          type: array
-          description: The list of audit log entries.
-          items:
-            $ref: '#/components/schemas/AuditLogEntry'
-        _links:
-          $ref: '#/components/schemas/Links'
-    MemberSummary:
-      type: object
-      description: A summary of a member who performed an action.
-      properties:
-        _id:
-          type: string
-          description: The unique identifier of the member.
-        email:
-          type: string
-          format: email
-          description: The email address of the member.
-        firstName:
-          type: string
-          description: The first name of the member.
-        lastName:
-          type: string
-          description: The last name of the member.
         _links:
           $ref: '#/components/schemas/Links'
   securitySchemes:

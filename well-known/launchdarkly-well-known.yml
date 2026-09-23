@@ -1,0 +1,109 @@
+generated: '2026-09-19'
+method: probed
+source: live GET probes of every apis.yml baseURL host, the OpenAPI servers[] hosts, and the docs host
+note: 'apidocs.launchdarkly.com answers HTTP 200 with the SAME 72,904-byte JavaScript redirect shell for
+  EVERY path, including every /.well-known/* path probed. Those 200s are NOT documents and are recorded
+  as soft-404 misses. The one real hit on this provider is the OAuth 2.0 Authorization Server Metadata
+  document (RFC 8414) served by app.launchdarkly.com, which is a genuine machine-readable document and
+  is saved verbatim alongside this index.
+
+
+  MCP-host OAuth discovery added 2026-09-19 (roadmap#321/#337): the harvest visits a provider''s primary
+  hosts, and RFC 9728 protected-resource metadata lives on the MCP host, so these documents existed and
+  were invisible to the scorer. Fetched live and validated on `resource`/`issuer`; one negative control
+  per host.'
+hosts:
+- host: app.launchdarkly.com
+  documents:
+  - path: /.well-known/oauth-authorization-server
+    status: 200
+    content_type: application/json
+    file: launchdarkly-oauth-authorization-server.json
+    note: RFC 8414 OAuth 2.0 Authorization Server Metadata. Declares authorization, token, registration
+      (DCR), and revocation endpoints, PKCE S256, and the four supported scopes (reader, writer, observability,
+      offline_access).
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+- host: launchdarkly.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+  - path: /security.txt
+    status: 404
+- host: apidocs.launchdarkly.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 200
+    content_type: text/html
+    verdict: soft-404
+    note: SPA/redirect catch-all — identical 72,904-byte HTML shell for every path. Not a document.
+  - path: /.well-known/openid-configuration
+    status: 200
+    verdict: soft-404
+  - path: /.well-known/oauth-authorization-server
+    status: 200
+    verdict: soft-404
+  - path: /.well-known/api-catalog
+    status: 200
+    verdict: soft-404
+  - path: /.well-known/ai-plugin.json
+    status: 200
+    verdict: soft-404
+  - path: /.well-known/agent-card.json
+    status: 200
+    verdict: soft-404
+- host: mcp.launchdarkly.com
+  documents:
+  - path: /.well-known/oauth-protected-resource/mcp/launchdarkly
+    status: 200
+    content_type: application/json
+    note: 'RFC 9728 OAuth 2.0 Protected Resource Metadata for the hosted MCP server, advertised in the
+      WWW-Authenticate challenge on an unauthenticated tools/list call. Body: {"resource":"https://mcp.launchdarkly.com/mcp/launchdarkly",
+      "authorization_servers":["https://mcp.launchdarkly.com/mcp/launchdarkly"]}.'
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 200
+    file: launchdarkly-mcp-oauth-protected-resource.json
+    bytes: 134
+  - path: /.well-known/oauth-authorization-server/mcp/launchdarkly
+    status: 200
+    file: launchdarkly-mcp-oauth-authorization-server.json
+    bytes: 622
+  path_echo_control: passed
+x-mcp-probe:
+  probed: '2026-09-19'
+  issue: roadmap#321, roadmap#337
+  documents:
+  - host: https://mcp.launchdarkly.com
+    path: /.well-known/oauth-protected-resource
+    file: launchdarkly-mcp-oauth-protected-resource.json
+  - host: https://mcp.launchdarkly.com
+    path: /.well-known/oauth-authorization-server/mcp/launchdarkly
+    file: launchdarkly-mcp-oauth-authorization-server.json
+  validated_on: resource (RFC 9728) / issuer (RFC 8414, OIDC)
+  negative_control: one per host; a 2xx JSON object at an impossible path discards the host

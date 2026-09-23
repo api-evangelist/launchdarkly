@@ -1,0 +1,103 @@
+specification: API Commons ChangeLog
+specificationVersion: '0.1'
+provider: LaunchDarkly
+providerId: launchdarkly
+generated: '2026-08-27'
+method: searched
+source: https://launchdarkly.com/changelog/
+checked: '2026-08-27'
+http_status: 200
+docs: https://launchdarkly.com/changelog/
+note: >-
+  LaunchDarkly maintains TWO changelogs and they answer different questions. The product
+  changelog below is dated, attributed and filterable by topic. The API VERSION changelog
+  — the one that tells an integrator whether their code will break — lives inside
+  info.description of https://app.launchdarkly.com/api/v2/openapi.json and is recorded in
+  lifecycle/launchdarkly-lifecycle.yml with its EOL dates.
+scheme:
+  product: dated entries, attributed to a named author, tagged by topic
+  api: date-versioned (LD-API-Version, yyyymmdd), with a per-version EOL date
+  current_api_version: '20240415'
+surfaces:
+  - name: Product Updates
+    url: https://launchdarkly.com/changelog/
+    dated: true
+    attributed: true
+    topics: [AI Engineering, Feature Flags, Experimentation, Guarded Release, Product Analytics]
+    archive_depth: 'Monthly filters back to May 2025 (16 months) as of 2026-08-27'
+    machine_readable: false
+    note: >-
+      Server-rendered for only the first page; older entries load client-side, so only
+      the most recent batch is harvestable without a browser. No RSS or JSON feed for
+      the changelog was found.
+  - name: API version changelog
+    url: https://app.launchdarkly.com/api/v2/openapi.json
+    location: info.description
+    dated: true
+    machine_readable: true
+    breaking_changes_flagged: true
+    note: The only place breaking API changes and EOL dates are published together.
+  - name: Blog
+    url: https://launchdarkly.com/blog/feed/
+    http_status: 200
+    content_type: application/xml
+entries:
+  - date: '2026-08-26'
+    topic: AI Engineering
+    author: Paul Loeb
+    title: Use AgentControl from your Go and Java applications
+    kind: addition
+    breaking: false
+    highlights: >-
+      AI SDKs released for Go and Java. Prompts, model settings and targeting rules move
+      out of code into AgentControl configs; both SDKs report generation counts, token
+      usage, latency and errors, and both run multi-step agent graphs.
+  - date: '2026-08-26'
+    topic: AI Engineering
+    author: Paul Loeb
+    title: Serve different models to different users through your LiteLLM gateway
+    kind: addition
+    breaking: false
+    highlights: >-
+      Per-request model, prompt and parameter selection through an existing LiteLLM
+      gateway, without editing YAML, restarting the proxy or deploying code. Changes are
+      attributed and approval-gated like any flag change.
+  - date: '2026-08-26'
+    topic: AI Engineering
+    author: Paul Loeb
+    title: AgentControl now supports EU data residency
+    kind: addition
+    breaking: false
+    highlights: >-
+      Prompts, configs, variations and targeting rules can now be managed in the EU
+      instance, with the same approval workflows and audit history as feature flags.
+      Model choices are limited to providers approved for the region.
+  - date: '2026-08-26'
+    topic: AI Engineering
+    author: Paul Loeb
+    title: Read a full agent run as a single conversation
+    kind: addition
+    breaking: false
+  - date: '2026-08-26'
+    topic: AI Engineering
+    author: Paul Loeb
+    title: Use your Amazon Bedrock models in AgentControl
+    kind: addition
+    breaking: false
+window:
+  from: '2026-08-26'
+  to: '2026-08-26'
+  entries_captured: 5
+  note: >-
+    Only the server-rendered first page was harvestable; the site paginates the rest with
+    JavaScript. All five most recent entries are AgentControl/AI, which is itself the
+    finding — LaunchDarkly's shipping velocity in August 2026 is almost entirely on the
+    agent-control surface, not on feature flags.
+recent_api_changes:
+  last_breaking_version: '20240415'
+  last_breaking_date: '2024-04-15'
+  note: >-
+    No breaking REST API version has shipped in roughly 28 months. The product surface
+    moves weekly; the API contract's version axis has been still since April 2024, and
+    new capability arrives as new (beta) tags inside the current version rather than as a
+    new version.

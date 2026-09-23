@@ -1,7 +1,11 @@
 openapi: 3.2.0
 info:
   title: LaunchDarkly Dev Server Backup API
-  description: "LaunchDarkly Dev Server provides a simplified, local feature flagging server that can be used with LanchDarkly SDKs.\nThis API allows for the syncing of flags with a remote LaunchDarkly project and to configure local overrides of \nthose flags.\n"
+  description: 'LaunchDarkly Dev Server provides a simplified, local feature flagging server that can be used with LanchDarkly SDKs.
+
+    This API allows for the syncing of flags with a remote LaunchDarkly project and to configure local overrides of
+
+    those flags.'
   version: 1.0.0
 servers:
 - url: http://localhost:8765/dev

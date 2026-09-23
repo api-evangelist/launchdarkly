@@ -40,6 +40,11 @@ paths:
           description: Service unavailable. The Relay Proxy has not yet received flag data from LaunchDarkly for this environment.
 components:
   schemas:
+    FlagEvaluations:
+      type: object
+      description: A map of flag keys to their evaluated results for a context.
+      additionalProperties:
+        $ref: '#/components/schemas/FlagEvaluation'
     FlagEvaluation:
       type: object
       description: The evaluated result of a single feature flag.
@@ -72,11 +77,6 @@ components:
               - RULE_MATCH
               - PREREQUISITE_FAILED
               - ERROR
-    FlagEvaluations:
-      type: object
-      description: A map of flag keys to their evaluated results for a context.
-      additionalProperties:
-        $ref: '#/components/schemas/FlagEvaluation'
   parameters:
     ContextBase64:
       name: contextBase64

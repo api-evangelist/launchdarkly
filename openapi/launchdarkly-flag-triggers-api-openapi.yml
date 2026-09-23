@@ -1,7 +1,7 @@
 openapi: 3.2.0
 info:
   title: LaunchDarkly REST Flag Triggers API
-  description: The LaunchDarkly REST API provides programmatic access to the full LaunchDarkly feature management platform. Developers can create, update, and manage feature flags, targeting rules, user segments, projects, environments, and team members. The API also supports scheduled flag changes, release pipelines, experimentation, approval workflows, and webhook integrations. Authentication is handled via personal or service access tokens, and the API follows a versioned scheme with the current default version being 20240415.
+  description: The LaunchDarkly REST API provides programmatic access to the full LaunchDarkly feature management platform.
   version: '20240415'
   contact:
     name: LaunchDarkly Support
@@ -70,6 +70,40 @@ paths:
           description: Unauthorized. Invalid or missing access token.
 components:
   schemas:
+    FlagTriggers:
+      type: object
+      description: A collection of flag triggers.
+      properties:
+        items:
+          type: array
+          description: The list of flag triggers.
+          items:
+            $ref: '#/components/schemas/FlagTrigger'
+        _links:
+          $ref: '#/components/schemas/Links'
+    Links:
+      type: object
+      description: HATEOAS links for navigating related resources.
+      properties:
+        self:
+          type: object
+          description: A link to this resource.
+          properties:
+            href:
+              type: string
+              description: The URL of this resource.
+            type:
+              type: string
+              description: The media type.
+      additionalProperties:
+        type: object
+        properties:
+          href:
+            type: string
+            description: The URL of the linked resource.
+          type:
+            type: string
+            description: The media type.
     FlagTrigger:
       type: object
       description: A trigger that provides a unique URL for external services to toggle a feature flag.
@@ -101,29 +135,6 @@ components:
                 - turnFlagOff
         _links:
           $ref: '#/components/schemas/Links'
-    Links:
-      type: object
-      description: HATEOAS links for navigating related resources.
-      properties:
-        self:
-          type: object
-          description: A link to this resource.
-          properties:
-            href:
-              type: string
-              description: The URL of this resource.
-            type:
-              type: string
-              description: The media type.
-      additionalProperties:
-        type: object
-        properties:
-          href:
-            type: string
-            description: The URL of the linked resource.
-          type:
-            type: string
-            description: The media type.
     FlagTriggerBody:
       type: object
       description: The request body for creating a new flag trigger.
@@ -145,17 +156,6 @@ components:
                 enum:
                 - turnFlagOn
                 - turnFlagOff
-    FlagTriggers:
-      type: object
-      description: A collection of flag triggers.
-      properties:
-        items:
-          type: array
-          description: The list of flag triggers.
-          items:
-            $ref: '#/components/schemas/FlagTrigger'
-        _links:
-          $ref: '#/components/schemas/Links'
   parameters:
     FlagKey:
       name: flagKey

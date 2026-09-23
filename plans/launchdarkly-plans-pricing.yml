@@ -3,114 +3,173 @@ specificationVersion: '0.1'
 schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/Plans
 provider: LaunchDarkly
 providerId: launchdarkly
+generated: '2026-08-27'
+method: searched
+source: https://launchdarkly.com/pricing/
+http_status: 200
+checked: '2026-08-27'
 created: '2026-05-04'
-# Provenance stamped 2026-08-11: this artifact was written by the API Evangelist
-# bulk sweep dated 2026-05-04, not harvested from the provider. See roadmap#35.
-method: generated
-modified: '2026-05-04'
-reconciled: true
-tags:
-  - Feature Flags
-  - Experimentation
-  - Observability
-description: 'LaunchDarkly tiers: Developer / Foundation / Enterprise / Guardian.'
-sources:
-  - https://launchdarkly.com/pricing/
+modified: '2026-08-27'
+description: >-
+  LaunchDarkly prices on usage, not seats — service connections (one server-side SDK
+  connected to one environment for a month) and client-side MAU are the two meters, with
+  AI Runs as a third for AgentControl. Seats are explicitly unlimited and free on every
+  tier. Four tiers plus one paid add-on.
+supersedes_note: >-
+  Replaces the 2026-05-04 bulk-sweep version of this file, which was method:generated and
+  carried $12 per service connection and $10 per 1k MAU. The published page on 2026-08-27
+  states $10 per service connection and $8.33 per 1k client-side MAU billed yearly, and
+  the free tier's included quotas have changed as well. The old numbers were stale.
+currency: USD
+plan_count: 4
+addon_count: 1
 plans:
   - id: launchdarkly-developer
     name: Developer
     type: freemium
-    description: Free forever; unlimited flags and seats.
-    entries:
+    price: '0.00'
+    billing_period: month
+    tagline: One platform for features and agents. Free to start.
+    signup: self-serve, no credit card required
+    included:
       - label: Seats
-        name: seats
-        type: quota
-        metric: user
-        limit: -1
-        timeFrame: month
-        geo: global
-        unit: 1
-        price: '0.00'
-        userMultiplied: false
-    elements:
-      - name: Unlimited feature flags
-      - name: 30 SDKs
-      - name: 5K Session Replays + Errors
-      - name: 10M Logs + Traces
-      - name: A/B tests + experiments
-      - name: Unlimited seats
+        value: unlimited
+        note: No per-seat pricing on any tier; billing is usage-based.
+      - label: Feature flags
+        value: unlimited
+      - label: SDKs
+        value: 30 (13 client-side, 13 server-side, 4 edge)
+      - label: Service connections
+        value: 5 per month
+      - label: Client-side MAU
+        value: 1,000 per month
+      - label: Experimentation MAU
+        value: 100,000 per month
+      - label: Session replays
+        value: 5,000 per month
+      - label: Errors
+        value: 5,000 per month
+      - label: Logs
+        value: 10,000,000 per month
+      - label: Traces
+        value: 10,000,000 per month
+      - label: AI Runs
+        value: 5,000 per month
+      - label: Projects / environments
+        value: 1 project, 3 environments
+      - label: AgentControl data retention
+        value: 14 days
+    limits:
+      config_delivery_latency_slo: '< 300ms'
+      overage_behavior: Ingestion stops at 5K (hard stop, no overage billing)
   - id: launchdarkly-foundation
     name: Foundation
     type: paid
-    description: $12/mo per Service Connection + $10/mo per 1k client-side MAU.
+    pricing_model: pay-as-you-go
+    trial: 14 days
+    tagline: Ship features and agents to production. Scale both without hitting a ceiling.
     entries:
       - label: Per service connection
-        name: svc_conn
-        type: subscription
-        metric: month
-        limit: -1
-        timeFrame: month
-        geo: global
+        name: service_connection
+        type: metered
+        metric: connection-month
         unit: 1
-        price: '12.00'
-        userMultiplied: false
+        price: '10.00'
+        billing_period: month
+        billing_note: Billed yearly. Serverless and short-lived processes bill fractionally by connection time.
       - label: Per 1k client-side MAU
-        name: mau
+        name: client_mau
         type: metered
         metric: MAU
-        limit: -1
-        timeFrame: month
-        geo: global
         unit: 1000
-        price: '10.00'
-        userMultiplied: false
-    elements:
-      - name: Unlimited projects
-      - name: User/account/device targeting
-      - name: Scalable Observability
-      - name: Scalable Experimentation
-      - name: SSO
-      - name: Unlimited seats
+        price: '8.33'
+        billing_period: month
+        billing_note: Billed yearly.
+      - label: Additional AI Runs
+        name: ai_runs
+        type: metered
+        metric: AI Run
+        unit: 1000
+        price: '5.00'
+        billing_period: month
+    included:
+      - label: Service connections
+        value: first 5 per month included
+      - label: AI Runs
+        value: 5,000 per month
+      - label: Projects and environments
+        value: unlimited
+      - label: Session replays / errors / logs / traces
+        value: 5K / 5K / 10M / 10M per month, then pay as you go
+      - label: AgentControl data retention
+        value: 30 days
+    limits:
+      config_delivery_latency_slo: '< 200ms'
+      overage_behavior: '$5 per 1,000 additional AI Runs'
+    notes:
+      - No platform fee and no seat fee.
+      - >-
+        Custom packaging offered for Kubernetes, serverless, Python and Ruby
+        architectures, which generate a high volume of server-side connections and would
+        otherwise be penalised by per-connection pricing.
   - id: launchdarkly-enterprise
     name: Enterprise
-    type: enterprise
-    description: Custom pricing.
-    entries:
-      - label: Annual (custom)
-        name: annual
-        type: subscription
-        metric: year
-        limit: -1
-        timeFrame: year
-        geo: global
-        unit: 1
-        price: custom
-        userMultiplied: false
-    elements:
-      - name: Advanced user targeting
-      - name: Release automation
-      - name: Workflows, scheduling, approvals
-      - name: SAML/SCIM
-      - name: Custom roles & teams
+    type: custom
+    price: contact sales
+    tagline: Full Platform controls and security for engineering teams at scale.
+    trial: Enterprise trial available
+    included:
+      - Everything in Foundation
+      - Advanced user targeting (bulk targeting, large list-based and synced segments)
+      - Custom roles and teams (fine-grained permissions)
+      - Workflows, scheduling and approvals
+      - Release automation and Release Assistant
+      - SCIM user provisioning
+      - Custom number of AI Runs (contracted)
+      - AgentControl data retention 100 days
+    limits:
+      config_delivery_latency_sla: '< 150ms (SLA, not SLO)'
+      overage_behavior: Contracted true-up
+    note: >-
+      SSO and SAML are included on EVERY plan; only SCIM provisioning is gated to
+      Enterprise. Custom roles being Enterprise-only matters for agent safety: the
+      fine-grained resource-specifier authorization recommended in the MCP docs is not
+      available below this tier.
   - id: launchdarkly-guardian
     name: Guardian
-    type: enterprise
-    description: Custom pricing; adds release safety.
-    entries:
-      - label: Annual (custom)
-        name: annual
-        type: subscription
-        metric: year
-        limit: -1
-        timeFrame: year
-        geo: global
-        unit: 1
-        price: custom
-        userMultiplied: false
-    elements:
-      - name: Release Monitoring
-      - name: Guardrail Metrics
-      - name: Proactive Failure Notifications
-      - name: Auto Pause / Rollback
-      - name: Advanced Observability
-      - name: Exposure Insights
+    type: addon
+    price: contact sales
+    requires: Enterprise
+    tagline: Release safety on top of Enterprise — monitoring, guardrail metrics and automatic rollback.
+    included:
+      - Release Monitoring
+      - Guardrail Metrics (watched during every rollout to catch regressions)
+      - Proactive Failure Notifications
+      - Automatic Pause or Rollback
+      - Advanced Observability
+      - Exposure Insights
+    note: >-
+      This is the tier that automates reversal. See the reversibility block in
+      conventions/launchdarkly-conventions.yml — without Guardian, rolling back a bad
+      release is a human action.
+meters:
+  - name: Service Connection
+    definition: One server-side SDK connected to one environment for a month.
+  - name: Client-side MAU
+    definition: Each unique client-side user or device per month.
+  - name: AI Run
+    definition: Generated when you track an LLM request or run an online eval (LLM-as-a-judge).
+  - name: Session replay
+    definition: One recorded user session (a single tab instance), stored for one month.
+  - name: Error
+    definition: One unique error or exception, stored for one month.
+  - name: Log / Trace
+    definition: One log line / one span, ingested, stored and searchable for one month.
+api_access:
+  note: >-
+    The REST API is not itself a metered or gated product — it is available on every
+    tier, including the free Developer tier, and rate limits rather than plan tier are
+    what bound its use. Individual API RESOURCES are gated by feature: workflows,
+    scheduled changes, approvals, custom roles and teams are Enterprise, so calls to
+    those endpoints will fail by entitlement on lower tiers.
+  see: rate-limits/launchdarkly-rate-limits.yml

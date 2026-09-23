@@ -1,0 +1,139 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enrichment overlay for the LaunchDarkly REST API
+  version: 1.0.0
+extends: https://app.launchdarkly.com/api/v2/openapi.json
+x-provenance:
+  generated: '2026-08-27'
+  method: generated
+  source: >-
+    Authored by the API Evangelist enrichment pipeline against the harvested contract at
+    openapi/launchdarkly-rest-api-openapi.json (OpenAPI 3.0.3, 252 paths, 401 operations,
+    fetched 2026-08-27 HTTP 200). Every value asserted below is stated by LaunchDarkly in
+    its own documentation or discoverable from a probe recorded in this repo; the overlay
+    adds no capability the provider does not have.
+  target_note: >-
+    This overlay NEVER mutates openapi/launchdarkly-rest-api-openapi.json. Apply it to
+    produce an enriched copy.
+actions:
+  - target: $.info
+    description: >-
+      Record the OAuth 2.0 authorization server that the contract itself does not mention.
+      The spec declares only an ApiKey securityScheme, yet
+      https://app.launchdarkly.com/.well-known/oauth-authorization-server returns 200 with
+      a full RFC 8414 document. That is a real, anonymously discoverable capability
+      missing from the machine-readable contract.
+    update:
+      x-oauth-authorization-server: https://app.launchdarkly.com/.well-known/oauth-authorization-server
+      x-oauth-scopes: [reader, writer, observability, offline_access]
+      x-oauth-dynamic-client-registration: https://app.launchdarkly.com/trust/oauth/register/dcr
+      x-oauth-pkce: S256
+
+  - target: $.info
+    description: >-
+      Surface the agent surfaces LaunchDarkly operates alongside this REST API — a hosted
+      MCP server with 125 tools, a stdio MCP package, and an llms.txt — none of which are
+      referenced from the contract.
+    update:
+      x-mcp-endpoint: https://mcp.launchdarkly.com/mcp/launchdarkly
+      x-mcp-transport: streamable-http
+      x-mcp-auth: oauth
+      x-mcp-tools: 125
+      x-mcp-stdio-package: '@launchdarkly/mcp-server'
+      x-llms-txt: https://launchdarkly.com/docs/llms.txt
+      x-markdown-docs-convention: 'Append .md to any https://launchdarkly.com/docs/ URL for clean Markdown.'
+
+  - target: $.info
+    description: >-
+      Make the cross-cutting semantics that live in prose inside info.description
+      machine-readable. All values are the provider's own.
+    update:
+      x-api-version-header: LD-API-Version
+      x-api-version-current: '20240415'
+      x-api-version-format: yyyymmdd
+      x-beta-header: 'LD-API-Version: beta'
+      x-beta-missing-status: 403
+      x-method-override-header: X-HTTP-Method-Override
+      x-semantic-patch-content-type: 'application/json; domain-model=launchdarkly.semanticpatch'
+      x-error-envelope: '{ code, message, id }'
+      x-rfc9457: false
+      x-idempotency-key: null
+      x-authorization-scheme-prefix: none
+      x-minimum-tls: '1.2'
+
+  - target: $.info
+    description: >-
+      Record the rate-limit contract as headers rather than numbers, matching the
+      provider's explicit instruction not to hardcode limits.
+    update:
+      x-ratelimit-headers:
+        global: [X-Ratelimit-Global-Limit, X-Ratelimit-Global-Remaining, X-Ratelimit-Reset]
+        route: [X-Ratelimit-Route-Limit, X-Ratelimit-Route-Remaining, X-Ratelimit-Reset]
+        token: [X-Ratelimit-Auth-Token-Limit, X-Ratelimit-Auth-Token-Remaining, X-Ratelimit-Auth-Token-Reset]
+        ip: [Retry-After]
+      x-ratelimit-status: 429
+      x-ratelimit-numbers-published: false
+      x-ratelimit-reset-unit: epoch-milliseconds
+
+  - target: $.info
+    description: >-
+      Record the reversibility posture, with the one window LaunchDarkly actually states.
+      An agent needs to know BEFORE it writes whether the write can be taken back.
+    update:
+      x-reversibility:
+        flag-config-change:
+          reversal: restore previous flag version
+          window: 30 days
+          docs: https://launchdarkly.com/docs/home/releases/version-restore
+        flag-deprecate:
+          reversal: restore from the Deprecated list
+          window: indefinite
+        flag-archive:
+          reversal: restore from the archived list
+          window: unstated
+        flag-delete:
+          reversal: none
+        scheduled-change:
+          reversal: deleteFlagConfigScheduledChanges
+          window: before the target date passes
+
+  - target: $.servers
+    description: >-
+      The contract ships two servers (commercial and federal) but omits the EU instance,
+      which its own info.description documents as https://app.eu.launchdarkly.com.
+    update:
+      - url: https://app.eu.launchdarkly.com
+        description: ' European Union'
+        x-added-by: api-evangelist-overlay
+        x-source: 'info.description, "Federal and EU environments" section'
+        x-note: The hosted MCP server is not available on this instance.
+
+  - target: $.components.securitySchemes.ApiKey
+    description: >-
+      Spell out that the Authorization header carries the bare token with no Bearer
+      prefix, and that SDK keys are not valid here. Both facts are in the prose and
+      neither is in the scheme.
+    update:
+      description: >-
+        Personal or service access token sent as the RAW value of the Authorization
+        header — there is NO "Bearer " prefix. SDK keys, mobile keys and client-side IDs
+        CANNOT authenticate to this API and will return 401. Each token pins an
+        LD-API-Version at creation; send the header explicitly rather than relying on it.
+      x-scheme-prefix: none
+      x-not-valid-credentials: [SDK key, mobile key, client-side ID]
+      x-management: https://app.launchdarkly.com/settings/authorization
+
+  - target: $.paths..*[?(@.deprecated == true)]
+    description: >-
+      Attach the migration target to the 12 deprecated operations. Ten of them are the
+      pre-Contexts Users model, and the contract marks them deprecated without naming a
+      replacement.
+    update:
+      x-deprecation-reason: >-
+        Superseded by the Contexts model. LaunchDarkly replaced users with contexts; the
+        /api/v2/users/* and /api/v2/user-search/* surface remains for compatibility.
+      x-migration-docs: https://launchdarkly.com/docs/home/flags/contexts/intro
+      x-sunset: null
+      x-sunset-note: >-
+        No sunset date is published for individual deprecated operations. API-VERSION EOL
+        dates are published; operation-level ones are not.

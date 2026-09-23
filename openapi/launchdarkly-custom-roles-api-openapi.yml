@@ -1,7 +1,7 @@
 openapi: 3.2.0
 info:
   title: LaunchDarkly REST Custom Roles API
-  description: The LaunchDarkly REST API provides programmatic access to the full LaunchDarkly feature management platform. Developers can create, update, and manage feature flags, targeting rules, user segments, projects, environments, and team members. The API also supports scheduled flag changes, release pipelines, experimentation, approval workflows, and webhook integrations. Authentication is handled via personal or service access tokens, and the API follows a versioned scheme with the current default version being 20240415.
+  description: The LaunchDarkly REST API provides programmatic access to the full LaunchDarkly feature management platform.
   version: '20240415'
   contact:
     name: LaunchDarkly Support
@@ -137,6 +137,17 @@ components:
           description: The policy statements defining permissions.
           items:
             $ref: '#/components/schemas/Statement'
+    CustomRoles:
+      type: object
+      description: A collection of custom roles.
+      properties:
+        items:
+          type: array
+          description: The list of custom roles.
+          items:
+            $ref: '#/components/schemas/CustomRole'
+        _links:
+          $ref: '#/components/schemas/Links'
     CustomRole:
       type: object
       description: A custom role with fine-grained permissions.
@@ -158,17 +169,6 @@ components:
           description: The policy statements defining permissions.
           items:
             $ref: '#/components/schemas/Statement'
-        _links:
-          $ref: '#/components/schemas/Links'
-    CustomRoles:
-      type: object
-      description: A collection of custom roles.
-      properties:
-        items:
-          type: array
-          description: The list of custom roles.
-          items:
-            $ref: '#/components/schemas/CustomRole'
         _links:
           $ref: '#/components/schemas/Links'
   securitySchemes:

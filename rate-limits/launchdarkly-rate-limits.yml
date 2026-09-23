@@ -3,38 +3,113 @@ specificationVersion: '0.1'
 schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/RateLimits
 provider: LaunchDarkly
 providerId: launchdarkly
+generated: '2026-08-27'
+method: searched
+source: >-
+  The "Rate limiting" section the provider maintains inside info.description of
+  https://app.launchdarkly.com/api/v2/openapi.json, mirrored at
+  https://launchdarkly.com/docs/api#rate-limiting.
+docs: https://launchdarkly.com/docs/api
+checked: '2026-08-27'
 created: '2026-05-04'
-# Provenance stamped 2026-08-11: this artifact was written by the API Evangelist
-# bulk sweep dated 2026-05-04, not harvested from the provider. See roadmap#35.
-method: generated
-modified: '2026-05-04'
-reconciled: true
-tags:
-  - Rate Limiting
-  - Feature Flags
-description: LaunchDarkly REST API rate limits per token.
-sources:
-  - https://launchdarkly.com/pricing/
-  - https://launchdarkly.com/docs/api/rate-limiting
+modified: '2026-08-27'
+description: >-
+  LaunchDarkly runs three concurrent rate-limit families on the REST API plus IP-based
+  limiting, and DELIBERATELY does not publish the numbers. The published contract is the
+  HEADERS, not the limits.
+supersedes_note: >-
+  Replaces the 2026-05-04 bulk-sweep version, which was method:generated and asserted a
+  global limit of "200 requests per 10 seconds". The provider's own documentation states
+  the opposite — "We do not publicly document the specific number of calls permitted by
+  any of these limits, and these limits may change" — so that figure is removed rather
+  than carried forward. An invented number is worse than an honest unknown here, because
+  a client that hardcodes it will be wrong in both directions.
+provider_guidance: >-
+  "To reduce usage before hitting a 429 status, program against whichever rate limit
+  headers are present rather than expecting a specific header." A missing header means
+  that limit was not applied to that specific call — NOT that the limit does not exist.
+responseCodes:
+  throttled: 429
+window: 10 seconds (all three token/route/global families)
+limit_count: 4
+limits:
+  - name: Global
+    scope: account
+    shared_across: All service and personal access tokens on the account
+    window: 10 seconds
+    limit: undisclosed
+    headers:
+      limit: X-Ratelimit-Global-Limit
+      remaining: X-Ratelimit-Global-Remaining
+      reset: X-Ratelimit-Reset
+    note: >-
+      Account-wide. Exceeding it with one token degrades every other token on the
+      account — which makes an unsupervised agent a shared-fate risk for the whole org.
+  - name: Route-level
+    scope: route (URL pattern + verb)
+    shared_across: All tokens hitting the same route
+    window: 10 seconds
+    limit: undisclosed (varies by route)
+    headers:
+      limit: X-Ratelimit-Route-Limit
+      remaining: X-Ratelimit-Route-Remaining
+      reset: X-Ratelimit-Reset
+    note: >-
+      A route is one URL pattern and verb. DELETE /environments/{key} is one route; each
+      call counts against that route's bucket regardless of which environment.
+  - name: Access token
+    scope: token
+    shared_across: nothing — isolated per token
+    window: 10 seconds
+    limit: undisclosed
+    headers:
+      limit: X-Ratelimit-Auth-Token-Limit
+      remaining: X-Ratelimit-Auth-Token-Remaining
+      reset: X-Ratelimit-Auth-Token-Reset
+    note: >-
+      The only family that reports its own reset time in a dedicated header rather than
+      the shared X-Ratelimit-Reset. Also the only family whose exhaustion does not
+      affect other tokens — which is the argument for giving an agent its own service
+      token rather than sharing one.
+  - name: IP-based
+    scope: source IP
+    window: undisclosed
+    limit: undisclosed
+    headers:
+      retry_after: Retry-After
+    note: >-
+      Applies to "some API routes". Returns Retry-After in seconds instead of the
+      X-Ratelimit-* family. The provider explicitly instructs clients to wait at least
+      Retry-After seconds and to apply jitter and backoff.
 headers:
   limit: X-Ratelimit-Route-Limit
   remaining: X-Ratelimit-Route-Remaining
   reset: X-Ratelimit-Reset
   globalLimit: X-Ratelimit-Global-Limit
   globalRemaining: X-Ratelimit-Global-Remaining
-responseCodes:
-  throttled: 429
-limits:
-  - name: Per route
-    scope: token
-    metric: requests_per_10s
-    limit: varies by route
-  - name: Global
-    scope: token
-    metric: requests_per_10s
-    limit: 200
-    timeFrame: 10 seconds
-  - name: Flag evaluations (SDK streaming)
-    scope: environment
-    metric: events_per_second
-    limit: high
+  tokenLimit: X-Ratelimit-Auth-Token-Limit
+  tokenRemaining: X-Ratelimit-Auth-Token-Remaining
+  tokenReset: X-Ratelimit-Auth-Token-Reset
+  retryAfter: Retry-After
+header_standard: vendor (X-Ratelimit-*), not the IETF draft RateLimit-* headers
+reset_semantics: epoch milliseconds
+sdk_exemption:
+  applies_to: LaunchDarkly SDKs
+  rate_limited: false
+  statement: >-
+    "LaunchDarkly SDKs are never rate limited and do not use the API endpoints defined
+    here. LaunchDarkly uses a different set of approaches, including streaming/server-sent
+    events and a global CDN, to ensure availability to the routes used by LaunchDarkly SDKs."
+  note: >-
+    This is the most important operational distinction on this provider. Flag EVALUATION
+    (the hot path, via SDK streaming and CDN) is not rate limited at all. Flag
+    MANAGEMENT (the REST API) is. An agent doing bulk flag reads through the REST API is
+    on the wrong surface and will be throttled for work the SDK does for free.
+agent_guidance:
+  - Read every X-Ratelimit-* header present on every response; do not assume which family applies.
+  - Never hardcode a numeric limit — the provider states the limits may change.
+  - On 429, prefer X-Ratelimit-Auth-Token-Reset if present, then X-Ratelimit-Reset, then Retry-After.
+  - Both reset headers are epoch MILLISECONDS; Retry-After is SECONDS. Mixing the units is the obvious failure mode.
+  - >-
+    The API has no idempotency key, so a retry after a 429 on a POST is not automatically
+    safe — re-read state first. See conventions/launchdarkly-conventions.yml.
