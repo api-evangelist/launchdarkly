@@ -78,20 +78,6 @@ paths:
           description: Unauthorized. Invalid or missing access token.
 components:
   schemas:
-    Experiments:
-      type: object
-      description: A paginated collection of experiments.
-      properties:
-        items:
-          type: array
-          description: The list of experiments.
-          items:
-            $ref: '#/components/schemas/Experiment'
-        totalCount:
-          type: integer
-          description: The total number of experiments.
-        _links:
-          $ref: '#/components/schemas/Links'
     Experiment:
       type: object
       description: An experiment measuring the impact of flag variations on metrics.
@@ -132,6 +118,39 @@ components:
               description: Unix epoch timestamp when this iteration ended.
         _links:
           $ref: '#/components/schemas/Links'
+    Experiments:
+      type: object
+      description: A paginated collection of experiments.
+      properties:
+        items:
+          type: array
+          description: The list of experiments.
+          items:
+            $ref: '#/components/schemas/Experiment'
+        totalCount:
+          type: integer
+          description: The total number of experiments.
+        _links:
+          $ref: '#/components/schemas/Links'
+    ExperimentBody:
+      type: object
+      description: The request body for creating a new experiment.
+      required:
+      - name
+      - key
+      properties:
+        name:
+          type: string
+          description: The human-readable name of the experiment.
+        key:
+          type: string
+          description: The experiment key.
+        description:
+          type: string
+          description: A description of the experiment.
+        maintainerId:
+          type: string
+          description: The member ID of the experiment maintainer.
     Links:
       type: object
       description: HATEOAS links for navigating related resources.
@@ -155,39 +174,20 @@ components:
           type:
             type: string
             description: The media type.
-    ExperimentBody:
-      type: object
-      description: The request body for creating a new experiment.
-      required:
-      - name
-      - key
-      properties:
-        name:
-          type: string
-          description: The human-readable name of the experiment.
-        key:
-          type: string
-          description: The experiment key.
-        description:
-          type: string
-          description: A description of the experiment.
-        maintainerId:
-          type: string
-          description: The member ID of the experiment maintainer.
   parameters:
-    EnvironmentKey:
-      name: environmentKey
-      in: path
-      required: true
-      description: The environment key identifying a specific environment.
-      schema:
-        type: string
-        pattern: ^[a-z0-9]([a-z0-9-])*$
     ProjectKey:
       name: projectKey
       in: path
       required: true
       description: The project key identifying a LaunchDarkly project.
+      schema:
+        type: string
+        pattern: ^[a-z0-9]([a-z0-9-])*$
+    EnvironmentKey:
+      name: environmentKey
+      in: path
+      required: true
+      description: The environment key identifying a specific environment.
       schema:
         type: string
         pattern: ^[a-z0-9]([a-z0-9-])*$

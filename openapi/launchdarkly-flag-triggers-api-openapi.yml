@@ -69,6 +69,31 @@ paths:
         '401':
           description: Unauthorized. Invalid or missing access token.
 components:
+  parameters:
+    FlagKey:
+      name: flagKey
+      in: path
+      required: true
+      description: The feature flag key identifying a specific flag.
+      schema:
+        type: string
+        pattern: ^[a-z0-9]([a-z0-9._-])*$
+    ProjectKey:
+      name: projectKey
+      in: path
+      required: true
+      description: The project key identifying a LaunchDarkly project.
+      schema:
+        type: string
+        pattern: ^[a-z0-9]([a-z0-9-])*$
+    EnvironmentKey:
+      name: environmentKey
+      in: path
+      required: true
+      description: The environment key identifying a specific environment.
+      schema:
+        type: string
+        pattern: ^[a-z0-9]([a-z0-9-])*$
   schemas:
     FlagTriggers:
       type: object
@@ -81,29 +106,27 @@ components:
             $ref: '#/components/schemas/FlagTrigger'
         _links:
           $ref: '#/components/schemas/Links'
-    Links:
+    FlagTriggerBody:
       type: object
-      description: HATEOAS links for navigating related resources.
+      description: The request body for creating a new flag trigger.
+      required:
+      - instructions
       properties:
-        self:
-          type: object
-          description: A link to this resource.
-          properties:
-            href:
-              type: string
-              description: The URL of this resource.
-            type:
-              type: string
-              description: The media type.
-      additionalProperties:
-        type: object
-        properties:
-          href:
-            type: string
-            description: The URL of the linked resource.
-          type:
-            type: string
-            description: The media type.
+        comment:
+          type: string
+          description: An optional comment describing the trigger.
+        instructions:
+          type: array
+          description: The instructions to execute when the trigger fires.
+          items:
+            type: object
+            properties:
+              kind:
+                type: string
+                description: The type of instruction.
+                enum:
+                - turnFlagOn
+                - turnFlagOff
     FlagTrigger:
       type: object
       description: A trigger that provides a unique URL for external services to toggle a feature flag.
@@ -135,52 +158,29 @@ components:
                 - turnFlagOff
         _links:
           $ref: '#/components/schemas/Links'
-    FlagTriggerBody:
+    Links:
       type: object
-      description: The request body for creating a new flag trigger.
-      required:
-      - instructions
+      description: HATEOAS links for navigating related resources.
       properties:
-        comment:
-          type: string
-          description: An optional comment describing the trigger.
-        instructions:
-          type: array
-          description: The instructions to execute when the trigger fires.
-          items:
-            type: object
-            properties:
-              kind:
-                type: string
-                description: The type of instruction.
-                enum:
-                - turnFlagOn
-                - turnFlagOff
-  parameters:
-    FlagKey:
-      name: flagKey
-      in: path
-      required: true
-      description: The feature flag key identifying a specific flag.
-      schema:
-        type: string
-        pattern: ^[a-z0-9]([a-z0-9._-])*$
-    EnvironmentKey:
-      name: environmentKey
-      in: path
-      required: true
-      description: The environment key identifying a specific environment.
-      schema:
-        type: string
-        pattern: ^[a-z0-9]([a-z0-9-])*$
-    ProjectKey:
-      name: projectKey
-      in: path
-      required: true
-      description: The project key identifying a LaunchDarkly project.
-      schema:
-        type: string
-        pattern: ^[a-z0-9]([a-z0-9-])*$
+        self:
+          type: object
+          description: A link to this resource.
+          properties:
+            href:
+              type: string
+              description: The URL of this resource.
+            type:
+              type: string
+              description: The media type.
+      additionalProperties:
+        type: object
+        properties:
+          href:
+            type: string
+            description: The URL of the linked resource.
+          type:
+            type: string
+            description: The media type.
   securitySchemes:
     bearerAuth:
       type: http

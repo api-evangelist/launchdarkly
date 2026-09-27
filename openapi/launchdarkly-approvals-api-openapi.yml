@@ -78,14 +78,6 @@ components:
       schema:
         type: string
         pattern: ^[a-z0-9]([a-z0-9._-])*$
-    EnvironmentKey:
-      name: environmentKey
-      in: path
-      required: true
-      description: The environment key identifying a specific environment.
-      schema:
-        type: string
-        pattern: ^[a-z0-9]([a-z0-9-])*$
     ProjectKey:
       name: projectKey
       in: path
@@ -94,7 +86,26 @@ components:
       schema:
         type: string
         pattern: ^[a-z0-9]([a-z0-9-])*$
+    EnvironmentKey:
+      name: environmentKey
+      in: path
+      required: true
+      description: The environment key identifying a specific environment.
+      schema:
+        type: string
+        pattern: ^[a-z0-9]([a-z0-9-])*$
   schemas:
+    ApprovalRequests:
+      type: object
+      description: A collection of approval requests.
+      properties:
+        items:
+          type: array
+          description: The list of approval requests.
+          items:
+            $ref: '#/components/schemas/ApprovalRequest'
+        _links:
+          $ref: '#/components/schemas/Links'
     ApprovalRequestBody:
       type: object
       description: The request body for creating a new approval request.
@@ -117,40 +128,6 @@ components:
         comment:
           type: string
           description: An optional comment on the approval request.
-    Links:
-      type: object
-      description: HATEOAS links for navigating related resources.
-      properties:
-        self:
-          type: object
-          description: A link to this resource.
-          properties:
-            href:
-              type: string
-              description: The URL of this resource.
-            type:
-              type: string
-              description: The media type.
-      additionalProperties:
-        type: object
-        properties:
-          href:
-            type: string
-            description: The URL of the linked resource.
-          type:
-            type: string
-            description: The media type.
-    ApprovalRequests:
-      type: object
-      description: A collection of approval requests.
-      properties:
-        items:
-          type: array
-          description: The list of approval requests.
-          items:
-            $ref: '#/components/schemas/ApprovalRequest'
-        _links:
-          $ref: '#/components/schemas/Links'
     ApprovalRequest:
       type: object
       description: An approval request for a pending flag change.
@@ -178,6 +155,29 @@ components:
           description: Unix epoch timestamp when the request was created.
         _links:
           $ref: '#/components/schemas/Links'
+    Links:
+      type: object
+      description: HATEOAS links for navigating related resources.
+      properties:
+        self:
+          type: object
+          description: A link to this resource.
+          properties:
+            href:
+              type: string
+              description: The URL of this resource.
+            type:
+              type: string
+              description: The media type.
+      additionalProperties:
+        type: object
+        properties:
+          href:
+            type: string
+            description: The URL of the linked resource.
+          type:
+            type: string
+            description: The media type.
   securitySchemes:
     bearerAuth:
       type: http

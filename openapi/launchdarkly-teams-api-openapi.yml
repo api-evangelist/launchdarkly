@@ -78,6 +78,20 @@ paths:
           description: A team with the given key already exists.
 components:
   schemas:
+    Teams:
+      type: object
+      description: A paginated collection of teams.
+      properties:
+        items:
+          type: array
+          description: The list of teams.
+          items:
+            $ref: '#/components/schemas/Team'
+        totalCount:
+          type: integer
+          description: The total number of teams.
+        _links:
+          $ref: '#/components/schemas/Links'
     TeamBody:
       type: object
       description: The request body for creating a new team.
@@ -127,20 +141,6 @@ components:
           type:
             type: string
             description: The media type.
-    Teams:
-      type: object
-      description: A paginated collection of teams.
-      properties:
-        items:
-          type: array
-          description: The list of teams.
-          items:
-            $ref: '#/components/schemas/Team'
-        totalCount:
-          type: integer
-          description: The total number of teams.
-        _links:
-          $ref: '#/components/schemas/Links'
     Team:
       type: object
       description: A team of account members.

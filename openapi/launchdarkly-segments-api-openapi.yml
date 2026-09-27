@@ -148,51 +148,6 @@ paths:
           description: Segment not found.
 components:
   schemas:
-    Segments:
-      type: object
-      description: A paginated collection of user segments.
-      properties:
-        items:
-          type: array
-          description: The list of user segments.
-          items:
-            $ref: '#/components/schemas/Segment'
-        totalCount:
-          type: integer
-          description: The total number of segments.
-        _links:
-          $ref: '#/components/schemas/Links'
-    PatchOperation:
-      type: object
-      description: A JSON Patch or semantic patch request.
-      properties:
-        patch:
-          type: array
-          description: An array of JSON Patch operations.
-          items:
-            type: object
-            required:
-            - op
-            - path
-            properties:
-              op:
-                type: string
-                description: The patch operation type.
-                enum:
-                - add
-                - remove
-                - replace
-                - move
-                - copy
-                - test
-              path:
-                type: string
-                description: The JSON Pointer path to the target field.
-              value:
-                description: The value to apply for add or replace operations.
-        comment:
-          type: string
-          description: An optional comment describing the change.
     Segment:
       type: object
       description: A user segment for targeting groups of contexts.
@@ -235,6 +190,20 @@ components:
           description: The current version of this segment.
         _links:
           $ref: '#/components/schemas/Links'
+    Segments:
+      type: object
+      description: A paginated collection of user segments.
+      properties:
+        items:
+          type: array
+          description: The list of user segments.
+          items:
+            $ref: '#/components/schemas/Segment'
+        totalCount:
+          type: integer
+          description: The total number of segments.
+        _links:
+          $ref: '#/components/schemas/Links'
     Links:
       type: object
       description: HATEOAS links for navigating related resources.
@@ -258,27 +227,6 @@ components:
           type:
             type: string
             description: The media type.
-    SegmentBody:
-      type: object
-      description: The request body for creating a new user segment.
-      required:
-      - name
-      - key
-      properties:
-        name:
-          type: string
-          description: The human-readable name of the segment.
-        key:
-          type: string
-          description: The segment key.
-        description:
-          type: string
-          description: A description of the segment.
-        tags:
-          type: array
-          description: Tags to apply to the segment.
-          items:
-            type: string
     SegmentRule:
       type: object
       description: A targeting rule within a user segment.
@@ -333,15 +281,59 @@ components:
         contextKind:
           type: string
           description: The context kind to evaluate.
+    SegmentBody:
+      type: object
+      description: The request body for creating a new user segment.
+      required:
+      - name
+      - key
+      properties:
+        name:
+          type: string
+          description: The human-readable name of the segment.
+        key:
+          type: string
+          description: The segment key.
+        description:
+          type: string
+          description: A description of the segment.
+        tags:
+          type: array
+          description: Tags to apply to the segment.
+          items:
+            type: string
+    PatchOperation:
+      type: object
+      description: A JSON Patch or semantic patch request.
+      properties:
+        patch:
+          type: array
+          description: An array of JSON Patch operations.
+          items:
+            type: object
+            required:
+            - op
+            - path
+            properties:
+              op:
+                type: string
+                description: The patch operation type.
+                enum:
+                - add
+                - remove
+                - replace
+                - move
+                - copy
+                - test
+              path:
+                type: string
+                description: The JSON Pointer path to the target field.
+              value:
+                description: The value to apply for add or replace operations.
+        comment:
+          type: string
+          description: An optional comment describing the change.
   parameters:
-    EnvironmentKey:
-      name: environmentKey
-      in: path
-      required: true
-      description: The environment key identifying a specific environment.
-      schema:
-        type: string
-        pattern: ^[a-z0-9]([a-z0-9-])*$
     SegmentKey:
       name: segmentKey
       in: path
@@ -354,6 +346,14 @@ components:
       in: path
       required: true
       description: The project key identifying a LaunchDarkly project.
+      schema:
+        type: string
+        pattern: ^[a-z0-9]([a-z0-9-])*$
+    EnvironmentKey:
+      name: environmentKey
+      in: path
+      required: true
+      description: The environment key identifying a specific environment.
       schema:
         type: string
         pattern: ^[a-z0-9]([a-z0-9-])*$

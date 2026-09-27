@@ -106,6 +106,26 @@ paths:
       - Debug Sessions
 components:
   schemas:
+    DebugSessionsPage:
+      description: Paginated response of debug sessions
+      type: object
+      required:
+      - sessions
+      - total_count
+      - has_more
+      properties:
+        sessions:
+          type: array
+          items:
+            $ref: '#/components/schemas/DebugSession'
+          description: list of debug sessions
+        total_count:
+          type: integer
+          format: int64
+          description: total number of debug sessions available
+        has_more:
+          type: boolean
+          description: whether there are more results available
     DebugSession:
       description: Debug session with event count
       type: object
@@ -125,6 +145,26 @@ components:
           type: integer
           format: int64
           description: number of events associated with this debug session
+    EventsPage:
+      description: Paginated response of events
+      type: object
+      required:
+      - events
+      - total_count
+      - has_more
+      properties:
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/Event'
+          description: list of events
+        total_count:
+          type: integer
+          format: int64
+          description: total number of events available
+        has_more:
+          type: boolean
+          description: whether there are more results available
     Event:
       description: A stored event with metadata
       type: object
@@ -149,46 +189,6 @@ components:
           type: object
           description: raw event data as JSON
           x-go-type: json.RawMessage
-    EventsPage:
-      description: Paginated response of events
-      type: object
-      required:
-      - events
-      - total_count
-      - has_more
-      properties:
-        events:
-          type: array
-          items:
-            $ref: '#/components/schemas/Event'
-          description: list of events
-        total_count:
-          type: integer
-          format: int64
-          description: total number of events available
-        has_more:
-          type: boolean
-          description: whether there are more results available
-    DebugSessionsPage:
-      description: Paginated response of debug sessions
-      type: object
-      required:
-      - sessions
-      - total_count
-      - has_more
-      properties:
-        sessions:
-          type: array
-          items:
-            $ref: '#/components/schemas/DebugSession'
-          description: list of debug sessions
-        total_count:
-          type: integer
-          format: int64
-          description: total number of debug sessions available
-        has_more:
-          type: boolean
-          description: whether there are more results available
   responses:
     ErrorResponse:
       description: Error response object

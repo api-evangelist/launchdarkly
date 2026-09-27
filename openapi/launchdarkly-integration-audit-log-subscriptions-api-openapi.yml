@@ -46,6 +46,24 @@ paths:
           description: Integration not found.
 components:
   schemas:
+    IntegrationSubscriptions:
+      type: object
+      description: A collection of integration audit log subscriptions.
+      properties:
+        items:
+          type: array
+          description: The list of integration subscriptions.
+          items:
+            type: object
+            properties:
+              _id:
+                type: string
+                description: The subscription identifier.
+              name:
+                type: string
+                description: The subscription name.
+              _links:
+                $ref: '#/components/schemas/Links'
     Links:
       type: object
       description: HATEOAS links for navigating related resources.
@@ -69,24 +87,6 @@ components:
           type:
             type: string
             description: The media type.
-    IntegrationSubscriptions:
-      type: object
-      description: A collection of integration audit log subscriptions.
-      properties:
-        items:
-          type: array
-          description: The list of integration subscriptions.
-          items:
-            type: object
-            properties:
-              _id:
-                type: string
-                description: The subscription identifier.
-              name:
-                type: string
-                description: The subscription name.
-              _links:
-                $ref: '#/components/schemas/Links'
   securitySchemes:
     bearerAuth:
       type: http

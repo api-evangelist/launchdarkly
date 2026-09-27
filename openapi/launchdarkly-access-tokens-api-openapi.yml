@@ -60,6 +60,44 @@ paths:
           description: Unauthorized. Invalid or missing access token.
 components:
   schemas:
+    AccessTokens:
+      type: object
+      description: A collection of access tokens.
+      properties:
+        items:
+          type: array
+          description: The list of access tokens.
+          items:
+            $ref: '#/components/schemas/AccessToken'
+        _links:
+          $ref: '#/components/schemas/Links'
+    AccessTokenBody:
+      type: object
+      description: The request body for creating a new access token.
+      required:
+      - name
+      properties:
+        name:
+          type: string
+          description: A human-readable name for the token.
+        role:
+          type: string
+          description: The built-in role to assign.
+          enum:
+          - reader
+          - writer
+          - admin
+        customRoleIds:
+          type: array
+          description: Custom role identifiers to assign.
+          items:
+            type: string
+        serviceToken:
+          type: boolean
+          description: Whether to create a service token.
+        defaultApiVersion:
+          type: integer
+          description: The default API version for this token.
     AccessToken:
       type: object
       description: A personal or service access token.
@@ -120,44 +158,6 @@ components:
           type:
             type: string
             description: The media type.
-    AccessTokenBody:
-      type: object
-      description: The request body for creating a new access token.
-      required:
-      - name
-      properties:
-        name:
-          type: string
-          description: A human-readable name for the token.
-        role:
-          type: string
-          description: The built-in role to assign.
-          enum:
-          - reader
-          - writer
-          - admin
-        customRoleIds:
-          type: array
-          description: Custom role identifiers to assign.
-          items:
-            type: string
-        serviceToken:
-          type: boolean
-          description: Whether to create a service token.
-        defaultApiVersion:
-          type: integer
-          description: The default API version for this token.
-    AccessTokens:
-      type: object
-      description: A collection of access tokens.
-      properties:
-        items:
-          type: array
-          description: The list of access tokens.
-          items:
-            $ref: '#/components/schemas/AccessToken'
-        _links:
-          $ref: '#/components/schemas/Links'
   securitySchemes:
     bearerAuth:
       type: http
