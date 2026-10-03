@@ -48,6 +48,17 @@ paths:
           description: Unauthorized. Invalid or missing access token.
 components:
   schemas:
+    TagCollection:
+      type: object
+      description: A collection of tags.
+      properties:
+        items:
+          type: array
+          description: The list of tags.
+          items:
+            type: string
+        _links:
+          $ref: '#/components/schemas/Links'
     Links:
       type: object
       description: HATEOAS links for navigating related resources.
@@ -71,17 +82,6 @@ components:
           type:
             type: string
             description: The media type.
-    TagCollection:
-      type: object
-      description: A collection of tags.
-      properties:
-        items:
-          type: array
-          description: The list of tags.
-          items:
-            type: string
-        _links:
-          $ref: '#/components/schemas/Links'
   securitySchemes:
     bearerAuth:
       type: http

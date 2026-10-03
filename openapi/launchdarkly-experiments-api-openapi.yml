@@ -175,19 +175,19 @@ components:
             type: string
             description: The media type.
   parameters:
-    ProjectKey:
-      name: projectKey
-      in: path
-      required: true
-      description: The project key identifying a LaunchDarkly project.
-      schema:
-        type: string
-        pattern: ^[a-z0-9]([a-z0-9-])*$
     EnvironmentKey:
       name: environmentKey
       in: path
       required: true
       description: The environment key identifying a specific environment.
+      schema:
+        type: string
+        pattern: ^[a-z0-9]([a-z0-9-])*$
+    ProjectKey:
+      name: projectKey
+      in: path
+      required: true
+      description: The project key identifying a LaunchDarkly project.
       schema:
         type: string
         pattern: ^[a-z0-9]([a-z0-9-])*$

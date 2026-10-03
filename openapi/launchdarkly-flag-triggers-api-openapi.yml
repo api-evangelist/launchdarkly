@@ -70,6 +70,14 @@ paths:
           description: Unauthorized. Invalid or missing access token.
 components:
   parameters:
+    EnvironmentKey:
+      name: environmentKey
+      in: path
+      required: true
+      description: The environment key identifying a specific environment.
+      schema:
+        type: string
+        pattern: ^[a-z0-9]([a-z0-9-])*$
     FlagKey:
       name: flagKey
       in: path
@@ -86,15 +94,38 @@ components:
       schema:
         type: string
         pattern: ^[a-z0-9]([a-z0-9-])*$
-    EnvironmentKey:
-      name: environmentKey
-      in: path
-      required: true
-      description: The environment key identifying a specific environment.
-      schema:
-        type: string
-        pattern: ^[a-z0-9]([a-z0-9-])*$
   schemas:
+    FlagTrigger:
+      type: object
+      description: A trigger that provides a unique URL for external services to toggle a feature flag.
+      properties:
+        _id:
+          type: string
+          description: The unique identifier of this trigger.
+        _version:
+          type: integer
+          description: The version number of this trigger.
+        triggerUrl:
+          type: string
+          format: uri
+          description: The unique URL for triggering flag changes.
+        enabled:
+          type: boolean
+          description: Whether this trigger is enabled.
+        instructions:
+          type: array
+          description: The instructions executed when the trigger fires.
+          items:
+            type: object
+            properties:
+              kind:
+                type: string
+                description: The type of instruction to execute.
+                enum:
+                - turnFlagOn
+                - turnFlagOff
+        _links:
+          $ref: '#/components/schemas/Links'
     FlagTriggers:
       type: object
       description: A collection of flag triggers.
@@ -127,37 +158,6 @@ components:
                 enum:
                 - turnFlagOn
                 - turnFlagOff
-    FlagTrigger:
-      type: object
-      description: A trigger that provides a unique URL for external services to toggle a feature flag.
-      properties:
-        _id:
-          type: string
-          description: The unique identifier of this trigger.
-        _version:
-          type: integer
-          description: The version number of this trigger.
-        triggerUrl:
-          type: string
-          format: uri
-          description: The unique URL for triggering flag changes.
-        enabled:
-          type: boolean
-          description: Whether this trigger is enabled.
-        instructions:
-          type: array
-          description: The instructions executed when the trigger fires.
-          items:
-            type: object
-            properties:
-              kind:
-                type: string
-                description: The type of instruction to execute.
-                enum:
-                - turnFlagOn
-                - turnFlagOff
-        _links:
-          $ref: '#/components/schemas/Links'
     Links:
       type: object
       description: HATEOAS links for navigating related resources.

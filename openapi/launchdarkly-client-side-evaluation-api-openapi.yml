@@ -65,7 +65,7 @@ components:
               type: string
               description: The kind of evaluation reason.
               enum:
-              - false
+              - 'OFF'
               - FALLTHROUGH
               - TARGET_MATCH
               - RULE_MATCH

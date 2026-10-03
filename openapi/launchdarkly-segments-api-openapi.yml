@@ -147,7 +147,80 @@ paths:
         '404':
           description: Segment not found.
 components:
+  parameters:
+    SegmentKey:
+      name: segmentKey
+      in: path
+      required: true
+      description: The segment key identifying a specific user segment.
+      schema:
+        type: string
+    EnvironmentKey:
+      name: environmentKey
+      in: path
+      required: true
+      description: The environment key identifying a specific environment.
+      schema:
+        type: string
+        pattern: ^[a-z0-9]([a-z0-9-])*$
+    ProjectKey:
+      name: projectKey
+      in: path
+      required: true
+      description: The project key identifying a LaunchDarkly project.
+      schema:
+        type: string
+        pattern: ^[a-z0-9]([a-z0-9-])*$
   schemas:
+    PatchOperation:
+      type: object
+      description: A JSON Patch or semantic patch request.
+      properties:
+        patch:
+          type: array
+          description: An array of JSON Patch operations.
+          items:
+            type: object
+            required:
+            - op
+            - path
+            properties:
+              op:
+                type: string
+                description: The patch operation type.
+                enum:
+                - add
+                - remove
+                - replace
+                - move
+                - copy
+                - test
+              path:
+                type: string
+                description: The JSON Pointer path to the target field.
+              value:
+                description: The value to apply for add or replace operations.
+        comment:
+          type: string
+          description: An optional comment describing the change.
+    SegmentRule:
+      type: object
+      description: A targeting rule within a user segment.
+      properties:
+        _id:
+          type: string
+          description: The unique identifier for this rule.
+        clauses:
+          type: array
+          description: The conditions for this rule.
+          items:
+            $ref: '#/components/schemas/Clause'
+        weight:
+          type: integer
+          description: The percentage of matching contexts to include (0-100000 in thousandths of a percent).
+        bucketBy:
+          type: string
+          description: The attribute to bucket by for percentage inclusion.
     Segment:
       type: object
       description: A user segment for targeting groups of contexts.
@@ -190,6 +263,27 @@ components:
           description: The current version of this segment.
         _links:
           $ref: '#/components/schemas/Links'
+    SegmentBody:
+      type: object
+      description: The request body for creating a new user segment.
+      required:
+      - name
+      - key
+      properties:
+        name:
+          type: string
+          description: The human-readable name of the segment.
+        key:
+          type: string
+          description: The segment key.
+        description:
+          type: string
+          description: A description of the segment.
+        tags:
+          type: array
+          description: Tags to apply to the segment.
+          items:
+            type: string
     Segments:
       type: object
       description: A paginated collection of user segments.
@@ -204,47 +298,6 @@ components:
           description: The total number of segments.
         _links:
           $ref: '#/components/schemas/Links'
-    Links:
-      type: object
-      description: HATEOAS links for navigating related resources.
-      properties:
-        self:
-          type: object
-          description: A link to this resource.
-          properties:
-            href:
-              type: string
-              description: The URL of this resource.
-            type:
-              type: string
-              description: The media type.
-      additionalProperties:
-        type: object
-        properties:
-          href:
-            type: string
-            description: The URL of the linked resource.
-          type:
-            type: string
-            description: The media type.
-    SegmentRule:
-      type: object
-      description: A targeting rule within a user segment.
-      properties:
-        _id:
-          type: string
-          description: The unique identifier for this rule.
-        clauses:
-          type: array
-          description: The conditions for this rule.
-          items:
-            $ref: '#/components/schemas/Clause'
-        weight:
-          type: integer
-          description: The percentage of matching contexts to include (0-100000 in thousandths of a percent).
-        bucketBy:
-          type: string
-          description: The attribute to bucket by for percentage inclusion.
     Clause:
       type: object
       description: A condition clause used in targeting rules.
@@ -281,82 +334,29 @@ components:
         contextKind:
           type: string
           description: The context kind to evaluate.
-    SegmentBody:
+    Links:
       type: object
-      description: The request body for creating a new user segment.
-      required:
-      - name
-      - key
+      description: HATEOAS links for navigating related resources.
       properties:
-        name:
-          type: string
-          description: The human-readable name of the segment.
-        key:
-          type: string
-          description: The segment key.
-        description:
-          type: string
-          description: A description of the segment.
-        tags:
-          type: array
-          description: Tags to apply to the segment.
-          items:
+        self:
+          type: object
+          description: A link to this resource.
+          properties:
+            href:
+              type: string
+              description: The URL of this resource.
+            type:
+              type: string
+              description: The media type.
+      additionalProperties:
+        type: object
+        properties:
+          href:
             type: string
-    PatchOperation:
-      type: object
-      description: A JSON Patch or semantic patch request.
-      properties:
-        patch:
-          type: array
-          description: An array of JSON Patch operations.
-          items:
-            type: object
-            required:
-            - op
-            - path
-            properties:
-              op:
-                type: string
-                description: The patch operation type.
-                enum:
-                - add
-                - remove
-                - replace
-                - move
-                - copy
-                - test
-              path:
-                type: string
-                description: The JSON Pointer path to the target field.
-              value:
-                description: The value to apply for add or replace operations.
-        comment:
-          type: string
-          description: An optional comment describing the change.
-  parameters:
-    SegmentKey:
-      name: segmentKey
-      in: path
-      required: true
-      description: The segment key identifying a specific user segment.
-      schema:
-        type: string
-    ProjectKey:
-      name: projectKey
-      in: path
-      required: true
-      description: The project key identifying a LaunchDarkly project.
-      schema:
-        type: string
-        pattern: ^[a-z0-9]([a-z0-9-])*$
-    EnvironmentKey:
-      name: environmentKey
-      in: path
-      required: true
-      description: The environment key identifying a specific environment.
-      schema:
-        type: string
-        pattern: ^[a-z0-9]([a-z0-9-])*$
+            description: The URL of the linked resource.
+          type:
+            type: string
+            description: The media type.
   securitySchemes:
     bearerAuth:
       type: http

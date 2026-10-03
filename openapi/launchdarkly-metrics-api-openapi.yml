@@ -68,6 +68,17 @@ paths:
           description: A metric with the given key already exists.
 components:
   schemas:
+    Metrics:
+      type: object
+      description: A collection of metrics.
+      properties:
+        items:
+          type: array
+          description: The list of metrics.
+          items:
+            $ref: '#/components/schemas/Metric'
+        _links:
+          $ref: '#/components/schemas/Links'
     Metric:
       type: object
       description: A metric used to measure experiment outcomes.
@@ -100,17 +111,6 @@ components:
           type: integer
           format: int64
           description: Unix epoch timestamp when the metric was created.
-        _links:
-          $ref: '#/components/schemas/Links'
-    Metrics:
-      type: object
-      description: A collection of metrics.
-      properties:
-        items:
-          type: array
-          description: The list of metrics.
-          items:
-            $ref: '#/components/schemas/Metric'
         _links:
           $ref: '#/components/schemas/Links'
     MetricBody:

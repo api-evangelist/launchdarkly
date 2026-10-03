@@ -90,36 +90,6 @@ paths:
           description: Audit log entry not found.
 components:
   schemas:
-    AuditLogEntries:
-      type: object
-      description: A paginated collection of audit log entries.
-      properties:
-        items:
-          type: array
-          description: The list of audit log entries.
-          items:
-            $ref: '#/components/schemas/AuditLogEntry'
-        _links:
-          $ref: '#/components/schemas/Links'
-    MemberSummary:
-      type: object
-      description: A summary of a member who performed an action.
-      properties:
-        _id:
-          type: string
-          description: The unique identifier of the member.
-        email:
-          type: string
-          format: email
-          description: The email address of the member.
-        firstName:
-          type: string
-          description: The first name of the member.
-        lastName:
-          type: string
-          description: The last name of the member.
-        _links:
-          $ref: '#/components/schemas/Links'
     AuditLogEntry:
       type: object
       description: A single audit log entry recording a change to a resource.
@@ -157,6 +127,36 @@ components:
               resource:
                 type: string
                 description: The resource specifier.
+        _links:
+          $ref: '#/components/schemas/Links'
+    MemberSummary:
+      type: object
+      description: A summary of a member who performed an action.
+      properties:
+        _id:
+          type: string
+          description: The unique identifier of the member.
+        email:
+          type: string
+          format: email
+          description: The email address of the member.
+        firstName:
+          type: string
+          description: The first name of the member.
+        lastName:
+          type: string
+          description: The last name of the member.
+        _links:
+          $ref: '#/components/schemas/Links'
+    AuditLogEntries:
+      type: object
+      description: A paginated collection of audit log entries.
+      properties:
+        items:
+          type: array
+          description: The list of audit log entries.
+          items:
+            $ref: '#/components/schemas/AuditLogEntry'
         _links:
           $ref: '#/components/schemas/Links'
     Links:

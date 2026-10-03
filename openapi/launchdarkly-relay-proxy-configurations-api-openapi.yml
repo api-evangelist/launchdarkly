@@ -91,30 +91,6 @@ components:
             $ref: '#/components/schemas/Statement'
         _links:
           $ref: '#/components/schemas/Links'
-    RelayProxyConfigs:
-      type: object
-      description: A collection of Relay Proxy configurations.
-      properties:
-        items:
-          type: array
-          description: The list of Relay Proxy configurations.
-          items:
-            $ref: '#/components/schemas/RelayProxyConfig'
-    RelayProxyConfigBody:
-      type: object
-      description: The request body for creating a Relay Proxy configuration.
-      required:
-      - name
-      - policy
-      properties:
-        name:
-          type: string
-          description: A human-readable name for the configuration.
-        policy:
-          type: array
-          description: Policy statements controlling access.
-          items:
-            $ref: '#/components/schemas/Statement'
     Statement:
       type: object
       description: A policy statement controlling resource access or event filtering.
@@ -145,6 +121,30 @@ components:
           description: The actions this statement does not apply to.
           items:
             type: string
+    RelayProxyConfigBody:
+      type: object
+      description: The request body for creating a Relay Proxy configuration.
+      required:
+      - name
+      - policy
+      properties:
+        name:
+          type: string
+          description: A human-readable name for the configuration.
+        policy:
+          type: array
+          description: Policy statements controlling access.
+          items:
+            $ref: '#/components/schemas/Statement'
+    RelayProxyConfigs:
+      type: object
+      description: A collection of Relay Proxy configurations.
+      properties:
+        items:
+          type: array
+          description: The list of Relay Proxy configurations.
+          items:
+            $ref: '#/components/schemas/RelayProxyConfig'
     Links:
       type: object
       description: HATEOAS links for navigating related resources.

@@ -78,20 +78,6 @@ paths:
           description: A team with the given key already exists.
 components:
   schemas:
-    Teams:
-      type: object
-      description: A paginated collection of teams.
-      properties:
-        items:
-          type: array
-          description: The list of teams.
-          items:
-            $ref: '#/components/schemas/Team'
-        totalCount:
-          type: integer
-          description: The total number of teams.
-        _links:
-          $ref: '#/components/schemas/Links'
     TeamBody:
       type: object
       description: The request body for creating a new team.
@@ -118,29 +104,20 @@ components:
           description: Custom role keys to assign to the team.
           items:
             type: string
-    Links:
+    Teams:
       type: object
-      description: HATEOAS links for navigating related resources.
+      description: A paginated collection of teams.
       properties:
-        self:
-          type: object
-          description: A link to this resource.
-          properties:
-            href:
-              type: string
-              description: The URL of this resource.
-            type:
-              type: string
-              description: The media type.
-      additionalProperties:
-        type: object
-        properties:
-          href:
-            type: string
-            description: The URL of the linked resource.
-          type:
-            type: string
-            description: The media type.
+        items:
+          type: array
+          description: The list of teams.
+          items:
+            $ref: '#/components/schemas/Team'
+        totalCount:
+          type: integer
+          description: The total number of teams.
+        _links:
+          $ref: '#/components/schemas/Links'
     Team:
       type: object
       description: A team of account members.
@@ -175,6 +152,29 @@ components:
             type: string
         _links:
           $ref: '#/components/schemas/Links'
+    Links:
+      type: object
+      description: HATEOAS links for navigating related resources.
+      properties:
+        self:
+          type: object
+          description: A link to this resource.
+          properties:
+            href:
+              type: string
+              description: The URL of this resource.
+            type:
+              type: string
+              description: The media type.
+      additionalProperties:
+        type: object
+        properties:
+          href:
+            type: string
+            description: The URL of the linked resource.
+          type:
+            type: string
+            description: The media type.
   securitySchemes:
     bearerAuth:
       type: http

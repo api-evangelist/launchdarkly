@@ -62,51 +62,6 @@ paths:
           description: A custom role with the given key already exists.
 components:
   schemas:
-    CustomRoleBody:
-      type: object
-      description: The request body for creating a custom role.
-      required:
-      - name
-      - key
-      - policy
-      properties:
-        name:
-          type: string
-          description: The human-readable name of the custom role.
-        key:
-          type: string
-          description: The custom role key.
-        description:
-          type: string
-          description: A description of the custom role.
-        policy:
-          type: array
-          description: The policy statements defining permissions.
-          items:
-            $ref: '#/components/schemas/Statement'
-    CustomRole:
-      type: object
-      description: A custom role with fine-grained permissions.
-      properties:
-        _id:
-          type: string
-          description: The unique identifier of this custom role.
-        key:
-          type: string
-          description: The custom role key.
-        name:
-          type: string
-          description: The human-readable name of this custom role.
-        description:
-          type: string
-          description: A description of this custom role.
-        policy:
-          type: array
-          description: The policy statements defining permissions.
-          items:
-            $ref: '#/components/schemas/Statement'
-        _links:
-          $ref: '#/components/schemas/Links'
     CustomRoles:
       type: object
       description: A collection of custom roles.
@@ -148,6 +103,51 @@ components:
           description: The actions this statement does not apply to.
           items:
             type: string
+    CustomRole:
+      type: object
+      description: A custom role with fine-grained permissions.
+      properties:
+        _id:
+          type: string
+          description: The unique identifier of this custom role.
+        key:
+          type: string
+          description: The custom role key.
+        name:
+          type: string
+          description: The human-readable name of this custom role.
+        description:
+          type: string
+          description: A description of this custom role.
+        policy:
+          type: array
+          description: The policy statements defining permissions.
+          items:
+            $ref: '#/components/schemas/Statement'
+        _links:
+          $ref: '#/components/schemas/Links'
+    CustomRoleBody:
+      type: object
+      description: The request body for creating a custom role.
+      required:
+      - name
+      - key
+      - policy
+      properties:
+        name:
+          type: string
+          description: The human-readable name of the custom role.
+        key:
+          type: string
+          description: The custom role key.
+        description:
+          type: string
+          description: A description of the custom role.
+        policy:
+          type: array
+          description: The policy statements defining permissions.
+          items:
+            $ref: '#/components/schemas/Statement'
     Links:
       type: object
       description: HATEOAS links for navigating related resources.

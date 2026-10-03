@@ -105,27 +105,24 @@ paths:
       tags:
       - Debug Sessions
 components:
+  responses:
+    ErrorResponse:
+      description: Error response object
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - code
+            - message
+            properties:
+              code:
+                type: string
+                description: specific error code encountered
+              message:
+                type: string
+                description: description of the error
   schemas:
-    DebugSessionsPage:
-      description: Paginated response of debug sessions
-      type: object
-      required:
-      - sessions
-      - total_count
-      - has_more
-      properties:
-        sessions:
-          type: array
-          items:
-            $ref: '#/components/schemas/DebugSession'
-          description: list of debug sessions
-        total_count:
-          type: integer
-          format: int64
-          description: total number of debug sessions available
-        has_more:
-          type: boolean
-          description: whether there are more results available
     DebugSession:
       description: Debug session with event count
       type: object
@@ -145,23 +142,23 @@ components:
           type: integer
           format: int64
           description: number of events associated with this debug session
-    EventsPage:
-      description: Paginated response of events
+    DebugSessionsPage:
+      description: Paginated response of debug sessions
       type: object
       required:
-      - events
+      - sessions
       - total_count
       - has_more
       properties:
-        events:
+        sessions:
           type: array
           items:
-            $ref: '#/components/schemas/Event'
-          description: list of events
+            $ref: '#/components/schemas/DebugSession'
+          description: list of debug sessions
         total_count:
           type: integer
           format: int64
-          description: total number of events available
+          description: total number of debug sessions available
         has_more:
           type: boolean
           description: whether there are more results available
@@ -189,20 +186,23 @@ components:
           type: object
           description: raw event data as JSON
           x-go-type: json.RawMessage
-  responses:
-    ErrorResponse:
-      description: Error response object
-      content:
-        application/json:
-          schema:
-            type: object
-            required:
-            - code
-            - message
-            properties:
-              code:
-                type: string
-                description: specific error code encountered
-              message:
-                type: string
-                description: description of the error
+    EventsPage:
+      description: Paginated response of events
+      type: object
+      required:
+      - events
+      - total_count
+      - has_more
+      properties:
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/Event'
+          description: list of events
+        total_count:
+          type: integer
+          format: int64
+          description: total number of events available
+        has_more:
+          type: boolean
+          description: whether there are more results available

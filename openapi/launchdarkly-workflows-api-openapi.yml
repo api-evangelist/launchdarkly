@@ -43,6 +43,14 @@ paths:
           description: Flag or environment not found.
 components:
   parameters:
+    EnvironmentKey:
+      name: environmentKey
+      in: path
+      required: true
+      description: The environment key identifying a specific environment.
+      schema:
+        type: string
+        pattern: ^[a-z0-9]([a-z0-9-])*$
     FlagKey:
       name: flagKey
       in: path
@@ -56,14 +64,6 @@ components:
       in: path
       required: true
       description: The project key identifying a LaunchDarkly project.
-      schema:
-        type: string
-        pattern: ^[a-z0-9]([a-z0-9-])*$
-    EnvironmentKey:
-      name: environmentKey
-      in: path
-      required: true
-      description: The environment key identifying a specific environment.
       schema:
         type: string
         pattern: ^[a-z0-9]([a-z0-9-])*$

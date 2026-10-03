@@ -78,6 +78,42 @@ paths:
           description: A member with this email already exists.
 components:
   schemas:
+    MemberInviteBody:
+      type: object
+      description: The request body for inviting a new member.
+      required:
+      - email
+      properties:
+        email:
+          type: string
+          format: email
+          description: The email address of the person to invite.
+        role:
+          type: string
+          description: The built-in role to assign.
+          enum:
+          - reader
+          - writer
+          - admin
+        customRoles:
+          type: array
+          description: Custom role keys to assign to the new member.
+          items:
+            type: string
+    Members:
+      type: object
+      description: A paginated collection of account members.
+      properties:
+        items:
+          type: array
+          description: The list of account members.
+          items:
+            $ref: '#/components/schemas/Member'
+        totalCount:
+          type: integer
+          description: The total number of members.
+        _links:
+          $ref: '#/components/schemas/Links'
     Member:
       type: object
       description: An account member in the LaunchDarkly organization.
@@ -137,42 +173,6 @@ components:
           type:
             type: string
             description: The media type.
-    MemberInviteBody:
-      type: object
-      description: The request body for inviting a new member.
-      required:
-      - email
-      properties:
-        email:
-          type: string
-          format: email
-          description: The email address of the person to invite.
-        role:
-          type: string
-          description: The built-in role to assign.
-          enum:
-          - reader
-          - writer
-          - admin
-        customRoles:
-          type: array
-          description: Custom role keys to assign to the new member.
-          items:
-            type: string
-    Members:
-      type: object
-      description: A paginated collection of account members.
-      properties:
-        items:
-          type: array
-          description: The list of account members.
-          items:
-            $ref: '#/components/schemas/Member'
-        totalCount:
-          type: integer
-          description: The total number of members.
-        _links:
-          $ref: '#/components/schemas/Links'
   securitySchemes:
     bearerAuth:
       type: http

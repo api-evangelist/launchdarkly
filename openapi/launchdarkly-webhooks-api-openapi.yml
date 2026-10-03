@@ -121,21 +121,13 @@ paths:
         '404':
           description: Webhook not found.
 components:
-  parameters:
-    WebhookId:
-      name: webhookId
-      in: path
-      required: true
-      description: The unique identifier of a webhook.
-      schema:
-        type: string
   schemas:
     WebhookBody:
       type: object
       description: The request body for creating a new webhook.
       required:
       - url
-      - true
+      - 'on'
       properties:
         url:
           type: string
@@ -144,7 +136,7 @@ components:
         secret:
           type: string
           description: A shared secret for signing webhook payloads.
-        true:
+        'on':
           type: boolean
           description: Whether the webhook should be enabled.
         name:
@@ -160,29 +152,37 @@ components:
           description: Policy statements filtering which events trigger this webhook.
           items:
             $ref: '#/components/schemas/Statement'
-    Links:
+    PatchOperation:
       type: object
-      description: HATEOAS links for navigating related resources.
+      description: A JSON Patch or semantic patch request.
       properties:
-        self:
-          type: object
-          description: A link to this resource.
-          properties:
-            href:
-              type: string
-              description: The URL of this resource.
-            type:
-              type: string
-              description: The media type.
-      additionalProperties:
-        type: object
-        properties:
-          href:
-            type: string
-            description: The URL of the linked resource.
-          type:
-            type: string
-            description: The media type.
+        patch:
+          type: array
+          description: An array of JSON Patch operations.
+          items:
+            type: object
+            required:
+            - op
+            - path
+            properties:
+              op:
+                type: string
+                description: The patch operation type.
+                enum:
+                - add
+                - remove
+                - replace
+                - move
+                - copy
+                - test
+              path:
+                type: string
+                description: The JSON Pointer path to the target field.
+              value:
+                description: The value to apply for add or replace operations.
+        comment:
+          type: string
+          description: An optional comment describing the change.
     Webhooks:
       type: object
       description: A collection of webhooks.
@@ -238,7 +238,7 @@ components:
         secret:
           type: string
           description: The shared secret used to sign webhook payloads.
-        true:
+        'on':
           type: boolean
           description: Whether this webhook is currently enabled.
         name:
@@ -256,37 +256,37 @@ components:
             $ref: '#/components/schemas/Statement'
         _links:
           $ref: '#/components/schemas/Links'
-    PatchOperation:
+    Links:
       type: object
-      description: A JSON Patch or semantic patch request.
+      description: HATEOAS links for navigating related resources.
       properties:
-        patch:
-          type: array
-          description: An array of JSON Patch operations.
-          items:
-            type: object
-            required:
-            - op
-            - path
-            properties:
-              op:
-                type: string
-                description: The patch operation type.
-                enum:
-                - add
-                - remove
-                - replace
-                - move
-                - copy
-                - test
-              path:
-                type: string
-                description: The JSON Pointer path to the target field.
-              value:
-                description: The value to apply for add or replace operations.
-        comment:
-          type: string
-          description: An optional comment describing the change.
+        self:
+          type: object
+          description: A link to this resource.
+          properties:
+            href:
+              type: string
+              description: The URL of this resource.
+            type:
+              type: string
+              description: The media type.
+      additionalProperties:
+        type: object
+        properties:
+          href:
+            type: string
+            description: The URL of the linked resource.
+          type:
+            type: string
+            description: The media type.
+  parameters:
+    WebhookId:
+      name: webhookId
+      in: path
+      required: true
+      description: The unique identifier of a webhook.
+      schema:
+        type: string
   securitySchemes:
     bearerAuth:
       type: http
