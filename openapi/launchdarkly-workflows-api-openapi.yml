@@ -68,24 +68,6 @@ components:
         type: string
         pattern: ^[a-z0-9]([a-z0-9-])*$
   schemas:
-    Workflows:
-      type: object
-      description: A collection of workflows.
-      properties:
-        items:
-          type: array
-          description: The list of workflows.
-          items:
-            type: object
-            properties:
-              _id:
-                type: string
-                description: The workflow identifier.
-              name:
-                type: string
-                description: The workflow name.
-              _links:
-                $ref: '#/components/schemas/Links'
     Links:
       type: object
       description: HATEOAS links for navigating related resources.
@@ -109,6 +91,24 @@ components:
           type:
             type: string
             description: The media type.
+    Workflows:
+      type: object
+      description: A collection of workflows.
+      properties:
+        items:
+          type: array
+          description: The list of workflows.
+          items:
+            type: object
+            properties:
+              _id:
+                type: string
+                description: The workflow identifier.
+              name:
+                type: string
+                description: The workflow name.
+              _links:
+                $ref: '#/components/schemas/Links'
   securitySchemes:
     bearerAuth:
       type: http

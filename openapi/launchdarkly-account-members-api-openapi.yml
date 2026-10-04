@@ -78,28 +78,29 @@ paths:
           description: A member with this email already exists.
 components:
   schemas:
-    MemberInviteBody:
+    Links:
       type: object
-      description: The request body for inviting a new member.
-      required:
-      - email
+      description: HATEOAS links for navigating related resources.
       properties:
-        email:
-          type: string
-          format: email
-          description: The email address of the person to invite.
-        role:
-          type: string
-          description: The built-in role to assign.
-          enum:
-          - reader
-          - writer
-          - admin
-        customRoles:
-          type: array
-          description: Custom role keys to assign to the new member.
-          items:
+        self:
+          type: object
+          description: A link to this resource.
+          properties:
+            href:
+              type: string
+              description: The URL of this resource.
+            type:
+              type: string
+              description: The media type.
+      additionalProperties:
+        type: object
+        properties:
+          href:
             type: string
+            description: The URL of the linked resource.
+          type:
+            type: string
+            description: The media type.
     Members:
       type: object
       description: A paginated collection of account members.
@@ -150,29 +151,28 @@ components:
           description: Unix epoch timestamp of the last activity.
         _links:
           $ref: '#/components/schemas/Links'
-    Links:
+    MemberInviteBody:
       type: object
-      description: HATEOAS links for navigating related resources.
+      description: The request body for inviting a new member.
+      required:
+      - email
       properties:
-        self:
-          type: object
-          description: A link to this resource.
-          properties:
-            href:
-              type: string
-              description: The URL of this resource.
-            type:
-              type: string
-              description: The media type.
-      additionalProperties:
-        type: object
-        properties:
-          href:
+        email:
+          type: string
+          format: email
+          description: The email address of the person to invite.
+        role:
+          type: string
+          description: The built-in role to assign.
+          enum:
+          - reader
+          - writer
+          - admin
+        customRoles:
+          type: array
+          description: Custom role keys to assign to the new member.
+          items:
             type: string
-            description: The URL of the linked resource.
-          type:
-            type: string
-            description: The media type.
   securitySchemes:
     bearerAuth:
       type: http

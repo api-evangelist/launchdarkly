@@ -38,6 +38,21 @@ paths:
         '503':
           description: Service unavailable. Flag data not yet available.
 components:
+  parameters:
+    ContextBase64:
+      name: contextBase64
+      in: path
+      required: true
+      description: A base64-encoded JSON representation of the evaluation context.
+      schema:
+        type: string
+    EnvironmentId:
+      name: envId
+      in: path
+      required: true
+      description: The client-side environment ID.
+      schema:
+        type: string
   schemas:
     FlagEvaluation:
       type: object
@@ -76,21 +91,6 @@ components:
       description: A map of flag keys to their evaluated results for a context.
       additionalProperties:
         $ref: '#/components/schemas/FlagEvaluation'
-  parameters:
-    ContextBase64:
-      name: contextBase64
-      in: path
-      required: true
-      description: A base64-encoded JSON representation of the evaluation context.
-      schema:
-        type: string
-    EnvironmentId:
-      name: envId
-      in: path
-      required: true
-      description: The client-side environment ID.
-      schema:
-        type: string
   securitySchemes:
     sdkKeyAuth:
       type: apiKey

@@ -121,37 +121,26 @@ paths:
         '404':
           description: Webhook not found.
 components:
+  parameters:
+    WebhookId:
+      name: webhookId
+      in: path
+      required: true
+      description: The unique identifier of a webhook.
+      schema:
+        type: string
   schemas:
-    WebhookBody:
+    Webhooks:
       type: object
-      description: The request body for creating a new webhook.
-      required:
-      - url
-      - 'on'
+      description: A collection of webhooks.
       properties:
-        url:
-          type: string
-          format: uri
-          description: The URL to receive webhook POST requests.
-        secret:
-          type: string
-          description: A shared secret for signing webhook payloads.
-        'on':
-          type: boolean
-          description: Whether the webhook should be enabled.
-        name:
-          type: string
-          description: A human-readable name for the webhook.
-        tags:
+        items:
           type: array
-          description: Tags to apply to the webhook.
+          description: The list of webhooks.
           items:
-            type: string
-        statements:
-          type: array
-          description: Policy statements filtering which events trigger this webhook.
-          items:
-            $ref: '#/components/schemas/Statement'
+            $ref: '#/components/schemas/Webhook'
+        _links:
+          $ref: '#/components/schemas/Links'
     PatchOperation:
       type: object
       description: A JSON Patch or semantic patch request.
@@ -183,17 +172,29 @@ components:
         comment:
           type: string
           description: An optional comment describing the change.
-    Webhooks:
+    Links:
       type: object
-      description: A collection of webhooks.
+      description: HATEOAS links for navigating related resources.
       properties:
-        items:
-          type: array
-          description: The list of webhooks.
-          items:
-            $ref: '#/components/schemas/Webhook'
-        _links:
-          $ref: '#/components/schemas/Links'
+        self:
+          type: object
+          description: A link to this resource.
+          properties:
+            href:
+              type: string
+              description: The URL of this resource.
+            type:
+              type: string
+              description: The media type.
+      additionalProperties:
+        type: object
+        properties:
+          href:
+            type: string
+            description: The URL of the linked resource.
+          type:
+            type: string
+            description: The media type.
     Statement:
       type: object
       description: A policy statement controlling resource access or event filtering.
@@ -224,6 +225,36 @@ components:
           description: The actions this statement does not apply to.
           items:
             type: string
+    WebhookBody:
+      type: object
+      description: The request body for creating a new webhook.
+      required:
+      - url
+      - 'on'
+      properties:
+        url:
+          type: string
+          format: uri
+          description: The URL to receive webhook POST requests.
+        secret:
+          type: string
+          description: A shared secret for signing webhook payloads.
+        'on':
+          type: boolean
+          description: Whether the webhook should be enabled.
+        name:
+          type: string
+          description: A human-readable name for the webhook.
+        tags:
+          type: array
+          description: Tags to apply to the webhook.
+          items:
+            type: string
+        statements:
+          type: array
+          description: Policy statements filtering which events trigger this webhook.
+          items:
+            $ref: '#/components/schemas/Statement'
     Webhook:
       type: object
       description: A webhook configuration for receiving change notifications.
@@ -256,37 +287,6 @@ components:
             $ref: '#/components/schemas/Statement'
         _links:
           $ref: '#/components/schemas/Links'
-    Links:
-      type: object
-      description: HATEOAS links for navigating related resources.
-      properties:
-        self:
-          type: object
-          description: A link to this resource.
-          properties:
-            href:
-              type: string
-              description: The URL of this resource.
-            type:
-              type: string
-              description: The media type.
-      additionalProperties:
-        type: object
-        properties:
-          href:
-            type: string
-            description: The URL of the linked resource.
-          type:
-            type: string
-            description: The media type.
-  parameters:
-    WebhookId:
-      name: webhookId
-      in: path
-      required: true
-      description: The unique identifier of a webhook.
-      schema:
-        type: string
   securitySchemes:
     bearerAuth:
       type: http

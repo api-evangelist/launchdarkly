@@ -147,31 +147,39 @@ paths:
         '404':
           description: Segment not found.
 components:
-  parameters:
-    SegmentKey:
-      name: segmentKey
-      in: path
-      required: true
-      description: The segment key identifying a specific user segment.
-      schema:
-        type: string
-    EnvironmentKey:
-      name: environmentKey
-      in: path
-      required: true
-      description: The environment key identifying a specific environment.
-      schema:
-        type: string
-        pattern: ^[a-z0-9]([a-z0-9-])*$
-    ProjectKey:
-      name: projectKey
-      in: path
-      required: true
-      description: The project key identifying a LaunchDarkly project.
-      schema:
-        type: string
-        pattern: ^[a-z0-9]([a-z0-9-])*$
   schemas:
+    SegmentRule:
+      type: object
+      description: A targeting rule within a user segment.
+      properties:
+        _id:
+          type: string
+          description: The unique identifier for this rule.
+        clauses:
+          type: array
+          description: The conditions for this rule.
+          items:
+            $ref: '#/components/schemas/Clause'
+        weight:
+          type: integer
+          description: The percentage of matching contexts to include (0-100000 in thousandths of a percent).
+        bucketBy:
+          type: string
+          description: The attribute to bucket by for percentage inclusion.
+    Segments:
+      type: object
+      description: A paginated collection of user segments.
+      properties:
+        items:
+          type: array
+          description: The list of user segments.
+          items:
+            $ref: '#/components/schemas/Segment'
+        totalCount:
+          type: integer
+          description: The total number of segments.
+        _links:
+          $ref: '#/components/schemas/Links'
     PatchOperation:
       type: object
       description: A JSON Patch or semantic patch request.
@@ -203,24 +211,42 @@ components:
         comment:
           type: string
           description: An optional comment describing the change.
-    SegmentRule:
+    Clause:
       type: object
-      description: A targeting rule within a user segment.
+      description: A condition clause used in targeting rules.
       properties:
-        _id:
+        attribute:
           type: string
-          description: The unique identifier for this rule.
-        clauses:
+          description: The context attribute to evaluate.
+        op:
+          type: string
+          description: The comparison operator.
+          enum:
+          - in
+          - endsWith
+          - startsWith
+          - matches
+          - contains
+          - lessThan
+          - lessThanOrEqual
+          - greaterThan
+          - greaterThanOrEqual
+          - before
+          - after
+          - segmentMatch
+          - semVerEqual
+          - semVerLessThan
+          - semVerGreaterThan
+        values:
           type: array
-          description: The conditions for this rule.
-          items:
-            $ref: '#/components/schemas/Clause'
-        weight:
-          type: integer
-          description: The percentage of matching contexts to include (0-100000 in thousandths of a percent).
-        bucketBy:
+          description: The values to compare against.
+          items: {}
+        negate:
+          type: boolean
+          description: Whether to negate the clause.
+        contextKind:
           type: string
-          description: The attribute to bucket by for percentage inclusion.
+          description: The context kind to evaluate.
     Segment:
       type: object
       description: A user segment for targeting groups of contexts.
@@ -263,77 +289,6 @@ components:
           description: The current version of this segment.
         _links:
           $ref: '#/components/schemas/Links'
-    SegmentBody:
-      type: object
-      description: The request body for creating a new user segment.
-      required:
-      - name
-      - key
-      properties:
-        name:
-          type: string
-          description: The human-readable name of the segment.
-        key:
-          type: string
-          description: The segment key.
-        description:
-          type: string
-          description: A description of the segment.
-        tags:
-          type: array
-          description: Tags to apply to the segment.
-          items:
-            type: string
-    Segments:
-      type: object
-      description: A paginated collection of user segments.
-      properties:
-        items:
-          type: array
-          description: The list of user segments.
-          items:
-            $ref: '#/components/schemas/Segment'
-        totalCount:
-          type: integer
-          description: The total number of segments.
-        _links:
-          $ref: '#/components/schemas/Links'
-    Clause:
-      type: object
-      description: A condition clause used in targeting rules.
-      properties:
-        attribute:
-          type: string
-          description: The context attribute to evaluate.
-        op:
-          type: string
-          description: The comparison operator.
-          enum:
-          - in
-          - endsWith
-          - startsWith
-          - matches
-          - contains
-          - lessThan
-          - lessThanOrEqual
-          - greaterThan
-          - greaterThanOrEqual
-          - before
-          - after
-          - segmentMatch
-          - semVerEqual
-          - semVerLessThan
-          - semVerGreaterThan
-        values:
-          type: array
-          description: The values to compare against.
-          items: {}
-        negate:
-          type: boolean
-          description: Whether to negate the clause.
-        contextKind:
-          type: string
-          description: The context kind to evaluate.
     Links:
       type: object
       description: HATEOAS links for navigating related resources.
@@ -357,6 +312,51 @@ components:
           type:
             type: string
             description: The media type.
+    SegmentBody:
+      type: object
+      description: The request body for creating a new user segment.
+      required:
+      - name
+      - key
+      properties:
+        name:
+          type: string
+          description: The human-readable name of the segment.
+        key:
+          type: string
+          description: The segment key.
+        description:
+          type: string
+          description: A description of the segment.
+        tags:
+          type: array
+          description: Tags to apply to the segment.
+          items:
+            type: string
+  parameters:
+    EnvironmentKey:
+      name: environmentKey
+      in: path
+      required: true
+      description: The environment key identifying a specific environment.
+      schema:
+        type: string
+        pattern: ^[a-z0-9]([a-z0-9-])*$
+    SegmentKey:
+      name: segmentKey
+      in: path
+      required: true
+      description: The segment key identifying a specific user segment.
+      schema:
+        type: string
+    ProjectKey:
+      name: projectKey
+      in: path
+      required: true
+      description: The project key identifying a LaunchDarkly project.
+      schema:
+        type: string
+        pattern: ^[a-z0-9]([a-z0-9-])*$
   securitySchemes:
     bearerAuth:
       type: http

@@ -68,17 +68,6 @@ paths:
           description: A metric with the given key already exists.
 components:
   schemas:
-    Metrics:
-      type: object
-      description: A collection of metrics.
-      properties:
-        items:
-          type: array
-          description: The list of metrics.
-          items:
-            $ref: '#/components/schemas/Metric'
-        _links:
-          $ref: '#/components/schemas/Links'
     Metric:
       type: object
       description: A metric used to measure experiment outcomes.
@@ -113,6 +102,29 @@ components:
           description: Unix epoch timestamp when the metric was created.
         _links:
           $ref: '#/components/schemas/Links'
+    Links:
+      type: object
+      description: HATEOAS links for navigating related resources.
+      properties:
+        self:
+          type: object
+          description: A link to this resource.
+          properties:
+            href:
+              type: string
+              description: The URL of this resource.
+            type:
+              type: string
+              description: The media type.
+      additionalProperties:
+        type: object
+        properties:
+          href:
+            type: string
+            description: The URL of the linked resource.
+          type:
+            type: string
+            description: The media type.
     MetricBody:
       type: object
       description: The request body for creating a new metric.
@@ -162,29 +174,17 @@ components:
               url:
                 type: string
                 description: The URL pattern value.
-    Links:
+    Metrics:
       type: object
-      description: HATEOAS links for navigating related resources.
+      description: A collection of metrics.
       properties:
-        self:
-          type: object
-          description: A link to this resource.
-          properties:
-            href:
-              type: string
-              description: The URL of this resource.
-            type:
-              type: string
-              description: The media type.
-      additionalProperties:
-        type: object
-        properties:
-          href:
-            type: string
-            description: The URL of the linked resource.
-          type:
-            type: string
-            description: The media type.
+        items:
+          type: array
+          description: The list of metrics.
+          items:
+            $ref: '#/components/schemas/Metric'
+        _links:
+          $ref: '#/components/schemas/Links'
   parameters:
     ProjectKey:
       name: projectKey

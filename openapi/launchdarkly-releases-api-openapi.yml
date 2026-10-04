@@ -66,57 +66,6 @@ paths:
           description: Unauthorized. Invalid or missing access token.
 components:
   schemas:
-    ReleasePipelineBody:
-      type: object
-      description: The request body for creating a release pipeline.
-      required:
-      - name
-      - key
-      - phases
-      properties:
-        name:
-          type: string
-          description: The human-readable name of the release pipeline.
-        key:
-          type: string
-          description: The release pipeline key.
-        description:
-          type: string
-          description: A description of the release pipeline.
-        phases:
-          type: array
-          description: The ordered phases of the release pipeline.
-          items:
-            type: object
-            required:
-            - audiences
-            properties:
-              name:
-                type: string
-                description: The phase name.
-              audiences:
-                type: array
-                description: The audiences for this phase.
-                items:
-                  type: object
-                  required:
-                  - environmentKey
-                  properties:
-                    environmentKey:
-                      type: string
-                      description: The environment key.
-                    name:
-                      type: string
-                      description: The audience name.
-    ReleasePipelines:
-      type: object
-      description: A collection of release pipelines.
-      properties:
-        items:
-          type: array
-          description: The list of release pipelines.
-          items:
-            $ref: '#/components/schemas/ReleasePipeline'
     ReleasePipeline:
       type: object
       description: A release pipeline for coordinating flag rollouts.
@@ -179,6 +128,57 @@ components:
           type:
             type: string
             description: The media type.
+    ReleasePipelineBody:
+      type: object
+      description: The request body for creating a release pipeline.
+      required:
+      - name
+      - key
+      - phases
+      properties:
+        name:
+          type: string
+          description: The human-readable name of the release pipeline.
+        key:
+          type: string
+          description: The release pipeline key.
+        description:
+          type: string
+          description: A description of the release pipeline.
+        phases:
+          type: array
+          description: The ordered phases of the release pipeline.
+          items:
+            type: object
+            required:
+            - audiences
+            properties:
+              name:
+                type: string
+                description: The phase name.
+              audiences:
+                type: array
+                description: The audiences for this phase.
+                items:
+                  type: object
+                  required:
+                  - environmentKey
+                  properties:
+                    environmentKey:
+                      type: string
+                      description: The environment key.
+                    name:
+                      type: string
+                      description: The audience name.
+    ReleasePipelines:
+      type: object
+      description: A collection of release pipelines.
+      properties:
+        items:
+          type: array
+          description: The list of release pipelines.
+          items:
+            $ref: '#/components/schemas/ReleasePipeline'
   parameters:
     ProjectKey:
       name: projectKey

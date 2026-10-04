@@ -142,6 +142,23 @@ paths:
         '404':
           description: Environment or project not found.
 components:
+  parameters:
+    EnvironmentKey:
+      name: environmentKey
+      in: path
+      required: true
+      description: The environment key identifying a specific environment.
+      schema:
+        type: string
+        pattern: ^[a-z0-9]([a-z0-9-])*$
+    ProjectKey:
+      name: projectKey
+      in: path
+      required: true
+      description: The project key identifying a LaunchDarkly project.
+      schema:
+        type: string
+        pattern: ^[a-z0-9]([a-z0-9-])*$
   schemas:
     PatchOperation:
       type: object
@@ -174,36 +191,6 @@ components:
         comment:
           type: string
           description: An optional comment describing the change.
-    EnvironmentBody:
-      type: object
-      description: The request body for creating a new environment.
-      required:
-      - name
-      - key
-      - color
-      properties:
-        name:
-          type: string
-          description: The human-readable name of the environment.
-        key:
-          type: string
-          description: The environment key.
-          pattern: ^[a-z0-9]([a-z0-9-])*$
-        color:
-          type: string
-          description: The color swatch for the environment in the dashboard.
-          pattern: ^[0-9a-fA-F]{6}$
-        defaultTtl:
-          type: integer
-          description: The default time-to-live in minutes.
-        secureMode:
-          type: boolean
-          description: Whether to enable secure mode.
-        tags:
-          type: array
-          description: Tags to apply to the environment.
-          items:
-            type: string
     Environments:
       type: object
       description: A collection of environments.
@@ -218,6 +205,29 @@ components:
           description: The total number of environments.
         _links:
           $ref: '#/components/schemas/Links'
+    Links:
+      type: object
+      description: HATEOAS links for navigating related resources.
+      properties:
+        self:
+          type: object
+          description: A link to this resource.
+          properties:
+            href:
+              type: string
+              description: The URL of this resource.
+            type:
+              type: string
+              description: The media type.
+      additionalProperties:
+        type: object
+        properties:
+          href:
+            type: string
+            description: The URL of the linked resource.
+          type:
+            type: string
+            description: The media type.
     Environment:
       type: object
       description: An environment within a project, such as production or staging.
@@ -254,46 +264,36 @@ components:
             type: string
         _links:
           $ref: '#/components/schemas/Links'
-    Links:
+    EnvironmentBody:
       type: object
-      description: HATEOAS links for navigating related resources.
+      description: The request body for creating a new environment.
+      required:
+      - name
+      - key
+      - color
       properties:
-        self:
-          type: object
-          description: A link to this resource.
-          properties:
-            href:
-              type: string
-              description: The URL of this resource.
-            type:
-              type: string
-              description: The media type.
-      additionalProperties:
-        type: object
-        properties:
-          href:
+        name:
+          type: string
+          description: The human-readable name of the environment.
+        key:
+          type: string
+          description: The environment key.
+          pattern: ^[a-z0-9]([a-z0-9-])*$
+        color:
+          type: string
+          description: The color swatch for the environment in the dashboard.
+          pattern: ^[0-9a-fA-F]{6}$
+        defaultTtl:
+          type: integer
+          description: The default time-to-live in minutes.
+        secureMode:
+          type: boolean
+          description: Whether to enable secure mode.
+        tags:
+          type: array
+          description: Tags to apply to the environment.
+          items:
             type: string
-            description: The URL of the linked resource.
-          type:
-            type: string
-            description: The media type.
-  parameters:
-    EnvironmentKey:
-      name: environmentKey
-      in: path
-      required: true
-      description: The environment key identifying a specific environment.
-      schema:
-        type: string
-        pattern: ^[a-z0-9]([a-z0-9-])*$
-    ProjectKey:
-      name: projectKey
-      in: path
-      required: true
-      description: The project key identifying a LaunchDarkly project.
-      schema:
-        type: string
-        pattern: ^[a-z0-9]([a-z0-9-])*$
   securitySchemes:
     bearerAuth:
       type: http

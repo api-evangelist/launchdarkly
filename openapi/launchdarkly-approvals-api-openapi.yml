@@ -95,28 +95,6 @@ components:
         type: string
         pattern: ^[a-z0-9]([a-z0-9-])*$
   schemas:
-    ApprovalRequestBody:
-      type: object
-      description: The request body for creating a new approval request.
-      required:
-      - description
-      properties:
-        description:
-          type: string
-          description: A description of the proposed change.
-        instructions:
-          type: array
-          description: The semantic patch instructions for the proposed change.
-          items:
-            type: object
-        notifyMemberIds:
-          type: array
-          description: Member IDs to notify about this approval request.
-          items:
-            type: string
-        comment:
-          type: string
-          description: An optional comment on the approval request.
     ApprovalRequest:
       type: object
       description: An approval request for a pending flag change.
@@ -144,17 +122,6 @@ components:
           description: Unix epoch timestamp when the request was created.
         _links:
           $ref: '#/components/schemas/Links'
-    ApprovalRequests:
-      type: object
-      description: A collection of approval requests.
-      properties:
-        items:
-          type: array
-          description: The list of approval requests.
-          items:
-            $ref: '#/components/schemas/ApprovalRequest'
-        _links:
-          $ref: '#/components/schemas/Links'
     Links:
       type: object
       description: HATEOAS links for navigating related resources.
@@ -178,6 +145,39 @@ components:
           type:
             type: string
             description: The media type.
+    ApprovalRequests:
+      type: object
+      description: A collection of approval requests.
+      properties:
+        items:
+          type: array
+          description: The list of approval requests.
+          items:
+            $ref: '#/components/schemas/ApprovalRequest'
+        _links:
+          $ref: '#/components/schemas/Links'
+    ApprovalRequestBody:
+      type: object
+      description: The request body for creating a new approval request.
+      required:
+      - description
+      properties:
+        description:
+          type: string
+          description: A description of the proposed change.
+        instructions:
+          type: array
+          description: The semantic patch instructions for the proposed change.
+          items:
+            type: object
+        notifyMemberIds:
+          type: array
+          description: Member IDs to notify about this approval request.
+          items:
+            type: string
+        comment:
+          type: string
+          description: An optional comment on the approval request.
   securitySchemes:
     bearerAuth:
       type: http

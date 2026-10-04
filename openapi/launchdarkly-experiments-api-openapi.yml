@@ -77,7 +77,66 @@ paths:
         '401':
           description: Unauthorized. Invalid or missing access token.
 components:
+  parameters:
+    EnvironmentKey:
+      name: environmentKey
+      in: path
+      required: true
+      description: The environment key identifying a specific environment.
+      schema:
+        type: string
+        pattern: ^[a-z0-9]([a-z0-9-])*$
+    ProjectKey:
+      name: projectKey
+      in: path
+      required: true
+      description: The project key identifying a LaunchDarkly project.
+      schema:
+        type: string
+        pattern: ^[a-z0-9]([a-z0-9-])*$
   schemas:
+    ExperimentBody:
+      type: object
+      description: The request body for creating a new experiment.
+      required:
+      - name
+      - key
+      properties:
+        name:
+          type: string
+          description: The human-readable name of the experiment.
+        key:
+          type: string
+          description: The experiment key.
+        description:
+          type: string
+          description: A description of the experiment.
+        maintainerId:
+          type: string
+          description: The member ID of the experiment maintainer.
+    Links:
+      type: object
+      description: HATEOAS links for navigating related resources.
+      properties:
+        self:
+          type: object
+          description: A link to this resource.
+          properties:
+            href:
+              type: string
+              description: The URL of this resource.
+            type:
+              type: string
+              description: The media type.
+      additionalProperties:
+        type: object
+        properties:
+          href:
+            type: string
+            description: The URL of the linked resource.
+          type:
+            type: string
+            description: The media type.
     Experiment:
       type: object
       description: An experiment measuring the impact of flag variations on metrics.
@@ -132,65 +191,6 @@ components:
           description: The total number of experiments.
         _links:
           $ref: '#/components/schemas/Links'
-    ExperimentBody:
-      type: object
-      description: The request body for creating a new experiment.
-      required:
-      - name
-      - key
-      properties:
-        name:
-          type: string
-          description: The human-readable name of the experiment.
-        key:
-          type: string
-          description: The experiment key.
-        description:
-          type: string
-          description: A description of the experiment.
-        maintainerId:
-          type: string
-          description: The member ID of the experiment maintainer.
-    Links:
-      type: object
-      description: HATEOAS links for navigating related resources.
-      properties:
-        self:
-          type: object
-          description: A link to this resource.
-          properties:
-            href:
-              type: string
-              description: The URL of this resource.
-            type:
-              type: string
-              description: The media type.
-      additionalProperties:
-        type: object
-        properties:
-          href:
-            type: string
-            description: The URL of the linked resource.
-          type:
-            type: string
-            description: The media type.
-  parameters:
-    EnvironmentKey:
-      name: environmentKey
-      in: path
-      required: true
-      description: The environment key identifying a specific environment.
-      schema:
-        type: string
-        pattern: ^[a-z0-9]([a-z0-9-])*$
-    ProjectKey:
-      name: projectKey
-      in: path
-      required: true
-      description: The project key identifying a LaunchDarkly project.
-      schema:
-        type: string
-        pattern: ^[a-z0-9]([a-z0-9-])*$
   securitySchemes:
     bearerAuth:
       type: http
