@@ -1,0 +1,100 @@
+slug: launchdarkly
+provider: LaunchDarkly
+generated_by: planning/capability-mapping/scripts/classify_capabilities.py
+model: claude-opus-5
+frame:
+- Software & Technology
+min_confidence: 0.7
+capability_model:
+  source: https://github.com/vincentmakes/turbo-ea-capabilities
+  license: CC-BY-4.0
+  attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
+    CC BY 4.0
+  notice: NOTICE
+edge_count: 9
+edges:
+- tag: Feature Flags
+  spec_file: launchdarkly-feature-flags-api-openapi.yml
+  capability_id: BC-4210.50
+  capability_id_l1: BC-4210
+  capability_name: Feature Flag Management
+  confidence: 0.95
+  evidence: POST /flags/{projectKey}  createFeatureFlag  Create a feature flag
+  reason: Direct CRUD on feature flags with Rollout, Target, Rule, Variation schemas is exactly Feature
+    Flag Management.
+- tag: Experiments
+  spec_file: launchdarkly-experiments-api-openapi.yml
+  capability_id: BC-4280.50
+  capability_id_l1: BC-4280
+  capability_name: A/B Test Execution
+  confidence: 0.85
+  evidence: POST /projects/{projectKey}/environments/{environmentKey}/experiments  createExperiment  Create
+    an experiment
+  reason: Creating and listing experiments scoped to a project/environment is A/B test configuration within
+    product experimentation management.
+- tag: Approvals
+  spec_file: launchdarkly-approvals-api-openapi.yml
+  capability_id: BC-4210.70
+  capability_id_l1: BC-4210
+  capability_name: Production Change Authorisation
+  confidence: 0.8
+  evidence: POST /flags/{projectKey}/{flagKey}/approval-requests/{environmentKey}  createApprovalRequest  Create
+    an approval request
+  reason: Approval requests gating changes to feature flags in a given environment are pre-release change
+    authorisation within the release/deployment management domain.
+- tag: Client-Side Evaluation
+  spec_file: launchdarkly-client-side-evaluation-api-openapi.yml
+  capability_id: BC-4210.50
+  capability_id_l1: BC-4210
+  capability_name: Feature Flag Management
+  confidence: 0.8
+  evidence: GET /sdk/evalx/{envId}/contexts/{contextBase64}  evaluateAllFlagsClientSide  Evaluate all
+    flags for a client-side context
+  reason: Runtime evaluation of feature flags for a context is the runtime control side of Feature Flag
+    Management.
+- tag: Flag Triggers
+  spec_file: launchdarkly-flag-triggers-api-openapi.yml
+  capability_id: BC-4210.50
+  capability_id_l1: BC-4210
+  capability_name: Feature Flag Management
+  confidence: 0.8
+  evidence: POST /flags/{projectKey}/{flagKey}/triggers/{environmentKey}  createFlagTrigger  Create a
+    flag trigger
+  reason: Triggers that toggle flags from external signals are part of the feature-flag lifecycle and
+    runtime control.
+- tag: Server-Side Evaluation
+  spec_file: launchdarkly-server-side-evaluation-api-openapi.yml
+  capability_id: BC-4210.50
+  capability_id_l1: BC-4210
+  capability_name: Feature Flag Management
+  confidence: 0.8
+  evidence: GET /sdk/evalx/contexts/{contextBase64}  evaluateAllFlagsForContext  Evaluate all flags for
+    a context
+  reason: Server-side flag evaluation for a context is runtime feature flag control.
+- tag: Client-Side Streaming
+  spec_file: launchdarkly-client-side-streaming-api-openapi.yml
+  capability_id: BC-4210.50
+  capability_id_l1: BC-4210
+  capability_name: Feature Flag Management
+  confidence: 0.7
+  evidence: GET /eval/{envId}/{contextBase64}  streamClientSideEval  Stream evaluated flags (client-side)
+  reason: Streaming evaluated flag values to SDK clients is runtime flag delivery; thin surface but clearly
+    flag runtime control rather than generic plumbing.
+- tag: Segments
+  spec_file: launchdarkly-segments-api-openapi.yml
+  capability_id: BC-4210.50
+  capability_id_l1: BC-4210
+  capability_name: Feature Flag Management
+  confidence: 0.7
+  evidence: POST /segments/{projectKey}/{environmentKey}  createSegment  Create a segment
+  reason: Segments here are flag targeting cohorts (SegmentRule, Clause) used to target features, not
+    marketing customer segmentation; maps to feature flag targeting.
+- tag: Webhooks
+  spec_file: launchdarkly-webhooks-api-openapi.yml
+  capability_id: BC-4270.80
+  capability_id_l1: BC-4270
+  capability_name: Webhook & Event Subscription Management
+  confidence: 0.7
+  evidence: POST /webhooks  createWebhook  Create a webhook
+  reason: CRUD over outbound webhook subscriptions matches Webhook & Event Subscription Management, though
+    this is largely integration plumbing.
