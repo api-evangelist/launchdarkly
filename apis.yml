@@ -509,6 +509,8 @@ apis:
   - type: SourceCode
     url: https://github.com/launchdarkly/ldcli
 common:
+- type: FinOps
+  url: finops/launchdarkly-finops.yml
 - type: Website
   url: https://www.launchdarkly.com/
 - type: CapabilityMap
