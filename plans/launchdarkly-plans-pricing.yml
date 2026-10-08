@@ -173,3 +173,39 @@ api_access:
     scheduled changes, approvals, custom roles and teams are Enterprise, so calls to
     those endpoints will fail by entitlement on lower tiers.
   see: rate-limits/launchdarkly-rate-limits.yml
+x-canonical:
+  generated: '2026-10-08'
+  vocabulary: all/0-working/economics/plans-canonical.yml
+  models:
+  - free
+  - metered
+  - negotiated
+  units:
+  - active-user
+  plans:
+  - name: Developer
+    access: freemium
+    model: free
+    model_how: derived
+    units: []
+    periods: []
+  - name: Foundation
+    access: paid
+    model: metered
+    model_how: derived
+    units:
+    - active-user
+    - other
+    periods: []
+  - name: Enterprise
+    access: negotiated
+    model: negotiated
+    model_how: stated
+    units: []
+    periods: []
+  - name: Guardian
+    access: addon
+    model: negotiated
+    model_how: derived
+    units: []
+    periods: []
