@@ -1,13 +1,86 @@
 generated: '2026-10-14'
 edges:
+- partner_name: GitHub Marketplace (apps)
+  partner: github
+  partner_match: aggregator
+  type: marketplace
+  marketplace: github-apps
+  channel: partner-built
+  relationship: platform-app
+  direction: third-party
+  evidence: https://github.com/marketplace/launchdarkly-copilot-extension
+  listing_count: 2
+  apps:
+  - LaunchDarkly for GitHub Copilot
+  - LaunchDarkly agent
+  publisher_name: LaunchDarkly
+  badges:
+  - Verified domain
+  detected_by: sweep-devtools.py
+  detected: '2026-10-14'
+- partner_name: GitHub Marketplace (actions)
+  partner: github-actions
+  partner_match: aggregator
+  type: marketplace
+  marketplace: github-actions
+  channel: partner-built
+  relationship: platform-app
+  direction: third-party
+  evidence: https://github.com/marketplace/actions/launchdarkly-code-references
+  listing_count: 4
+  apps:
+  - LaunchDarkly Code References
+  - LaunchDarkly Code References in Pull Request
+  - LaunchDarkly Flags
+  - OctoSTS
+  publisher_name: LaunchDarkly
+  badges:
+  - Verified creator
+  detected_by: sweep-devtools.py
+  detected: '2026-10-14'
+- partner_name: Atlassian Marketplace
+  partner: atlassian
+  partner_match: aggregator
+  type: marketplace
+  marketplace: atlassian
+  channel: partner-built
+  relationship: platform-app
+  direction: third-party
+  evidence: https://marketplace.atlassian.com/vendors/1213661/launchdarkly
+  listing_count: 3
+  apps:
+  - LaunchDarkly for Jira
+  - LaunchDarkly for Jira (EU)
+  - LaunchDarkly for Compass
+  publisher_name: LaunchDarkly
+  detected_by: sweep-devtools.py
+  detected: '2026-10-14'
+- partner_name: Visual Studio Code Marketplace
+  partner: vs-code-marketplace
+  partner_match: aggregator
+  type: marketplace
+  marketplace: vscode
+  channel: partner-built
+  relationship: platform-app
+  direction: third-party
+  evidence: https://marketplace.visualstudio.com/publishers/LaunchDarklyOfficial
+  listing_count: 1
+  apps:
+  - LaunchDarkly
+  publisher_name: LaunchDarkly
+  badges:
+  - Verified publisher
+  - Verified domain
+  detected_by: sweep-devtools.py
+  detected: '2026-10-14'
 - partner_name: Twilio Segment
   partner: segment
   partner_match: aggregator
-  marketplace: coverage
+  marketplace: segment-partner-destinations
   channel: partner-built
-  direction: partner-built
-  type: coverage
-  relationship: connector-coverage
+  direction: third-party
+  type: marketplace
+  relationship: platform-app
   evidence: https://www.twilio.com/docs/segment/connections/destinations/catalog/actions-launchdarkly
   coverage_role:
   - destination
@@ -119,81 +192,71 @@ edges:
       - update or create
   detected_by: sweep-cdp.py
   first_seen: '2026-10-14'
-- partner_name: GitHub Marketplace (apps)
-  partner: github
-  partner_match: aggregator
+- partner_name: Datadog (own)
+  partner: datadog
+  partner_match: mirror
+  mirror_match: domain
   type: marketplace
-  marketplace: github-apps
-  channel: partner-built
   relationship: platform-app
   direction: third-party
-  evidence: https://github.com/marketplace/launchdarkly-copilot-extension
-  listing_count: 2
-  apps:
-  - LaunchDarkly for GitHub Copilot
-  - LaunchDarkly agent
-  publisher_name: LaunchDarkly
-  badges:
-  - Verified domain
-  detected_by: sweep-devtools.py
-  detected: '2026-10-14'
-- partner_name: GitHub Marketplace (actions)
-  partner: github-actions
-  partner_match: aggregator
-  type: marketplace
-  marketplace: github-actions
   channel: partner-built
-  relationship: platform-app
-  direction: third-party
-  evidence: https://github.com/marketplace/actions/launchdarkly-code-references
-  listing_count: 4
-  apps:
-  - LaunchDarkly Code References
-  - LaunchDarkly Code References in Pull Request
-  - LaunchDarkly Flags
-  - OctoSTS
-  publisher_name: LaunchDarkly
-  badges:
-  - Verified creator
-  detected_by: sweep-devtools.py
-  detected: '2026-10-14'
-- partner_name: Atlassian Marketplace
-  partner: atlassian
-  partner_match: aggregator
-  type: marketplace
-  marketplace: atlassian
-  channel: partner-built
-  relationship: platform-app
-  direction: third-party
-  evidence: https://marketplace.atlassian.com/vendors/1213661/launchdarkly
-  listing_count: 3
-  apps:
-  - LaunchDarkly for Jira
-  - LaunchDarkly for Jira (EU)
-  - LaunchDarkly for Compass
-  publisher_name: LaunchDarkly
-  detected_by: sweep-devtools.py
-  detected: '2026-10-14'
-- partner_name: Visual Studio Code Marketplace
-  partner: vs-code-marketplace
-  partner_match: aggregator
-  type: marketplace
-  marketplace: vscode
-  channel: partner-built
-  relationship: platform-app
-  direction: third-party
-  evidence: https://marketplace.visualstudio.com/publishers/LaunchDarklyOfficial
-  listing_count: 1
+  marketplace: own
+  evidence: https://github.com/DataDog/integrations-extras/tree/master/launchdarkly
+  mirror_of: datadog/integrations/datadog-integration-edges.yml
   apps:
   - LaunchDarkly
-  publisher_name: LaunchDarkly
-  badges:
-  - Verified publisher
-  - Verified domain
-  detected_by: sweep-devtools.py
+  listing_count: 1
   detected: '2026-10-14'
+  detected_by: mirror-platform-listings.py
+  category: Configuration & Deployment
+- partner_name: New Relic (own)
+  partner: new-relic
+  partner_match: mirror
+  mirror_match: domain
+  type: marketplace
+  relationship: platform-app
+  direction: third-party
+  channel: partner-built
+  marketplace: own
+  evidence: https://newrelic.com/instant-observability/launchdarkly
+  mirror_of: new-relic/integrations/new-relic-integration-edges.yml
+  apps:
+  - LaunchDarkly
+  listing_count: 1
+  detected: '2026-10-14'
+  detected_by: mirror-platform-listings.py
+  category: Community
+- partner_name: Okta (own)
+  partner: okta
+  partner_match: mirror
+  mirror_match: domain
+  type: marketplace
+  relationship: platform-app
+  direction: third-party
+  channel: partner-built
+  marketplace: own
+  evidence: https://www.okta.com/integrations/dev-677260_launchdarklyeu_1/
+  mirror_of: okta/integrations/okta-integration-edges.yml
+  apps:
+  - LaunchDarkly EU
+  - LaunchDarkly
+  - 'LaunchDarkly Federal '
+  listing_count: 3
+  detected: '2026-10-14'
+  detected_by: mirror-platform-listings.py
+  category: Directory and HR Sync
+  badges:
+  - OKTA_VERIFIED
+  features:
+  - CREATE
+  - DEACTIVATE
+  - GROUP_PUSH
+  - SAML
+  - UPDATE
+  - GROUP_LINKING
 method: searched
 checked:
+- datadog/integrations/datadog-integration-edges.yml
 - https://docs.mparticle.com/integrations/launchdarkly/feed/
 - https://fivetran.com/docs/activations/destinations/available-destinations/launchdarkly
 - https://github.com/marketplace?type=actions
@@ -203,6 +266,8 @@ checked:
 - https://marketplace.atlassian.com/
 - https://marketplace.visualstudio.com/vscode
 - https://www.twilio.com/docs/segment/connections/destinations/catalog/actions-launchdarkly
+- new-relic/integrations/new-relic-integration-edges.yml
+- okta/integrations/okta-integration-edges.yml
 source:
 - https://docs.mparticle.com/integrations/launchdarkly/feed/
 - https://fivetran.com/docs/activations/destinations/available-destinations/launchdarkly
