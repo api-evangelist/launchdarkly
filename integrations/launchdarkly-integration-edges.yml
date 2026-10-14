@@ -119,12 +119,89 @@ edges:
       - update or create
   detected_by: sweep-cdp.py
   first_seen: '2026-10-14'
+- partner_name: GitHub Marketplace (apps)
+  partner: github
+  partner_match: aggregator
+  type: marketplace
+  marketplace: github-apps
+  channel: partner-built
+  relationship: platform-app
+  direction: third-party
+  evidence: https://github.com/marketplace/launchdarkly-copilot-extension
+  listing_count: 2
+  apps:
+  - LaunchDarkly for GitHub Copilot
+  - LaunchDarkly agent
+  publisher_name: LaunchDarkly
+  badges:
+  - Verified domain
+  detected_by: sweep-devtools.py
+  detected: '2026-10-14'
+- partner_name: GitHub Marketplace (actions)
+  partner: github-actions
+  partner_match: aggregator
+  type: marketplace
+  marketplace: github-actions
+  channel: partner-built
+  relationship: platform-app
+  direction: third-party
+  evidence: https://github.com/marketplace/actions/launchdarkly-code-references
+  listing_count: 4
+  apps:
+  - LaunchDarkly Code References
+  - LaunchDarkly Code References in Pull Request
+  - LaunchDarkly Flags
+  - OctoSTS
+  publisher_name: LaunchDarkly
+  badges:
+  - Verified creator
+  detected_by: sweep-devtools.py
+  detected: '2026-10-14'
+- partner_name: Atlassian Marketplace
+  partner: atlassian
+  partner_match: aggregator
+  type: marketplace
+  marketplace: atlassian
+  channel: partner-built
+  relationship: platform-app
+  direction: third-party
+  evidence: https://marketplace.atlassian.com/vendors/1213661/launchdarkly
+  listing_count: 3
+  apps:
+  - LaunchDarkly for Jira
+  - LaunchDarkly for Jira (EU)
+  - LaunchDarkly for Compass
+  publisher_name: LaunchDarkly
+  detected_by: sweep-devtools.py
+  detected: '2026-10-14'
+- partner_name: Visual Studio Code Marketplace
+  partner: vs-code-marketplace
+  partner_match: aggregator
+  type: marketplace
+  marketplace: vscode
+  channel: partner-built
+  relationship: platform-app
+  direction: third-party
+  evidence: https://marketplace.visualstudio.com/publishers/LaunchDarklyOfficial
+  listing_count: 1
+  apps:
+  - LaunchDarkly
+  publisher_name: LaunchDarkly
+  badges:
+  - Verified publisher
+  - Verified domain
+  detected_by: sweep-devtools.py
+  detected: '2026-10-14'
 method: searched
 checked:
 - https://docs.mparticle.com/integrations/launchdarkly/feed/
 - https://fivetran.com/docs/activations/destinations/available-destinations/launchdarkly
+- https://github.com/marketplace?type=actions
+- https://github.com/marketplace?type=apps
 - https://github.com/rudderlabs/rudder-integrations-config/tree/main/src/configurations/destinations/launchdarkly_audience
 - https://hightouch.com/docs/destinations/launchdarkly
+- https://marketplace.atlassian.com/
+- https://marketplace.visualstudio.com/vscode
 - https://www.twilio.com/docs/segment/connections/destinations/catalog/actions-launchdarkly
 source:
 - https://docs.mparticle.com/integrations/launchdarkly/feed/
@@ -132,3 +209,4 @@ source:
 - https://github.com/rudderlabs/rudder-integrations-config/tree/main/src/configurations/destinations/launchdarkly_audience
 - https://hightouch.com/docs/destinations/launchdarkly
 - https://www.twilio.com/docs/segment/connections/destinations/catalog/actions-launchdarkly
+marketplace_apps: []
