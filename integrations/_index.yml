@@ -207,7 +207,7 @@
     app_slug: launchdarkly
     beta: false
     builder: unknown (not in the directory record)
-  status: pending-generation
+  status: not-a-workflow
   arazzo: null
 - slug: launchdarkly-pipedream
   label: Pipedream
@@ -233,18 +233,6 @@
     actions: true
     sources: true
     builder: Pipedream repo (component)
-  status: pending-generation
-  arazzo: null
-- slug: launchdarkly-contentful-own
-  label: Contentful (own)
-  partner: contentful
-  partner_name: Contentful (own)
-  type: marketplace
-  marketplace: own
-  channel: partner-built
-  evidence: https://www.contentful.com/marketplace/launchdarkly/
-  source: edge
-  relationship: platform-app
   status: not-a-workflow
   arazzo: null
 - slug: launchdarkly-fedramp
@@ -284,5 +272,17 @@
       impact_level: Moderate
       lapsed: false
       latest_authorization: '2022-07-08'
+  status: not-a-workflow
+  arazzo: null
+- slug: launchdarkly-contentful-own
+  label: Contentful (own)
+  partner: contentful
+  partner_name: Contentful (own)
+  type: marketplace
+  marketplace: own
+  channel: partner-built
+  evidence: https://www.contentful.com/marketplace/launchdarkly/
+  source: edge
+  relationship: platform-app
   status: not-a-workflow
   arazzo: null
