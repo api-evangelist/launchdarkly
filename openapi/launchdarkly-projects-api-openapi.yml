@@ -282,6 +282,26 @@ components:
         type: string
         pattern: ^[a-z0-9]([a-z0-9-])*$
   schemas:
+    Context:
+      type: object
+      description: context object to use when evaluating flags in source environment
+      x-go-type: ldcontext.Context
+      x-go-type-import:
+        path: github.com/launchdarkly/go-sdk-common/v3/ldcontext
+      default:
+        key: dev-environment
+        kind: user
+    Environment:
+      description: Environment
+      type: object
+      required:
+      - key
+      - name
+      properties:
+        key:
+          type: string
+        name:
+          type: string
     Project:
       description: Project
       type: object
@@ -342,154 +362,6 @@ components:
           type: string
         value:
           $ref: '#/components/schemas/FlagValue'
-    Environment:
-      description: Environment
-      type: object
-      required:
-      - key
-      - name
-      properties:
-        key:
-          type: string
-        name:
-          type: string
-    Context:
-      type: object
-      description: context object to use when evaluating flags in source environment
-      x-go-type: ldcontext.Context
-      x-go-type-import:
-        path: github.com/launchdarkly/go-sdk-common/v3/ldcontext
-      default:
-        key: dev-environment
-        kind: user
-    PatchOperation:
-      type: object
-      description: A JSON Patch or semantic patch request.
-      properties:
-        patch:
-          type: array
-          description: An array of JSON Patch operations.
-          items:
-            type: object
-            required:
-            - op
-            - path
-            properties:
-              op:
-                type: string
-                description: The patch operation type.
-                enum:
-                - add
-                - remove
-                - replace
-                - move
-                - copy
-                - test
-              path:
-                type: string
-                description: The JSON Pointer path to the target field.
-              value:
-                description: The value to apply for add or replace operations.
-        comment:
-          type: string
-          description: An optional comment describing the change.
-    Projects:
-      type: object
-      description: A paginated collection of projects.
-      properties:
-        items:
-          type: array
-          description: The list of projects.
-          items:
-            $ref: '#/components/schemas/Project_2'
-        totalCount:
-          type: integer
-          description: The total number of projects.
-        _links:
-          $ref: '#/components/schemas/Links'
-    Project_2:
-      type: object
-      description: A LaunchDarkly project containing feature flags and environments.
-      properties:
-        _id:
-          type: string
-          description: The unique identifier of this project.
-        key:
-          type: string
-          description: The project key.
-        name:
-          type: string
-          description: The human-readable name of the project.
-        tags:
-          type: array
-          description: Tags applied to this project.
-          items:
-            type: string
-        environments:
-          $ref: '#/components/schemas/Environments'
-        _links:
-          $ref: '#/components/schemas/Links'
-    Environments:
-      type: object
-      description: A collection of environments.
-      properties:
-        items:
-          type: array
-          description: The list of environments.
-          items:
-            $ref: '#/components/schemas/Environment_2'
-        totalCount:
-          type: integer
-          description: The total number of environments.
-        _links:
-          $ref: '#/components/schemas/Links'
-    Links:
-      type: object
-      description: HATEOAS links for navigating related resources.
-      properties:
-        self:
-          type: object
-          description: A link to this resource.
-          properties:
-            href:
-              type: string
-              description: The URL of this resource.
-            type:
-              type: string
-              description: The media type.
-      additionalProperties:
-        type: object
-        properties:
-          href:
-            type: string
-            description: The URL of the linked resource.
-          type:
-            type: string
-            description: The media type.
-    ProjectBody:
-      type: object
-      description: The request body for creating a new project.
-      required:
-      - name
-      - key
-      properties:
-        name:
-          type: string
-          description: The human-readable name of the project.
-        key:
-          type: string
-          description: The project key.
-          pattern: ^[a-z0-9]([a-z0-9-])*$
-        tags:
-          type: array
-          description: Tags to apply to the project.
-          items:
-            type: string
-        environments:
-          type: array
-          description: Initial environments to create with the project.
-          items:
-            $ref: '#/components/schemas/EnvironmentBody'
     Environment_2:
       type: object
       description: An environment within a project, such as production or staging.
@@ -526,6 +398,83 @@ components:
             type: string
         _links:
           $ref: '#/components/schemas/Links'
+    Project_2:
+      type: object
+      description: A LaunchDarkly project containing feature flags and environments.
+      properties:
+        _id:
+          type: string
+          description: The unique identifier of this project.
+        key:
+          type: string
+          description: The project key.
+        name:
+          type: string
+          description: The human-readable name of the project.
+        tags:
+          type: array
+          description: Tags applied to this project.
+          items:
+            type: string
+        environments:
+          $ref: '#/components/schemas/Environments'
+        _links:
+          $ref: '#/components/schemas/Links'
+    ProjectBody:
+      type: object
+      description: The request body for creating a new project.
+      required:
+      - name
+      - key
+      properties:
+        name:
+          type: string
+          description: The human-readable name of the project.
+        key:
+          type: string
+          description: The project key.
+          pattern: ^[a-z0-9]([a-z0-9-])*$
+        tags:
+          type: array
+          description: Tags to apply to the project.
+          items:
+            type: string
+        environments:
+          type: array
+          description: Initial environments to create with the project.
+          items:
+            $ref: '#/components/schemas/EnvironmentBody'
+    PatchOperation:
+      type: object
+      description: A JSON Patch or semantic patch request.
+      properties:
+        patch:
+          type: array
+          description: An array of JSON Patch operations.
+          items:
+            type: object
+            required:
+            - op
+            - path
+            properties:
+              op:
+                type: string
+                description: The patch operation type.
+                enum:
+                - add
+                - remove
+                - replace
+                - move
+                - copy
+                - test
+              path:
+                type: string
+                description: The JSON Pointer path to the target field.
+              value:
+                description: The value to apply for add or replace operations.
+        comment:
+          type: string
+          description: An optional comment describing the change.
     EnvironmentBody:
       type: object
       description: The request body for creating a new environment.
@@ -556,6 +505,57 @@ components:
           description: Tags to apply to the environment.
           items:
             type: string
+    Links:
+      type: object
+      description: HATEOAS links for navigating related resources.
+      properties:
+        self:
+          type: object
+          description: A link to this resource.
+          properties:
+            href:
+              type: string
+              description: The URL of this resource.
+            type:
+              type: string
+              description: The media type.
+      additionalProperties:
+        type: object
+        properties:
+          href:
+            type: string
+            description: The URL of the linked resource.
+          type:
+            type: string
+            description: The media type.
+    Environments:
+      type: object
+      description: A collection of environments.
+      properties:
+        items:
+          type: array
+          description: The list of environments.
+          items:
+            $ref: '#/components/schemas/Environment_2'
+        totalCount:
+          type: integer
+          description: The total number of environments.
+        _links:
+          $ref: '#/components/schemas/Links'
+    Projects:
+      type: object
+      description: A paginated collection of projects.
+      properties:
+        items:
+          type: array
+          description: The list of projects.
+          items:
+            $ref: '#/components/schemas/Project_2'
+        totalCount:
+          type: integer
+          description: The total number of projects.
+        _links:
+          $ref: '#/components/schemas/Links'
   responses:
     Project:
       description: Project
@@ -563,21 +563,6 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Project'
-    FlagOverride:
-      description: Flag override
-      content:
-        application/json:
-          schema:
-            type: object
-            required:
-            - override
-            - value
-            properties:
-              value:
-                $ref: '#/components/schemas/FlagValue'
-              override:
-                type: boolean
-                description: whether or not this is an overridden value or one from the source environment
     ErrorResponse:
       description: Error response object
       content:
@@ -594,6 +579,21 @@ components:
               message:
                 type: string
                 description: description of the error
+    FlagOverride:
+      description: Flag override
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - override
+            - value
+            properties:
+              value:
+                $ref: '#/components/schemas/FlagValue'
+              override:
+                type: boolean
+                description: whether or not this is an overridden value or one from the source environment
   securitySchemes:
     bearerAuth:
       type: http

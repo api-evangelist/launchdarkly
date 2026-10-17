@@ -101,20 +101,28 @@ components:
           type:
             type: string
             description: The media type.
-    Members:
+    MemberInviteBody:
       type: object
-      description: A paginated collection of account members.
+      description: The request body for inviting a new member.
+      required:
+      - email
       properties:
-        items:
+        email:
+          type: string
+          format: email
+          description: The email address of the person to invite.
+        role:
+          type: string
+          description: The built-in role to assign.
+          enum:
+          - reader
+          - writer
+          - admin
+        customRoles:
           type: array
-          description: The list of account members.
+          description: Custom role keys to assign to the new member.
           items:
-            $ref: '#/components/schemas/Member'
-        totalCount:
-          type: integer
-          description: The total number of members.
-        _links:
-          $ref: '#/components/schemas/Links'
+            type: string
     Member:
       type: object
       description: An account member in the LaunchDarkly organization.
@@ -151,28 +159,20 @@ components:
           description: Unix epoch timestamp of the last activity.
         _links:
           $ref: '#/components/schemas/Links'
-    MemberInviteBody:
+    Members:
       type: object
-      description: The request body for inviting a new member.
-      required:
-      - email
+      description: A paginated collection of account members.
       properties:
-        email:
-          type: string
-          format: email
-          description: The email address of the person to invite.
-        role:
-          type: string
-          description: The built-in role to assign.
-          enum:
-          - reader
-          - writer
-          - admin
-        customRoles:
+        items:
           type: array
-          description: Custom role keys to assign to the new member.
+          description: The list of account members.
           items:
-            type: string
+            $ref: '#/components/schemas/Member'
+        totalCount:
+          type: integer
+          description: The total number of members.
+        _links:
+          $ref: '#/components/schemas/Links'
   securitySchemes:
     bearerAuth:
       type: http

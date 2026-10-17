@@ -62,17 +62,6 @@ paths:
           description: A custom role with the given key already exists.
 components:
   schemas:
-    CustomRoles:
-      type: object
-      description: A collection of custom roles.
-      properties:
-        items:
-          type: array
-          description: The list of custom roles.
-          items:
-            $ref: '#/components/schemas/CustomRole'
-        _links:
-          $ref: '#/components/schemas/Links'
     Statement:
       type: object
       description: A policy statement controlling resource access or event filtering.
@@ -103,6 +92,17 @@ components:
           description: The actions this statement does not apply to.
           items:
             type: string
+    CustomRoles:
+      type: object
+      description: A collection of custom roles.
+      properties:
+        items:
+          type: array
+          description: The list of custom roles.
+          items:
+            $ref: '#/components/schemas/CustomRole'
+        _links:
+          $ref: '#/components/schemas/Links'
     Links:
       type: object
       description: HATEOAS links for navigating related resources.

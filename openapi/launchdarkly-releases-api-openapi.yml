@@ -65,6 +65,15 @@ paths:
         '401':
           description: Unauthorized. Invalid or missing access token.
 components:
+  parameters:
+    ProjectKey:
+      name: projectKey
+      in: path
+      required: true
+      description: The project key identifying a LaunchDarkly project.
+      schema:
+        type: string
+        pattern: ^[a-z0-9]([a-z0-9-])*$
   schemas:
     ReleasePipeline:
       type: object
@@ -105,29 +114,15 @@ components:
                       description: The audience name.
         _links:
           $ref: '#/components/schemas/Links'
-    Links:
+    ReleasePipelines:
       type: object
-      description: HATEOAS links for navigating related resources.
+      description: A collection of release pipelines.
       properties:
-        self:
-          type: object
-          description: A link to this resource.
-          properties:
-            href:
-              type: string
-              description: The URL of this resource.
-            type:
-              type: string
-              description: The media type.
-      additionalProperties:
-        type: object
-        properties:
-          href:
-            type: string
-            description: The URL of the linked resource.
-          type:
-            type: string
-            description: The media type.
+        items:
+          type: array
+          description: The list of release pipelines.
+          items:
+            $ref: '#/components/schemas/ReleasePipeline'
     ReleasePipelineBody:
       type: object
       description: The request body for creating a release pipeline.
@@ -170,24 +165,29 @@ components:
                     name:
                       type: string
                       description: The audience name.
-    ReleasePipelines:
+    Links:
       type: object
-      description: A collection of release pipelines.
+      description: HATEOAS links for navigating related resources.
       properties:
-        items:
-          type: array
-          description: The list of release pipelines.
-          items:
-            $ref: '#/components/schemas/ReleasePipeline'
-  parameters:
-    ProjectKey:
-      name: projectKey
-      in: path
-      required: true
-      description: The project key identifying a LaunchDarkly project.
-      schema:
-        type: string
-        pattern: ^[a-z0-9]([a-z0-9-])*$
+        self:
+          type: object
+          description: A link to this resource.
+          properties:
+            href:
+              type: string
+              description: The URL of this resource.
+            type:
+              type: string
+              description: The media type.
+      additionalProperties:
+        type: object
+        properties:
+          href:
+            type: string
+            description: The URL of the linked resource.
+          type:
+            type: string
+            description: The media type.
   securitySchemes:
     bearerAuth:
       type: http

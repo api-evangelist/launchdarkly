@@ -106,25 +106,6 @@ paths:
       - Debug Sessions
 components:
   schemas:
-    DebugSession:
-      description: Debug session with event count
-      type: object
-      required:
-      - key
-      - written_at
-      - event_count
-      properties:
-        key:
-          type: string
-          description: unique identifier for the debug session
-        written_at:
-          type: string
-          format: date-time
-          description: timestamp when the debug session was created
-        event_count:
-          type: integer
-          format: int64
-          description: number of events associated with this debug session
     EventsPage:
       description: Paginated response of events
       type: object
@@ -189,6 +170,25 @@ components:
         has_more:
           type: boolean
           description: whether there are more results available
+    DebugSession:
+      description: Debug session with event count
+      type: object
+      required:
+      - key
+      - written_at
+      - event_count
+      properties:
+        key:
+          type: string
+          description: unique identifier for the debug session
+        written_at:
+          type: string
+          format: date-time
+          description: timestamp when the debug session was created
+        event_count:
+          type: integer
+          format: int64
+          description: number of events associated with this debug session
   responses:
     ErrorResponse:
       description: Error response object

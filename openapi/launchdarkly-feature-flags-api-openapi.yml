@@ -165,6 +165,148 @@ paths:
           description: Flag or project not found.
 components:
   schemas:
+    Rollout:
+      type: object
+      description: A percentage rollout configuration.
+      properties:
+        variations:
+          type: array
+          description: The weighted variations in this rollout.
+          items:
+            type: object
+            properties:
+              variation:
+                type: integer
+                description: The variation index.
+              weight:
+                type: integer
+                description: The rollout weight in thousandths of a percent (0-100000).
+        bucketBy:
+          type: string
+          description: The context attribute used for bucketing.
+        contextKind:
+          type: string
+          description: The context kind for rollout bucketing.
+    FeatureFlag:
+      type: object
+      description: A feature flag with its configuration across all environments.
+      properties:
+        key:
+          type: string
+          description: The unique key identifying this feature flag.
+        name:
+          type: string
+          description: The human-readable name of the feature flag.
+        description:
+          type: string
+          description: A description of the feature flag purpose and behavior.
+        kind:
+          type: string
+          description: The type of flag, such as boolean or multivariate.
+          enum:
+          - boolean
+          - multivariate
+        tags:
+          type: array
+          description: Tags applied to this feature flag.
+          items:
+            type: string
+        creationDate:
+          type: integer
+          format: int64
+          description: Unix epoch timestamp in milliseconds when the flag was created.
+        variations:
+          type: array
+          description: The possible values this flag can serve.
+          items:
+            $ref: '#/components/schemas/Variation'
+        temporary:
+          type: boolean
+          description: Whether this flag is intended to be temporary.
+        archived:
+          type: boolean
+          description: Whether this flag has been archived.
+        environments:
+          type: object
+          description: A map of environment keys to their flag configurations.
+          additionalProperties:
+            $ref: '#/components/schemas/FlagEnvironment'
+        _links:
+          $ref: '#/components/schemas/Links'
+        _version:
+          type: integer
+          description: The current version number of this flag for concurrency control.
+    Target:
+      type: object
+      description: An individual targeting entry for a specific variation.
+      properties:
+        values:
+          type: array
+          description: The list of context keys targeted.
+          items:
+            type: string
+        variation:
+          type: integer
+          description: The variation index to serve to these targets.
+        contextKind:
+          type: string
+          description: The context kind for this target.
+    Clause:
+      type: object
+      description: A condition clause used in targeting rules.
+      properties:
+        attribute:
+          type: string
+          description: The context attribute to evaluate.
+        op:
+          type: string
+          description: The comparison operator.
+          enum:
+          - in
+          - endsWith
+          - startsWith
+          - matches
+          - contains
+          - lessThan
+          - lessThanOrEqual
+          - greaterThan
+          - greaterThanOrEqual
+          - before
+          - after
+          - segmentMatch
+          - semVerEqual
+          - semVerLessThan
+          - semVerGreaterThan
+        values:
+          type: array
+          description: The values to compare against.
+          items: {}
+        negate:
+          type: boolean
+          description: Whether to negate the clause.
+        contextKind:
+          type: string
+          description: The context kind to evaluate.
+    Rule:
+      type: object
+      description: A targeting rule with clauses and a variation or rollout.
+      properties:
+        _id:
+          type: string
+          description: The unique identifier for this rule.
+        clauses:
+          type: array
+          description: The conditions that must be met for this rule to apply.
+          items:
+            $ref: '#/components/schemas/Clause'
+        variation:
+          type: integer
+          description: The variation index to serve when this rule matches.
+        rollout:
+          $ref: '#/components/schemas/Rollout'
+        trackEvents:
+          type: boolean
+          description: Whether to track events for this rule.
     FeatureFlags:
       type: object
       description: A paginated collection of feature flags.
@@ -210,42 +352,51 @@ components:
         comment:
           type: string
           description: An optional comment describing the change.
-    Clause:
+    FlagEnvironment:
       type: object
-      description: A condition clause used in targeting rules.
+      description: The configuration of a feature flag for a specific environment.
       properties:
-        attribute:
-          type: string
-          description: The context attribute to evaluate.
-        op:
-          type: string
-          description: The comparison operator.
-          enum:
-          - in
-          - endsWith
-          - startsWith
-          - matches
-          - contains
-          - lessThan
-          - lessThanOrEqual
-          - greaterThan
-          - greaterThanOrEqual
-          - before
-          - after
-          - segmentMatch
-          - semVerEqual
-          - semVerLessThan
-          - semVerGreaterThan
-        values:
-          type: array
-          description: The values to compare against.
-          items: {}
-        negate:
+        'on':
           type: boolean
-          description: Whether to negate the clause.
-        contextKind:
+          description: Whether the flag is currently enabled in this environment.
+        archived:
+          type: boolean
+          description: Whether the flag is archived in this environment.
+        salt:
           type: string
-          description: The context kind to evaluate.
+          description: The salt used for percentage rollout hashing.
+        sel:
+          type: string
+          description: The selection identifier.
+        lastModified:
+          type: integer
+          format: int64
+          description: Unix epoch timestamp of the last modification.
+        version:
+          type: integer
+          description: The version number of this flag configuration.
+        targets:
+          type: array
+          description: Individual context targets for each variation.
+          items:
+            $ref: '#/components/schemas/Target'
+        rules:
+          type: array
+          description: Targeting rules that determine which variation to serve.
+          items:
+            $ref: '#/components/schemas/Rule'
+        fallthrough:
+          type: object
+          description: The default rule applied when no other rules match.
+          properties:
+            variation:
+              type: integer
+              description: The variation index to serve.
+            rollout:
+              $ref: '#/components/schemas/Rollout'
+        offVariation:
+          type: integer
+          description: The variation index to serve when the flag is off.
     FeatureFlagBody:
       type: object
       description: The request body for creating a new feature flag.
@@ -296,63 +447,6 @@ components:
             offVariation:
               type: integer
               description: The index of the variation to serve when the flag is off.
-    Rollout:
-      type: object
-      description: A percentage rollout configuration.
-      properties:
-        variations:
-          type: array
-          description: The weighted variations in this rollout.
-          items:
-            type: object
-            properties:
-              variation:
-                type: integer
-                description: The variation index.
-              weight:
-                type: integer
-                description: The rollout weight in thousandths of a percent (0-100000).
-        bucketBy:
-          type: string
-          description: The context attribute used for bucketing.
-        contextKind:
-          type: string
-          description: The context kind for rollout bucketing.
-    Rule:
-      type: object
-      description: A targeting rule with clauses and a variation or rollout.
-      properties:
-        _id:
-          type: string
-          description: The unique identifier for this rule.
-        clauses:
-          type: array
-          description: The conditions that must be met for this rule to apply.
-          items:
-            $ref: '#/components/schemas/Clause'
-        variation:
-          type: integer
-          description: The variation index to serve when this rule matches.
-        rollout:
-          $ref: '#/components/schemas/Rollout'
-        trackEvents:
-          type: boolean
-          description: Whether to track events for this rule.
-    Target:
-      type: object
-      description: An individual targeting entry for a specific variation.
-      properties:
-        values:
-          type: array
-          description: The list of context keys targeted.
-          items:
-            type: string
-        variation:
-          type: integer
-          description: The variation index to serve to these targets.
-        contextKind:
-          type: string
-          description: The context kind for this target.
     Links:
       type: object
       description: HATEOAS links for navigating related resources.
@@ -376,51 +470,6 @@ components:
           type:
             type: string
             description: The media type.
-    FlagEnvironment:
-      type: object
-      description: The configuration of a feature flag for a specific environment.
-      properties:
-        'on':
-          type: boolean
-          description: Whether the flag is currently enabled in this environment.
-        archived:
-          type: boolean
-          description: Whether the flag is archived in this environment.
-        salt:
-          type: string
-          description: The salt used for percentage rollout hashing.
-        sel:
-          type: string
-          description: The selection identifier.
-        lastModified:
-          type: integer
-          format: int64
-          description: Unix epoch timestamp of the last modification.
-        version:
-          type: integer
-          description: The version number of this flag configuration.
-        targets:
-          type: array
-          description: Individual context targets for each variation.
-          items:
-            $ref: '#/components/schemas/Target'
-        rules:
-          type: array
-          description: Targeting rules that determine which variation to serve.
-          items:
-            $ref: '#/components/schemas/Rule'
-        fallthrough:
-          type: object
-          description: The default rule applied when no other rules match.
-          properties:
-            variation:
-              type: integer
-              description: The variation index to serve.
-            rollout:
-              $ref: '#/components/schemas/Rollout'
-        offVariation:
-          type: integer
-          description: The variation index to serve when the flag is off.
     Variation:
       type: object
       description: A single variation value that a feature flag can serve.
@@ -436,55 +485,6 @@ components:
         description:
           type: string
           description: An optional description of this variation.
-    FeatureFlag:
-      type: object
-      description: A feature flag with its configuration across all environments.
-      properties:
-        key:
-          type: string
-          description: The unique key identifying this feature flag.
-        name:
-          type: string
-          description: The human-readable name of the feature flag.
-        description:
-          type: string
-          description: A description of the feature flag purpose and behavior.
-        kind:
-          type: string
-          description: The type of flag, such as boolean or multivariate.
-          enum:
-          - boolean
-          - multivariate
-        tags:
-          type: array
-          description: Tags applied to this feature flag.
-          items:
-            type: string
-        creationDate:
-          type: integer
-          format: int64
-          description: Unix epoch timestamp in milliseconds when the flag was created.
-        variations:
-          type: array
-          description: The possible values this flag can serve.
-          items:
-            $ref: '#/components/schemas/Variation'
-        temporary:
-          type: boolean
-          description: Whether this flag is intended to be temporary.
-        archived:
-          type: boolean
-          description: Whether this flag has been archived.
-        environments:
-          type: object
-          description: A map of environment keys to their flag configurations.
-          additionalProperties:
-            $ref: '#/components/schemas/FlagEnvironment'
-        _links:
-          $ref: '#/components/schemas/Links'
-        _version:
-          type: integer
-          description: The current version number of this flag for concurrency control.
   parameters:
     FlagKey:
       name: flagKey
