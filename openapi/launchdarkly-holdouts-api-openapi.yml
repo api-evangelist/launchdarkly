@@ -1,0 +1,1615 @@
+openapi: 3.2.0
+info:
+  title: LaunchDarkly REST Holdouts API
+  description: 'This documentation describes LaunchDarkly''s REST API. To access the complete OpenAPI spec directly, use Get OpenAPI spec. To learn how to use LaunchDarkly using the user interface (UI) instead, read our product documentation. ## Authentication
+
+
+    LaunchDarkly''s REST API uses the HTTPS protocol with a minimum TLS version of 1.2. All REST API resources are authenticated with either personal or service access tokens, or session cookies. Other authentication mechanisms are not supported. You can manage personal access tokens on your **Authorization** page in the LaunchDarkly UI. LaunchDarkly also has SDK keys, mobile keys, and client-side IDs that are used by our server-side SDKs, mobile SDKs, and JavaScript-based SDKs, respectively. **These keys cannot be used to access our REST API**. These keys are environment-specific, and can only perform read-only operations such as fetching feature flag settings. | Auth mechanism | Allowed resources | Use cases |
+
+    | ----------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
+
+    | Personal or service access tokens | Can be customized on a per-token basis | Building scripts, custom integrations, data export. |
+
+    | SDK keys | Can only access read-only resources specific to server-side SDKs. Restricted to a single environment. | Server-side SDKs |
+
+    | Mobile keys | Can only access read-only resources specific to mobile SDKs, and only for flags marked available to mobile keys. Restricted to a single environment. | Mobile SDKs |
+
+    | Client-side ID | Can only access read-only resources specific to JavaScript-based client-side SDKs, and only for flags marked available to client-side. Restricted to a single environment. | Client-side JavaScript |
+
+
+    > #### Keep your access tokens and SDK keys private
+
+    >
+
+    > Access tokens should _never_ be exposed in untrusted contexts. Never put an access token in client-side JavaScript, or embed it in a mobile application. LaunchDarkly has special mobile keys that you can embed in mobile apps. If you accidentally expose an access token or SDK key, you can reset it from your **Authorization** page. >
+
+    > The client-side ID is safe to embed in untrusted contexts. It''s designed for use in client-side JavaScript. ### Authentication using request header
+
+
+    The preferred way to authenticate with the API is by adding an `Authorization` header containing your access token to your requests. The value of the `Authorization` header must be your access token. Manage personal access tokens from the **Authorization** page. ### Authentication using session cookie
+
+
+    For testing purposes, you can make API calls directly from your web browser. If you are logged in to the LaunchDarkly application, the API will use your existing session to authenticate calls. Depending on the permissions granted as part of your role, you may not have permission to perform some API calls. You will receive a `401` response code in that case. > ### Modifying the Origin header causes an error
+
+    >
+
+    > LaunchDarkly validates that the Origin header for any API request authenticated by a session cookie matches the expected Origin header. The expected Origin header is `https://app.launchdarkly.com`. >
+
+    > If the Origin header does not match what''s expected, LaunchDarkly returns an error. This error can prevent the LaunchDarkly app from working correctly. >
+
+    > Any browser extension that intentionally changes the Origin header can cause this problem. For example, Cross-Origin Resource Sharing (CORS) extensions used during development can modify the Origin header and cause the app to fail. >
+
+    > To prevent this error, do not modify your Origin header. >
+
+    > LaunchDarkly does not require origin matching when authenticating with an access token, so this issue does not affect normal API usage.'
+  contact:
+    name: LaunchDarkly Technical Support Team
+    url: https://support.launchdarkly.com
+    email: support@launchdarkly.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+  version: '2.0'
+servers:
+- url: https://app.launchdarkly.com
+  description: ' Default'
+- url: https://app.launchdarkly.us
+  description: ' Federal'
+security:
+- ApiKey:
+  - read
+  - write
+tags:
+- name: Holdouts
+  description: '> ### Available for customers using Experimentation
+
+    >
+
+    > Holdouts are available to customers using Experimentation.
+
+
+    Holdouts let you exclude a percentage of your audience from your Experimentation program. This enables you to see the overall effect of your experiments on your customer base, and helps determine how effective the experiments you''re running are.
+
+
+    Using the holdouts API, you can create, update, and end holdouts. To learn more, read Holdouts.'
+paths:
+  /api/v2/projects/{projectKey}/environments/{environmentKey}/holdouts:
+    get:
+      responses:
+        '200':
+          description: All Holdouts response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HoldoutsCollectionRep'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Holdouts
+      summary: Get all holdouts
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: environmentKey
+        in: path
+        description: The environment key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The environment key
+      - name: limit
+        in: query
+        description: The number of holdouts to return in the response. Defaults to 20
+        schema:
+          type: integer
+          format: int64
+          description: The number of holdouts to return in the response. Defaults to 20
+      - name: offset
+        in: query
+        description: Where to start in the list. Use this with pagination. For example, an `offset` of 10 skips the first ten items and then returns the next items in the list, up to the query `limit`.
+        schema:
+          type: integer
+          format: int64
+          description: Where to start in the list. Use this with pagination. For example, an `offset` of 10 skips the first ten items and then returns the next items in the list, up to the query `limit`.
+      operationId: getAllHoldouts
+    post:
+      responses:
+        '201':
+          description: Holdout response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HoldoutRep'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+      tags:
+      - Holdouts
+      summary: Create holdout
+      description: Create a new holdout in the specified project.
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: environmentKey
+        in: path
+        description: The environment key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The environment key
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HoldoutPostRequest'
+        required: true
+      operationId: postHoldout
+  /api/v2/projects/{projectKey}/environments/{environmentKey}/holdouts/id/{holdoutId}:
+    get:
+      responses:
+        '200':
+          description: Holdout response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HoldoutRep'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Holdouts
+      summary: Get Holdout by Id
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: environmentKey
+        in: path
+        description: The environment key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The environment key
+      - name: holdoutId
+        in: path
+        description: The holdout experiment ID
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The holdout experiment ID
+      operationId: getHoldoutById
+  /api/v2/projects/{projectKey}/environments/{environmentKey}/holdouts/{holdoutKey}:
+    get:
+      responses:
+        '200':
+          description: HoldoutDetail response with full experiments
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HoldoutDetailRep'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Holdouts
+      summary: Get holdout
+      description: 'Get details about a holdout.
+
+
+        ### Expanding the holdout response
+
+
+        LaunchDarkly supports the following fields for expanding the "Get holdout" response. By default, these fields are **not** included in the response.
+
+
+        To expand the response, append the `expand` query parameter and add a comma-separated list with any of the following fields:
+
+
+        - `draftIteration` includes the iteration which has not been started yet, if any, for this holdout.
+
+        - `previousIterations` includes all iterations prior to the current iteration, for this holdout. By default only the current iteration is included in the response.
+
+        - `rel-draftIteration` includes the iteration which has not been started yet, if any, for the experiments related to this holdout.
+
+        - `rel-metrics` includes metrics for experiments related to this holdout.
+
+        - `rel-previousIterations` includes all iterations prior to the current iteration, for the experiments related to this holdout.
+
+        - `rel-secondaryMetrics` includes secondary metrics for experiments related to this holdout.
+
+        - `rel-treatments` includes all treatment and parameter details for experiments related to this holdout.
+
+        - `secondaryMetrics` includes secondary metrics for this holdout. By default only the primary metric is included in the response.
+
+        - `treatments` includes all treatment and parameter details for this holdout. By default treatment data is not included in the response.
+
+
+        For example, `expand=draftIteration,rel-draftIteration` includes the `draftIteration` and `rel-draftIteration` fields in the response. If fields that you request with the `expand` query parameter are empty, they are not included in the response.'
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: environmentKey
+        in: path
+        description: The environment key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The environment key
+      - name: holdoutKey
+        in: path
+        description: The holdout experiment key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The holdout experiment key
+      - name: expand
+        in: query
+        description: A comma-separated list of properties that can reveal additional information in the response. Supported fields are explained above. Holdout experiment expansion fields have no prefix. Related experiment expansion fields have `rel-` as a prefix.
+        schema:
+          type: string
+          format: string
+          description: A comma-separated list of properties that can reveal additional information in the response. Supported fields are explained above. Holdout experiment expansion fields have no prefix. Related experiment expansion fields have `rel-` as a prefix.
+      operationId: getHoldout
+    patch:
+      responses:
+        '200':
+          description: Holdout response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HoldoutRep'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Holdouts
+      summary: Patch holdout
+      description: 'Updates an existing holdout, and returns the updated holdout. Updating holdouts uses the semantic patch format.
+
+
+        To make a semantic patch request, you must append `domain-model=launchdarkly.semanticpatch` to your `Content-Type` header. To learn more, read Updates using semantic patch.
+
+
+        ### Instructions
+
+
+        Semantic patch requests support the following `kind` instructions for updating holdouts.
+
+
+        Click to expand instructions for updating holdouts
+
+
+        #### endHoldout
+
+
+        Ends a holdout.
+
+
+        ##### Parameters
+
+
+        None.
+
+
+        Here''s an example:
+
+
+        ```json
+
+        {
+
+        "comment": "Optional comment describing why the holdout is ending",
+
+        "instructions": [{
+
+        "kind": "endHoldout"
+
+        }]
+
+        }
+
+        ```
+
+
+        #### removeExperiment
+
+
+        Removes an experiment from a holdout.
+
+
+        ##### Parameters
+
+
+        - `value`: The key of the experiment to remove
+
+
+        Here''s an example:
+
+
+        ```json
+
+        {
+
+        "comment": "Optional comment describing the change",
+
+        "instructions": [{
+
+        "kind": "removeExperiment",
+
+        "value": "experiment-key"
+
+        }]
+
+        }
+
+        ```
+
+
+        #### updateDescription
+
+
+        Updates the description of the holdout.
+
+
+        ##### Parameters
+
+
+        - `value`: The new description.
+
+
+        Here''s an example:
+
+
+        ```json
+
+        {
+
+        "comment": "Optional comment describing the update",
+
+        "instructions": [{
+
+        "kind": "updateDescription",
+
+        "value": "Updated holdout description"
+
+        }]
+
+        }
+
+        ```
+
+
+        #### updateName
+
+
+        Updates the name of the holdout.
+
+
+        ##### Parameters
+
+
+        - `value`: The new name.
+
+
+        Here''s an example:
+
+
+        ```json
+
+        {
+
+        "comment": "Optional comment describing the update",
+
+        "instructions": [{
+
+        "kind": "updateName",
+
+        "value": "Updated holdout name"
+
+        }]
+
+        }
+
+        ```'
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: environmentKey
+        in: path
+        description: The environment key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The environment key
+      - name: holdoutKey
+        in: path
+        description: The holdout key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The holdout key
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HoldoutPatchInput'
+            example:
+              comment: Optional comment describing the update
+              instructions:
+              - kind: updateName
+                value: Updated holdout name
+        required: true
+      operationId: patchHoldout
+components:
+  schemas:
+    HoldoutRep:
+      type: object
+      required:
+      - _id
+      - status
+      - holdoutAmount
+      - createdAt
+      - updatedAt
+      - baseExperiment
+      properties:
+        _id:
+          type: string
+        status:
+          type: string
+          enum:
+          - created
+          - enabled
+          - running
+          - ended
+        description:
+          type: string
+        holdoutAmount:
+          type: string
+          description: The percentage of traffic allocated to this holdout.
+        createdAt:
+          $ref: '#/components/schemas/UnixMillis'
+        updatedAt:
+          $ref: '#/components/schemas/UnixMillis'
+        baseExperiment:
+          $ref: '#/components/schemas/Experiment'
+        experiments:
+          type: array
+          items:
+            $ref: '#/components/schemas/RelatedExperimentRep'
+    IterationRep:
+      type: object
+      required:
+      - hypothesis
+      - status
+      - createdAt
+      properties:
+        _id:
+          type: string
+          description: The iteration ID
+          example: 12ab3c45de678910fgh12345
+        hypothesis:
+          type: string
+          description: The expected outcome of this experiment
+          example: The new button placement will increase conversion
+        status:
+          type: string
+          description: 'The status of the iteration: <code>not_started</code>, <code>running</code>, <code>stopped</code>'
+          example: running
+          enum:
+          - not_started
+          - running
+          - stopped
+        createdAt:
+          description: Timestamp of when the iteration was created
+          example: '1654104600000'
+          $ref: '#/components/schemas/UnixMillis'
+        startedAt:
+          description: Timestamp of when the iteration started
+          example: '1655314200000'
+          $ref: '#/components/schemas/UnixMillis'
+        endedAt:
+          description: Timestamp of when the iteration ended
+          example: '1656610200000'
+          $ref: '#/components/schemas/UnixMillis'
+        winningTreatmentId:
+          type: string
+          description: The ID of the treatment chosen when the experiment stopped
+          example: 122c9f3e-da26-4321-ba68-e0fc02eced58
+        winningReason:
+          type: string
+          description: The reason you stopped the experiment
+          example: We ran this iteration for two weeks and the winning variation was clear
+        canReshuffleTraffic:
+          type: boolean
+          description: Whether the experiment may reassign traffic to different variations when the experiment audience changes (true) or must keep all traffic assigned to its initial variation (false).
+          example: true
+        flags:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/FlagRep'
+          description: Details on the flag used in this experiment
+        reallocationFrequencyMillis:
+          type: integer
+          description: The cadence (in milliseconds) to update the allocation. Only present for multi-armed bandits.
+          example: 3600000
+        version:
+          type: integer
+          description: The current version that the iteration is on
+          example: 0
+        primaryMetric:
+          description: Deprecated, use <code>primarySingleMetric</code> and <code>primaryFunnel</code> instead. Details on the primary metric for this experiment.
+          deprecated: true
+          $ref: '#/components/schemas/DependentMetricOrMetricGroupRep'
+        primarySingleMetric:
+          description: Details on the primary metric for this experiment
+          $ref: '#/components/schemas/MetricV2Rep'
+        primaryFunnel:
+          description: Details on the primary funnel group for this experiment
+          $ref: '#/components/schemas/DependentMetricGroupRepWithMetrics'
+        randomizationUnit:
+          type: string
+          description: The unit of randomization for this iteration
+          example: user
+        attributes:
+          type: array
+          description: The available attribute filters for this iteration
+          items:
+            type: string
+        treatments:
+          type: array
+          description: Details on the variations you are testing in the experiment
+          items:
+            $ref: '#/components/schemas/TreatmentRep'
+        secondaryMetrics:
+          type: array
+          description: Deprecated, use <code>metrics</code> instead. Details on the secondary metrics for this experiment.
+          items:
+            $ref: '#/components/schemas/MetricV2Rep'
+          deprecated: true
+        metrics:
+          type: array
+          description: Details on the metrics for this experiment
+          items:
+            $ref: '#/components/schemas/DependentMetricOrMetricGroupRep'
+        layerSnapshot:
+          description: Snapshot of the layer state on iteration stop, if part of a layer. Otherwise omitted.
+          $ref: '#/components/schemas/LayerSnapshotRep'
+        covariateInfo:
+          description: Details of the covariate file for stratified sampling
+          $ref: '#/components/schemas/CovariateInfoRep'
+    AccessDenied:
+      type: object
+      required:
+      - action
+      - reason
+      properties:
+        action:
+          $ref: '#/components/schemas/ActionIdentifier'
+        reason:
+          $ref: '#/components/schemas/AccessDeniedReason'
+    AnalysisConfigRep:
+      type: object
+      properties:
+        bayesianThreshold:
+          type: string
+          description: The threshold for the Probability to Beat Baseline (PBBL) and Probability to Be Best (PBB) comparisons for the Bayesian results analysis approach.  Value should be between 0-100 inclusive.
+        significanceThreshold:
+          type: string
+          description: The significance threshold for the frequentist results analysis approach. Value should be between 0.0-1.0 inclusive.
+        testDirection:
+          type: string
+          description: The test sided direction for the frequentist results analysis approach.
+        multipleComparisonCorrectionMethod:
+          type: string
+          description: The method for multiple comparison correction.
+          enum:
+          - bonferroni
+          - benjamini-hochberg
+        multipleComparisonCorrectionScope:
+          type: string
+          description: The scope for multiple comparison correction.
+          enum:
+          - variations
+          - variations-and-metrics
+          - metrics
+        sequentialTestingEnabled:
+          type: boolean
+          description: Whether sequential testing is enabled for Frequentist analysis
+    Instructions:
+      type: array
+      items:
+        $ref: '#/components/schemas/Instruction'
+    InvalidRequestErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: invalid_request
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid request body
+    AccessDeniedReason:
+      type: object
+      required:
+      - effect
+      properties:
+        resources:
+          type: array
+          description: Resource specifier strings
+          items:
+            type: string
+          example:
+          - proj/*:env/*;qa_*:/flag/*
+        notResources:
+          type: array
+          description: Targeted resources are the resources NOT in this list. The <code>resources</code> and <code>notActions</code> fields must be empty to use this field.
+          items:
+            type: string
+        actions:
+          type: array
+          description: Actions to perform on a resource
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+          example:
+          - '*'
+        notActions:
+          type: array
+          description: Targeted actions are the actions NOT in this list. The <code>actions</code> and <code>notResources</code> fields must be empty to use this field.
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+        effect:
+          type: string
+          description: Whether this statement should allow or deny actions on the resources.
+          example: allow
+          enum:
+          - allow
+          - deny
+        role_name:
+          type: string
+    RateLimitedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: rate_limited
+        message:
+          type: string
+          description: Description of the error
+          example: You've exceeded the API rate limit. Try again later.
+    UnauthorizedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: unauthorized
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid access token
+    ForbiddenErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: forbidden
+        message:
+          type: string
+          description: Description of the error
+          example: Forbidden. Access to the requested resource was denied.
+    ActionSpecifier:
+      type: string
+    Link:
+      type: object
+      properties:
+        href:
+          type: string
+        type:
+          type: string
+    ActionIdentifier:
+      type: string
+    FlagRep:
+      type: object
+      required:
+      - _links
+      properties:
+        targetingRule:
+          type: string
+          description: The targeting rule
+          example: fallthrough
+        targetingRuleDescription:
+          type: string
+          description: The rule description
+          example: Customers who live in Canada
+        targetingRuleClauses:
+          type: array
+          description: An array of clauses used for individual targeting based on attributes
+          items: {}
+        flagConfigVersion:
+          type: integer
+          description: The flag version
+          example: 12
+        notInExperimentVariationId:
+          type: string
+          description: The ID of the variation to route traffic not part of the experiment analysis to
+          example: e432f62b-55f6-49dd-a02f-eb24acf39d05
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+          example:
+            self:
+              href: /api/v2/flags/my-project/my-flag
+              type: application/json
+    RelatedExperimentRep:
+      type: object
+      properties:
+        key:
+          type: string
+        name:
+          type: string
+        environment:
+          type: string
+    DependentMetricGroupRepWithMetrics:
+      type: object
+      required:
+      - key
+      - name
+      - kind
+      - _links
+      properties:
+        key:
+          type: string
+          description: A unique key to reference the metric group
+          example: metric-group-key-123abc
+        name:
+          type: string
+          description: A human-friendly name for the metric group
+          example: My metric group
+        kind:
+          type: string
+          description: The type of the metric group
+          example: funnel
+          enum:
+          - funnel
+          - standard
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+          example:
+            parent:
+              href: /api/v2/projects/my-project
+              type: application/json
+            self:
+              href: /api/v2/projects/my-project/metric-groups/my-metric-group
+              type: application/json
+        metrics:
+          type: array
+          description: The metrics in the metric group
+          items:
+            $ref: '#/components/schemas/MetricInGroupRep'
+    UnixMillis:
+      type: integer
+      format: int64
+    HoldoutPostRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: A human-friendly name for the holdout
+          example: holdout-one-name
+        key:
+          type: string
+          description: A key that identifies the holdout
+          example: holdout-key
+        description:
+          type: string
+          description: Description of the holdout
+          example: My holdout-one description
+        randomizationunit:
+          type: string
+          description: The chosen randomization unit for the holdout base experiment
+          example: user
+        attributes:
+          type: array
+          description: The attributes that the holdout iteration's results can be sliced by
+          items:
+            type: string
+          example:
+          - country
+          - device
+          - os
+        holdoutamount:
+          type: string
+          description: Audience allocation for the holdout
+          example: '10'
+        primarymetrickey:
+          type: string
+          description: The key of the primary metric for this holdout
+          example: metric-key-123abc
+        metrics:
+          type: array
+          description: Details on the metrics for this experiment
+          items:
+            $ref: '#/components/schemas/MetricInput'
+        prerequisiteflagkey:
+          type: string
+          description: The key of the flag that the holdout is dependent on
+          example: flag-key-123abc
+        maintainerId:
+          type: string
+          description: Maintainer id
+    LayerSnapshotRep:
+      type: object
+      required:
+      - key
+      - name
+      - reservationPercent
+      - otherReservationPercent
+      properties:
+        key:
+          type: string
+          description: Key of the layer the experiment was part of
+          example: checkout-flow
+        name:
+          type: string
+          description: Layer name at the time this experiment iteration was stopped
+          example: Checkout Flow
+        reservationPercent:
+          type: integer
+          description: Percent of layer traffic that was reserved in the layer for this experiment iteration
+          example: 10
+        otherReservationPercent:
+          type: integer
+          description: Percent of layer traffic that was reserved for other experiments in the same environment, when this experiment iteration was stopped
+          example: 70
+    HoldoutsCollectionRep:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/SimpleHoldoutRep'
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+          example:
+            self:
+              href: /api/v2/my-project/environments/my-environment/holdouts?limit=20
+              type: application/json
+        total_count:
+          type: integer
+          description: The total number of holdouts in this project and environment.
+    MutableFieldsByStatusRep:
+      type: object
+      properties:
+        not_started:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/FieldAction'
+        running:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/FieldAction'
+        stopped:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/FieldAction'
+    MetricV2Rep:
+      type: object
+      required:
+      - key
+      - name
+      - kind
+      - _links
+      properties:
+        key:
+          type: string
+          description: The metric key
+          example: metric-key-123abc
+        _versionId:
+          type: string
+          description: The version ID of the metric
+          example: version-id-123abc
+        name:
+          type: string
+          description: The metric name
+          example: Example metric
+        kind:
+          type: string
+          description: The kind of event the metric tracks
+          example: custom
+          enum:
+          - pageview
+          - click
+          - custom
+          - trace
+        isNumeric:
+          type: boolean
+          description: For custom metrics, whether to track numeric changes in value against a baseline (<code>true</code>) or to track a conversion when an end user takes an action (<code>false</code>).
+          example: true
+        unitAggregationType:
+          type: string
+          description: The type of unit aggregation to use for the metric
+          example: sum
+          enum:
+          - sum
+          - average
+          - count_distinct
+        analysisType:
+          type: string
+          description: The method for analyzing metric events
+          example: mean
+          enum:
+          - mean
+          - percentile
+        eventKey:
+          type: string
+          description: The event key sent with the metric. Only relevant for custom metrics.
+          example: event-key-123abc
+        analysisUnit:
+          type: string
+          description: The context kind used as the analysis unit for this metric in the experiment iteration
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+          example:
+            self:
+              href: /api/v2/metrics/my-project/my-metric
+              type: application/json
+    Access:
+      type: object
+      required:
+      - denied
+      - allowed
+      properties:
+        denied:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccessDenied'
+        allowed:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccessAllowedRep'
+    SimpleHoldoutRep:
+      type: object
+      properties:
+        _id:
+          type: string
+        key:
+          type: string
+        name:
+          type: string
+        status:
+          type: string
+        createdAt:
+          $ref: '#/components/schemas/UnixMillis'
+        updatedAt:
+          $ref: '#/components/schemas/UnixMillis'
+        experiments:
+          type: array
+          items:
+            $ref: '#/components/schemas/RelatedExperimentRep'
+    MetricInput:
+      type: object
+      required:
+      - key
+      properties:
+        key:
+          type: string
+          description: The metric key
+          example: metric-key-123abc
+        isGroup:
+          type: boolean
+          description: Whether this is a metric group (true) or a metric (false). Defaults to false
+          example: true
+        primary:
+          type: boolean
+          description: Deprecated, use <code>primarySingleMetricKey</code> and <code>primaryFunnelKey</code>. Whether this is a primary metric (true) or a secondary metric (false)
+          example: true
+          deprecated: true
+        analysisUnit:
+          type: string
+          description: The analysis unit to use for this metric. If omitted, analysis uses the iteration's randomization unit.
+          example: user
+    NotFoundErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: not_found
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid resource identifier
+    CovariateInfoRep:
+      type: object
+      required:
+      - id
+      - fileName
+      - createdAt
+      properties:
+        id:
+          type: string
+          description: The ID of the covariate matrix
+          example: 74a49a2b-4834-4246-917e-5d85231d8c2a
+        fileName:
+          type: string
+          description: The file name of the uploaded covariate matrix
+          example: covariate.csv
+        createdAt:
+          description: Timestamp of when the covariate was uploaded
+          example: '1654104600000'
+          $ref: '#/components/schemas/UnixMillis'
+    HoldoutPatchInput:
+      type: object
+      required:
+      - instructions
+      properties:
+        comment:
+          type: string
+          description: Optional comment describing the update
+          example: Optional comment
+        instructions:
+          description: 'The instructions to perform when updating. This should be an array with objects that look like <code>{"kind": "update_action"}</code>. Some instructions also require a <code>value</code> field in the array element.'
+          example: '[{"kind": "updateName", "name": "Updated holdout name"}]'
+          $ref: '#/components/schemas/Instructions'
+    ParameterRep:
+      type: object
+      properties:
+        variationId:
+          type: string
+        flagKey:
+          type: string
+    AccessAllowedReason:
+      type: object
+      required:
+      - effect
+      properties:
+        resources:
+          type: array
+          description: Resource specifier strings
+          items:
+            type: string
+          example:
+          - proj/*:env/*;qa_*:/flag/*
+        notResources:
+          type: array
+          description: Targeted resources are the resources NOT in this list. The <code>resources</code> and <code>notActions</code> fields must be empty to use this field.
+          items:
+            type: string
+        actions:
+          type: array
+          description: Actions to perform on a resource
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+          example:
+          - '*'
+        notActions:
+          type: array
+          description: Targeted actions are the actions NOT in this list. The <code>actions</code> and <code>notResources</code> fields must be empty to use this field.
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+        effect:
+          type: string
+          description: Whether this statement should allow or deny actions on the resources.
+          example: allow
+          enum:
+          - allow
+          - deny
+        role_name:
+          type: string
+    Instruction:
+      type: object
+      additionalProperties: {}
+    MetricInGroupRep:
+      type: object
+      required:
+      - key
+      - name
+      - kind
+      - _links
+      properties:
+        key:
+          type: string
+          description: The metric key
+          example: metric-key-123abc
+        _versionId:
+          type: string
+          description: The version ID of the metric
+          example: version-id-123abc
+        name:
+          type: string
+          description: The metric name
+          example: Example metric
+        kind:
+          type: string
+          description: The kind of event the metric tracks
+          example: custom
+          enum:
+          - pageview
+          - click
+          - custom
+          - trace
+        isNumeric:
+          type: boolean
+          description: For custom metrics, whether to track numeric changes in value against a baseline (<code>true</code>) or to track a conversion when an end user takes an action (<code>false</code>).
+          example: true
+        unitAggregationType:
+          type: string
+          description: The type of unit aggregation to use for the metric
+          example: sum
+          enum:
+          - sum
+          - average
+          - count_distinct
+        analysisType:
+          type: string
+          description: The method for analyzing metric events
+          example: mean
+          enum:
+          - mean
+          - percentile
+        eventKey:
+          type: string
+          description: The event key sent with the metric. Only relevant for custom metrics.
+          example: event-key-123abc
+        analysisUnit:
+          type: string
+          description: The context kind used as the analysis unit for this metric in the experiment iteration
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+          example:
+            self:
+              href: /api/v2/metrics/my-project/my-metric
+              type: application/json
+        nameInGroup:
+          type: string
+          description: Name of the metric when used within the associated metric group. Can be different from the original name of the metric. Required if and only if the metric group is a <code>funnel</code>.
+          example: Step 1
+        randomizationUnits:
+          type: array
+          description: Deprecated, use <code>analysisUnits</code> instead.
+          items:
+            type: string
+          example:
+          - user
+          deprecated: true
+        analysisUnits:
+          type: array
+          description: An array of analysis units allowed for this metric.
+          items:
+            type: string
+          example:
+          - user
+    Experiment:
+      type: object
+      required:
+      - key
+      - name
+      - _maintainerId
+      - _creationDate
+      - environmentKey
+      - _links
+      properties:
+        _id:
+          type: string
+          description: The experiment ID
+          example: 12ab3c45de678910fgh12345
+        key:
+          type: string
+          description: The experiment key
+          example: experiment-key-123abc
+        name:
+          type: string
+          description: The experiment name
+          example: Example experiment
+        description:
+          type: string
+          description: The experiment description
+          example: An example experiment, used in testing
+        _maintainerId:
+          type: string
+          description: The ID of the member who maintains this experiment.
+          example: 12ab3c45de678910fgh12345
+        _creationDate:
+          description: Timestamp of when the experiment was created
+          example: '1654104600000'
+          $ref: '#/components/schemas/UnixMillis'
+        environmentKey:
+          type: string
+        methodology:
+          type: string
+          description: The results analysis approach.
+          example: bayesian
+          enum:
+          - bayesian
+          - frequentist
+          - export_only
+        dataSource:
+          type: string
+          description: The source of metric data in order to analyze results. Defaults to "launchdarkly" when not provided.
+          example: snowflake
+          enum:
+          - launchdarkly
+          - snowflake
+        archivedDate:
+          description: Timestamp of when the experiment was archived
+          example: '1654104600000'
+          $ref: '#/components/schemas/UnixMillis'
+        tags:
+          type: array
+          description: Tags for the experiment
+          items:
+            type: string
+          example:
+          - experiment
+          - feature
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+          example:
+            parent:
+              href: /api/v2/projects/my-project/environments/my-environment
+              type: application/json
+            self:
+              href: /api/v2/projects/my-project/environments/my-environment/experiments/my-experiment
+              type: application/json
+        holdoutId:
+          type: string
+          description: The holdout ID
+          example: f3b74309-d581-44e1-8a2b-bb2933b4fe40
+        currentIteration:
+          description: Details on the current iteration
+          $ref: '#/components/schemas/IterationRep'
+        type:
+          type: string
+          description: The experiment type
+          example: experiment
+        _access:
+          description: Details on the allowed and denied actions for this experiment
+          $ref: '#/components/schemas/Access'
+        draftIteration:
+          description: Details on the current iteration. This iteration may be already started, or may still be a draft.
+          $ref: '#/components/schemas/IterationRep'
+        previousIterations:
+          type: array
+          description: Details on the previous iterations for this experiment.
+          items:
+            $ref: '#/components/schemas/IterationRep'
+        analysisConfig:
+          description: Details of the Analysis Configuration for this experiment.
+          $ref: '#/components/schemas/AnalysisConfigRep'
+        mutableFieldsByStatus:
+          description: Fields that can be changed for each iteration status.
+          $ref: '#/components/schemas/MutableFieldsByStatusRep'
+    FieldAction:
+      type: string
+    AccessAllowedRep:
+      type: object
+      required:
+      - action
+      - reason
+      properties:
+        action:
+          $ref: '#/components/schemas/ActionIdentifier'
+        reason:
+          $ref: '#/components/schemas/AccessAllowedReason'
+    HoldoutDetailRep:
+      type: object
+      required:
+      - _id
+      - status
+      - holdoutAmount
+      - createdAt
+      - updatedAt
+      - baseExperiment
+      properties:
+        _id:
+          type: string
+        status:
+          type: string
+          enum:
+          - created
+          - enabled
+          - running
+          - ended
+        description:
+          type: string
+        holdoutAmount:
+          type: string
+          description: The percentage of traffic allocated to this holdout.
+        isDirty:
+          type: boolean
+          description: Indicates if the holdout experiment is running and if any related experiments are running.
+        createdAt:
+          $ref: '#/components/schemas/UnixMillis'
+        updatedAt:
+          $ref: '#/components/schemas/UnixMillis'
+        baseExperiment:
+          $ref: '#/components/schemas/Experiment'
+        relatedExperiments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Experiment'
+    TreatmentRep:
+      type: object
+      required:
+      - name
+      - allocationPercent
+      properties:
+        _id:
+          type: string
+          description: The treatment ID. This is the variation ID from the flag.
+          example: 122c9f3e-da26-4321-ba68-e0fc02eced58
+        name:
+          type: string
+          description: The treatment name. This is the variation name from the flag.
+          example: Treatment 1
+        allocationPercent:
+          type: string
+          description: The percentage of traffic allocated to this treatment during the iteration
+          example: '10'
+        baseline:
+          type: boolean
+          description: Whether this treatment is the baseline to compare other treatments against
+          example: true
+        parameters:
+          type: array
+          description: Details on the flag and variation used for this treatment
+          items:
+            $ref: '#/components/schemas/ParameterRep'
+    DependentMetricOrMetricGroupRep:
+      type: object
+      required:
+      - key
+      - _versionId
+      - name
+      - kind
+      - _links
+      - isGroup
+      properties:
+        key:
+          type: string
+          description: A unique key to reference the metric or metric group
+          example: metric-key-123abc
+        _versionId:
+          type: string
+          description: The version ID of the metric or metric group
+        name:
+          type: string
+          description: A human-friendly name for the metric or metric group
+          example: My metric
+        kind:
+          type: string
+          description: If this is a metric, then it represents the kind of event the metric tracks. If this is a metric group, then it represents the group type
+          example: custom
+          enum:
+          - pageview
+          - click
+          - custom
+          - trace
+          - funnel
+          - standard
+        isNumeric:
+          type: boolean
+          description: For custom and trace metrics, whether to track numeric changes in value against a baseline (<code>true</code>) or to track a conversion when an end user takes an action (<code>false</code>).
+          example: true
+        eventKey:
+          type: string
+          description: The event key sent with the metric. Only relevant for custom metrics.
+          example: event-key-123abc
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+          example:
+            self:
+              href: /api/v2/metrics/my-project/my-metric
+              type: application/json
+        isGroup:
+          type: boolean
+          description: Whether this is a metric group or a metric
+        metrics:
+          type: array
+          description: An ordered list of the metrics in this metric group
+          items:
+            $ref: '#/components/schemas/MetricInGroupRep'
+        analysisType:
+          type: string
+          description: The method for analyzing metric events. Only set for individual metrics, not metric groups.
+          example: mean
+          enum:
+          - mean
+          - percentile
+        analysisUnit:
+          type: string
+          description: The context kind chosen as the analysis unit for this metric in the iteration. If null, analysis uses the iteration's randomization unit.
+          example: user
+  securitySchemes:
+    ApiKey:
+      type: apiKey
+      in: header
+      name: Authorization

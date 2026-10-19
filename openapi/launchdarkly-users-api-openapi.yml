@@ -1,0 +1,693 @@
+openapi: 3.2.0
+info:
+  title: LaunchDarkly REST Users API
+  description: 'This documentation describes LaunchDarkly''s REST API. To access the complete OpenAPI spec directly, use Get OpenAPI spec. To learn how to use LaunchDarkly using the user interface (UI) instead, read our product documentation. ## Authentication
+
+
+    LaunchDarkly''s REST API uses the HTTPS protocol with a minimum TLS version of 1.2. All REST API resources are authenticated with either personal or service access tokens, or session cookies. Other authentication mechanisms are not supported. You can manage personal access tokens on your **Authorization** page in the LaunchDarkly UI. LaunchDarkly also has SDK keys, mobile keys, and client-side IDs that are used by our server-side SDKs, mobile SDKs, and JavaScript-based SDKs, respectively. **These keys cannot be used to access our REST API**. These keys are environment-specific, and can only perform read-only operations such as fetching feature flag settings. | Auth mechanism | Allowed resources | Use cases |
+
+    | ----------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
+
+    | Personal or service access tokens | Can be customized on a per-token basis | Building scripts, custom integrations, data export. |
+
+    | SDK keys | Can only access read-only resources specific to server-side SDKs. Restricted to a single environment. | Server-side SDKs |
+
+    | Mobile keys | Can only access read-only resources specific to mobile SDKs, and only for flags marked available to mobile keys. Restricted to a single environment. | Mobile SDKs |
+
+    | Client-side ID | Can only access read-only resources specific to JavaScript-based client-side SDKs, and only for flags marked available to client-side. Restricted to a single environment. | Client-side JavaScript |
+
+
+    > #### Keep your access tokens and SDK keys private
+
+    >
+
+    > Access tokens should _never_ be exposed in untrusted contexts. Never put an access token in client-side JavaScript, or embed it in a mobile application. LaunchDarkly has special mobile keys that you can embed in mobile apps. If you accidentally expose an access token or SDK key, you can reset it from your **Authorization** page. >
+
+    > The client-side ID is safe to embed in untrusted contexts. It''s designed for use in client-side JavaScript. ### Authentication using request header
+
+
+    The preferred way to authenticate with the API is by adding an `Authorization` header containing your access token to your requests. The value of the `Authorization` header must be your access token. Manage personal access tokens from the **Authorization** page. ### Authentication using session cookie
+
+
+    For testing purposes, you can make API calls directly from your web browser. If you are logged in to the LaunchDarkly application, the API will use your existing session to authenticate calls. Depending on the permissions granted as part of your role, you may not have permission to perform some API calls. You will receive a `401` response code in that case. > ### Modifying the Origin header causes an error
+
+    >
+
+    > LaunchDarkly validates that the Origin header for any API request authenticated by a session cookie matches the expected Origin header. The expected Origin header is `https://app.launchdarkly.com`. >
+
+    > If the Origin header does not match what''s expected, LaunchDarkly returns an error. This error can prevent the LaunchDarkly app from working correctly. >
+
+    > Any browser extension that intentionally changes the Origin header can cause this problem. For example, Cross-Origin Resource Sharing (CORS) extensions used during development can modify the Origin header and cause the app to fail. >
+
+    > To prevent this error, do not modify your Origin header. >
+
+    > LaunchDarkly does not require origin matching when authenticating with an access token, so this issue does not affect normal API usage.'
+  contact:
+    name: LaunchDarkly Technical Support Team
+    url: https://support.launchdarkly.com
+    email: support@launchdarkly.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+  version: '2.0'
+servers:
+- url: https://app.launchdarkly.com
+  description: ' Default'
+- url: https://app.launchdarkly.us
+  description: ' Federal'
+security:
+- ApiKey:
+  - read
+  - write
+tags:
+- name: Users
+  description: '> ### Contexts are now available
+
+    >
+
+    > After you have upgraded your LaunchDarkly SDK to use contexts instead of users, you should use Contexts instead of these endpoints. To learn more, read Contexts.
+
+
+    LaunchDarkly creates a record for each user passed in to `variation` calls. This record powers the autocomplete functionality on the feature flag dashboard, as well as the Users page. To learn more, read Contexts.
+
+
+    LaunchDarkly also offers an API that lets you tap into this data. You can use the users API to see what user data is available to LaunchDarkly, as well as determine which flag values a user will receive. You can also explicitly set which flag value a user will receive via this API.
+
+
+    Users are always scoped within a project and environment. In other words, each environment has its own set of user records.'
+paths:
+  /api/v2/user-search/{projectKey}/{environmentKey}:
+    get:
+      responses:
+        '200':
+          description: Users collection response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Users'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Users
+      summary: Find users
+      description: '> ### Use contexts instead
+
+        >
+
+        > After you have upgraded your LaunchDarkly SDK to use contexts instead of users, you should use Search for contexts instead of this endpoint.
+
+
+        Search users in LaunchDarkly based on their last active date, a user attribute filter set, or a search query.
+
+
+        An example user attribute filter set is `filter=firstName:Anna,activeTrial:false`. This matches users that have the user attribute `firstName` set to `Anna`, that also have the attribute `activeTrial` set to `false`.
+
+
+        To paginate through results, follow the `next` link in the `_links` object. To learn more, read Representations.'
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: environmentKey
+        in: path
+        description: The environment key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The environment key
+      - name: q
+        in: query
+        description: Full-text search for users based on name, first name, last name, e-mail address, or key
+        schema:
+          type: string
+          format: string
+          description: Full-text search for users based on name, first name, last name, e-mail address, or key
+      - name: limit
+        in: query
+        description: 'Specifies the maximum number of items in the collection to return (max: 50, default: 20)'
+        schema:
+          type: integer
+          format: int64
+          description: 'Specifies the maximum number of items in the collection to return (max: 50, default: 20)'
+      - name: searchAfter
+        in: query
+        description: Limits results to users with sort values after the value you specify. You can use this for pagination, but we recommend using the `next` link we provide instead.
+        schema:
+          type: string
+          format: string
+          description: Limits results to users with sort values after the value you specify. You can use this for pagination, but we recommend using the `next` link we provide instead.
+      - name: filter
+        in: query
+        description: A comma-separated list of user attribute filters. Each filter is in the form of attributeKey:attributeValue
+        schema:
+          type: string
+          format: string
+          description: A comma-separated list of user attribute filters. Each filter is in the form of attributeKey:attributeValue
+      operationId: getSearchUsers
+      deprecated: true
+  /api/v2/users/{projectKey}/{environmentKey}:
+    get:
+      responses:
+        '200':
+          description: Users collection response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsersRep'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Users
+      summary: List users
+      description: '> ### Use contexts instead
+
+        >
+
+        > After you have upgraded your LaunchDarkly SDK to use contexts instead of users, you should use Search for contexts instead of this endpoint.
+
+
+        List all users in the environment. Includes the total count of users. This is useful for exporting all users in the system for further analysis.
+
+
+        Each page displays users up to a set `limit`. The default is 20. To page through, follow the `next` link in the `_links` object. To learn more, read Representations.'
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: environmentKey
+        in: path
+        description: The environment key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The environment key
+      - name: limit
+        in: query
+        description: The number of elements to return per page
+        schema:
+          type: integer
+          format: int64
+          description: The number of elements to return per page
+      - name: searchAfter
+        in: query
+        description: Limits results to users with sort values after the value you specify. You can use this for pagination, but we recommend using the `next` link we provide instead.
+        schema:
+          type: string
+          format: string
+          description: Limits results to users with sort values after the value you specify. You can use this for pagination, but we recommend using the `next` link we provide instead.
+      operationId: getUsers
+      deprecated: true
+  /api/v2/users/{projectKey}/{environmentKey}/{userKey}:
+    get:
+      responses:
+        '200':
+          description: User response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserRecord'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Users
+      summary: Get user
+      description: '> ### Use contexts instead
+
+        >
+
+        > After you have upgraded your LaunchDarkly SDK to use contexts instead of users, you should use Get contexts instead of this endpoint.
+
+
+        Get a user by key. The `user` object contains all attributes sent in `variation` calls for that key.'
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: environmentKey
+        in: path
+        description: The environment key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The environment key
+      - name: userKey
+        in: path
+        description: The user key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The user key
+      operationId: getUser
+      deprecated: true
+components:
+  schemas:
+    ActionSpecifier:
+      type: string
+    UserRecord:
+      type: object
+      properties:
+        lastPing:
+          type: string
+          format: date-time
+          description: Timestamp of the last time this user was seen
+          example: '2022-06-28T23:21:29.176609596Z'
+        environmentId:
+          description: The environment ID
+          example: 1234a56b7c89d012345e678f
+          $ref: '#/components/schemas/ObjectId'
+        ownerId:
+          description: The ID of the member who is the owner for this account
+          example: 12ab3c45de678910abc12345
+          $ref: '#/components/schemas/ObjectId'
+        user:
+          description: Details on the user
+          $ref: '#/components/schemas/User'
+        sortValue:
+          description: If this record is returned as part of a list, the value used to sort the list. This is only included when the <code>sort</code> query parameter is specified. It is a time, in Unix milliseconds, if the sort is by <code>lastSeen</code>. It is a user key if the sort is by <code>userKey</code>.
+          example: user-key-123abc
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+          example:
+            parent:
+              href: /api/v2/users/my-project/my-environment
+              type: application/json
+            self:
+              href: /api/v2/users/my-project/my-environment/my-user
+              type: application/json
+            settings:
+              href: /api/v2/users/my-project/my-environment/my-user/flags
+              type: text/html
+            site:
+              href: /my-project/my-environment/users/my-user
+              type: text/html
+        _access:
+          description: Details on the allowed and denied actions for this user
+          $ref: '#/components/schemas/Access'
+    User:
+      type: object
+      properties:
+        key:
+          type: string
+          description: The user key. This is the only mandatory user attribute.
+          example: user-key-123abc
+        secondary:
+          type: string
+          description: If provided, used with the user key to generate a variation in percentage rollouts
+          example: '2398127'
+        ip:
+          type: string
+          description: The user's IP address
+          example: 10.10.10.10
+        country:
+          type: string
+          description: The user's country
+          example: United States
+        email:
+          type: string
+          description: The user's email
+          example: sandy@example.com
+        firstName:
+          type: string
+          description: The user's first name
+          example: Sandy
+        lastName:
+          type: string
+          description: The user's last name
+          example: Smith
+        avatar:
+          type: string
+          description: An absolute URL to an avatar image.
+          example: http://example.com/avatar.png
+        name:
+          type: string
+          description: The user's full name
+          example: Sandy Smith
+        anonymous:
+          type: boolean
+          description: Whether the user is anonymous. If true, this user does not appear on the Contexts list in the LaunchDarkly user interface.
+          example: false
+        custom:
+          type: object
+          additionalProperties: {}
+          description: Any other custom attributes for this user. Custom attributes contain any other user data that you would like to use to conditionally target your users.
+        privateAttrs:
+          type: array
+          description: A list of attribute names that are marked as private. You can use these attributes in targeting rules and segments. If you are using a server-side SDK, the SDK will not send the private attribute back to LaunchDarkly. If you are using a client-side SDK, the SDK will send the private attribute back to LaunchDarkly for evaluation. However, the SDK won't send the attribute to LaunchDarkly in events data, LaunchDarkly won't store the private attribute, and the private attribute will not appear on the Contexts list.
+          items:
+            type: string
+    RateLimitedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: rate_limited
+        message:
+          type: string
+          description: Description of the error
+          example: You've exceeded the API rate limit. Try again later.
+    AccessDenied:
+      type: object
+      required:
+      - action
+      - reason
+      properties:
+        action:
+          $ref: '#/components/schemas/ActionIdentifier'
+        reason:
+          $ref: '#/components/schemas/AccessDeniedReason'
+    Link:
+      type: object
+      properties:
+        href:
+          type: string
+        type:
+          type: string
+    ActionIdentifier:
+      type: string
+    Users:
+      type: object
+      required:
+      - totalCount
+      - items
+      properties:
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+          example:
+            next:
+              href: /api/v2/user-search/my-project/my-environment?after=1647993600000&limit=20&searchAfter=my-user&sort=userKey
+              type: application/json
+            self:
+              href: /api/v2/user-search/my-project/my-environment?after=1647993600000&limit=20&sort=userKey
+              type: application/json
+        totalCount:
+          type: integer
+          description: The total number of users in the environment
+          example: 245
+        items:
+          type: array
+          description: Details on the users
+          items:
+            $ref: '#/components/schemas/UserRecord'
+    AccessAllowedRep:
+      type: object
+      required:
+      - action
+      - reason
+      properties:
+        action:
+          $ref: '#/components/schemas/ActionIdentifier'
+        reason:
+          $ref: '#/components/schemas/AccessAllowedReason'
+    Access:
+      type: object
+      required:
+      - denied
+      - allowed
+      properties:
+        denied:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccessDenied'
+        allowed:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccessAllowedRep'
+    InvalidRequestErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: invalid_request
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid request body
+    ObjectId:
+      type: string
+    NotFoundErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: not_found
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid resource identifier
+    AccessDeniedReason:
+      type: object
+      required:
+      - effect
+      properties:
+        resources:
+          type: array
+          description: Resource specifier strings
+          items:
+            type: string
+          example:
+          - proj/*:env/*;qa_*:/flag/*
+        notResources:
+          type: array
+          description: Targeted resources are the resources NOT in this list. The <code>resources</code> and <code>notActions</code> fields must be empty to use this field.
+          items:
+            type: string
+        actions:
+          type: array
+          description: Actions to perform on a resource
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+          example:
+          - '*'
+        notActions:
+          type: array
+          description: Targeted actions are the actions NOT in this list. The <code>actions</code> and <code>notResources</code> fields must be empty to use this field.
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+        effect:
+          type: string
+          description: Whether this statement should allow or deny actions on the resources.
+          example: allow
+          enum:
+          - allow
+          - deny
+        role_name:
+          type: string
+    UsersRep:
+      type: object
+      required:
+      - totalCount
+      - items
+      properties:
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+          example:
+            next:
+              href: /api/v2/users/my-project/my-environment?after=1647993600000&limit=20&searchAfter=my-user
+              type: application/json
+            self:
+              href: /api/v2/users/my-project/my-environment?after=1647993600000&limit=20
+              type: application/json
+        totalCount:
+          type: integer
+          description: The total number of users in the environment
+          example: 245
+        items:
+          type: array
+          description: Details on the users
+          items:
+            $ref: '#/components/schemas/UserRecord'
+    UnauthorizedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: unauthorized
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid access token
+    ForbiddenErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: forbidden
+        message:
+          type: string
+          description: Description of the error
+          example: Forbidden. Access to the requested resource was denied.
+    AccessAllowedReason:
+      type: object
+      required:
+      - effect
+      properties:
+        resources:
+          type: array
+          description: Resource specifier strings
+          items:
+            type: string
+          example:
+          - proj/*:env/*;qa_*:/flag/*
+        notResources:
+          type: array
+          description: Targeted resources are the resources NOT in this list. The <code>resources</code> and <code>notActions</code> fields must be empty to use this field.
+          items:
+            type: string
+        actions:
+          type: array
+          description: Actions to perform on a resource
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+          example:
+          - '*'
+        notActions:
+          type: array
+          description: Targeted actions are the actions NOT in this list. The <code>actions</code> and <code>notResources</code> fields must be empty to use this field.
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+        effect:
+          type: string
+          description: Whether this statement should allow or deny actions on the resources.
+          example: allow
+          enum:
+          - allow
+          - deny
+        role_name:
+          type: string
+  securitySchemes:
+    ApiKey:
+      type: apiKey
+      in: header
+      name: Authorization

@@ -1,0 +1,950 @@
+openapi: 3.2.0
+info:
+  title: LaunchDarkly REST Approvals (beta) API
+  description: 'This documentation describes LaunchDarkly''s REST API. To access the complete OpenAPI spec directly, use Get OpenAPI spec. To learn how to use LaunchDarkly using the user interface (UI) instead, read our product documentation. ## Authentication
+
+
+    LaunchDarkly''s REST API uses the HTTPS protocol with a minimum TLS version of 1.2. All REST API resources are authenticated with either personal or service access tokens, or session cookies. Other authentication mechanisms are not supported. You can manage personal access tokens on your **Authorization** page in the LaunchDarkly UI. LaunchDarkly also has SDK keys, mobile keys, and client-side IDs that are used by our server-side SDKs, mobile SDKs, and JavaScript-based SDKs, respectively. **These keys cannot be used to access our REST API**. These keys are environment-specific, and can only perform read-only operations such as fetching feature flag settings. | Auth mechanism | Allowed resources | Use cases |
+
+    | ----------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
+
+    | Personal or service access tokens | Can be customized on a per-token basis | Building scripts, custom integrations, data export. |
+
+    | SDK keys | Can only access read-only resources specific to server-side SDKs. Restricted to a single environment. | Server-side SDKs |
+
+    | Mobile keys | Can only access read-only resources specific to mobile SDKs, and only for flags marked available to mobile keys. Restricted to a single environment. | Mobile SDKs |
+
+    | Client-side ID | Can only access read-only resources specific to JavaScript-based client-side SDKs, and only for flags marked available to client-side. Restricted to a single environment. | Client-side JavaScript |
+
+
+    > #### Keep your access tokens and SDK keys private
+
+    >
+
+    > Access tokens should _never_ be exposed in untrusted contexts. Never put an access token in client-side JavaScript, or embed it in a mobile application. LaunchDarkly has special mobile keys that you can embed in mobile apps. If you accidentally expose an access token or SDK key, you can reset it from your **Authorization** page. >
+
+    > The client-side ID is safe to embed in untrusted contexts. It''s designed for use in client-side JavaScript. ### Authentication using request header
+
+
+    The preferred way to authenticate with the API is by adding an `Authorization` header containing your access token to your requests. The value of the `Authorization` header must be your access token. Manage personal access tokens from the **Authorization** page. ### Authentication using session cookie
+
+
+    For testing purposes, you can make API calls directly from your web browser. If you are logged in to the LaunchDarkly application, the API will use your existing session to authenticate calls. Depending on the permissions granted as part of your role, you may not have permission to perform some API calls. You will receive a `401` response code in that case. > ### Modifying the Origin header causes an error
+
+    >
+
+    > LaunchDarkly validates that the Origin header for any API request authenticated by a session cookie matches the expected Origin header. The expected Origin header is `https://app.launchdarkly.com`. >
+
+    > If the Origin header does not match what''s expected, LaunchDarkly returns an error. This error can prevent the LaunchDarkly app from working correctly. >
+
+    > Any browser extension that intentionally changes the Origin header can cause this problem. For example, Cross-Origin Resource Sharing (CORS) extensions used during development can modify the Origin header and cause the app to fail. >
+
+    > To prevent this error, do not modify your Origin header. >
+
+    > LaunchDarkly does not require origin matching when authenticating with an access token, so this issue does not affect normal API usage.'
+  contact:
+    name: LaunchDarkly Technical Support Team
+    url: https://support.launchdarkly.com
+    email: support@launchdarkly.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+  version: '2.0'
+servers:
+- url: https://app.launchdarkly.com
+  description: ' Default'
+- url: https://app.launchdarkly.us
+  description: ' Federal'
+security:
+- ApiKey:
+  - read
+  - write
+tags:
+- name: Approvals (beta)
+  description: '> ### This feature is in beta
+
+    >
+
+    > To use this feature, pass in a header including the `LD-API-Version` key with value set to `beta`. Use this header with each call. To learn more, read Beta resources.
+
+    >
+
+    > Resources that are in beta are still undergoing testing and development. They may change without notice, including becoming backwards incompatible.'
+paths:
+  /api/v2/approval-requests/{id}:
+    patch:
+      responses:
+        '200':
+          description: Approval request response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FlagConfigApprovalRequestResponse'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Approvals (beta)
+      summary: Update approval request
+      description: 'Perform a partial update to an approval request. Updating an approval request uses the semantic patch format. This endpoint works with any approval requests.
+
+
+        To make a semantic patch request, you must append `domain-model=launchdarkly.semanticpatch` to your `Content-Type` header. To learn more, read Updates using semantic patch.
+
+
+        ### Instructions
+
+
+        Semantic patch requests support the following `kind` instructions for updating an approval request.
+
+
+        #### addReviewers
+
+
+        Adds the specified members and teams to the existing list of reviewers. You must include at least one of `notifyMemberIds` and `notifyTeamKeys`.
+
+
+        ##### Parameters
+
+
+        - `notifyMemberIds`: (Optional) List of member IDs.
+
+        - `notifyTeamKeys`: (Optional) List of team keys.
+
+
+        Here''s an example:
+
+
+        ```json
+
+        {
+
+        "instructions": [{
+
+        "kind": "addReviewers",
+
+        "notifyMemberIds": [ "user-key-123abc", "user-key-456def" ],
+
+        "notifyTeamKeys": [ "team-key-789abc"]
+
+        }]
+
+        }
+
+        ```
+
+
+        #### updateDescription
+
+
+        Updates the description (title) of the approval request.
+
+
+        ##### Parameters
+
+
+        - `value`: (Required) The new description for the approval request. Must be non-empty and no more than 5000 characters.
+
+
+        Here''s an example:
+
+
+        ```json
+
+        {
+
+        "instructions": [{
+
+        "kind": "updateDescription",
+
+        "value": "Updated approval request title"
+
+        }]
+
+        }
+
+        ```'
+      parameters:
+      - name: id
+        in: path
+        description: The approval ID
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The approval ID
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/approvalRequestPatchInput'
+            example:
+              instructions:
+              - kind: updateDescription
+                value: New description
+        required: true
+      operationId: patchApprovalRequest
+  /api/v2/projects/{projectKey}/flags/{featureFlagKey}/environments/{environmentKey}/approval-requests/{id}:
+    patch:
+      responses:
+        '200':
+          description: Approval request response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FlagConfigApprovalRequestResponse'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Approvals (beta)
+      summary: Update flag approval request
+      description: 'Perform a partial update to an approval request. Updating an approval request uses the semantic patch format. This endpoint requires a feature flag key, and can only be used for updating approval requests for flags.
+
+
+        To make a semantic patch request, you must append `domain-model=launchdarkly.semanticpatch` to your `Content-Type` header. To learn more, read Updates using semantic patch.
+
+
+        ### Instructions
+
+
+        Semantic patch requests support the following `kind` instructions for updating an approval request.
+
+
+        #### addReviewers
+
+
+        Adds the specified members and teams to the existing list of reviewers. You must include at least one of `notifyMemberIds` and `notifyTeamKeys`.
+
+
+        ##### Parameters
+
+
+        - `notifyMemberIds`: (Optional) List of member IDs.
+
+        - `notifyTeamKeys`: (Optional) List of team keys.
+
+
+        #### updateDescription
+
+
+        Updates the description (title) of the approval request.
+
+
+        ##### Parameters
+
+
+        - `value`: (Required) The new description for the approval request. Must be non-empty and no more than 5000 characters.'
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: featureFlagKey
+        in: path
+        description: The feature flag key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The feature flag key
+      - name: environmentKey
+        in: path
+        description: The environment key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The environment key
+      - name: id
+        in: path
+        description: The approval ID
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The approval ID
+      operationId: patchFlagConfigApprovalRequest
+  /api/v2/approval-requests/projects/{projectKey}/settings:
+    get:
+      description: Get the approval request settings for the given project, optionally filtered by environment and resource kind.
+      operationId: getApprovalRequestSettings
+      parameters:
+      - description: Version of the endpoint.
+        explode: false
+        in: header
+        name: LD-API-Version
+        required: true
+        schema:
+          enum:
+          - beta
+          type: string
+        style: simple
+      - example: default
+        explode: false
+        in: path
+        name: projectKey
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: An environment key filter to apply to the approval request settings.
+        explode: true
+        in: query
+        name: environmentKey
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: A resource kind filter to apply to the approval request settings.
+        explode: true
+        in: query
+        name: resourceKind
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: A comma-separated list of fields to expand in the response. Options include 'default' and 'strict'.
+        example: default,strict
+        explode: true
+        in: query
+        name: expand
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApprovalRequestSettings'
+          description: Successful response
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Bad request
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Not found
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Internal server error
+      summary: Get approval request settings
+      tags:
+      - Approvals (beta)
+    patch:
+      description: Perform a partial update to approval request settings
+      operationId: patchApprovalRequestSettings
+      parameters:
+      - description: Version of the endpoint.
+        explode: false
+        in: header
+        name: LD-API-Version
+        required: true
+        schema:
+          enum:
+          - beta
+          type: string
+        style: simple
+      - example: default
+        explode: false
+        in: path
+        name: projectKey
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApprovalRequestSettingsPatch'
+        description: Approval request settings to update
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApprovalRequestSettings'
+          description: Successful response
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Bad request
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Not found
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Internal server error
+      summary: Update approval request settings
+      tags:
+      - Approvals (beta)
+components:
+  schemas:
+    Instructions:
+      type: array
+      items:
+        $ref: '#/components/schemas/Instruction'
+    RateLimitedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: rate_limited
+        message:
+          type: string
+          description: Description of the error
+          example: You've exceeded the API rate limit. Try again later.
+    CustomWorkflowMeta:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the workflow stage that required this approval request
+          example: Example workflow name
+        stage:
+          description: Details on the stage of the workflow where this approval request is required
+          $ref: '#/components/schemas/CustomWorkflowStageMeta'
+    UnauthorizedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: unauthorized
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid access token
+    approvalRequestPatchInput:
+      type: object
+      required:
+      - instructions
+      properties:
+        comment:
+          type: string
+          description: Optional comment describing the update
+          example: Update targeting to serve true to beta testers
+        instructions:
+          description: The instructions to perform when updating
+          example: '[ { "kind": "updateDescription", "value": "New description" } ]'
+          $ref: '#/components/schemas/Instructions'
+    ForbiddenErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: forbidden
+        message:
+          type: string
+          description: Description of the error
+          example: Forbidden. Access to the requested resource was denied.
+    ApprovalRequestSetting:
+      description: Configuration that controls how changes to a resource are gated by approvals.
+      properties:
+        required:
+          description: If approvals are required for this environment
+          example: true
+          type: boolean
+        bypassApprovalsForPendingChanges:
+          description: Whether to skip approvals for pending changes
+          example: false
+          type: boolean
+        minNumApprovals:
+          description: 'Sets the amount of approvals required before a member can apply a change. The minimum is one and the maximum is five.
+
+            '
+          example: 1
+          format: int
+          type: integer
+        canReviewOwnRequest:
+          description: Allow someone who makes an approval request to apply their own change
+          example: false
+          type: boolean
+        canApplyDeclinedChanges:
+          description: Allow applying the change as long as at least one person has approved
+          example: true
+          type: boolean
+        autoApplyApprovedChanges:
+          description: 'Automatically apply changes that have been approved by all reviewers. This field is only applicable for approval services other than LaunchDarkly.
+
+            '
+          example: true
+          type:
+          - boolean
+          - 'null'
+          x-omitempty: false
+        serviceKind:
+          description: Which service to use for managing approvals
+          example: launchdarkly
+          type: string
+        serviceConfig:
+          additionalProperties: true
+          description: Arbitrary service-specific configuration
+          example: {}
+          type: object
+        requiredApprovalTags:
+          description: 'Require approval only on flags with the provided tags. Otherwise all flags will require approval.
+
+            '
+          example:
+          - require-approval
+          items:
+            type: string
+          type: array
+        serviceKindConfigurationId:
+          description: 'Optional integration configuration ID of a custom approval integration. This is an Enterprise-only feature.
+
+            '
+          example: 1ef45a85-218f-4428-a8b2-a97e5f56c258
+          type:
+          - string
+          - 'null'
+          x-omitempty: false
+      required:
+      - bypassApprovalsForPendingChanges
+      - canApplyDeclinedChanges
+      - canReviewOwnRequest
+      - minNumApprovals
+      - required
+      - requiredApprovalTags
+      - serviceConfig
+      - serviceKind
+      type: object
+    Error:
+      example:
+        code: code
+        message: message
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+      required:
+      - code
+      - message
+      type: object
+    UnixMillis:
+      type: integer
+      format: int64
+    IntegrationStatus:
+      type: object
+      required:
+      - display
+      - value
+      properties:
+        display:
+          type: string
+        value:
+          type: string
+    CustomWorkflowStageMeta:
+      type: object
+      properties:
+        index:
+          type: integer
+          description: The zero-based index of the workflow stage
+          example: 0
+        name:
+          type: string
+          description: The name of the workflow stage
+          example: Stage 1
+    ApprovalRequestSettings:
+      additionalProperties:
+        $ref: '#/components/schemas/ApprovalRequestSettingWithEnvs'
+      type: object
+    NotFoundErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: not_found
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid resource identifier
+    Instruction:
+      type: object
+      additionalProperties: {}
+    Conflict:
+      type: object
+      properties:
+        instruction:
+          description: Instruction in semantic patch format to be applied to the feature flag
+          $ref: '#/components/schemas/Instruction'
+        reason:
+          type: string
+          description: Reason why the conflict exists
+    ReviewResponse:
+      type: object
+      required:
+      - _id
+      - kind
+      properties:
+        _id:
+          type: string
+          description: The approval request ID
+          example: 12ab3c45de678910abc12345
+        kind:
+          type: string
+          description: The type of review action to take
+          example: approve
+          enum:
+          - approve
+          - decline
+          - comment
+        creationDate:
+          description: Timestamp of when the request was created
+          example: '1653606981113'
+          $ref: '#/components/schemas/UnixMillis'
+        comment:
+          type: string
+          description: A comment describing the approval response
+          example: Approved!
+        memberId:
+          type: string
+          description: ID of account member that reviewed request
+          example: 12ab3c45de678910abc12345
+        serviceTokenId:
+          type: string
+          description: ID of account service token that reviewed request
+          example: 12ab3c45de678910abc12345
+    FlagConfigApprovalRequestResponse:
+      type: object
+      required:
+      - _id
+      - _version
+      - creationDate
+      - serviceKind
+      - reviewStatus
+      - allReviews
+      - notifyMemberIds
+      - status
+      - instructions
+      - conflicts
+      - _links
+      properties:
+        _id:
+          type: string
+          description: The ID of this approval request
+          example: 12ab3c45de678910abc12345
+        _version:
+          type: integer
+          description: Version of the approval request
+          example: 1
+        creationDate:
+          description: Timestamp of when the approval request was created
+          example: '1654104600000'
+          $ref: '#/components/schemas/UnixMillis'
+        serviceKind:
+          description: The approval service for this request. May be LaunchDarkly or an external approval service, such as ServiceNow or JIRA.
+          example: launchdarkly
+          $ref: '#/components/schemas/ApprovalRequestServiceKind'
+        requestorId:
+          type: string
+          description: The ID of the member who requested the approval
+          example: 12ab3c45de678910abc12345
+        description:
+          type: string
+          description: A human-friendly name for the approval request
+          example: 'example: request approval from someone'
+        reviewStatus:
+          type: string
+          description: Current status of the review of this approval request
+          example: pending
+          enum:
+          - approved
+          - declined
+          - pending
+        allReviews:
+          type: array
+          description: An array of individual reviews of this approval request
+          items:
+            $ref: '#/components/schemas/ReviewResponse'
+        notifyMemberIds:
+          type: array
+          description: An array of member IDs. These members are notified to review the approval request.
+          items:
+            type: string
+          example:
+          - 1234a56b7c89d012345e678f
+        notifyTeamKeys:
+          type: array
+          description: An array of team keys, if teams were specified when the approval request was created. The members of these teams are listed in <code>notifyMemberIds</code>, resolved when the request was made. Team membership may have changed since then.
+          items:
+            type: string
+          example:
+          - example-reviewer-team
+        appliedDate:
+          description: Timestamp of when the approval request was applied
+          example: '1654104600000'
+          $ref: '#/components/schemas/UnixMillis'
+        appliedByMemberId:
+          type: string
+          description: The member ID of the member who applied the approval request
+          example: 1234a56b7c89d012345e678f
+        appliedByServiceTokenId:
+          type: string
+          description: The service token ID of the service token which applied the approval request
+          example: 1234a56b7c89d012345e678f
+        status:
+          type: string
+          description: Current status of the approval request
+          example: pending
+          enum:
+          - pending
+          - completed
+          - failed
+          - scheduled
+        instructions:
+          description: List of instructions in semantic patch format to be applied to the feature flag
+          example: '[{"kind": "turnFlagOn"}]'
+          $ref: '#/components/schemas/Instructions'
+        conflicts:
+          type: array
+          description: Details on any conflicting approval requests
+          items:
+            $ref: '#/components/schemas/Conflict'
+        _links:
+          type: object
+          additionalProperties: {}
+          description: The location and content type of related resources
+        executionDate:
+          description: Timestamp for when instructions will be executed
+          example: '1654104600000'
+          $ref: '#/components/schemas/UnixMillis'
+        operatingOnId:
+          type: string
+          description: ID of scheduled change to edit or delete
+          example: 12ab3c45de678910abc12345
+        integrationMetadata:
+          description: Details about the object in an external service corresponding to this approval request, such as a ServiceNow change request or a JIRA ticket, if an external approval service is being used
+          $ref: '#/components/schemas/IntegrationMetadata'
+        source:
+          description: Details about the source feature flag, if copied
+          $ref: '#/components/schemas/CopiedFromEnv'
+        customWorkflowMetadata:
+          description: Details about the custom workflow, if this approval request is part of a custom workflow
+          $ref: '#/components/schemas/CustomWorkflowMeta'
+    ApprovalRequestSettingsPatch:
+      example:
+        resourceKind: resourceKind
+        serviceKind: launchdarkly
+        canReviewOwnRequest: false
+        requiredApprovalTags:
+        - require-approval
+        serviceConfig: {}
+        serviceKindConfigurationId: 1ef45a85-218f-4428-a8b2-a97e5f56c258
+        bypassApprovalsForPendingChanges: false
+        canApplyDeclinedChanges: true
+        minNumApprovals: 1
+        autoApplyApprovedChanges: true
+        required: true
+        environmentKey: environmentKey
+      properties:
+        autoApplyApprovedChanges:
+          description: 'Automatically apply changes that have been approved by all reviewers. This field is only applicable for approval services other than LaunchDarkly.
+
+            '
+          example: true
+          type:
+          - boolean
+          - 'null'
+          x-omitempty: false
+        bypassApprovalsForPendingChanges:
+          description: Whether to skip approvals for pending changes
+          example: false
+          type: boolean
+        canApplyDeclinedChanges:
+          description: Allow applying the change as long as at least one person has approved
+          example: true
+          type: boolean
+        canReviewOwnRequest:
+          description: Allow someone who makes an approval request to apply their own change
+          example: false
+          type: boolean
+        environmentKey:
+          type: string
+        minNumApprovals:
+          description: 'Sets the amount of approvals required before a member can apply a change. The minimum is one and the maximum is five.
+
+            '
+          example: 1
+          format: int
+          type: integer
+        required:
+          description: If approvals are required for this environment
+          example: true
+          type: boolean
+        requiredApprovalTags:
+          description: 'Require approval only on flags with the provided tags. Otherwise all flags will require approval.
+
+            '
+          example:
+          - require-approval
+          items:
+            type: string
+          type: array
+        resourceKind:
+          type: string
+        serviceConfig:
+          additionalProperties: true
+          description: Arbitrary service-specific configuration
+          example: {}
+          type: object
+        serviceKind:
+          description: Which service to use for managing approvals
+          example: launchdarkly
+          type: string
+        serviceKindConfigurationId:
+          description: 'Optional integration configuration ID of a custom approval integration. This is an Enterprise-only feature.
+
+            '
+          example: 1ef45a85-218f-4428-a8b2-a97e5f56c258
+          type:
+          - string
+          - 'null'
+          x-omitempty: false
+      required:
+      - environmentKey
+      - resourceKind
+      type: object
+    IntegrationMetadata:
+      type: object
+      required:
+      - externalId
+      - externalStatus
+      - externalUrl
+      - lastChecked
+      properties:
+        externalId:
+          type: string
+        externalStatus:
+          $ref: '#/components/schemas/IntegrationStatus'
+        externalUrl:
+          type: string
+        lastChecked:
+          $ref: '#/components/schemas/UnixMillis'
+    ApprovalRequestServiceKind:
+      type: string
+    ApprovalRequestSettingWithEnvs:
+      allOf:
+      - properties:
+          environments:
+            additionalProperties:
+              $ref: '#/components/schemas/ApprovalRequestSetting'
+            description: Environment-specific overrides.
+            type: object
+          _default:
+            $ref: '#/components/schemas/ApprovalRequestSetting'
+          _strict:
+            $ref: '#/components/schemas/ApprovalRequestSetting'
+        type: object
+    CopiedFromEnv:
+      type: object
+      required:
+      - key
+      properties:
+        key:
+          type: string
+          description: Key of feature flag copied
+          example: source-flag-key-123abc
+        version:
+          type: integer
+          description: Version of feature flag copied
+          example: 1
+  securitySchemes:
+    ApiKey:
+      type: apiKey
+      in: header
+      name: Authorization

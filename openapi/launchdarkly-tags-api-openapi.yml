@@ -1,23 +1,129 @@
 openapi: 3.2.0
 info:
-  title: LaunchDarkly REST Tags API
-  description: The LaunchDarkly REST API provides programmatic access to the full LaunchDarkly feature management platform.
-  version: '20240415'
-  contact:
-    name: LaunchDarkly Support
-    url: https://support.launchdarkly.com
-  termsOfService: https://launchdarkly.com/policies/terms-of-service
+  title: Launchdarkly Tags API
   license:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
+  version: '1.0'
+  description: 'Operations tagged Tags across 2 of this provider''s published API definitions: launchdarkly-openapi.json, launchdarkly-rest-api-openapi.yml. Each path carries the servers of the definition it was published in.'
 servers:
+- url: https://app.launchdarkly.com
+  description: ' Default'
+- url: https://app.launchdarkly.us
+  description: ' Federal'
 - url: https://app.launchdarkly.com/api/v2
   description: LaunchDarkly Production API
-security:
-- bearerAuth: []
 tags:
 - name: Tags
+  description: 'Tags are simple strings that you can attach to most resources in LaunchDarkly. Tags are useful for grouping resources into a set that you can name in a resource specifier. To learn more, read Specifying resources in the advanced editor.
+
+
+    Using the tags API, you can list existing tags for resources.'
 paths:
+  /api/v2/tags:
+    get:
+      description: Get a list of tags.
+      operationId: getTags
+      parameters:
+      - description: Fetch tags associated with the specified resource type. Options are `flag`, `project`, `environment`, `segment`, `metric`, `metric-data-source`, `aiconfig`, and `view`. Returns all types by default.
+        explode: true
+        in: query
+        name: kind
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+        style: form
+      - description: Return tags with the specified prefix
+        explode: true
+        in: query
+        name: pre
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Whether or not to return archived flags
+        explode: true
+        in: query
+        name: archived
+        required: false
+        schema:
+          type: boolean
+        style: form
+      - description: The number of tags to return. Maximum is 1000.
+        explode: true
+        in: query
+        name: limit
+        required: false
+        schema:
+          type: integer
+        style: form
+      - description: The index of the first tag to return. Default is 0.
+        explode: true
+        in: query
+        name: offset
+        required: false
+        schema:
+          type: integer
+        style: form
+      - description: The time to retrieve tags as of. Default is the current time.
+        explode: true
+        in: query
+        name: asOf
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TagsCollection'
+          description: Tag collection response
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Bad request
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Invalid access token
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Forbidden
+        '429':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Rate Limited
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Internal server error
+      summary: List tags
+      tags:
+      - Tags
+      security:
+      - ApiKey:
+        - read
+        - write
+    servers:
+    - url: https://app.launchdarkly.com
+      description: ' Default'
+    - url: https://app.launchdarkly.us
+      description: ' Federal'
   /tags:
     get:
       operationId: listTags
@@ -46,8 +152,78 @@ paths:
                 $ref: '#/components/schemas/TagCollection'
         '401':
           description: Unauthorized. Invalid or missing access token.
+      security:
+      - bearerAuth: []
+    servers:
+    - url: https://app.launchdarkly.com/api/v2
+      description: LaunchDarkly Production API
 components:
   schemas:
+    TagsCollection:
+      example:
+        _links:
+          key:
+            href: href
+            type: type
+        totalCount: 103
+        items:
+        - ops
+        - pro
+      properties:
+        items:
+          description: List of tags
+          example:
+          - ops
+          - pro
+          items:
+            type: string
+          type: array
+        _links:
+          additionalProperties:
+            $ref: '#/components/schemas/TagsLink'
+          type: object
+        totalCount:
+          description: The total number of tags
+          example: 103
+          type: integer
+      required:
+      - _links
+      - items
+      type: object
+    Error:
+      example:
+        code: code
+        message: message
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+      required:
+      - code
+      - message
+      type: object
+    TagsLink:
+      example:
+        href: href
+        type: type
+      properties:
+        href:
+          type: string
+        type:
+          type: string
+      type: object
+    TagCollection:
+      type: object
+      description: A collection of tags.
+      properties:
+        items:
+          type: array
+          description: The list of tags.
+          items:
+            type: string
+        _links:
+          $ref: '#/components/schemas/Links'
     Links:
       type: object
       description: HATEOAS links for navigating related resources.
@@ -71,18 +247,11 @@ components:
           type:
             type: string
             description: The media type.
-    TagCollection:
-      type: object
-      description: A collection of tags.
-      properties:
-        items:
-          type: array
-          description: The list of tags.
-          items:
-            type: string
-        _links:
-          $ref: '#/components/schemas/Links'
   securitySchemes:
+    ApiKey:
+      type: apiKey
+      in: header
+      name: Authorization
     bearerAuth:
       type: http
       scheme: bearer
@@ -90,3 +259,6 @@ components:
 externalDocs:
   description: LaunchDarkly API Documentation
   url: https://apidocs.launchdarkly.com/
+x-refined-from:
+- launchdarkly-openapi.json
+- launchdarkly-rest-api-openapi.yml

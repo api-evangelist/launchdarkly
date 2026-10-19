@@ -1,0 +1,1080 @@
+openapi: 3.2.0
+info:
+  title: LaunchDarkly REST Applications (beta) API
+  description: 'This documentation describes LaunchDarkly''s REST API. To access the complete OpenAPI spec directly, use Get OpenAPI spec. To learn how to use LaunchDarkly using the user interface (UI) instead, read our product documentation. ## Authentication
+
+
+    LaunchDarkly''s REST API uses the HTTPS protocol with a minimum TLS version of 1.2. All REST API resources are authenticated with either personal or service access tokens, or session cookies. Other authentication mechanisms are not supported. You can manage personal access tokens on your **Authorization** page in the LaunchDarkly UI. LaunchDarkly also has SDK keys, mobile keys, and client-side IDs that are used by our server-side SDKs, mobile SDKs, and JavaScript-based SDKs, respectively. **These keys cannot be used to access our REST API**. These keys are environment-specific, and can only perform read-only operations such as fetching feature flag settings. | Auth mechanism | Allowed resources | Use cases |
+
+    | ----------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
+
+    | Personal or service access tokens | Can be customized on a per-token basis | Building scripts, custom integrations, data export. |
+
+    | SDK keys | Can only access read-only resources specific to server-side SDKs. Restricted to a single environment. | Server-side SDKs |
+
+    | Mobile keys | Can only access read-only resources specific to mobile SDKs, and only for flags marked available to mobile keys. Restricted to a single environment. | Mobile SDKs |
+
+    | Client-side ID | Can only access read-only resources specific to JavaScript-based client-side SDKs, and only for flags marked available to client-side. Restricted to a single environment. | Client-side JavaScript |
+
+
+    > #### Keep your access tokens and SDK keys private
+
+    >
+
+    > Access tokens should _never_ be exposed in untrusted contexts. Never put an access token in client-side JavaScript, or embed it in a mobile application. LaunchDarkly has special mobile keys that you can embed in mobile apps. If you accidentally expose an access token or SDK key, you can reset it from your **Authorization** page. >
+
+    > The client-side ID is safe to embed in untrusted contexts. It''s designed for use in client-side JavaScript. ### Authentication using request header
+
+
+    The preferred way to authenticate with the API is by adding an `Authorization` header containing your access token to your requests. The value of the `Authorization` header must be your access token. Manage personal access tokens from the **Authorization** page. ### Authentication using session cookie
+
+
+    For testing purposes, you can make API calls directly from your web browser. If you are logged in to the LaunchDarkly application, the API will use your existing session to authenticate calls. Depending on the permissions granted as part of your role, you may not have permission to perform some API calls. You will receive a `401` response code in that case. > ### Modifying the Origin header causes an error
+
+    >
+
+    > LaunchDarkly validates that the Origin header for any API request authenticated by a session cookie matches the expected Origin header. The expected Origin header is `https://app.launchdarkly.com`. >
+
+    > If the Origin header does not match what''s expected, LaunchDarkly returns an error. This error can prevent the LaunchDarkly app from working correctly. >
+
+    > Any browser extension that intentionally changes the Origin header can cause this problem. For example, Cross-Origin Resource Sharing (CORS) extensions used during development can modify the Origin header and cause the app to fail. >
+
+    > To prevent this error, do not modify your Origin header. >
+
+    > LaunchDarkly does not require origin matching when authenticating with an access token, so this issue does not affect normal API usage.'
+  contact:
+    name: LaunchDarkly Technical Support Team
+    url: https://support.launchdarkly.com
+    email: support@launchdarkly.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+  version: '2.0'
+servers:
+- url: https://app.launchdarkly.com
+  description: ' Default'
+- url: https://app.launchdarkly.us
+  description: ' Federal'
+security:
+- ApiKey:
+  - read
+  - write
+tags:
+- name: Applications (beta)
+  description: '> ### This feature is in beta
+
+    >
+
+    > To use this feature, pass in a header including the `LD-API-Version` key with value set to `beta`. Use this header with each call. To learn more, read Beta resources.
+
+    >
+
+    > Resources that are in beta are still undergoing testing and development. They may change without notice, including becoming backwards incompatible.
+
+
+    The applications API lets you create, update, delete, and search for applications and application versions.
+
+
+    Each application includes information about the app you''re creating, and a set of versions of the app that you''ve released. You can use applications to target particular application versions in your feature flags more easily, and to handle unsupported application versions more gracefully.
+
+
+    In addition to creating applications through the applications API, you can also create applications in the LaunchDarkly user interface. To learn more, read Applications and application versions. LaunchDarkly also creates applications and application versions automatically when a LaunchDarkly SDK evaluates a feature flag for a context that includes application information. To learn more, read Automatic environment attributes.
+
+
+    You can use an application in any project in your LaunchDarkly account.
+
+
+    ### Filtering applications and application versions
+
+
+    The `filter` parameter supports the following operators: `equals`, `notEquals`, `anyOf`, `startsWith`.
+
+
+    You can also combine filters in the following ways:
+
+
+    - Use a comma (`,`) as an AND operator
+
+    - Use a vertical bar (`|`) as an OR operator
+
+    - Use parentheses (`()`) to group filters
+
+
+    #### Supported fields and operators
+
+
+    You can only filter certain fields in applications when using the `filter` parameter. Additionally, you can only filter some fields with certain operators.
+
+
+    When you search for applications, the `filter` parameter supports the following fields and operators:
+
+
+    |
+
+    Field
+
+    |Description |Supported operators |
+
+    |---|---|---|
+
+    |`key` | The application or application version key, a unique identifier |`equals`, `notEquals`, `anyOf` |
+
+    |`name` | The application name or application version name |`equals`, `notEquals`, `anyOf`, `startsWith` |
+
+    |`autoAdded` | Whether the application or application version was automatically created because it was included in a context when a LaunchDarkly SDK evaluated a feature flag, or was created through the LaunchDarkly UI or REST API |`equals`, `notEquals` |
+
+    |`kind` | The application kind, one of `mobile`, `server`, `browser`. Only available for Get applications. |`equals`, `notEquals`, `anyOf` |
+
+    |`supported` | Whether a mobile application version is supported or unsupported. Only available for Get application versions by application key.|`equals`, `notEquals` |
+
+
+    For example, the filter `?filter=kind anyOf ["mobile", "server"]` matches applications whose `kind` is either `mobile` or `server`. The filter is not case-sensitive.
+
+
+    The documented values for `filter` query parameters are prior to URL encoding. For example, the `[` in `?filter=kind anyOf ["mobile", "server"]` must be encoded to `%5B`.
+
+
+    ### Sorting applications and application versions
+
+
+    LaunchDarkly supports the following fields for sorting:
+
+    - `name` sorts by application name.
+
+    - `creationDate` sorts by the creation date of the application.
+
+
+    By default, the sort is in ascending order. Use `-` to sort in descending order. For example, `?sort=name` sorts the response by application name in ascending order, and `?sort=-name` sorts in descending order.'
+paths:
+  /api/v2/applications:
+    get:
+      responses:
+        '200':
+          description: Applications response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationCollectionRep'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Applications (beta)
+      summary: Get applications
+      description: 'Get a list of applications.
+
+
+        ### Expanding the applications response
+
+
+        LaunchDarkly supports expanding the "Get applications" response to include additional fields.
+
+
+        To expand the response, append the `expand` query parameter and include the following:
+
+
+        * `flags` includes details on the flags that have been evaluated by the application
+
+
+        For example, use `?expand=flags` to include the `flags` field in the response. By default, this field is **not** included in the response.'
+      parameters:
+      - name: filter
+        in: query
+        description: Accepts filter by `key`, `name`, `kind`, and `autoAdded`. To learn more about the filter syntax, read [Filtering applications and application versions](https://launchdarkly.com/docs/api/applications-beta#filtering-applications-and-application-versions).
+        schema:
+          type: string
+          format: string
+          description: Accepts filter by `key`, `name`, `kind`, and `autoAdded`. To learn more about the filter syntax, read [Filtering applications and application versions](https://launchdarkly.com/docs/api/applications-beta#filtering-applications-and-application-versions).
+      - name: limit
+        in: query
+        description: The number of applications to return. Defaults to 10.
+        schema:
+          type: integer
+          format: int64
+          description: The number of applications to return. Defaults to 10.
+      - name: offset
+        in: query
+        description: Where to start in the list. Use this with pagination. For example, an offset of 10 skips the first ten items and then returns the next items in the list, up to the query `limit`.
+        schema:
+          type: integer
+          format: int64
+          description: Where to start in the list. Use this with pagination. For example, an offset of 10 skips the first ten items and then returns the next items in the list, up to the query `limit`.
+      - name: sort
+        in: query
+        description: 'Accepts sorting order and fields. Fields can be comma separated. Possible fields are `creationDate`, `name`. Examples: `sort=name` sort by names ascending, `sort=-name,creationDate` sort by names descending and creationDate ascending.'
+        schema:
+          type: string
+          format: string
+          description: 'Accepts sorting order and fields. Fields can be comma separated. Possible fields are `creationDate`, `name`. Examples: `sort=name` sort by names ascending, `sort=-name,creationDate` sort by names descending and creationDate ascending.'
+      - name: expand
+        in: query
+        description: 'A comma-separated list of properties that can reveal additional information in the response. Options: `flags`.'
+        schema:
+          type: string
+          format: string
+          description: 'A comma-separated list of properties that can reveal additional information in the response. Options: `flags`.'
+      operationId: getApplications
+  /api/v2/applications/{applicationKey}:
+    get:
+      responses:
+        '200':
+          description: Application response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationRep'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Applications (beta)
+      summary: Get application by key
+      description: 'Retrieve an application by the application key.
+
+
+        ### Expanding the application response
+
+
+        LaunchDarkly supports expanding the "Get application" response to include additional fields.
+
+
+        To expand the response, append the `expand` query parameter and include the following:
+
+
+        * `flags` includes details on the flags that have been evaluated by the application
+
+
+        For example, use `?expand=flags` to include the `flags` field in the response. By default, this field is **not** included in the response.'
+      parameters:
+      - name: applicationKey
+        in: path
+        description: The application key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The application key
+      - name: expand
+        in: query
+        description: 'A comma-separated list of properties that can reveal additional information in the response. Options: `flags`.'
+        schema:
+          type: string
+          format: string
+          description: 'A comma-separated list of properties that can reveal additional information in the response. Options: `flags`.'
+      operationId: getApplication
+    patch:
+      responses:
+        '200':
+          description: Application response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationRep'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Applications (beta)
+      summary: Update application
+      description: Update an application. You can update the `description` and `kind` fields. Requires a JSON patch representation of the desired changes to the application. To learn more, read Updates.
+      parameters:
+      - name: applicationKey
+        in: path
+        description: The application key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The application key
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JSONPatch'
+            example:
+            - op: replace
+              path: /description
+              value: Updated description
+        required: true
+      operationId: patchApplication
+    delete:
+      responses:
+        '204':
+          description: Action succeeded
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Applications (beta)
+      summary: Delete application
+      description: Delete an application.
+      parameters:
+      - name: applicationKey
+        in: path
+        description: The application key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The application key
+      operationId: deleteApplication
+  /api/v2/applications/{applicationKey}/versions:
+    get:
+      responses:
+        '200':
+          description: Application versions response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationVersionsCollectionRep'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Applications (beta)
+      summary: Get application versions by application key
+      description: Get a list of versions for a specific application in an account.
+      parameters:
+      - name: filter
+        in: query
+        description: Accepts filter by `key`, `name`, `supported`, and `autoAdded`. To learn more about the filter syntax, read [Filtering applications and application versions](https://launchdarkly.com/docs/api/applications-beta#filtering-applications-and-application-versions).
+        schema:
+          type: string
+          format: string
+          description: Accepts filter by `key`, `name`, `supported`, and `autoAdded`. To learn more about the filter syntax, read [Filtering applications and application versions](https://launchdarkly.com/docs/api/applications-beta#filtering-applications-and-application-versions).
+      - name: applicationKey
+        in: path
+        description: The application key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The application key
+      - name: limit
+        in: query
+        description: The number of versions to return. Defaults to 50.
+        schema:
+          type: integer
+          format: int64
+          description: The number of versions to return. Defaults to 50.
+      - name: offset
+        in: query
+        description: Where to start in the list. Use this with pagination. For example, an offset of 10 skips the first ten items and then returns the next items in the list, up to the query `limit`.
+        schema:
+          type: integer
+          format: int64
+          description: Where to start in the list. Use this with pagination. For example, an offset of 10 skips the first ten items and then returns the next items in the list, up to the query `limit`.
+      - name: sort
+        in: query
+        description: 'Accepts sorting order and fields. Fields can be comma separated. Possible fields are `creationDate`, `name`. Examples: `sort=name` sort by names ascending, `sort=-name,creationDate` sort by names descending and creationDate ascending.'
+        schema:
+          type: string
+          format: string
+          description: 'Accepts sorting order and fields. Fields can be comma separated. Possible fields are `creationDate`, `name`. Examples: `sort=name` sort by names ascending, `sort=-name,creationDate` sort by names descending and creationDate ascending.'
+      operationId: getApplicationVersions
+  /api/v2/applications/{applicationKey}/versions/{versionKey}:
+    patch:
+      responses:
+        '200':
+          description: Application version response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationVersionRep'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Applications (beta)
+      summary: Update application version
+      description: Update an application version. You can update the `supported` field. Requires a JSON patch representation of the desired changes to the application version. To learn more, read Updates.
+      parameters:
+      - name: applicationKey
+        in: path
+        description: The application key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The application key
+      - name: versionKey
+        in: path
+        description: The application version key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The application version key
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JSONPatch'
+            example:
+            - op: replace
+              path: /supported
+              value: 'false'
+        required: true
+      operationId: patchApplicationVersion
+    delete:
+      responses:
+        '204':
+          description: Action succeeded
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Applications (beta)
+      summary: Delete application version
+      description: Delete an application version.
+      parameters:
+      - name: applicationKey
+        in: path
+        description: The application key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The application key
+      - name: versionKey
+        in: path
+        description: The application version key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The application version key
+      operationId: deleteApplicationVersion
+components:
+  schemas:
+    JSONPatch:
+      type: array
+      items:
+        $ref: '#/components/schemas/PatchOperation'
+    AccessDenied:
+      type: object
+      required:
+      - action
+      - reason
+      properties:
+        action:
+          $ref: '#/components/schemas/ActionIdentifier'
+        reason:
+          $ref: '#/components/schemas/AccessDeniedReason'
+    ApplicationRep:
+      type: object
+      required:
+      - autoAdded
+      - key
+      - kind
+      - name
+      properties:
+        flags:
+          description: Details about the flags that have been evaluated by the application
+          $ref: '#/components/schemas/ApplicationFlagCollectionRep'
+        _access:
+          description: Details on the allowed and denied actions for this application
+          $ref: '#/components/schemas/Access'
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+        _version:
+          type: integer
+          description: Version of the application
+        autoAdded:
+          type: boolean
+          description: Whether the application was automatically created because it was included in a context when a LaunchDarkly SDK evaluated a feature flag, or was created through the LaunchDarkly UI or REST API.
+          example: true
+        creationDate:
+          description: Timestamp of when the application version was created
+          example: '1654104600000'
+          $ref: '#/components/schemas/UnixMillis'
+        description:
+          type: string
+          description: The application description
+          example: The LaunchDarkly Cafe app
+        key:
+          type: string
+          description: The unique identifier of this application
+          example: com.launchdarkly.cafe
+        kind:
+          type: string
+          description: To distinguish the kind of application
+          example: mobile
+          enum:
+          - browser
+          - mobile
+          - server
+        _maintainer:
+          description: Associated maintainer member or team info for the application
+          $ref: '#/components/schemas/ApplicationMaintainerRep'
+        name:
+          type: string
+          description: The name of the application
+          example: LaunchDarklyCafe
+    InvalidRequestErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: invalid_request
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid request body
+    MemberSummary:
+      type: object
+      required:
+      - _links
+      - _id
+      - role
+      - email
+      properties:
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+          example:
+            self:
+              href: /api/v2/members/569f183514f4432160000007
+              type: application/json
+        _id:
+          type: string
+          description: The member's ID
+          example: 569f183514f4432160000007
+        firstName:
+          type: string
+          description: The member's first name
+          example: Ariel
+        lastName:
+          type: string
+          description: The member's last name
+          example: Flores
+        role:
+          type: string
+          description: The member's base role. If the member has no additional roles, this role will be in effect.
+          example: admin
+        email:
+          type: string
+          description: The member's email address
+          example: ariel@acme.com
+    ApplicationVersionRep:
+      type: object
+      required:
+      - autoAdded
+      - key
+      - name
+      properties:
+        _access:
+          description: Details on the allowed and denied actions for this application version
+          $ref: '#/components/schemas/Access'
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+        _version:
+          type: integer
+          description: Version of the application version
+        autoAdded:
+          type: boolean
+          description: 'Whether the application version was automatically created, because it was included in a context when a LaunchDarkly SDK evaluated a feature flag, or if the application version was created through the LaunchDarkly UI or REST API. '
+          example: true
+        creationDate:
+          description: Timestamp of when the application version was created
+          example: '1654104600000'
+          $ref: '#/components/schemas/UnixMillis'
+        key:
+          type: string
+          description: The unique identifier of this application version
+          example: '2'
+        name:
+          type: string
+          description: The name of this version
+          example: 01.02.03
+        supported:
+          type: boolean
+          description: Whether this version is supported. Only applicable if the application <code>kind</code> is <code>mobile</code>.
+          example: true
+    RateLimitedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: rate_limited
+        message:
+          type: string
+          description: Description of the error
+          example: You've exceeded the API rate limit. Try again later.
+    AccessDeniedReason:
+      type: object
+      required:
+      - effect
+      properties:
+        resources:
+          type: array
+          description: Resource specifier strings
+          items:
+            type: string
+          example:
+          - proj/*:env/*;qa_*:/flag/*
+        notResources:
+          type: array
+          description: Targeted resources are the resources NOT in this list. The <code>resources</code> and <code>notActions</code> fields must be empty to use this field.
+          items:
+            type: string
+        actions:
+          type: array
+          description: Actions to perform on a resource
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+          example:
+          - '*'
+        notActions:
+          type: array
+          description: Targeted actions are the actions NOT in this list. The <code>actions</code> and <code>notResources</code> fields must be empty to use this field.
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+        effect:
+          type: string
+          description: Whether this statement should allow or deny actions on the resources.
+          example: allow
+          enum:
+          - allow
+          - deny
+        role_name:
+          type: string
+    ApplicationVersionsCollectionRep:
+      type: object
+      properties:
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+        items:
+          type: array
+          description: A list of the versions for this application
+          items:
+            $ref: '#/components/schemas/ApplicationVersionRep'
+        totalCount:
+          type: integer
+          description: The number of versions for this application
+          example: 1
+    UnauthorizedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: unauthorized
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid access token
+    ApplicationMaintainerRep:
+      type: object
+      properties:
+        member:
+          description: Details on the member who maintains this resource
+          $ref: '#/components/schemas/MemberSummary'
+        team:
+          description: Details on the team that maintains this resource
+          $ref: '#/components/schemas/MemberTeamSummaryRep'
+    ForbiddenErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: forbidden
+        message:
+          type: string
+          description: Description of the error
+          example: Forbidden. Access to the requested resource was denied.
+    MemberTeamSummaryRep:
+      type: object
+      required:
+      - customRoleKeys
+      - key
+      - name
+      properties:
+        customRoleKeys:
+          type: array
+          description: A list of keys of the custom roles this team has access to
+          items:
+            type: string
+          example:
+          - access-to-test-projects
+        key:
+          type: string
+          description: The team key
+          example: team-key-123abc
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+        name:
+          type: string
+          description: The team name
+          example: QA Team
+    ApplicationFlagCollectionRep:
+      type: object
+      properties:
+        items:
+          type: array
+          description: A list of the flags that have been evaluated by the application
+          items:
+            $ref: '#/components/schemas/FlagListingRep'
+        totalCount:
+          type: integer
+          description: The number of flags that have been evaluated by the application
+          example: 1
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+    ActionSpecifier:
+      type: string
+    Link:
+      type: object
+      properties:
+        href:
+          type: string
+        type:
+          type: string
+    ActionIdentifier:
+      type: string
+    UnixMillis:
+      type: integer
+      format: int64
+    FlagListingRep:
+      type: object
+      required:
+      - name
+      - key
+      properties:
+        name:
+          type: string
+          description: The flag name
+          example: Example flag
+        key:
+          type: string
+          description: The flag key
+          example: flag-key-123abc
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+        _site:
+          $ref: '#/components/schemas/Link'
+    PatchOperation:
+      type: object
+      required:
+      - op
+      - path
+      properties:
+        op:
+          type: string
+          description: The type of operation to perform
+          example: replace
+        path:
+          type: string
+          description: A JSON Pointer string specifying the part of the document to operate on
+          example: /exampleField
+        value:
+          description: A JSON value used in "add", "replace", and "test" operations
+          example: new example value
+    ApplicationCollectionRep:
+      type: object
+      properties:
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+        items:
+          type: array
+          description: A list of applications
+          items:
+            $ref: '#/components/schemas/ApplicationRep'
+        totalCount:
+          type: integer
+          description: The number of applications
+          example: 1
+    Access:
+      type: object
+      required:
+      - denied
+      - allowed
+      properties:
+        denied:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccessDenied'
+        allowed:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccessAllowedRep'
+    NotFoundErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: not_found
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid resource identifier
+    AccessAllowedReason:
+      type: object
+      required:
+      - effect
+      properties:
+        resources:
+          type: array
+          description: Resource specifier strings
+          items:
+            type: string
+          example:
+          - proj/*:env/*;qa_*:/flag/*
+        notResources:
+          type: array
+          description: Targeted resources are the resources NOT in this list. The <code>resources</code> and <code>notActions</code> fields must be empty to use this field.
+          items:
+            type: string
+        actions:
+          type: array
+          description: Actions to perform on a resource
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+          example:
+          - '*'
+        notActions:
+          type: array
+          description: Targeted actions are the actions NOT in this list. The <code>actions</code> and <code>notResources</code> fields must be empty to use this field.
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+        effect:
+          type: string
+          description: Whether this statement should allow or deny actions on the resources.
+          example: allow
+          enum:
+          - allow
+          - deny
+        role_name:
+          type: string
+    AccessAllowedRep:
+      type: object
+      required:
+      - action
+      - reason
+      properties:
+        action:
+          $ref: '#/components/schemas/ActionIdentifier'
+        reason:
+          $ref: '#/components/schemas/AccessAllowedReason'
+  securitySchemes:
+    ApiKey:
+      type: apiKey
+      in: header
+      name: Authorization

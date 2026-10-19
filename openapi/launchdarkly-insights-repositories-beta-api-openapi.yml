@@ -1,0 +1,500 @@
+openapi: 3.2.0
+info:
+  title: LaunchDarkly REST Insights repositories (beta) API
+  description: 'This documentation describes LaunchDarkly''s REST API. To access the complete OpenAPI spec directly, use Get OpenAPI spec. To learn how to use LaunchDarkly using the user interface (UI) instead, read our product documentation. ## Authentication
+
+
+    LaunchDarkly''s REST API uses the HTTPS protocol with a minimum TLS version of 1.2. All REST API resources are authenticated with either personal or service access tokens, or session cookies. Other authentication mechanisms are not supported. You can manage personal access tokens on your **Authorization** page in the LaunchDarkly UI. LaunchDarkly also has SDK keys, mobile keys, and client-side IDs that are used by our server-side SDKs, mobile SDKs, and JavaScript-based SDKs, respectively. **These keys cannot be used to access our REST API**. These keys are environment-specific, and can only perform read-only operations such as fetching feature flag settings. | Auth mechanism | Allowed resources | Use cases |
+
+    | ----------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
+
+    | Personal or service access tokens | Can be customized on a per-token basis | Building scripts, custom integrations, data export. |
+
+    | SDK keys | Can only access read-only resources specific to server-side SDKs. Restricted to a single environment. | Server-side SDKs |
+
+    | Mobile keys | Can only access read-only resources specific to mobile SDKs, and only for flags marked available to mobile keys. Restricted to a single environment. | Mobile SDKs |
+
+    | Client-side ID | Can only access read-only resources specific to JavaScript-based client-side SDKs, and only for flags marked available to client-side. Restricted to a single environment. | Client-side JavaScript |
+
+
+    > #### Keep your access tokens and SDK keys private
+
+    >
+
+    > Access tokens should _never_ be exposed in untrusted contexts. Never put an access token in client-side JavaScript, or embed it in a mobile application. LaunchDarkly has special mobile keys that you can embed in mobile apps. If you accidentally expose an access token or SDK key, you can reset it from your **Authorization** page. >
+
+    > The client-side ID is safe to embed in untrusted contexts. It''s designed for use in client-side JavaScript. ### Authentication using request header
+
+
+    The preferred way to authenticate with the API is by adding an `Authorization` header containing your access token to your requests. The value of the `Authorization` header must be your access token. Manage personal access tokens from the **Authorization** page. ### Authentication using session cookie
+
+
+    For testing purposes, you can make API calls directly from your web browser. If you are logged in to the LaunchDarkly application, the API will use your existing session to authenticate calls. Depending on the permissions granted as part of your role, you may not have permission to perform some API calls. You will receive a `401` response code in that case. > ### Modifying the Origin header causes an error
+
+    >
+
+    > LaunchDarkly validates that the Origin header for any API request authenticated by a session cookie matches the expected Origin header. The expected Origin header is `https://app.launchdarkly.com`. >
+
+    > If the Origin header does not match what''s expected, LaunchDarkly returns an error. This error can prevent the LaunchDarkly app from working correctly. >
+
+    > Any browser extension that intentionally changes the Origin header can cause this problem. For example, Cross-Origin Resource Sharing (CORS) extensions used during development can modify the Origin header and cause the app to fail. >
+
+    > To prevent this error, do not modify your Origin header. >
+
+    > LaunchDarkly does not require origin matching when authenticating with an access token, so this issue does not affect normal API usage.'
+  contact:
+    name: LaunchDarkly Technical Support Team
+    url: https://support.launchdarkly.com
+    email: support@launchdarkly.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+  version: '2.0'
+servers:
+- url: https://app.launchdarkly.com
+  description: ' Default'
+- url: https://app.launchdarkly.us
+  description: ' Federal'
+security:
+- ApiKey:
+  - read
+  - write
+tags:
+- name: Insights repositories (beta)
+  description: '> ### This feature is in beta
+
+    >
+
+    > To use this feature, pass in a header including the `LD-API-Version` key with value set to `beta`. Use this header with each call. To learn more, read Beta resources.
+
+    >
+
+    > Resources that are in beta are still undergoing testing and development. They may change without notice, including becoming backwards incompatible.
+
+
+    Engineering insights automatically creates repository associations when it receives deployments or code references. Optionally, you can manually configure additional associations. You can use the repositories API to list repositories and create associations to projects. To learn more, read Send deployment information.'
+paths:
+  /api/v2/engineering-insights/repositories:
+    get:
+      responses:
+        '200':
+          description: Repository collection response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InsightsRepositoryCollection'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationFailedErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Insights repositories (beta)
+      summary: List repositories
+      description: 'Get a list of repositories
+
+
+        ### Expanding the repository collection response
+
+
+        LaunchDarkly supports expanding the repository collection response to include additional fields.
+
+
+        To expand the response, append the `expand` query parameter and include the following:
+
+
+        * `projects` includes details on all of the LaunchDarkly projects associated with each repository
+
+
+        For example, use `?expand=projects` to include the `projects` field in the response. By default, this field is **not** included in the response.'
+      parameters:
+      - name: expand
+        in: query
+        description: 'Expand properties in response. Options: `projects`'
+        schema:
+          type: string
+          format: string
+          description: 'Expand properties in response. Options: `projects`'
+      operationId: getInsightsRepositories
+  /api/v2/engineering-insights/repositories/projects:
+    put:
+      responses:
+        '200':
+          description: Repositories projects response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InsightsRepositoryProjectCollection'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationFailedErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Insights repositories (beta)
+      summary: Associate repositories with projects
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InsightsRepositoryProjectMappings'
+        required: true
+      operationId: associateRepositoriesAndProjects
+  /api/v2/engineering-insights/repositories/{repositoryKey}/projects/{projectKey}:
+    delete:
+      responses:
+        '204':
+          description: Action succeeded
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationFailedErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Insights repositories (beta)
+      summary: Remove repository project association
+      parameters:
+      - name: repositoryKey
+        in: path
+        description: The repository key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The repository key
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      operationId: deleteRepositoryProject
+components:
+  schemas:
+    InsightsRepositoryProjectMappings:
+      type: object
+      required:
+      - mappings
+      properties:
+        mappings:
+          type: array
+          items:
+            $ref: '#/components/schemas/InsightsRepositoryProject'
+    FailureReasonRep:
+      type: object
+      required:
+      - attribute
+      - reason
+      properties:
+        attribute:
+          type: string
+          description: The attribute that failed validation
+          example: projectKey
+        reason:
+          type: string
+          description: The reason the attribute failed validation
+          example: must be present
+    ProjectSummary:
+      type: object
+      required:
+      - _id
+      - _links
+      - key
+      - name
+      properties:
+        _id:
+          type: string
+          description: The ID of this project
+          example: 57be1db38b75bf0772d11383
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+          example:
+            environments:
+              href: /api/v2/projects/example-project/environments
+              type: application/json
+            self:
+              href: /api/v2/projects/example-project
+              type: application/json
+        key:
+          type: string
+          description: The project key
+          example: project-key-123abc
+        name:
+          type: string
+          description: The project name
+          example: Example project
+    Link:
+      type: object
+      properties:
+        href:
+          type: string
+        type:
+          type: string
+    InsightsRepositoryCollection:
+      type: object
+      required:
+      - totalCount
+      - items
+      properties:
+        totalCount:
+          type: integer
+          description: Total number of repositories
+          example: 1
+        items:
+          type: array
+          description: List of repositories
+          items:
+            $ref: '#/components/schemas/InsightsRepository'
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+    InsightsRepositoryProjectCollection:
+      type: object
+      required:
+      - totalCount
+      - items
+      properties:
+        totalCount:
+          type: integer
+          description: Total number of repository project associations
+          example: 1
+        items:
+          type: array
+          description: List of repository project associations
+          items:
+            $ref: '#/components/schemas/InsightsRepositoryProject'
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+    NotFoundErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: not_found
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid resource identifier
+    ProjectSummaryCollection:
+      type: object
+      required:
+      - totalCount
+      - items
+      properties:
+        totalCount:
+          type: integer
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectSummary'
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+    ValidationFailedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      - errors
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: invalid_request
+        message:
+          type: string
+          description: Description of the error
+          example: validation failed
+        errors:
+          type: array
+          description: List of validation errors
+          items:
+            $ref: '#/components/schemas/FailureReasonRep'
+    RateLimitedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: rate_limited
+        message:
+          type: string
+          description: Description of the error
+          example: You've exceeded the API rate limit. Try again later.
+    InsightsRepositoryProject:
+      type: object
+      required:
+      - repositoryKey
+      - projectKey
+      properties:
+        repositoryKey:
+          type: string
+          description: The repository key
+          example: launchdarkly/LaunchDarkly-Docs
+        projectKey:
+          type: string
+          description: The project key
+          example: default
+    InsightsRepository:
+      type: object
+      required:
+      - _id
+      - version
+      - key
+      - type
+      - url
+      - mainBranch
+      properties:
+        _id:
+          type: string
+          format: uuid
+          description: The repository ID
+          example: 5f9a9b1a-5b9a-4b9a-9a9a-9a9a9a9a9a9a
+        version:
+          type: integer
+          description: The repository version
+          example: 1
+        key:
+          type: string
+          description: The repository key
+          example: launchdarkly/LaunchDarkly-Docs
+        type:
+          type: string
+          description: The repository type
+          example: github
+        url:
+          type: string
+          description: The repository URL
+          example: https://github.com/launchdarkly/LaunchDarkly-Docs
+        mainBranch:
+          type: string
+          description: The repository main branch
+          example: main
+        projects:
+          $ref: '#/components/schemas/ProjectSummaryCollection'
+    UnauthorizedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: unauthorized
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid access token
+    ForbiddenErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: forbidden
+        message:
+          type: string
+          description: Description of the error
+          example: Forbidden. Access to the requested resource was denied.
+  securitySchemes:
+    ApiKey:
+      type: apiKey
+      in: header
+      name: Authorization

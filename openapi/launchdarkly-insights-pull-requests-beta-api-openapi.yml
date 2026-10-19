@@ -1,0 +1,686 @@
+openapi: 3.2.0
+info:
+  title: LaunchDarkly REST Insights pull requests (beta) API
+  description: 'This documentation describes LaunchDarkly''s REST API. To access the complete OpenAPI spec directly, use Get OpenAPI spec. To learn how to use LaunchDarkly using the user interface (UI) instead, read our product documentation. ## Authentication
+
+
+    LaunchDarkly''s REST API uses the HTTPS protocol with a minimum TLS version of 1.2. All REST API resources are authenticated with either personal or service access tokens, or session cookies. Other authentication mechanisms are not supported. You can manage personal access tokens on your **Authorization** page in the LaunchDarkly UI. LaunchDarkly also has SDK keys, mobile keys, and client-side IDs that are used by our server-side SDKs, mobile SDKs, and JavaScript-based SDKs, respectively. **These keys cannot be used to access our REST API**. These keys are environment-specific, and can only perform read-only operations such as fetching feature flag settings. | Auth mechanism | Allowed resources | Use cases |
+
+    | ----------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
+
+    | Personal or service access tokens | Can be customized on a per-token basis | Building scripts, custom integrations, data export. |
+
+    | SDK keys | Can only access read-only resources specific to server-side SDKs. Restricted to a single environment. | Server-side SDKs |
+
+    | Mobile keys | Can only access read-only resources specific to mobile SDKs, and only for flags marked available to mobile keys. Restricted to a single environment. | Mobile SDKs |
+
+    | Client-side ID | Can only access read-only resources specific to JavaScript-based client-side SDKs, and only for flags marked available to client-side. Restricted to a single environment. | Client-side JavaScript |
+
+
+    > #### Keep your access tokens and SDK keys private
+
+    >
+
+    > Access tokens should _never_ be exposed in untrusted contexts. Never put an access token in client-side JavaScript, or embed it in a mobile application. LaunchDarkly has special mobile keys that you can embed in mobile apps. If you accidentally expose an access token or SDK key, you can reset it from your **Authorization** page. >
+
+    > The client-side ID is safe to embed in untrusted contexts. It''s designed for use in client-side JavaScript. ### Authentication using request header
+
+
+    The preferred way to authenticate with the API is by adding an `Authorization` header containing your access token to your requests. The value of the `Authorization` header must be your access token. Manage personal access tokens from the **Authorization** page. ### Authentication using session cookie
+
+
+    For testing purposes, you can make API calls directly from your web browser. If you are logged in to the LaunchDarkly application, the API will use your existing session to authenticate calls. Depending on the permissions granted as part of your role, you may not have permission to perform some API calls. You will receive a `401` response code in that case. > ### Modifying the Origin header causes an error
+
+    >
+
+    > LaunchDarkly validates that the Origin header for any API request authenticated by a session cookie matches the expected Origin header. The expected Origin header is `https://app.launchdarkly.com`. >
+
+    > If the Origin header does not match what''s expected, LaunchDarkly returns an error. This error can prevent the LaunchDarkly app from working correctly. >
+
+    > Any browser extension that intentionally changes the Origin header can cause this problem. For example, Cross-Origin Resource Sharing (CORS) extensions used during development can modify the Origin header and cause the app to fail. >
+
+    > To prevent this error, do not modify your Origin header. >
+
+    > LaunchDarkly does not require origin matching when authenticating with an access token, so this issue does not affect normal API usage.'
+  contact:
+    name: LaunchDarkly Technical Support Team
+    url: https://support.launchdarkly.com
+    email: support@launchdarkly.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+  version: '2.0'
+servers:
+- url: https://app.launchdarkly.com
+  description: ' Default'
+- url: https://app.launchdarkly.us
+  description: ' Federal'
+security:
+- ApiKey:
+  - read
+  - write
+tags:
+- name: Insights pull requests (beta)
+  description: '> ### This feature is in beta
+
+    >
+
+    > To use this feature, pass in a header including the `LD-API-Version` key with value set to `beta`. Use this header with each call. To learn more, read Beta resources.
+
+    >
+
+    > Resources that are in beta are still undergoing testing and development. They may change without notice, including becoming backwards incompatible.
+
+
+    The pull requests API provides access to information used for lead time calculations. To learn more, read Lead time.'
+paths:
+  /api/v2/engineering-insights/pull-requests:
+    get:
+      responses:
+        '200':
+          description: Pull request collection response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PullRequestCollectionRep'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationFailedErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Insights pull requests (beta)
+      summary: List pull requests
+      description: 'Get a list of pull requests
+
+
+        ### Expanding the pull request collection response
+
+
+        LaunchDarkly supports expanding the pull request collection response to include additional fields.
+
+
+        To expand the response, append the `expand` query parameter and include the following:
+
+
+        * `deployments` includes details on all of the deployments associated with each pull request
+
+        * `flagReferences` includes details on all of the references to flags in each pull request
+
+        * `leadTime` includes details about the lead time of the pull request for each stage
+
+
+        For example, use `?expand=deployments` to include the `deployments` field in the response. By default, this field is **not** included in the response.'
+      parameters:
+      - name: projectKey
+        in: query
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: environmentKey
+        in: query
+        description: Required if you are using the <code>sort</code> parameter's <code>leadTime</code> option to sort pull requests.
+        schema:
+          type: string
+          format: string
+          description: Required if you are using the <code>sort</code> parameter's <code>leadTime</code> option to sort pull requests.
+      - name: applicationKey
+        in: query
+        description: Filter the results to pull requests deployed to a comma separated list of applications
+        schema:
+          type: string
+          format: string
+          description: Filter the results to pull requests deployed to a comma separated list of applications
+      - name: status
+        in: query
+        description: 'Filter results to pull requests with the given status. Options: `open`, `merged`, `closed`, `deployed`.'
+        schema:
+          type: string
+          format: string
+          description: 'Filter results to pull requests with the given status. Options: `open`, `merged`, `closed`, `deployed`.'
+      - name: query
+        in: query
+        description: Filter list of pull requests by title or author
+        schema:
+          type: string
+          format: string
+          description: Filter list of pull requests by title or author
+      - name: limit
+        in: query
+        description: The number of pull requests to return. Default is 20. Maximum allowed is 100.
+        schema:
+          type: integer
+          format: int64
+          description: The number of pull requests to return. Default is 20. Maximum allowed is 100.
+      - name: expand
+        in: query
+        description: 'Expand properties in response. Options: `deployments`, `flagReferences`, `leadTime`.'
+        schema:
+          type: string
+          format: string
+          description: 'Expand properties in response. Options: `deployments`, `flagReferences`, `leadTime`.'
+      - name: sort
+        in: query
+        description: 'Sort results. Requires the `environmentKey` to be set. Options: `leadTime` (asc) and `-leadTime` (desc). When query option is excluded, default sort is by created or merged date.'
+        schema:
+          type: string
+          format: string
+          description: 'Sort results. Requires the `environmentKey` to be set. Options: `leadTime` (asc) and `-leadTime` (desc). When query option is excluded, default sort is by created or merged date.'
+      - name: from
+        in: query
+        description: Unix timestamp in milliseconds. Default value is 7 days ago.
+        schema:
+          type: string
+          format: date-time
+      - name: to
+        in: query
+        description: Unix timestamp in milliseconds. Default value is now.
+        schema:
+          type: string
+          format: date-time
+      - name: after
+        in: query
+        description: Identifier used for pagination
+        schema:
+          type: string
+          format: string
+          description: Identifier used for pagination
+      - name: before
+        in: query
+        description: Identifier used for pagination
+        schema:
+          type: string
+          format: string
+          description: Identifier used for pagination
+      operationId: getPullRequests
+components:
+  schemas:
+    DeploymentStatus:
+      type: string
+    PullRequestLeadTimeRep:
+      type: object
+      required:
+      - codingDurationMs
+      properties:
+        codingDurationMs:
+          type: integer
+          format: int64
+          description: The coding duration in milliseconds
+          example: 1000000
+        reviewDurationMs:
+          type: integer
+          format: int64
+          description: The review duration in milliseconds
+          example: 500000
+        maxWaitDurationMs:
+          type: integer
+          format: int64
+          description: The max wait duration between merge time and deploy start time in milliseconds
+          example: 100000
+        avgWaitDurationMs:
+          type: integer
+          format: int64
+          description: The average wait duration between merge time and deploy start time in milliseconds
+          example: 100000
+        maxDeployDurationMs:
+          type: integer
+          format: int64
+          description: The max deploy duration in milliseconds
+          example: 100000
+        avgDeployDurationMs:
+          type: integer
+          format: int64
+          description: The average deploy duration in milliseconds
+          example: 100000
+        maxTotalLeadTimeMs:
+          type: integer
+          format: int64
+          description: The max total lead time in milliseconds
+          example: 1600000
+        avgTotalLeadTimeMs:
+          type: integer
+          format: int64
+          description: The average total lead time in milliseconds
+          example: 1600000
+    FailureReasonRep:
+      type: object
+      required:
+      - attribute
+      - reason
+      properties:
+        attribute:
+          type: string
+          description: The attribute that failed validation
+          example: projectKey
+        reason:
+          type: string
+          description: The reason the attribute failed validation
+          example: must be present
+    DeploymentRep:
+      type: object
+      required:
+      - id
+      - applicationKey
+      - applicationVersion
+      - startedAt
+      - status
+      - kind
+      - active
+      - archived
+      - environmentKey
+      - numberOfContributors
+      - numberOfPullRequests
+      - linesAdded
+      - linesDeleted
+      - leadTime
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The deployment ID
+          example: a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11
+        applicationKey:
+          type: string
+          description: The application key
+          example: billing-service
+        applicationVersion:
+          type: string
+          description: The application version
+          example: a90a8a2
+        startedAt:
+          description: The time the deployment started
+          example: '1706701522000'
+          $ref: '#/components/schemas/UnixMillis'
+        endedAt:
+          description: The time the deployment ended
+          example: '1706712518000'
+          $ref: '#/components/schemas/UnixMillis'
+        durationMs:
+          type: integer
+          format: int64
+          description: The duration of the deployment in milliseconds
+          example: 10996000
+        status:
+          description: The status of the deployment
+          example: finished
+          $ref: '#/components/schemas/DeploymentStatus'
+        kind:
+          description: The kind of deployment
+          example: redeployment
+          $ref: '#/components/schemas/DeploymentKind'
+        active:
+          type: boolean
+          description: Whether the deployment is active
+          example: true
+        metadata:
+          type: object
+          additionalProperties: {}
+          description: The metadata associated with the deployment
+          example:
+            buildNumber: '1234'
+        archived:
+          type: boolean
+          description: Whether the deployment is archived
+          example: false
+        environmentKey:
+          type: string
+          description: The environment key
+          example: production
+        numberOfContributors:
+          type: integer
+          description: The number of contributors
+          example: 1
+        numberOfPullRequests:
+          type: integer
+          description: The number of pull requests
+          example: 2
+        linesAdded:
+          type: integer
+          format: int64
+          description: The number of lines added
+          example: 100
+        linesDeleted:
+          type: integer
+          format: int64
+          description: The number of lines deleted
+          example: 50
+        leadTime:
+          type: integer
+          format: int64
+          description: The total lead time from first commit to deployment end in milliseconds
+          example: 20237000
+        pullRequests:
+          description: The pull requests contained in the deployment
+          $ref: '#/components/schemas/PullRequestCollectionRep'
+        flagReferences:
+          description: The flag references contained in the deployment
+          $ref: '#/components/schemas/FlagReferenceCollectionRep'
+        leadTimeStages:
+          description: The lead time stages for the deployment
+          $ref: '#/components/schemas/LeadTimeStagesRep'
+    DeploymentCollectionRep:
+      type: object
+      required:
+      - totalCount
+      - items
+      properties:
+        totalCount:
+          type: integer
+          description: The total number of deployments
+          example: 25
+        items:
+          type: array
+          description: A list of deployments
+          items:
+            $ref: '#/components/schemas/DeploymentRep'
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+          example:
+            next:
+              href: /api/v2/engineering-insights/deployments?after=a4290006-1fd1-4ca5-acf7-9f31fac61cf5
+              type: application/json
+            self:
+              href: /api/v2/engineering-insights/deployments
+              type: application/json
+    Link:
+      type: object
+      properties:
+        href:
+          type: string
+        type:
+          type: string
+    PullRequestRep:
+      type: object
+      required:
+      - id
+      - externalId
+      - title
+      - status
+      - author
+      - createTime
+      - baseCommitKey
+      - headCommitKey
+      - filesChanged
+      - linesAdded
+      - linesDeleted
+      - url
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The pull request internal ID
+          example: a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11
+        externalId:
+          type: string
+          description: The pull request number
+          example: '1234'
+        title:
+          type: string
+          description: The pull request title
+          example: Enable new payment structure
+        status:
+          type: string
+          description: The pull request status
+          example: merged
+        author:
+          type: string
+          description: The pull request author
+          example: jane.doe
+        createTime:
+          description: The pull request create time
+          example: '1706701522000'
+          $ref: '#/components/schemas/UnixMillis'
+        mergeTime:
+          description: The pull request merge time
+          example: '1706712518000'
+          $ref: '#/components/schemas/UnixMillis'
+        mergeCommitKey:
+          type: string
+          description: The pull request merge commit key
+          example: a90a8a2
+        baseCommitKey:
+          type: string
+          description: The pull request base commit key
+          example: a90a8a2
+        headCommitKey:
+          type: string
+          description: The pull request head commit key
+          example: a90a8a2
+        filesChanged:
+          type: integer
+          description: The number of files changed
+          example: 2
+        linesAdded:
+          type: integer
+          description: The number of lines added
+          example: 100
+        linesDeleted:
+          type: integer
+          description: The number of lines deleted
+          example: 50
+        url:
+          type: string
+          description: The pull request URL
+          example: https://github.com/launchdarkly/LaunchDarkly-Docs/pull/406
+        deployments:
+          description: A list of deployments associated with the pull request
+          $ref: '#/components/schemas/DeploymentCollectionRep'
+        flagReferences:
+          description: A list of flag references associated with the pull request
+          $ref: '#/components/schemas/FlagReferenceCollectionRep'
+        leadTime:
+          description: The lead time for the pull request in a given environment
+          $ref: '#/components/schemas/PullRequestLeadTimeRep'
+    FlagReferenceRep:
+      type: object
+      required:
+      - projectKey
+      - flagKey
+      - referencesAdded
+      - referencesRemoved
+      properties:
+        projectKey:
+          type: string
+          description: The project key
+          example: default
+        flagKey:
+          type: string
+          description: The flag key
+          example: enable-new-payment-structure
+        referencesAdded:
+          type: integer
+          description: The number of references added
+          example: 2
+        referencesRemoved:
+          type: integer
+          description: The number of references removed
+          example: 5
+    LeadTimeStagesRep:
+      type: object
+      required:
+      - codingDurationMs
+      properties:
+        codingDurationMs:
+          type: integer
+          format: int64
+          description: The coding duration in milliseconds
+          example: 1000000
+        reviewDurationMs:
+          type: integer
+          format: int64
+          description: The review duration in milliseconds
+          example: 500000
+        waitDurationMs:
+          type: integer
+          format: int64
+          description: The wait duration between merge time and deploy start time in milliseconds
+          example: 100000
+        deployDurationMs:
+          type: integer
+          format: int64
+          description: The deploy duration in milliseconds
+          example: 100000
+        totalLeadTimeMs:
+          type: integer
+          format: int64
+          description: The total lead time in milliseconds
+          example: 1600000
+    DeploymentKind:
+      type: string
+    NotFoundErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: not_found
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid resource identifier
+    PullRequestCollectionRep:
+      type: object
+      required:
+      - totalCount
+      - items
+      properties:
+        totalCount:
+          type: integer
+          description: The total number of pull requests
+          example: 25
+        items:
+          type: array
+          description: A list of pull requests
+          items:
+            $ref: '#/components/schemas/PullRequestRep'
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+          example:
+            next:
+              href: /api/v2/engineering-insights/pull-requests?after=a4290006-1fd1-4ca5-acf7-9f31fac61cf5
+              type: application/json
+            self:
+              href: /api/v2/engineering-insights/pull-requests
+              type: application/json
+    ValidationFailedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      - errors
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: invalid_request
+        message:
+          type: string
+          description: Description of the error
+          example: validation failed
+        errors:
+          type: array
+          description: List of validation errors
+          items:
+            $ref: '#/components/schemas/FailureReasonRep'
+    RateLimitedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: rate_limited
+        message:
+          type: string
+          description: Description of the error
+          example: You've exceeded the API rate limit. Try again later.
+    UnauthorizedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: unauthorized
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid access token
+    UnixMillis:
+      type: integer
+      format: int64
+    FlagReferenceCollectionRep:
+      type: object
+      required:
+      - totalCount
+      - items
+      properties:
+        totalCount:
+          type: integer
+          description: The total number of flag references
+          example: 25
+        items:
+          type: array
+          description: A list of flag references
+          items:
+            $ref: '#/components/schemas/FlagReferenceRep'
+    ForbiddenErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: forbidden
+        message:
+          type: string
+          description: Description of the error
+          example: Forbidden. Access to the requested resource was denied.
+  securitySchemes:
+    ApiKey:
+      type: apiKey
+      in: header
+      name: Authorization

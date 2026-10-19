@@ -1,0 +1,992 @@
+openapi: 3.2.0
+info:
+  title: LaunchDarkly REST Announcements API
+  description: 'This documentation describes LaunchDarkly''s REST API. To access the complete OpenAPI spec directly, use Get OpenAPI spec. To learn how to use LaunchDarkly using the user interface (UI) instead, read our product documentation. ## Authentication
+
+
+    LaunchDarkly''s REST API uses the HTTPS protocol with a minimum TLS version of 1.2. All REST API resources are authenticated with either personal or service access tokens, or session cookies. Other authentication mechanisms are not supported. You can manage personal access tokens on your **Authorization** page in the LaunchDarkly UI. LaunchDarkly also has SDK keys, mobile keys, and client-side IDs that are used by our server-side SDKs, mobile SDKs, and JavaScript-based SDKs, respectively. **These keys cannot be used to access our REST API**. These keys are environment-specific, and can only perform read-only operations such as fetching feature flag settings. | Auth mechanism | Allowed resources | Use cases |
+
+    | ----------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
+
+    | Personal or service access tokens | Can be customized on a per-token basis | Building scripts, custom integrations, data export. |
+
+    | SDK keys | Can only access read-only resources specific to server-side SDKs. Restricted to a single environment. | Server-side SDKs |
+
+    | Mobile keys | Can only access read-only resources specific to mobile SDKs, and only for flags marked available to mobile keys. Restricted to a single environment. | Mobile SDKs |
+
+    | Client-side ID | Can only access read-only resources specific to JavaScript-based client-side SDKs, and only for flags marked available to client-side. Restricted to a single environment. | Client-side JavaScript |
+
+
+    > #### Keep your access tokens and SDK keys private
+
+    >
+
+    > Access tokens should _never_ be exposed in untrusted contexts. Never put an access token in client-side JavaScript, or embed it in a mobile application. LaunchDarkly has special mobile keys that you can embed in mobile apps. If you accidentally expose an access token or SDK key, you can reset it from your **Authorization** page. >
+
+    > The client-side ID is safe to embed in untrusted contexts. It''s designed for use in client-side JavaScript. ### Authentication using request header
+
+
+    The preferred way to authenticate with the API is by adding an `Authorization` header containing your access token to your requests. The value of the `Authorization` header must be your access token. Manage personal access tokens from the **Authorization** page. ### Authentication using session cookie
+
+
+    For testing purposes, you can make API calls directly from your web browser. If you are logged in to the LaunchDarkly application, the API will use your existing session to authenticate calls. Depending on the permissions granted as part of your role, you may not have permission to perform some API calls. You will receive a `401` response code in that case. > ### Modifying the Origin header causes an error
+
+    >
+
+    > LaunchDarkly validates that the Origin header for any API request authenticated by a session cookie matches the expected Origin header. The expected Origin header is `https://app.launchdarkly.com`. >
+
+    > If the Origin header does not match what''s expected, LaunchDarkly returns an error. This error can prevent the LaunchDarkly app from working correctly. >
+
+    > Any browser extension that intentionally changes the Origin header can cause this problem. For example, Cross-Origin Resource Sharing (CORS) extensions used during development can modify the Origin header and cause the app to fail. >
+
+    > To prevent this error, do not modify your Origin header. >
+
+    > LaunchDarkly does not require origin matching when authenticating with an access token, so this issue does not affect normal API usage.'
+  contact:
+    name: LaunchDarkly Technical Support Team
+    url: https://support.launchdarkly.com
+    email: support@launchdarkly.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+  version: '2.0'
+servers:
+- url: https://app.launchdarkly.com
+  description: ' Default'
+- url: https://app.launchdarkly.us
+  description: ' Federal'
+security:
+- ApiKey:
+  - read
+  - write
+tags:
+- name: Announcements
+  description: 'The announcements API lets you create and update a custom announcement banner that appears in the LaunchDarkly user interface for everyone in your organization. You can use the banner to display organization-wide information, such as upcoming holidays, code freeze periods, or reminders on best practices. You can have one banner visible at a time.
+
+
+    To learn more, read Organization announcements.'
+paths:
+  /api/v2/announcements:
+    get:
+      operationId: getAnnouncementsPublic
+      parameters:
+      - description: Filter announcements by status.
+        example: active
+        explode: true
+        in: query
+        name: status
+        required: false
+        schema:
+          enum:
+          - active
+          - inactive
+          - scheduled
+          type: string
+          x-enumNames:
+          - Active
+          - Inactive
+          - Scheduled
+        style: form
+      - description: The number of announcements to return.
+        explode: true
+        in: query
+        name: limit
+        required: false
+        schema:
+          type: integer
+        style: form
+      - description: Where to start in the list. Use this with pagination. For example, an offset of 10 skips the first ten items and then returns the next items in the list, up to the query `limit`.
+        explode: true
+        in: query
+        name: offset
+        required: false
+        schema:
+          type: integer
+        style: form
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getAnnouncementsPublic_200_response'
+          description: Announcement response
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Bad request
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Not found
+        '429':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Rate limit exceeded
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Internal server error
+      summary: Get announcements
+      tags:
+      - Announcements
+    post:
+      operationId: createAnnouncementPublic
+      requestBody:
+        $ref: '#/components/requestBodies/CreateAnnouncementBody'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnnouncementResponse'
+          description: Created announcement
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Bad request
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Not found
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Conflict
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Internal server error
+      summary: Create an announcement
+      tags:
+      - Announcements
+  /api/v2/announcements/{announcementId}:
+    delete:
+      operationId: deleteAnnouncementPublic
+      parameters:
+      - example: 1234567890
+        explode: false
+        in: path
+        name: announcementId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        '204':
+          description: No content
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Not found
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Internal server error
+      summary: Delete an announcement
+      tags:
+      - Announcements
+    patch:
+      operationId: updateAnnouncementPublic
+      parameters:
+      - example: 1234567890
+        explode: false
+        in: path
+        name: announcementId
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateAnnouncementBody'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnnouncementResponse'
+          description: Updated announcement
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Bad request
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Not found
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Conflict
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Internal server error
+      summary: Update an announcement
+      tags:
+      - Announcements
+components:
+  schemas:
+    ActionSpecifier:
+      type: string
+    CreateAnnouncementBody:
+      description: Create announcement request body
+      example:
+        severity: warning
+        startTime: 1731439812
+        isDismissible: true
+        endTime: 1731439880
+        title: System Maintenance Notice
+        message: '**Important Update:**
+
+
+          Please be aware of the upcoming maintenance scheduled for *October 31st, 2024*. The system will be unavailable from **12:00 AM** to **4:00 AM**.'
+      properties:
+        isDismissible:
+          description: true if the announcement is dismissible
+          example: true
+          type: boolean
+        title:
+          description: The title of the announcement
+          example: System Maintenance Notice
+          type: string
+        message:
+          description: The message of the announcement
+          example: '**Important Update:**
+
+
+            Please be aware of the upcoming maintenance scheduled for *October 31st, 2024*. The system will be unavailable from **12:00 AM** to **4:00 AM**.'
+          type: string
+        startTime:
+          description: The start time of the announcement. This is a Unix timestamp in milliseconds.
+          example: 1731439812
+          format: int64
+          type: integer
+        endTime:
+          description: The end time of the announcement. This is a Unix timestamp in milliseconds.
+          example: 1731439880
+          format: int64
+          type: integer
+        severity:
+          description: The severity of the announcement
+          enum:
+          - info
+          - warning
+          - critical
+          example: warning
+          type: string
+          x-enumNames:
+          - Informational
+          - Warning
+          - Critical
+      required:
+      - isDismissible
+      - message
+      - severity
+      - startTime
+      - title
+      type: object
+    Error:
+      example:
+        code: code
+        message: message
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+      required:
+      - code
+      - message
+      type: object
+    AnnouncementPatchOperation:
+      example:
+        op: replace
+        path: /exampleField
+        value: new example value
+      properties:
+        op:
+          description: The type of operation to perform
+          example: replace
+          type: string
+        path:
+          description: A JSON Pointer string specifying the part of the document to operate on
+          example: /exampleField
+          type: string
+        value:
+          description: A JSON value used in "add", "replace", and "test" operations
+          example: new example value
+      required:
+      - op
+      - path
+      type: object
+    AnnouncementResponse__links:
+      example:
+        parent:
+          href: href
+          type: type
+      properties:
+        parent:
+          $ref: '#/components/schemas/AnnouncementLink'
+      required:
+      - parent
+      type: object
+    AnnouncementAccessDenied:
+      example:
+        reason:
+          role_name: role_name
+          notActions:
+          - null
+          - null
+          notResources:
+          - notResources
+          - notResources
+          effect: allow
+          resources:
+          - proj/*:env/*;qa_*:/flag/*
+          actions:
+          - '*'
+        action: action
+      properties:
+        action:
+          type: string
+        reason:
+          $ref: '#/components/schemas/AnnouncementAccessDeniedReason'
+      required:
+      - action
+      - reason
+      type: object
+    AnnouncementJSONPatch:
+      items:
+        $ref: '#/components/schemas/AnnouncementPatchOperation'
+      type: array
+    getAnnouncementsPublic_200_response:
+      example:
+        _links:
+          next:
+            href: href
+            type: type
+          last:
+            href: href
+            type: type
+          prev:
+            href: href
+            type: type
+          self:
+            href: href
+            type: type
+          first:
+            href: href
+            type: type
+        items:
+        - severity: info
+          _access:
+            allowed:
+            - reason:
+                role_name: role_name
+                notActions:
+                - null
+                - null
+                notResources:
+                - notResources
+                - notResources
+                effect: allow
+                resources:
+                - proj/*:env/*;qa_*:/flag/*
+                actions:
+                - '*'
+              action: action
+            - reason:
+                role_name: role_name
+                notActions:
+                - null
+                - null
+                notResources:
+                - notResources
+                - notResources
+                effect: allow
+                resources:
+                - proj/*:env/*;qa_*:/flag/*
+                actions:
+                - '*'
+              action: action
+            denied:
+            - reason:
+                role_name: role_name
+                notActions:
+                - null
+                - null
+                notResources:
+                - notResources
+                - notResources
+                effect: allow
+                resources:
+                - proj/*:env/*;qa_*:/flag/*
+                actions:
+                - '*'
+              action: action
+            - reason:
+                role_name: role_name
+                notActions:
+                - null
+                - null
+                notResources:
+                - notResources
+                - notResources
+                effect: allow
+                resources:
+                - proj/*:env/*;qa_*:/flag/*
+                actions:
+                - '*'
+              action: action
+          _links:
+            parent:
+              href: href
+              type: type
+          startTime: 1731439812
+          _id: '1234567890'
+          isDismissible: true
+          endTime: 1731439880
+          title: System Maintenance Notice
+          message: '**Important Update:**
+
+
+            Please be aware of the upcoming maintenance scheduled for *October 31st, 2024*. The system will be unavailable from **12:00 AM** to **4:00 AM**.'
+          _status: active
+        - severity: info
+          _access:
+            allowed:
+            - reason:
+                role_name: role_name
+                notActions:
+                - null
+                - null
+                notResources:
+                - notResources
+                - notResources
+                effect: allow
+                resources:
+                - proj/*:env/*;qa_*:/flag/*
+                actions:
+                - '*'
+              action: action
+            - reason:
+                role_name: role_name
+                notActions:
+                - null
+                - null
+                notResources:
+                - notResources
+                - notResources
+                effect: allow
+                resources:
+                - proj/*:env/*;qa_*:/flag/*
+                actions:
+                - '*'
+              action: action
+            denied:
+            - reason:
+                role_name: role_name
+                notActions:
+                - null
+                - null
+                notResources:
+                - notResources
+                - notResources
+                effect: allow
+                resources:
+                - proj/*:env/*;qa_*:/flag/*
+                actions:
+                - '*'
+              action: action
+            - reason:
+                role_name: role_name
+                notActions:
+                - null
+                - null
+                notResources:
+                - notResources
+                - notResources
+                effect: allow
+                resources:
+                - proj/*:env/*;qa_*:/flag/*
+                actions:
+                - '*'
+              action: action
+          _links:
+            parent:
+              href: href
+              type: type
+          startTime: 1731439812
+          _id: '1234567890'
+          isDismissible: true
+          endTime: 1731439880
+          title: System Maintenance Notice
+          message: '**Important Update:**
+
+
+            Please be aware of the upcoming maintenance scheduled for *October 31st, 2024*. The system will be unavailable from **12:00 AM** to **4:00 AM**.'
+          _status: active
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/AnnouncementResponse'
+          type: array
+        _links:
+          $ref: '#/components/schemas/AnnouncementPaginatedLinks'
+      required:
+      - _links
+      - items
+      type: object
+    AnnouncementAccessDeniedReason:
+      example:
+        role_name: role_name
+        notActions:
+        - null
+        - null
+        notResources:
+        - notResources
+        - notResources
+        effect: allow
+        resources:
+        - proj/*:env/*;qa_*:/flag/*
+        actions:
+        - '*'
+      properties:
+        resources:
+          description: Resource specifier strings
+          example:
+          - proj/*:env/*;qa_*:/flag/*
+          items:
+            type: string
+          type: array
+        notResources:
+          description: Targeted resources are the resources NOT in this list. The <code>resources</code> and <code>notActions</code> fields must be empty to use this field.
+          items:
+            type: string
+          type: array
+        actions:
+          description: Actions to perform on a resource
+          example:
+          - '*'
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+          type: array
+        notActions:
+          description: Targeted actions are the actions NOT in this list. The <code>actions</code> and <code>notResources</code> fields must be empty to use this field.
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+          type: array
+        effect:
+          description: Whether this statement should allow or deny actions on the resources.
+          enum:
+          - allow
+          - deny
+          example: allow
+          type: string
+        role_name:
+          type: string
+      required:
+      - effect
+      type: object
+    AnnouncementResponse:
+      description: Announcement response
+      example:
+        severity: info
+        _access:
+          allowed:
+          - reason:
+              role_name: role_name
+              notActions:
+              - null
+              - null
+              notResources:
+              - notResources
+              - notResources
+              effect: allow
+              resources:
+              - proj/*:env/*;qa_*:/flag/*
+              actions:
+              - '*'
+            action: action
+          - reason:
+              role_name: role_name
+              notActions:
+              - null
+              - null
+              notResources:
+              - notResources
+              - notResources
+              effect: allow
+              resources:
+              - proj/*:env/*;qa_*:/flag/*
+              actions:
+              - '*'
+            action: action
+          denied:
+          - reason:
+              role_name: role_name
+              notActions:
+              - null
+              - null
+              notResources:
+              - notResources
+              - notResources
+              effect: allow
+              resources:
+              - proj/*:env/*;qa_*:/flag/*
+              actions:
+              - '*'
+            action: action
+          - reason:
+              role_name: role_name
+              notActions:
+              - null
+              - null
+              notResources:
+              - notResources
+              - notResources
+              effect: allow
+              resources:
+              - proj/*:env/*;qa_*:/flag/*
+              actions:
+              - '*'
+            action: action
+        _links:
+          parent:
+            href: href
+            type: type
+        startTime: 1731439812
+        _id: '1234567890'
+        isDismissible: true
+        endTime: 1731439880
+        title: System Maintenance Notice
+        message: '**Important Update:**
+
+
+          Please be aware of the upcoming maintenance scheduled for *October 31st, 2024*. The system will be unavailable from **12:00 AM** to **4:00 AM**.'
+        _status: active
+      properties:
+        _id:
+          description: The ID of the announcement
+          example: '1234567890'
+          type: string
+        isDismissible:
+          description: true if the announcement is dismissible
+          example: true
+          type: boolean
+        title:
+          description: The title of the announcement
+          example: System Maintenance Notice
+          type: string
+        message:
+          description: The message of the announcement
+          example: '**Important Update:**
+
+
+            Please be aware of the upcoming maintenance scheduled for *October 31st, 2024*. The system will be unavailable from **12:00 AM** to **4:00 AM**.'
+          type: string
+        startTime:
+          description: The start time of the announcement. This is a Unix timestamp in milliseconds.
+          example: 1731439812
+          format: int64
+          type: integer
+        endTime:
+          description: The end time of the announcement. This is a Unix timestamp in milliseconds.
+          example: 1731439880
+          format: int64
+          type: integer
+        severity:
+          description: The severity of the announcement
+          enum:
+          - info
+          - warning
+          - critical
+          type: string
+          x-enumNames:
+          - Informational
+          - Warning
+          - Critical
+        _status:
+          description: The status of the announcement
+          enum:
+          - active
+          - inactive
+          - scheduled
+          type: string
+          x-enumNames:
+          - Active
+          - Inactive
+          - Scheduled
+        _access:
+          $ref: '#/components/schemas/AnnouncementAccessRep'
+        _links:
+          $ref: '#/components/schemas/AnnouncementResponse__links'
+      required:
+      - _id
+      - _links
+      - _status
+      - isDismissible
+      - message
+      - severity
+      - startTime
+      - title
+      type: object
+    AnnouncementAccess:
+      properties:
+        denied:
+          items:
+            $ref: '#/components/schemas/AnnouncementAccessDenied'
+          type: array
+        allowed:
+          items:
+            $ref: '#/components/schemas/AnnouncementAccessAllowedRep'
+          type: array
+      required:
+      - allowed
+      - denied
+      type: object
+    AnnouncementPaginatedLinks:
+      example:
+        next:
+          href: href
+          type: type
+        last:
+          href: href
+          type: type
+        prev:
+          href: href
+          type: type
+        self:
+          href: href
+          type: type
+        first:
+          href: href
+          type: type
+      properties:
+        first:
+          $ref: '#/components/schemas/AnnouncementLink'
+        last:
+          $ref: '#/components/schemas/AnnouncementLink'
+        next:
+          $ref: '#/components/schemas/AnnouncementLink'
+        prev:
+          $ref: '#/components/schemas/AnnouncementLink'
+        self:
+          $ref: '#/components/schemas/AnnouncementLink'
+      required:
+      - self
+      type: object
+    AnnouncementAccessAllowedReason:
+      example:
+        role_name: role_name
+        notActions:
+        - null
+        - null
+        notResources:
+        - notResources
+        - notResources
+        effect: allow
+        resources:
+        - proj/*:env/*;qa_*:/flag/*
+        actions:
+        - '*'
+      properties:
+        resources:
+          description: Resource specifier strings
+          example:
+          - proj/*:env/*;qa_*:/flag/*
+          items:
+            type: string
+          type: array
+        notResources:
+          description: Targeted resources are the resources NOT in this list. The <code>resources</code> and <code>notActions</code> fields must be empty to use this field.
+          items:
+            type: string
+          type: array
+        actions:
+          description: Actions to perform on a resource
+          example:
+          - '*'
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+          type: array
+        notActions:
+          description: Targeted actions are the actions NOT in this list. The <code>actions</code> and <code>notResources</code> fields must be empty to use this field.
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+          type: array
+        effect:
+          description: Whether this statement should allow or deny actions on the resources.
+          enum:
+          - allow
+          - deny
+          example: allow
+          type: string
+        role_name:
+          type: string
+      required:
+      - effect
+      type: object
+    AnnouncementAccessAllowedRep:
+      example:
+        reason:
+          role_name: role_name
+          notActions:
+          - null
+          - null
+          notResources:
+          - notResources
+          - notResources
+          effect: allow
+          resources:
+          - proj/*:env/*;qa_*:/flag/*
+          actions:
+          - '*'
+        action: action
+      properties:
+        action:
+          type: string
+        reason:
+          $ref: '#/components/schemas/AnnouncementAccessAllowedReason'
+      required:
+      - action
+      - reason
+      type: object
+    AnnouncementAccessRep:
+      allOf:
+      - $ref: '#/components/schemas/AnnouncementAccess'
+      example:
+        allowed:
+        - reason:
+            role_name: role_name
+            notActions:
+            - null
+            - null
+            notResources:
+            - notResources
+            - notResources
+            effect: allow
+            resources:
+            - proj/*:env/*;qa_*:/flag/*
+            actions:
+            - '*'
+          action: action
+        - reason:
+            role_name: role_name
+            notActions:
+            - null
+            - null
+            notResources:
+            - notResources
+            - notResources
+            effect: allow
+            resources:
+            - proj/*:env/*;qa_*:/flag/*
+            actions:
+            - '*'
+          action: action
+        denied:
+        - reason:
+            role_name: role_name
+            notActions:
+            - null
+            - null
+            notResources:
+            - notResources
+            - notResources
+            effect: allow
+            resources:
+            - proj/*:env/*;qa_*:/flag/*
+            actions:
+            - '*'
+          action: action
+        - reason:
+            role_name: role_name
+            notActions:
+            - null
+            - null
+            notResources:
+            - notResources
+            - notResources
+            effect: allow
+            resources:
+            - proj/*:env/*;qa_*:/flag/*
+            actions:
+            - '*'
+          action: action
+    AnnouncementLink:
+      example:
+        href: href
+        type: type
+      properties:
+        href:
+          type: string
+        type:
+          type: string
+      type: object
+  requestBodies:
+    CreateAnnouncementBody:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CreateAnnouncementBody'
+      description: Announcement request body
+      required: true
+    UpdateAnnouncementBody:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AnnouncementJSONPatch'
+      description: Update announcement request body
+      required: true
+  securitySchemes:
+    ApiKey:
+      type: apiKey
+      in: header
+      name: Authorization

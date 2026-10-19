@@ -1,0 +1,1193 @@
+openapi: 3.2.0
+info:
+  title: LaunchDarkly REST Insights scores (beta) API
+  description: 'This documentation describes LaunchDarkly''s REST API. To access the complete OpenAPI spec directly, use Get OpenAPI spec. To learn how to use LaunchDarkly using the user interface (UI) instead, read our product documentation. ## Authentication
+
+
+    LaunchDarkly''s REST API uses the HTTPS protocol with a minimum TLS version of 1.2. All REST API resources are authenticated with either personal or service access tokens, or session cookies. Other authentication mechanisms are not supported. You can manage personal access tokens on your **Authorization** page in the LaunchDarkly UI. LaunchDarkly also has SDK keys, mobile keys, and client-side IDs that are used by our server-side SDKs, mobile SDKs, and JavaScript-based SDKs, respectively. **These keys cannot be used to access our REST API**. These keys are environment-specific, and can only perform read-only operations such as fetching feature flag settings. | Auth mechanism | Allowed resources | Use cases |
+
+    | ----------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
+
+    | Personal or service access tokens | Can be customized on a per-token basis | Building scripts, custom integrations, data export. |
+
+    | SDK keys | Can only access read-only resources specific to server-side SDKs. Restricted to a single environment. | Server-side SDKs |
+
+    | Mobile keys | Can only access read-only resources specific to mobile SDKs, and only for flags marked available to mobile keys. Restricted to a single environment. | Mobile SDKs |
+
+    | Client-side ID | Can only access read-only resources specific to JavaScript-based client-side SDKs, and only for flags marked available to client-side. Restricted to a single environment. | Client-side JavaScript |
+
+
+    > #### Keep your access tokens and SDK keys private
+
+    >
+
+    > Access tokens should _never_ be exposed in untrusted contexts. Never put an access token in client-side JavaScript, or embed it in a mobile application. LaunchDarkly has special mobile keys that you can embed in mobile apps. If you accidentally expose an access token or SDK key, you can reset it from your **Authorization** page. >
+
+    > The client-side ID is safe to embed in untrusted contexts. It''s designed for use in client-side JavaScript. ### Authentication using request header
+
+
+    The preferred way to authenticate with the API is by adding an `Authorization` header containing your access token to your requests. The value of the `Authorization` header must be your access token. Manage personal access tokens from the **Authorization** page. ### Authentication using session cookie
+
+
+    For testing purposes, you can make API calls directly from your web browser. If you are logged in to the LaunchDarkly application, the API will use your existing session to authenticate calls. Depending on the permissions granted as part of your role, you may not have permission to perform some API calls. You will receive a `401` response code in that case. > ### Modifying the Origin header causes an error
+
+    >
+
+    > LaunchDarkly validates that the Origin header for any API request authenticated by a session cookie matches the expected Origin header. The expected Origin header is `https://app.launchdarkly.com`. >
+
+    > If the Origin header does not match what''s expected, LaunchDarkly returns an error. This error can prevent the LaunchDarkly app from working correctly. >
+
+    > Any browser extension that intentionally changes the Origin header can cause this problem. For example, Cross-Origin Resource Sharing (CORS) extensions used during development can modify the Origin header and cause the app to fail. >
+
+    > To prevent this error, do not modify your Origin header. >
+
+    > LaunchDarkly does not require origin matching when authenticating with an access token, so this issue does not affect normal API usage.'
+  contact:
+    name: LaunchDarkly Technical Support Team
+    url: https://support.launchdarkly.com
+    email: support@launchdarkly.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+  version: '2.0'
+servers:
+- url: https://app.launchdarkly.com
+  description: ' Default'
+- url: https://app.launchdarkly.us
+  description: ' Federal'
+security:
+- ApiKey:
+  - read
+  - write
+tags:
+- name: Insights scores (beta)
+  description: '> ### This feature is in beta
+
+    >
+
+    > To use this feature, pass in a header including the `LD-API-Version` key with value set to `beta`. Use this header with each call. To learn more, read Beta resources.
+
+    >
+
+    > Resources that are in beta are still undergoing testing and development. They may change without notice, including becoming backwards incompatible.
+
+
+    The insights scores API provides scores for data used in engineering insights project metrics. To learn more, read Project overview and Project metrics.'
+paths:
+  /api/v2/engineering-insights/insights/group:
+    post:
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InsightGroup'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationFailedErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '409':
+          description: Status conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusConflictErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Insights scores (beta)
+      summary: Create insight group
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostInsightGroupParams'
+        required: true
+      operationId: createInsightGroup
+  /api/v2/engineering-insights/insights/groups:
+    get:
+      responses:
+        '200':
+          description: Insight groups collection response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InsightGroupCollection'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationFailedErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Insights scores (beta)
+      summary: List insight groups
+      description: 'List groups for which you are collecting insights
+
+
+        ### Expanding the insight groups collection response
+
+
+        LaunchDarkly supports expanding the insight groups collection response to include additional fields.
+
+
+        To expand the response, append the `expand` query parameter and include the following:
+
+
+        * `scores` includes details on all of the scores used in the engineering insights metrics views for each group
+
+        * `environment` includes details on each environment associated with each group
+
+        * `metadata` includes counts of the number of insight groups with particular indicators, such as "excellent," "good," "fair," and so on.
+
+
+        For example, use `?expand=scores` to include the `scores` field in the response. By default, this field is **not** included in the response.'
+      parameters:
+      - name: limit
+        in: query
+        description: The number of insight groups to return. Default is 20. Must be between 1 and 20 inclusive.
+        schema:
+          type: integer
+          format: int64
+          description: The number of insight groups to return. Default is 20. Must be between 1 and 20 inclusive.
+      - name: offset
+        in: query
+        description: Where to start in the list. Use this with pagination. For example, an offset of 10 skips the first ten items and then returns the next items in the list, up to the query `limit`.
+        schema:
+          type: integer
+          format: int64
+          description: Where to start in the list. Use this with pagination. For example, an offset of 10 skips the first ten items and then returns the next items in the list, up to the query `limit`.
+      - name: sort
+        in: query
+        description: 'Sort flag list by field. Prefix field with <code>-</code> to sort in descending order. Allowed fields: name'
+        schema:
+          type: string
+          format: string
+          description: 'Sort flag list by field. Prefix field with <code>-</code> to sort in descending order. Allowed fields: name'
+      - name: query
+        in: query
+        description: Filter list of insights groups by name.
+        schema:
+          type: string
+          format: string
+          description: Filter list of insights groups by name.
+      - name: expand
+        in: query
+        description: 'Options: `scores`, `environment`, `metadata`'
+        schema:
+          type: string
+          format: string
+          description: 'Options: `scores`, `environment`, `metadata`'
+      operationId: getInsightGroups
+  /api/v2/engineering-insights/insights/groups/{insightGroupKey}:
+    get:
+      responses:
+        '200':
+          description: Insight group response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InsightGroup'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationFailedErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Insights scores (beta)
+      summary: Get insight group
+      description: 'Get insight group
+
+
+        ### Expanding the insight group response
+
+
+        LaunchDarkly supports expanding the insight group response to include additional fields.
+
+
+        To expand the response, append the `expand` query parameter and include the following:
+
+
+        * `scores` includes details on all of the scores used in the engineering insights metrics views for this group
+
+        * `environment` includes details on each environment associated with this group
+
+
+        For example, use `?expand=scores` to include the `scores` field in the response. By default, this field is **not** included in the response.'
+      parameters:
+      - name: insightGroupKey
+        in: path
+        description: The insight group key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The insight group key
+      - name: expand
+        in: query
+        description: 'Options: `scores`, `environment`'
+        schema:
+          type: string
+          format: string
+          description: 'Options: `scores`, `environment`'
+      operationId: getInsightGroup
+    patch:
+      responses:
+        '200':
+          description: Insight group response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InsightGroup'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationFailedErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '422':
+          description: Invalid patch content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PatchFailedErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Insights scores (beta)
+      summary: Patch insight group
+      description: Update an insight group. Updating an insight group uses a JSON patch representation of the desired changes. To learn more, read Updates.
+      parameters:
+      - name: insightGroupKey
+        in: path
+        description: The insight group key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The insight group key
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JSONPatch'
+            example:
+            - op: replace
+              path: /name
+              value: Prod group
+        required: true
+      operationId: patchInsightGroup
+    delete:
+      responses:
+        '204':
+          description: Action succeeded
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationFailedErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Insights scores (beta)
+      summary: Delete insight group
+      parameters:
+      - name: insightGroupKey
+        in: path
+        description: The insight group key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The insight group key
+      operationId: deleteInsightGroup
+  /api/v2/engineering-insights/insights/scores:
+    get:
+      responses:
+        '200':
+          description: Insight score response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InsightScores'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationFailedErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Insights scores (beta)
+      summary: Get insight scores
+      description: Return insights scores, based on the given parameters. This data is also used in engineering insights metrics views.
+      parameters:
+      - name: projectKey
+        in: query
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: environmentKey
+        in: query
+        description: The environment key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The environment key
+      - name: applicationKey
+        in: query
+        description: Comma separated list of application keys
+        schema:
+          type: string
+          format: string
+          description: Comma separated list of application keys
+      operationId: getInsightsScores
+components:
+  schemas:
+    Environment:
+      type: object
+      required:
+      - _links
+      - _id
+      - key
+      - name
+      - apiKey
+      - mobileKey
+      - color
+      - defaultTtl
+      - secureMode
+      - defaultTrackEvents
+      - requireComments
+      - confirmChanges
+      - tags
+      - critical
+      properties:
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+          example:
+            self:
+              href: /api/v2/projects/my-project/environments/my-environment
+              type: application/json
+        _id:
+          type: string
+          description: The ID for the environment. Use this as the client-side ID for authorization in some client-side SDKs, and to associate LaunchDarkly environments with CDN integrations in edge SDKs.
+          example: 57be1db38b75bf0772d11384
+        key:
+          type: string
+          description: A project-unique key for the new environment
+          example: environment-key-123abc
+        name:
+          type: string
+          description: A human-friendly name for the new environment
+          example: My Environment
+        apiKey:
+          type: string
+          description: The SDK key for the environment. Use this for authorization in server-side SDKs.
+          example: sdk-xxx
+        mobileKey:
+          type: string
+          description: The mobile key for the environment. Use this for authorization in mobile SDKs.
+          example: mob-xxx
+        color:
+          type: string
+          description: The color used to indicate this environment in the UI
+          example: F5A623
+        defaultTtl:
+          type: integer
+          description: The default time (in minutes) that the PHP SDK can cache feature flag rules locally
+          example: 5
+        secureMode:
+          type: boolean
+          description: Ensures that one end user of the client-side SDK cannot inspect the variations for another end user
+          example: true
+        _access:
+          $ref: '#/components/schemas/Access'
+        defaultTrackEvents:
+          type: boolean
+          description: The initial value of trackEvents for flags created in this environment. Does not affect existing flags. Required for Data Export, but doesn't enable Data Export on its own.
+          example: false
+        requireComments:
+          type: boolean
+          description: Whether members who modify flags and segments through the LaunchDarkly user interface are required to add a comment
+          example: true
+        confirmChanges:
+          type: boolean
+          description: Whether members who modify flags and segments through the LaunchDarkly user interface are required to confirm those changes
+          example: true
+        tags:
+          type: array
+          description: A list of tags for this environment
+          items:
+            type: string
+          example:
+          - ops
+        approvalSettings:
+          description: Details about the approval settings for flags in this environment
+          $ref: '#/components/schemas/ApprovalSettings'
+        resourceApprovalSettings:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/ApprovalSettings'
+          description: Details about the approval settings for other resources in this environment, organized by resource kind (for example, "aiconfig" and "segment")
+        critical:
+          type: boolean
+          description: Whether the environment is critical
+          example: true
+    JSONPatch:
+      type: array
+      items:
+        $ref: '#/components/schemas/PatchOperation'
+    AccessDenied:
+      type: object
+      required:
+      - action
+      - reason
+      properties:
+        action:
+          $ref: '#/components/schemas/ActionIdentifier'
+        reason:
+          $ref: '#/components/schemas/AccessDeniedReason'
+    PatchFailedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: patch_failed
+        message:
+          type: string
+          description: Description of the error
+          example: Unprocessable entity. Could not apply patch.
+    InsightGroupCollection:
+      type: object
+      required:
+      - totalCount
+      - items
+      properties:
+        totalCount:
+          type: integer
+          description: The total number of insight groups
+          example: 15
+        items:
+          type: array
+          description: A list of insight groups
+          items:
+            $ref: '#/components/schemas/InsightGroup'
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+        metadata:
+          description: Metadata about the insight groups
+          $ref: '#/components/schemas/InsightGroupCollectionMetadata'
+        scoreMetadata:
+          description: Metadata about the insight scores, when expanded
+          $ref: '#/components/schemas/InsightGroupCollectionScoreMetadata'
+    RateLimitedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: rate_limited
+        message:
+          type: string
+          description: Description of the error
+          example: You've exceeded the API rate limit. Try again later.
+    InsightsMetricIndicatorRange:
+      type: object
+      required:
+      - min
+      - max
+      properties:
+        min:
+          type: integer
+          description: The minimum value for the indicator range
+          example: 0
+        max:
+          type: integer
+          description: The maximum value for the indicator range
+          example: 100
+    InsightScores:
+      type: object
+      required:
+      - period
+      - lastPeriod
+      - scores
+      properties:
+        period:
+          description: The time period for the scores
+          $ref: '#/components/schemas/InsightPeriod'
+        lastPeriod:
+          description: The time period for the scores in the last period
+          $ref: '#/components/schemas/InsightPeriod'
+        scores:
+          description: The scores for the insight groups
+          $ref: '#/components/schemas/InsightGroupScores'
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+    UnauthorizedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: unauthorized
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid access token
+    AccessDeniedReason:
+      type: object
+      required:
+      - effect
+      properties:
+        resources:
+          type: array
+          description: Resource specifier strings
+          items:
+            type: string
+          example:
+          - proj/*:env/*;qa_*:/flag/*
+        notResources:
+          type: array
+          description: Targeted resources are the resources NOT in this list. The <code>resources</code> and <code>notActions</code> fields must be empty to use this field.
+          items:
+            type: string
+        actions:
+          type: array
+          description: Actions to perform on a resource
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+          example:
+          - '*'
+        notActions:
+          type: array
+          description: Targeted actions are the actions NOT in this list. The <code>actions</code> and <code>notResources</code> fields must be empty to use this field.
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+        effect:
+          type: string
+          description: Whether this statement should allow or deny actions on the resources.
+          example: allow
+          enum:
+          - allow
+          - deny
+        role_name:
+          type: string
+    ForbiddenErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: forbidden
+        message:
+          type: string
+          description: Description of the error
+          example: Forbidden. Access to the requested resource was denied.
+    ActionSpecifier:
+      type: string
+    FailureReasonRep:
+      type: object
+      required:
+      - attribute
+      - reason
+      properties:
+        attribute:
+          type: string
+          description: The attribute that failed validation
+          example: projectKey
+        reason:
+          type: string
+          description: The reason the attribute failed validation
+          example: must be present
+    InsightsMetricScore:
+      type: object
+      required:
+      - score
+      - indicator
+      - indicatorRange
+      properties:
+        score:
+          type: integer
+          description: The score for the metric
+          example: 100
+        aggregateOf:
+          type: array
+          description: The keys of the metrics that were aggregated to calculate this score
+          items:
+            type: string
+          example:
+          - deploymentFrequency
+          - leadTime
+        diffVsLastPeriod:
+          type: integer
+        indicator:
+          description: The indicator for the score
+          example: excellent
+          enum:
+          - excellent
+          - good
+          - fair
+          - needsAttention
+          - notCalculated
+          - unknown
+          $ref: '#/components/schemas/InsightsMetricScoreIndicator'
+        indicatorRange:
+          description: The indicator range for the score
+          $ref: '#/components/schemas/InsightsMetricIndicatorRange'
+        lastPeriod:
+          description: The score for the metric in the last period
+          $ref: '#/components/schemas/InsightsMetricScore'
+    InsightsMetricScoreIndicator:
+      type: string
+    Link:
+      type: object
+      properties:
+        href:
+          type: string
+        type:
+          type: string
+    InsightGroupCollectionMetadata:
+      type: object
+      required:
+      - countByIndicator
+      properties:
+        countByIndicator:
+          $ref: '#/components/schemas/InsightGroupsCountByIndicator'
+    ActionIdentifier:
+      type: string
+    ApprovalSettings:
+      type: object
+      required:
+      - required
+      - bypassApprovalsForPendingChanges
+      - minNumApprovals
+      - canReviewOwnRequest
+      - canApplyDeclinedChanges
+      - serviceKind
+      - serviceConfig
+      - requiredApprovalTags
+      properties:
+        required:
+          type: boolean
+          description: If approvals are required for this environment
+          example: true
+        bypassApprovalsForPendingChanges:
+          type: boolean
+          description: Whether to skip approvals for pending changes
+          example: false
+        minNumApprovals:
+          type: integer
+          description: Sets the amount of approvals required before a member can apply a change. The minimum is one and the maximum is five.
+          example: 1
+        canReviewOwnRequest:
+          type: boolean
+          description: Allow someone who makes an approval request to apply their own change
+          example: false
+        canApplyDeclinedChanges:
+          type: boolean
+          description: Allow applying the change as long as at least one person has approved
+          example: true
+        autoApplyApprovedChanges:
+          type: boolean
+          description: Automatically apply changes that have been approved by all reviewers. This field is only applicable for approval services other than LaunchDarkly.
+          example: true
+        serviceKind:
+          type: string
+          description: Which service to use for managing approvals
+          example: launchdarkly
+        serviceConfig:
+          type: object
+          additionalProperties: {}
+          example: {}
+        requiredApprovalTags:
+          type: array
+          description: Require approval only on flags with the provided tags. Otherwise all flags will require approval.
+          items:
+            type: string
+          example:
+          - require-approval
+        serviceKindConfigurationId:
+          type: string
+          description: Optional field for integration configuration ID of a custom approval integration. This is an Enterprise-only feature.
+          example: 1ef45a85-218f-4428-a8b2-a97e5f56c258
+    UnixMillis:
+      type: integer
+      format: int64
+    InsightGroupScores:
+      type: object
+      required:
+      - overall
+      - deploymentFrequency
+      - deploymentFailureRate
+      - leadTime
+      - impactSize
+      - experimentationCoverage
+      - flagHealth
+      - velocity
+      - risk
+      - efficiency
+      properties:
+        overall:
+          description: The overall score for the insight group
+          $ref: '#/components/schemas/InsightsMetricScore'
+        deploymentFrequency:
+          description: The deployment frequency score for the insight group
+          $ref: '#/components/schemas/InsightsMetricScore'
+        deploymentFailureRate:
+          description: The deployment failure rate score for the insight group
+          $ref: '#/components/schemas/InsightsMetricScore'
+        leadTime:
+          description: The lead time score for the insight group
+          $ref: '#/components/schemas/InsightsMetricScore'
+        impactSize:
+          description: The impact size score for the insight group
+          $ref: '#/components/schemas/InsightsMetricScore'
+        experimentationCoverage:
+          description: The Experimentation coverage score for the insight group
+          $ref: '#/components/schemas/InsightsMetricScore'
+        flagHealth:
+          description: The flag health score for the insight group
+          $ref: '#/components/schemas/InsightsMetricScore'
+        velocity:
+          description: The velocity score for the insight group
+          $ref: '#/components/schemas/InsightsMetricScore'
+        risk:
+          description: The risk score for the insight group
+          $ref: '#/components/schemas/InsightsMetricScore'
+        efficiency:
+          description: The efficiency score for the insight group
+          $ref: '#/components/schemas/InsightsMetricScore'
+        creationRatio:
+          description: The creation ratio score for the insight group
+          $ref: '#/components/schemas/InsightsMetricScore'
+    PatchOperation:
+      type: object
+      required:
+      - op
+      - path
+      properties:
+        op:
+          type: string
+          description: The type of operation to perform
+          example: replace
+        path:
+          type: string
+          description: A JSON Pointer string specifying the part of the document to operate on
+          example: /exampleField
+        value:
+          description: A JSON value used in "add", "replace", and "test" operations
+          example: new example value
+    InsightGroup:
+      type: object
+      required:
+      - key
+      - name
+      - projectKey
+      - environmentKey
+      - createdAt
+      properties:
+        environment:
+          description: Expanded details about the environment
+          $ref: '#/components/schemas/Environment'
+        scores:
+          description: The scores for the insight group
+          $ref: '#/components/schemas/InsightGroupScores'
+        scoreMetadata:
+          description: Metadata about the insight scores, when expanded
+          $ref: '#/components/schemas/InsightGroupCollectionScoreMetadata'
+        key:
+          type: string
+          description: The insight group key
+          example: default-production-all-apps
+        name:
+          type: string
+          description: The insight group name
+          example: Production - All Apps
+        projectKey:
+          type: string
+          description: The project key
+          example: default
+        environmentKey:
+          type: string
+          description: The environment key
+          example: production
+        applicationKeys:
+          type: array
+          description: The application keys
+          items:
+            type: string
+          example:
+          - billing-service
+          - inventory-service
+        createdAt:
+          description: The time the insight group was created
+          example: '1706701522000'
+          $ref: '#/components/schemas/UnixMillis'
+    PostInsightGroupParams:
+      type: object
+      required:
+      - name
+      - key
+      - projectKey
+      - environmentKey
+      properties:
+        name:
+          type: string
+          description: The name of the insight group
+          example: Production - All Apps
+        key:
+          type: string
+          description: The key of the insight group
+          example: default-production-all-apps
+        projectKey:
+          type: string
+          description: The projectKey to be associated with the insight group
+          example: default
+        environmentKey:
+          type: string
+          description: The environmentKey to be associated with the insight group
+          example: production
+        applicationKeys:
+          type: array
+          description: The application keys to associate with the insight group. If not provided, the insight group will include data from all applications.
+          items:
+            type: string
+          example:
+          - billing-service
+          - inventory-service
+    Access:
+      type: object
+      required:
+      - denied
+      - allowed
+      properties:
+        denied:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccessDenied'
+        allowed:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccessAllowedRep'
+    InsightGroupCollectionScoreMetadata:
+      type: object
+      required:
+      - period
+      - lastPeriod
+      properties:
+        period:
+          description: The time period for the score calculations
+          $ref: '#/components/schemas/InsightPeriod'
+        lastPeriod:
+          description: The time period for the score calculations in the last period
+          $ref: '#/components/schemas/InsightPeriod'
+    StatusConflictErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: optimistic_locking_error
+        message:
+          type: string
+          description: Description of the error
+          example: Conflict. Optimistic lock error. Try again later.
+    NotFoundErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: not_found
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid resource identifier
+    AccessAllowedReason:
+      type: object
+      required:
+      - effect
+      properties:
+        resources:
+          type: array
+          description: Resource specifier strings
+          items:
+            type: string
+          example:
+          - proj/*:env/*;qa_*:/flag/*
+        notResources:
+          type: array
+          description: Targeted resources are the resources NOT in this list. The <code>resources</code> and <code>notActions</code> fields must be empty to use this field.
+          items:
+            type: string
+        actions:
+          type: array
+          description: Actions to perform on a resource
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+          example:
+          - '*'
+        notActions:
+          type: array
+          description: Targeted actions are the actions NOT in this list. The <code>actions</code> and <code>notResources</code> fields must be empty to use this field.
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+        effect:
+          type: string
+          description: Whether this statement should allow or deny actions on the resources.
+          example: allow
+          enum:
+          - allow
+          - deny
+        role_name:
+          type: string
+    AccessAllowedRep:
+      type: object
+      required:
+      - action
+      - reason
+      properties:
+        action:
+          $ref: '#/components/schemas/ActionIdentifier'
+        reason:
+          $ref: '#/components/schemas/AccessAllowedReason'
+    InsightPeriod:
+      type: object
+      required:
+      - startTime
+      - endTime
+      properties:
+        startTime:
+          description: The start time of the period
+          example: '1706701522000'
+          $ref: '#/components/schemas/UnixMillis'
+        endTime:
+          description: The end time of the period
+          example: '1706701522000'
+          $ref: '#/components/schemas/UnixMillis'
+    ValidationFailedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      - errors
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: invalid_request
+        message:
+          type: string
+          description: Description of the error
+          example: validation failed
+        errors:
+          type: array
+          description: List of validation errors
+          items:
+            $ref: '#/components/schemas/FailureReasonRep'
+    InsightGroupsCountByIndicator:
+      type: object
+      required:
+      - excellent
+      - good
+      - fair
+      - needsAttention
+      - notCalculated
+      - unknown
+      - total
+      properties:
+        excellent:
+          type: integer
+          description: The number of insight groups with an excellent indicator
+          example: 1
+        good:
+          type: integer
+          description: The number of insight groups with a good indicator
+          example: 1
+        fair:
+          type: integer
+          description: The number of insight groups with a fair indicator
+          example: 1
+        needsAttention:
+          type: integer
+          description: The number of insight groups with a needs attention indicator
+          example: 1
+        notCalculated:
+          type: integer
+          description: The number of insight groups with a not calculated indicator
+          example: 1
+        unknown:
+          type: integer
+          description: The number of insight groups with an unknown indicator
+          example: 1
+        total:
+          type: integer
+          description: The total number of insight groups
+          example: 6
+  securitySchemes:
+    ApiKey:
+      type: apiKey
+      in: header
+      name: Authorization

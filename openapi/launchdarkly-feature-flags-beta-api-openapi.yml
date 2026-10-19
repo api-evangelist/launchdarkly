@@ -1,0 +1,384 @@
+openapi: 3.2.0
+info:
+  title: LaunchDarkly REST Feature flags (beta) API
+  description: 'This documentation describes LaunchDarkly''s REST API. To access the complete OpenAPI spec directly, use Get OpenAPI spec. To learn how to use LaunchDarkly using the user interface (UI) instead, read our product documentation. ## Authentication
+
+
+    LaunchDarkly''s REST API uses the HTTPS protocol with a minimum TLS version of 1.2. All REST API resources are authenticated with either personal or service access tokens, or session cookies. Other authentication mechanisms are not supported. You can manage personal access tokens on your **Authorization** page in the LaunchDarkly UI. LaunchDarkly also has SDK keys, mobile keys, and client-side IDs that are used by our server-side SDKs, mobile SDKs, and JavaScript-based SDKs, respectively. **These keys cannot be used to access our REST API**. These keys are environment-specific, and can only perform read-only operations such as fetching feature flag settings. | Auth mechanism | Allowed resources | Use cases |
+
+    | ----------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
+
+    | Personal or service access tokens | Can be customized on a per-token basis | Building scripts, custom integrations, data export. |
+
+    | SDK keys | Can only access read-only resources specific to server-side SDKs. Restricted to a single environment. | Server-side SDKs |
+
+    | Mobile keys | Can only access read-only resources specific to mobile SDKs, and only for flags marked available to mobile keys. Restricted to a single environment. | Mobile SDKs |
+
+    | Client-side ID | Can only access read-only resources specific to JavaScript-based client-side SDKs, and only for flags marked available to client-side. Restricted to a single environment. | Client-side JavaScript |
+
+
+    > #### Keep your access tokens and SDK keys private
+
+    >
+
+    > Access tokens should _never_ be exposed in untrusted contexts. Never put an access token in client-side JavaScript, or embed it in a mobile application. LaunchDarkly has special mobile keys that you can embed in mobile apps. If you accidentally expose an access token or SDK key, you can reset it from your **Authorization** page. >
+
+    > The client-side ID is safe to embed in untrusted contexts. It''s designed for use in client-side JavaScript. ### Authentication using request header
+
+
+    The preferred way to authenticate with the API is by adding an `Authorization` header containing your access token to your requests. The value of the `Authorization` header must be your access token. Manage personal access tokens from the **Authorization** page. ### Authentication using session cookie
+
+
+    For testing purposes, you can make API calls directly from your web browser. If you are logged in to the LaunchDarkly application, the API will use your existing session to authenticate calls. Depending on the permissions granted as part of your role, you may not have permission to perform some API calls. You will receive a `401` response code in that case. > ### Modifying the Origin header causes an error
+
+    >
+
+    > LaunchDarkly validates that the Origin header for any API request authenticated by a session cookie matches the expected Origin header. The expected Origin header is `https://app.launchdarkly.com`. >
+
+    > If the Origin header does not match what''s expected, LaunchDarkly returns an error. This error can prevent the LaunchDarkly app from working correctly. >
+
+    > Any browser extension that intentionally changes the Origin header can cause this problem. For example, Cross-Origin Resource Sharing (CORS) extensions used during development can modify the Origin header and cause the app to fail. >
+
+    > To prevent this error, do not modify your Origin header. >
+
+    > LaunchDarkly does not require origin matching when authenticating with an access token, so this issue does not affect normal API usage.'
+  contact:
+    name: LaunchDarkly Technical Support Team
+    url: https://support.launchdarkly.com
+    email: support@launchdarkly.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+  version: '2.0'
+servers:
+- url: https://app.launchdarkly.com
+  description: ' Default'
+- url: https://app.launchdarkly.us
+  description: ' Federal'
+security:
+- ApiKey:
+  - read
+  - write
+tags:
+- name: Feature flags (beta)
+  description: '> ### This feature is in beta
+
+    >
+
+    > To use this feature, pass in a header including the `LD-API-Version` key with value set to `beta`. Use this header with each call. To learn more, read Beta resources.
+
+    >
+
+    > Resources that are in beta are still undergoing testing and development. They may change without notice, including becoming backwards incompatible.'
+paths:
+  /api/v2/flags/{projectKey}/{environmentKey}/{featureFlagKey}/dependent-flags:
+    get:
+      responses:
+        '200':
+          description: Dependent flags collection response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DependentFlagsByEnvironment'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Feature flags (beta)
+      summary: List dependent feature flags by environment
+      description: '> ### Flag prerequisites is an Enterprise feature
+
+        >
+
+        > Flag prerequisites is available to customers on an Enterprise plan. To learn more, read about our pricing. To upgrade your plan, contact Sales.
+
+
+        List dependent flags across all environments for the flag specified in the path parameters. A dependent flag is a flag that uses another flag as a prerequisite. To learn more, read Flag prerequisites.'
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: environmentKey
+        in: path
+        description: The environment key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The environment key
+      - name: featureFlagKey
+        in: path
+        description: The feature flag key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The feature flag key
+      operationId: getDependentFlagsByEnv
+  /api/v2/flags/{projectKey}/{featureFlagKey}/dependent-flags:
+    get:
+      responses:
+        '200':
+          description: Multi environment dependent flags collection response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MultiEnvironmentDependentFlags'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Feature flags (beta)
+      summary: List dependent feature flags
+      description: '> ### Flag prerequisites is an Enterprise feature
+
+        >
+
+        > Flag prerequisites is available to customers on an Enterprise plan. To learn more, read about our pricing. To upgrade your plan, contact Sales.
+
+
+        List dependent flags across all environments for the flag specified in the path parameters. A dependent flag is a flag that uses another flag as a prerequisite. To learn more, read Flag prerequisites.'
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: featureFlagKey
+        in: path
+        description: The feature flag key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The feature flag key
+      operationId: getDependentFlags
+components:
+  schemas:
+    DependentFlagEnvironment:
+      type: object
+      required:
+      - key
+      - _links
+      - _site
+      properties:
+        name:
+          type: string
+          description: The environment name
+          example: Example environment
+        key:
+          type: string
+          description: The environment key
+          example: environment-key-123abc
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+        _site:
+          description: A link to access the dependent flag in this environment in the LaunchDarkly UI. The href is an opaque URL; do not parse or rely on its structure.
+          example: '{ "href": "/example-project/example-environment/features/example-dependent-flag", "type": "text/html" }'
+          $ref: '#/components/schemas/Link'
+    Link:
+      type: object
+      properties:
+        href:
+          type: string
+        type:
+          type: string
+    MultiEnvironmentDependentFlags:
+      type: object
+      required:
+      - items
+      - _links
+      - _site
+      properties:
+        items:
+          type: array
+          description: An array of dependent flags with their environment information
+          items:
+            $ref: '#/components/schemas/MultiEnvironmentDependentFlag'
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+        _site:
+          description: A link to access the prerequisite flag in the LaunchDarkly UI. The href is an opaque URL; do not parse or rely on its structure.
+          example: '{ "href": "/example-project/~/features/example-prereq-flag", "type": "text/html" }'
+          $ref: '#/components/schemas/Link'
+    MultiEnvironmentDependentFlag:
+      type: object
+      required:
+      - key
+      - environments
+      properties:
+        name:
+          type: string
+          description: The flag name
+          example: Example dependent flag
+        key:
+          type: string
+          description: The flag key
+          example: dependent-flag-key-123abc
+        environments:
+          type: array
+          description: A list of environments in which the dependent flag appears
+          items:
+            $ref: '#/components/schemas/DependentFlagEnvironment'
+    DependentFlag:
+      type: object
+      required:
+      - key
+      - _links
+      - _site
+      properties:
+        name:
+          type: string
+          description: The flag name
+          example: Example dependent flag
+        key:
+          type: string
+          description: The flag key
+          example: dependent-flag-key-123abc
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+        _site:
+          description: A link to access the dependent flag in the LaunchDarkly UI. The href is an opaque URL; do not parse or rely on its structure.
+          example: '{ "href": "/example-project/example-environment/features/example-dependent-flag", "type": "text/html" }'
+          $ref: '#/components/schemas/Link'
+    DependentFlagsByEnvironment:
+      type: object
+      required:
+      - items
+      - _links
+      - _site
+      properties:
+        items:
+          type: array
+          description: A list of dependent flags, which are flags that use the requested flag as a prerequisite
+          items:
+            $ref: '#/components/schemas/DependentFlag'
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+        _site:
+          description: A link to access the prerequisite flag in the LaunchDarkly UI. The href is an opaque URL; do not parse or rely on its structure.
+          example: '{ "href": "/example-project/~/features/example-prereq-flag", "type": "text/html" }'
+          $ref: '#/components/schemas/Link'
+    NotFoundErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: not_found
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid resource identifier
+    RateLimitedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: rate_limited
+        message:
+          type: string
+          description: Description of the error
+          example: You've exceeded the API rate limit. Try again later.
+    UnauthorizedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: unauthorized
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid access token
+    ForbiddenErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: forbidden
+        message:
+          type: string
+          description: Description of the error
+          example: Forbidden. Access to the requested resource was denied.
+  securitySchemes:
+    ApiKey:
+      type: apiKey
+      in: header
+      name: Authorization

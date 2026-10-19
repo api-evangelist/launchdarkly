@@ -1,0 +1,603 @@
+openapi: 3.2.0
+info:
+  title: LaunchDarkly REST Flag links (beta) API
+  description: 'This documentation describes LaunchDarkly''s REST API. To access the complete OpenAPI spec directly, use Get OpenAPI spec. To learn how to use LaunchDarkly using the user interface (UI) instead, read our product documentation. ## Authentication
+
+
+    LaunchDarkly''s REST API uses the HTTPS protocol with a minimum TLS version of 1.2. All REST API resources are authenticated with either personal or service access tokens, or session cookies. Other authentication mechanisms are not supported. You can manage personal access tokens on your **Authorization** page in the LaunchDarkly UI. LaunchDarkly also has SDK keys, mobile keys, and client-side IDs that are used by our server-side SDKs, mobile SDKs, and JavaScript-based SDKs, respectively. **These keys cannot be used to access our REST API**. These keys are environment-specific, and can only perform read-only operations such as fetching feature flag settings. | Auth mechanism | Allowed resources | Use cases |
+
+    | ----------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
+
+    | Personal or service access tokens | Can be customized on a per-token basis | Building scripts, custom integrations, data export. |
+
+    | SDK keys | Can only access read-only resources specific to server-side SDKs. Restricted to a single environment. | Server-side SDKs |
+
+    | Mobile keys | Can only access read-only resources specific to mobile SDKs, and only for flags marked available to mobile keys. Restricted to a single environment. | Mobile SDKs |
+
+    | Client-side ID | Can only access read-only resources specific to JavaScript-based client-side SDKs, and only for flags marked available to client-side. Restricted to a single environment. | Client-side JavaScript |
+
+
+    > #### Keep your access tokens and SDK keys private
+
+    >
+
+    > Access tokens should _never_ be exposed in untrusted contexts. Never put an access token in client-side JavaScript, or embed it in a mobile application. LaunchDarkly has special mobile keys that you can embed in mobile apps. If you accidentally expose an access token or SDK key, you can reset it from your **Authorization** page. >
+
+    > The client-side ID is safe to embed in untrusted contexts. It''s designed for use in client-side JavaScript. ### Authentication using request header
+
+
+    The preferred way to authenticate with the API is by adding an `Authorization` header containing your access token to your requests. The value of the `Authorization` header must be your access token. Manage personal access tokens from the **Authorization** page. ### Authentication using session cookie
+
+
+    For testing purposes, you can make API calls directly from your web browser. If you are logged in to the LaunchDarkly application, the API will use your existing session to authenticate calls. Depending on the permissions granted as part of your role, you may not have permission to perform some API calls. You will receive a `401` response code in that case. > ### Modifying the Origin header causes an error
+
+    >
+
+    > LaunchDarkly validates that the Origin header for any API request authenticated by a session cookie matches the expected Origin header. The expected Origin header is `https://app.launchdarkly.com`. >
+
+    > If the Origin header does not match what''s expected, LaunchDarkly returns an error. This error can prevent the LaunchDarkly app from working correctly. >
+
+    > Any browser extension that intentionally changes the Origin header can cause this problem. For example, Cross-Origin Resource Sharing (CORS) extensions used during development can modify the Origin header and cause the app to fail. >
+
+    > To prevent this error, do not modify your Origin header. >
+
+    > LaunchDarkly does not require origin matching when authenticating with an access token, so this issue does not affect normal API usage.'
+  contact:
+    name: LaunchDarkly Technical Support Team
+    url: https://support.launchdarkly.com
+    email: support@launchdarkly.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+  version: '2.0'
+servers:
+- url: https://app.launchdarkly.com
+  description: ' Default'
+- url: https://app.launchdarkly.us
+  description: ' Federal'
+security:
+- ApiKey:
+  - read
+  - write
+tags:
+- name: Flag links (beta)
+  description: '> ### This feature is in beta
+
+    >
+
+    > To use this feature, pass in a header including the `LD-API-Version` key with value set to `beta`. Use this header with each call. To learn more, read Beta resources.
+
+    >
+
+    > Resources that are in beta are still undergoing testing and development. They may change without notice, including becoming backwards incompatible.
+
+
+    Flag links let you view external mentions of flags from other tools and services. Links to external conversations and references to your flags allow you to collaborate more easily and quickly review relevant flag contexts. To learn more, read Flag links.
+
+
+    You can create custom flag links by associating an external URL with a feature flag. After you create a flag link, it applies across all your environments. You should use caution when you delete a flag link, because it will be deleted from all your environments.
+
+
+    With the flag links API, you can view, create, update, and delete links to flags.
+
+
+    Several of the endpoints in the flag links API require a flag link ID. The flag link ID is returned as part of the Create flag link and List flag links responses. It is the `_id` field, or the `_id` field of each element in the `items` array.'
+paths:
+  /api/v2/flag-links/projects/{projectKey}/flags/{featureFlagKey}:
+    get:
+      responses:
+        '200':
+          description: Flag link collection response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FlagLinkCollectionRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Flag links (beta)
+      summary: List flag links
+      description: Get a list of all flag links.
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: featureFlagKey
+        in: path
+        description: The feature flag key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The feature flag key
+      operationId: getFlagLinks
+    post:
+      responses:
+        '201':
+          description: Flag link response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FlagLinkRep'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Flag links (beta)
+      summary: Create flag link
+      description: Create a new flag link. Flag links let you reference external resources and associate them with your flags.
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: featureFlagKey
+        in: path
+        description: The feature flag key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The feature flag key
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/flagLinkPost'
+            example:
+              deepLink: https://example.com/archives/123123123
+              description: Example link description
+              key: flag-link-key-123abc
+              title: Example link title
+        required: true
+      operationId: createFlagLink
+  /api/v2/flag-links/projects/{projectKey}/flags/{featureFlagKey}/{id}:
+    patch:
+      responses:
+        '200':
+          description: Flag link response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FlagLinkRep'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '409':
+          description: Status conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusConflictErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Flag links (beta)
+      summary: Update flag link
+      description: Update a flag link. Updating a flag link uses a JSON patch representation of the desired changes. To learn more, read Updates.
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: featureFlagKey
+        in: path
+        description: The feature flag key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The feature flag key
+      - name: id
+        in: path
+        description: The flag link ID
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The flag link ID
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JSONPatch'
+            example:
+            - op: replace
+              path: /title
+              value: Updated flag link title
+        required: true
+      operationId: updateFlagLink
+    delete:
+      responses:
+        '204':
+          description: Action succeeded
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Flag links (beta)
+      summary: Delete flag link
+      description: Delete a flag link by ID or key.
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: featureFlagKey
+        in: path
+        description: The feature flag key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The feature flag key
+      - name: id
+        in: path
+        description: The flag link ID or Key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The flag link ID or Key
+      operationId: deleteFlagLink
+components:
+  schemas:
+    FlagLinkMember:
+      type: object
+      required:
+      - _links
+      - _id
+      properties:
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+        _id:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+    flagLinkPost:
+      type: object
+      properties:
+        key:
+          type: string
+          description: The flag link key
+          example: flag-link-key-123abc
+        integrationKey:
+          type: string
+          description: The integration key for an integration whose <code>manifest.json</code> includes the <code>flagLink</code> capability, if this is a flag link for an existing integration. Do not include for URL flag links.
+        timestamp:
+          description: The time, in Unix milliseconds, to mark this flag link as associated with the external URL. If omitted, defaults to the creation time of this flag link.
+          $ref: '#/components/schemas/UnixMillis'
+        deepLink:
+          type: string
+          description: The URL for the external resource you are linking the flag to
+          example: https://example.com/archives/123123123
+        title:
+          type: string
+          description: The title of the flag link
+          example: Example link title
+        description:
+          type: string
+          description: The description of the flag link
+          example: Example link description
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+          description: The metadata required by this integration in order to create a flag link, if this is a flag link for an existing integration. Defined in the integration's <code>manifest.json</code> file under <code>flagLink</code>.
+    TimestampRep:
+      type: object
+      properties:
+        milliseconds:
+          $ref: '#/components/schemas/UnixMillis'
+        seconds:
+          type: integer
+          format: int64
+        rfc3339:
+          type: string
+        simple:
+          type: string
+    JSONPatch:
+      type: array
+      items:
+        $ref: '#/components/schemas/PatchOperation'
+    Link:
+      type: object
+      properties:
+        href:
+          type: string
+        type:
+          type: string
+    FlagLinkRep:
+      type: object
+      required:
+      - _links
+      - _id
+      - _deepLink
+      - _timestamp
+      - _createdAt
+      properties:
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+        _key:
+          type: string
+          description: The flag link key
+          example: flag-link-key-123abc
+        _integrationKey:
+          type: string
+          description: The integration key for an integration whose <code>manifest.json</code> includes the <code>flagLink</code> capability, if this is a flag link for an existing integration
+        _id:
+          type: string
+          description: The ID of this flag link
+          example: 1234a56b7c89d012345e678f
+        _deepLink:
+          type: string
+          description: The URL for the external resource the flag is linked to
+          example: https://example.com/archives/123123123
+        _timestamp:
+          description: The time to mark this flag link as associated with the external URL. Defaults to the creation time of the flag link, but can be set to another time during creation.
+          example: '{"milliseconds": 1655342199935, "seconds": 1655342199, "rfc3339": "2022-06-16T01:16:39Z", "simple": "2022-06-16 01:16:39"}'
+          $ref: '#/components/schemas/TimestampRep'
+        title:
+          type: string
+          description: The title of the flag link
+          example: Example link title
+        description:
+          type: string
+          description: The description of the flag link
+          example: Example link description
+        _metadata:
+          type: object
+          additionalProperties:
+            type: string
+          description: The metadata required by this integration in order to create a flag link, if this is a flag link for an existing integration. Defined in the integration's <code>manifest.json</code> file under <code>flagLink</code>.
+        _createdAt:
+          description: Timestamp of when the flag link was created
+          example: '1654104600000'
+          $ref: '#/components/schemas/UnixMillis'
+        _member:
+          description: Details on the member associated with this flag link
+          $ref: '#/components/schemas/FlagLinkMember'
+    FlagLinkCollectionRep:
+      type: object
+      required:
+      - items
+      - _links
+      properties:
+        items:
+          type: array
+          description: An array of flag links
+          items:
+            $ref: '#/components/schemas/FlagLinkRep'
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+    InvalidRequestErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: invalid_request
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid request body
+    StatusConflictErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: optimistic_locking_error
+        message:
+          type: string
+          description: Description of the error
+          example: Conflict. Optimistic lock error. Try again later.
+    NotFoundErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: not_found
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid resource identifier
+    RateLimitedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: rate_limited
+        message:
+          type: string
+          description: Description of the error
+          example: You've exceeded the API rate limit. Try again later.
+    UnauthorizedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: unauthorized
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid access token
+    UnixMillis:
+      type: integer
+      format: int64
+    PatchOperation:
+      type: object
+      required:
+      - op
+      - path
+      properties:
+        op:
+          type: string
+          description: The type of operation to perform
+          example: replace
+        path:
+          type: string
+          description: A JSON Pointer string specifying the part of the document to operate on
+          example: /exampleField
+        value:
+          description: A JSON value used in "add", "replace", and "test" operations
+          example: new example value
+    ForbiddenErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: forbidden
+        message:
+          type: string
+          description: Description of the error
+          example: Forbidden. Access to the requested resource was denied.
+  securitySchemes:
+    ApiKey:
+      type: apiKey
+      in: header
+      name: Authorization

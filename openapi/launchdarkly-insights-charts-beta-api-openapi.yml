@@ -1,0 +1,869 @@
+openapi: 3.2.0
+info:
+  title: LaunchDarkly REST Insights charts (beta) API
+  description: 'This documentation describes LaunchDarkly''s REST API. To access the complete OpenAPI spec directly, use Get OpenAPI spec. To learn how to use LaunchDarkly using the user interface (UI) instead, read our product documentation. ## Authentication
+
+
+    LaunchDarkly''s REST API uses the HTTPS protocol with a minimum TLS version of 1.2. All REST API resources are authenticated with either personal or service access tokens, or session cookies. Other authentication mechanisms are not supported. You can manage personal access tokens on your **Authorization** page in the LaunchDarkly UI. LaunchDarkly also has SDK keys, mobile keys, and client-side IDs that are used by our server-side SDKs, mobile SDKs, and JavaScript-based SDKs, respectively. **These keys cannot be used to access our REST API**. These keys are environment-specific, and can only perform read-only operations such as fetching feature flag settings. | Auth mechanism | Allowed resources | Use cases |
+
+    | ----------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
+
+    | Personal or service access tokens | Can be customized on a per-token basis | Building scripts, custom integrations, data export. |
+
+    | SDK keys | Can only access read-only resources specific to server-side SDKs. Restricted to a single environment. | Server-side SDKs |
+
+    | Mobile keys | Can only access read-only resources specific to mobile SDKs, and only for flags marked available to mobile keys. Restricted to a single environment. | Mobile SDKs |
+
+    | Client-side ID | Can only access read-only resources specific to JavaScript-based client-side SDKs, and only for flags marked available to client-side. Restricted to a single environment. | Client-side JavaScript |
+
+
+    > #### Keep your access tokens and SDK keys private
+
+    >
+
+    > Access tokens should _never_ be exposed in untrusted contexts. Never put an access token in client-side JavaScript, or embed it in a mobile application. LaunchDarkly has special mobile keys that you can embed in mobile apps. If you accidentally expose an access token or SDK key, you can reset it from your **Authorization** page. >
+
+    > The client-side ID is safe to embed in untrusted contexts. It''s designed for use in client-side JavaScript. ### Authentication using request header
+
+
+    The preferred way to authenticate with the API is by adding an `Authorization` header containing your access token to your requests. The value of the `Authorization` header must be your access token. Manage personal access tokens from the **Authorization** page. ### Authentication using session cookie
+
+
+    For testing purposes, you can make API calls directly from your web browser. If you are logged in to the LaunchDarkly application, the API will use your existing session to authenticate calls. Depending on the permissions granted as part of your role, you may not have permission to perform some API calls. You will receive a `401` response code in that case. > ### Modifying the Origin header causes an error
+
+    >
+
+    > LaunchDarkly validates that the Origin header for any API request authenticated by a session cookie matches the expected Origin header. The expected Origin header is `https://app.launchdarkly.com`. >
+
+    > If the Origin header does not match what''s expected, LaunchDarkly returns an error. This error can prevent the LaunchDarkly app from working correctly. >
+
+    > Any browser extension that intentionally changes the Origin header can cause this problem. For example, Cross-Origin Resource Sharing (CORS) extensions used during development can modify the Origin header and cause the app to fail. >
+
+    > To prevent this error, do not modify your Origin header. >
+
+    > LaunchDarkly does not require origin matching when authenticating with an access token, so this issue does not affect normal API usage.'
+  contact:
+    name: LaunchDarkly Technical Support Team
+    url: https://support.launchdarkly.com
+    email: support@launchdarkly.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+  version: '2.0'
+servers:
+- url: https://app.launchdarkly.com
+  description: ' Default'
+- url: https://app.launchdarkly.us
+  description: ' Federal'
+security:
+- ApiKey:
+  - read
+  - write
+tags:
+- name: Insights charts (beta)
+  description: '> ### This feature is in beta
+
+    >
+
+    > To use this feature, pass in a header including the `LD-API-Version` key with value set to `beta`. Use this header with each call. To learn more, read Beta resources.
+
+    >
+
+    > Resources that are in beta are still undergoing testing and development. They may change without notice, including becoming backwards incompatible.
+
+
+    The charts API provides access to the data used in engineering insights project metrics. To learn more, read Project metrics.'
+paths:
+  /api/v2/engineering-insights/charts/deployments/frequency:
+    get:
+      responses:
+        '200':
+          description: Chart response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InsightsChart'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationFailedErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Insights charts (beta)
+      summary: Get deployment frequency chart data
+      description: 'Get deployment frequency chart data. Engineering insights displays deployment frequency data in the deployment frequency metric view.
+
+
+        ### Expanding the chart response
+
+
+        LaunchDarkly supports expanding the chart response to include additional fields.
+
+
+        To expand the response, append the `expand` query parameter and include the following:
+
+
+        * `metrics` includes details on the metrics related to deployment frequency
+
+
+        For example, use `?expand=metrics` to include the `metrics` field in the response. By default, this field is **not** included in the response.'
+      parameters:
+      - name: projectKey
+        in: query
+        description: The project key
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: environmentKey
+        in: query
+        description: The environment key
+        schema:
+          type: string
+          format: string
+          description: The environment key
+      - name: applicationKey
+        in: query
+        description: Comma separated list of application keys
+        schema:
+          type: string
+          format: string
+          description: Comma separated list of application keys
+      - name: from
+        in: query
+        description: Unix timestamp in milliseconds. Default value is 7 days ago.
+        schema:
+          type: string
+          format: date-time
+      - name: to
+        in: query
+        description: Unix timestamp in milliseconds. Default value is now.
+        schema:
+          type: string
+          format: date-time
+      - name: bucketType
+        in: query
+        description: 'Specify type of bucket. Options: `rolling`, `hour`, `day`. Default: `rolling`.'
+        schema:
+          type: string
+          format: string
+          description: 'Specify type of bucket. Options: `rolling`, `hour`, `day`. Default: `rolling`.'
+      - name: bucketMs
+        in: query
+        description: Duration of intervals for x-axis in milliseconds. Default value is one day (`86400000` milliseconds).
+        schema:
+          type: integer
+          format: int64
+          description: Duration of intervals for x-axis in milliseconds. Default value is one day (`86400000` milliseconds).
+      - name: groupBy
+        in: query
+        description: 'Options: `application`, `kind`'
+        schema:
+          type: string
+          format: string
+          description: 'Options: `application`, `kind`'
+      - name: expand
+        in: query
+        description: 'Options: `metrics`'
+        schema:
+          type: string
+          format: string
+          description: 'Options: `metrics`'
+      operationId: getDeploymentFrequencyChart
+  /api/v2/engineering-insights/charts/flags/stale:
+    get:
+      responses:
+        '200':
+          description: Chart response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InsightsChart'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationFailedErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Insights charts (beta)
+      summary: Get stale flags chart data
+      description: 'Get stale flags chart data. Engineering insights displays stale flags data in the flag health metric view.
+
+
+        ### Expanding the chart response
+
+
+        LaunchDarkly supports expanding the chart response to include additional fields.
+
+
+        To expand the response, append the `expand` query parameter and include the following:
+
+
+        * `metrics` includes details on the metrics related to stale flags
+
+
+        For example, use `?expand=metrics` to include the `metrics` field in the response. By default, this field is **not** included in the response.'
+      parameters:
+      - name: projectKey
+        in: query
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: environmentKey
+        in: query
+        description: The environment key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The environment key
+      - name: applicationKey
+        in: query
+        description: Comma separated list of application keys
+        schema:
+          type: string
+          format: string
+          description: Comma separated list of application keys
+      - name: groupBy
+        in: query
+        description: 'Property to group results by. Options: `maintainer`'
+        schema:
+          type: string
+          format: string
+          description: 'Property to group results by. Options: `maintainer`'
+      - name: maintainerId
+        in: query
+        description: Comma-separated list of individual maintainers to filter results.
+        schema:
+          type: string
+          format: string
+          description: Comma-separated list of individual maintainers to filter results.
+      - name: maintainerTeamKey
+        in: query
+        description: Comma-separated list of team maintainer keys to filter results.
+        schema:
+          type: string
+          format: string
+          description: Comma-separated list of team maintainer keys to filter results.
+      - name: expand
+        in: query
+        description: 'Options: `metrics`'
+        schema:
+          type: string
+          format: string
+          description: 'Options: `metrics`'
+      operationId: getStaleFlagsChart
+  /api/v2/engineering-insights/charts/flags/status:
+    get:
+      responses:
+        '200':
+          description: Chart response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InsightsChart'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationFailedErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Insights charts (beta)
+      summary: Get flag status chart data
+      description: Get flag status chart data. To learn more, read Flag statuses.
+      parameters:
+      - name: projectKey
+        in: query
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: environmentKey
+        in: query
+        description: The environment key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The environment key
+      - name: applicationKey
+        in: query
+        description: Comma separated list of application keys
+        schema:
+          type: string
+          format: string
+          description: Comma separated list of application keys
+      operationId: getFlagStatusChart
+  /api/v2/engineering-insights/charts/lead-time:
+    get:
+      responses:
+        '200':
+          description: Chart response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InsightsChart'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationFailedErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Insights charts (beta)
+      summary: Get lead time chart data
+      description: Get lead time chart data. The engineering insights UI displays lead time data in the lead time metric view.
+      parameters:
+      - name: projectKey
+        in: query
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: environmentKey
+        in: query
+        description: The environment key
+        schema:
+          type: string
+          format: string
+          description: The environment key
+      - name: applicationKey
+        in: query
+        description: Comma separated list of application keys
+        schema:
+          type: string
+          format: string
+          description: Comma separated list of application keys
+      - name: from
+        in: query
+        description: Unix timestamp in milliseconds. Default value is 7 days ago.
+        schema:
+          type: integer
+          format: int64
+          description: Unix timestamp in milliseconds. Default value is 7 days ago.
+      - name: to
+        in: query
+        description: Unix timestamp in milliseconds. Default value is now.
+        schema:
+          type: integer
+          format: int64
+          description: Unix timestamp in milliseconds. Default value is now.
+      - name: bucketType
+        in: query
+        description: 'Specify type of bucket. Options: `rolling`, `hour`, `day`. Default: `rolling`.'
+        schema:
+          type: string
+          format: string
+          description: 'Specify type of bucket. Options: `rolling`, `hour`, `day`. Default: `rolling`.'
+      - name: bucketMs
+        in: query
+        description: Duration of intervals for x-axis in milliseconds. Default value is one day (`86400000` milliseconds).
+        schema:
+          type: integer
+          format: int64
+          description: Duration of intervals for x-axis in milliseconds. Default value is one day (`86400000` milliseconds).
+      - name: groupBy
+        in: query
+        description: 'Options: `application`, `stage`. Default: `stage`.'
+        schema:
+          type: string
+          format: string
+          description: 'Options: `application`, `stage`. Default: `stage`.'
+      - name: expand
+        in: query
+        description: 'Options: `metrics`, `percentiles`.'
+        schema:
+          type: string
+          format: string
+          description: 'Options: `metrics`, `percentiles`.'
+      operationId: getLeadTimeChart
+  /api/v2/engineering-insights/charts/releases/frequency:
+    get:
+      responses:
+        '200':
+          description: Chart response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InsightsChart'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationFailedErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Insights charts (beta)
+      summary: Get release frequency chart data
+      description: Get release frequency chart data. Engineering insights displays release frequency data in the release frequency metric view.
+      parameters:
+      - name: projectKey
+        in: query
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: environmentKey
+        in: query
+        description: The environment key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The environment key
+      - name: applicationKey
+        in: query
+        description: Comma separated list of application keys
+        schema:
+          type: string
+          format: string
+          description: Comma separated list of application keys
+      - name: hasExperiments
+        in: query
+        description: Filter events to those associated with an experiment (`true`) or without an experiment (`false`)
+        schema:
+          type: boolean
+          format: boolean
+          description: Filter events to those associated with an experiment (`true`) or without an experiment (`false`)
+      - name: global
+        in: query
+        description: 'Filter to include or exclude global events. Default value is `include`. Options: `include`, `exclude`'
+        schema:
+          type: string
+          format: string
+          description: 'Filter to include or exclude global events. Default value is `include`. Options: `include`, `exclude`'
+      - name: groupBy
+        in: query
+        description: 'Property to group results by. Options: `impact`'
+        schema:
+          type: string
+          format: string
+          description: 'Property to group results by. Options: `impact`'
+      - name: from
+        in: query
+        description: Unix timestamp in milliseconds. Default value is 7 days ago.
+        schema:
+          type: string
+          format: date-time
+      - name: to
+        in: query
+        description: Unix timestamp in milliseconds. Default value is now.
+        schema:
+          type: string
+          format: date-time
+      - name: bucketType
+        in: query
+        description: 'Specify type of bucket. Options: `rolling`, `hour`, `day`. Default: `rolling`.'
+        schema:
+          type: string
+          format: string
+          description: 'Specify type of bucket. Options: `rolling`, `hour`, `day`. Default: `rolling`.'
+      - name: bucketMs
+        in: query
+        description: Duration of intervals for x-axis in milliseconds. Default value is one day (`86400000` milliseconds).
+        schema:
+          type: integer
+          format: int64
+          description: Duration of intervals for x-axis in milliseconds. Default value is one day (`86400000` milliseconds).
+      - name: expand
+        in: query
+        description: 'Options: `metrics`'
+        schema:
+          type: string
+          format: string
+          description: 'Options: `metrics`'
+      operationId: getReleaseFrequencyChart
+components:
+  schemas:
+    InsightsMetricTierDefinition:
+      type: object
+      required:
+      - indicator
+      - description
+      properties:
+        indicator:
+          type: string
+          description: Metric indicator tier
+          example: excellent
+        description:
+          type: string
+          description: Metric indicator description
+          example: at least 1 per day
+    FailureReasonRep:
+      type: object
+      required:
+      - attribute
+      - reason
+      properties:
+        attribute:
+          type: string
+          description: The attribute that failed validation
+          example: projectKey
+        reason:
+          type: string
+          description: The reason the attribute failed validation
+          example: must be present
+    InsightsChartSeriesMetadata:
+      type: object
+      required:
+      - name
+      properties:
+        name:
+          type: string
+          description: Name of the series
+        count:
+          type: integer
+          format: int64
+          description: Aggregate count of the series values
+        bounds:
+          type: array
+          description: Bounds for the series data
+          items:
+            $ref: '#/components/schemas/InsightsChartBounds'
+    InsightsChartSeriesMetadataAxis:
+      type: object
+      required:
+      - unit
+      properties:
+        unit:
+          type: string
+          description: Unit of the axis
+          example: count
+    InsightsChartMetric:
+      type: object
+      required:
+      - indicator
+      - value
+      - unit
+      - modifier
+      - tiers
+      properties:
+        indicator:
+          type: string
+          description: Metric indicator tier
+          example: excellent
+        value:
+          type: number
+          description: Metric value
+          example: 5
+        unit:
+          type: string
+          description: Metric unit
+          example: count
+        modifier:
+          type: string
+          description: Metric modifier
+          example: per day
+        tiers:
+          type: array
+          description: Metric indicator tiers
+          items:
+            $ref: '#/components/schemas/InsightsMetricTierDefinition'
+    InsightsChartMetadata:
+      type: object
+      required:
+      - summary
+      - xAxis
+      - yAxis
+      properties:
+        summary:
+          description: Metadata values
+          $ref: '#/components/schemas/InsightsChartMetadataCustomValues'
+        name:
+          type: string
+          description: Name of the chart
+          example: deploymentFrequency
+        metrics:
+          description: Metrics for the given chart data, included when expanded
+          $ref: '#/components/schemas/InsightsChartMetrics'
+        xAxis:
+          description: X-axis metadata
+          example: timestamp
+          $ref: '#/components/schemas/InsightsChartSeriesMetadataAxis'
+        yAxis:
+          description: Y-axis metadata
+          example: count
+          $ref: '#/components/schemas/InsightsChartSeriesMetadataAxis'
+    InsightsChartSeries:
+      type: object
+      required:
+      - metadata
+      - data
+      properties:
+        metadata:
+          description: Metadata for the series
+          $ref: '#/components/schemas/InsightsChartSeriesMetadata'
+        data:
+          type: array
+          description: Data points for the series
+          items:
+            $ref: '#/components/schemas/InsightsChartSeriesDataPoint'
+    NotFoundErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: not_found
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid resource identifier
+    InsightsChartSeriesDataPoint:
+      type: object
+      required:
+      - x
+      - y
+      properties:
+        x:
+          type: integer
+          format: int64
+          description: X-axis value
+          example: 1617225600000
+        y:
+          type: integer
+          format: int64
+          description: Y-axis value
+          example: 100
+        values:
+          type: object
+          additionalProperties: {}
+          description: Additional values for the data point
+    InsightsChart:
+      type: object
+      required:
+      - metadata
+      - series
+      properties:
+        metadata:
+          description: Metadata for the chart
+          $ref: '#/components/schemas/InsightsChartMetadata'
+        series:
+          type: array
+          description: Series data for the chart
+          items:
+            $ref: '#/components/schemas/InsightsChartSeries'
+    ValidationFailedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      - errors
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: invalid_request
+        message:
+          type: string
+          description: Description of the error
+          example: validation failed
+        errors:
+          type: array
+          description: List of validation errors
+          items:
+            $ref: '#/components/schemas/FailureReasonRep'
+    RateLimitedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: rate_limited
+        message:
+          type: string
+          description: Description of the error
+          example: You've exceeded the API rate limit. Try again later.
+    InsightsChartMetrics:
+      type: object
+      additionalProperties:
+        $ref: '#/components/schemas/InsightsChartMetric'
+    InsightsChartBounds:
+      type: object
+      required:
+      - name
+      - value
+      properties:
+        name:
+          type: string
+          description: Name of the bound
+          example: equal
+        value:
+          type: integer
+          format: int64
+          description: Value of the bound
+          example: 100
+    UnauthorizedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: unauthorized
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid access token
+    ForbiddenErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: forbidden
+        message:
+          type: string
+          description: Description of the error
+          example: Forbidden. Access to the requested resource was denied.
+    InsightsChartMetadataCustomValues:
+      type: object
+      additionalProperties: {}
+  securitySchemes:
+    ApiKey:
+      type: apiKey
+      in: header
+      name: Authorization

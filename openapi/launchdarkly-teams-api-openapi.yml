@@ -1,24 +1,1048 @@
 openapi: 3.2.0
 info:
-  title: LaunchDarkly REST Teams API
-  description: The LaunchDarkly REST API provides programmatic access to the full LaunchDarkly feature management platform.
-  version: '20240415'
-  contact:
-    name: LaunchDarkly Support
-    url: https://support.launchdarkly.com
-  termsOfService: https://launchdarkly.com/policies/terms-of-service
+  title: Launchdarkly Teams API
   license:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
+  version: '1.0'
+  description: 'Operations tagged Teams across 2 of this provider''s published API definitions: launchdarkly-openapi.json, launchdarkly-rest-api-openapi.yml. Each path carries the servers of the definition it was published in.'
 servers:
+- url: https://app.launchdarkly.com
+  description: ' Default'
+- url: https://app.launchdarkly.us
+  description: ' Federal'
 - url: https://app.launchdarkly.com/api/v2
   description: LaunchDarkly Production API
-security:
-- bearerAuth: []
 tags:
 - name: Teams
-  description: Organize account members into teams for collaborative flag management and permissions.
+  description: '> ### Teams is an Enterprise feature
+
+    >
+
+    > Teams is available to customers on an Enterprise plan. To learn more, read about our pricing. To upgrade your plan, contact Sales.
+
+
+    A team is a group of members in your LaunchDarkly account. Members of the team have access to various resources in LaunchDarkly, such as projects or flags, based on the role or roles you assign to the team. To learn more, read Teams.
+
+
+    The Teams API allows you to create, read, update, and delete a team.
+
+
+    Several of the endpoints in the Teams API require one or more member IDs. The member ID is returned as part of the List account members response. It is the `_id` field of each element in the `items` array.'
 paths:
+  /api/v2/teams:
+    get:
+      responses:
+        '200':
+          description: Teams collection response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Teams'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '405':
+          description: Method not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MethodNotAllowedErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Teams
+      summary: List teams
+      description: 'Return a list of teams.
+
+
+        By default, this returns the first 20 teams. Page through this list with the `limit` parameter and by following the `first`, `prev`, `next`, and `last` links in the `_links` field that returns. If those links do not appear, the pages they refer to don''t exist. For example, the `first` and `prev` links will be missing from the response on the first page, because there is no previous page and you cannot return to the first page when you are already on the first page.
+
+
+        ### Filtering teams
+
+
+        LaunchDarkly supports the following fields for filters:
+
+
+        - `query` is a string that matches against the teams'' names and keys. It is not case-sensitive.
+
+        - A request with `query:abc` returns teams with the string `abc` in their name or key.
+
+        - `nomembers` is a boolean that filters the list of teams who have 0 members
+
+        - A request with `nomembers:true` returns teams that have 0 members
+
+        - A request with `nomembers:false` returns teams that have 1 or more members
+
+
+        ### Sorting teams
+
+
+        LaunchDarkly supports the following fields for sorting:
+
+
+        - `name` sorts by team name. It is not case-sensitive.
+
+        - `memberCount` sorts by the number of members on the team.
+
+
+        By default, the sort is in ascending order. Use `-` to sort in descending order. For example, `?sort=name` sorts the response by team name in ascending order, and `?sort=-memberCount` sorts by member count from largest to smallest. Combine fields with a comma to break ties, for example `?sort=-memberCount,name`.
+
+
+        ### Expanding the teams response
+
+        LaunchDarkly supports expanding several fields in the "List teams" response. By default, these fields are **not** included in the response.
+
+
+        To expand the response, append the `expand` query parameter and add a comma-separated list with any of the following fields:
+
+
+        * `members` includes the total count of members that belong to the team.
+
+        * `roles` includes a paginated list of the custom roles that you have assigned to the team.
+
+        * `roleAttributes` includes a list of the role attributes that you have assigned to the team.
+
+        * `projects` includes a paginated list of the projects that the team has any write access to.
+
+        * `maintainers` includes a paginated list of the maintainers that you have assigned to the team.
+
+
+        For example, `expand=members,maintainers` includes the `members` and `maintainers` fields in the response.'
+      parameters:
+      - name: limit
+        in: query
+        description: The number of teams to return in the response. Defaults to 20.
+        schema:
+          type: integer
+          format: int64
+          description: The number of teams to return in the response. Defaults to 20.
+      - name: offset
+        in: query
+        description: Where to start in the list. Use this with pagination. For example, an offset of 10 skips the first ten items and returns the next `limit` items.
+        schema:
+          type: integer
+          format: int64
+          description: Where to start in the list. Use this with pagination. For example, an offset of 10 skips the first ten items and returns the next `limit` items.
+      - name: filter
+        in: query
+        description: A comma-separated list of filters. Each filter is constructed as `field:value`.
+        schema:
+          type: string
+          format: string
+          description: A comma-separated list of filters. Each filter is constructed as `field:value`.
+      - name: sort
+        in: query
+        description: 'A comma-separated list of fields to sort by. Fields are sorted in ascending order by default. Prefix a field with `-` to sort in descending order. Supported fields: `name`, `memberCount`.'
+        schema:
+          type: string
+          format: string
+          description: 'A comma-separated list of fields to sort by. Fields are sorted in ascending order by default. Prefix a field with `-` to sort in descending order. Supported fields: `name`, `memberCount`.'
+      - name: expand
+        in: query
+        description: A comma-separated list of properties that can reveal additional information in the response.
+        schema:
+          type: string
+          format: string
+          description: A comma-separated list of properties that can reveal additional information in the response.
+      operationId: getTeams
+      security:
+      - ApiKey:
+        - read
+        - write
+    post:
+      responses:
+        '201':
+          description: Teams response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Team'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '405':
+          description: Method not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MethodNotAllowedErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Teams
+      summary: Create team
+      description: 'Create a team. To learn more, read Creating a team.
+
+
+        ### Expanding the teams response
+
+        LaunchDarkly supports four fields for expanding the "Create team" response. By default, these fields are **not** included in the response.
+
+
+        To expand the response, append the `expand` query parameter and add a comma-separated list with any of the following fields:
+
+
+        * `members` includes the total count of members that belong to the team.
+
+        * `roles` includes a paginated list of the custom roles that you have assigned to the team.
+
+        * `projects` includes a paginated list of the projects that the team has any write access to.
+
+        * `maintainers` includes a paginated list of the maintainers that you have assigned to the team.
+
+
+        For example, `expand=members,roles` includes the `members` and `roles` fields in the response.'
+      parameters:
+      - name: expand
+        in: query
+        description: A comma-separated list of properties that can reveal additional information in the response. Supported fields are explained above.
+        schema:
+          type: string
+          format: string
+          description: A comma-separated list of properties that can reveal additional information in the response. Supported fields are explained above.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/teamPostInput'
+            example:
+              customRoleKeys:
+              - example-role1
+              - example-role2
+              description: An example team
+              key: team-key-123abc
+              memberIDs:
+              - 12ab3c45de678910fgh12345
+              name: Example team
+        required: true
+      operationId: postTeam
+      security:
+      - ApiKey:
+        - read
+        - write
+    servers:
+    - url: https://app.launchdarkly.com
+      description: ' Default'
+    - url: https://app.launchdarkly.us
+      description: ' Federal'
+  /api/v2/teams/{teamKey}:
+    get:
+      responses:
+        '200':
+          description: Teams response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Team'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '405':
+          description: Method not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MethodNotAllowedErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Teams
+      summary: Get team
+      description: 'Fetch a team by key.
+
+
+        ### Expanding the teams response
+
+        LaunchDarkly supports several fields for expanding the "Get team" response. By default, these fields are **not** included in the response.
+
+
+        To expand the response, append the `expand` query parameter and add a comma-separated list with any of the following fields:
+
+
+        * `members` includes the total count of members that belong to the team.
+
+        * `roles` includes a paginated list of the custom roles that you have assigned to the team.
+
+        * `roleAttributes` includes a list of the role attributes that you have assigned to the team.
+
+        * `projects` includes a paginated list of the projects that the team has any write access to.
+
+        * `maintainers` includes a paginated list of the maintainers that you have assigned to the team.
+
+
+        For example, `expand=members,roles` includes the `members` and `roles` fields in the response.'
+      parameters:
+      - name: teamKey
+        in: path
+        description: The team key.
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The team key.
+      - name: expand
+        in: query
+        description: A comma-separated list of properties that can reveal additional information in the response.
+        schema:
+          type: string
+          format: string
+          description: A comma-separated list of properties that can reveal additional information in the response.
+      operationId: getTeam
+      security:
+      - ApiKey:
+        - read
+        - write
+    patch:
+      responses:
+        '200':
+          description: Teams response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Team'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '405':
+          description: Method not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MethodNotAllowedErrorRep'
+        '409':
+          description: Status conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusConflictErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Teams
+      summary: Update team
+      description: 'Perform a partial update to a team. Updating a team uses the semantic patch format. To make a semantic patch request, you must append `domain-model=launchdarkly.semanticpatch` to your `Content-Type` header. To learn more, read Updates using semantic patch. ### Instructions
+
+
+        Semantic patch requests support the following `kind` instructions for updating teams. Several of the instructions require one or more member IDs as parameters. The member ID is returned as part of the List account members response. It is the `_id` field of each element in the `items` array. Click to expand instructions for updating teams
+
+
+        #### addCustomRoles
+
+
+        Adds custom roles to the team. Team members will have these custom roles granted to them. ##### Parameters
+
+
+        - `values`: List of custom role keys. Here''s an example:
+
+
+        ```json
+
+        {
+
+        "instructions": [{
+
+        "kind": "addCustomRoles",
+
+        "values": [ "example-custom-role" ]
+
+        }]
+
+        }
+
+        ```
+
+
+        #### addMembers
+
+
+        Adds members to the team. ##### Parameters
+
+
+        - `values`: List of member IDs to add. Here''s an example:
+
+
+        ```json
+
+        {
+
+        "instructions": [{
+
+        "kind": "addMembers",
+
+        "values": [ "1234a56b7c89d012345e678f", "507f1f77bcf86cd799439011" ]
+
+        }]
+
+        }
+
+        ```
+
+
+        #### addPermissionGrants
+
+
+        Adds permission grants to members for the team. For example, a permission grant could allow a member to act as a team maintainer. A permission grant may have either an `actionSet` or a list of `actions` but not both at the same time. The members do not have to be team members to have a permission grant for the team. ##### Parameters
+
+
+        - `actionSet`: Name of the action set. - `actions`: List of actions. - `memberIDs`: List of member IDs. Here''s an example:
+
+
+        ```json
+
+        {
+
+        "instructions": [{
+
+        "kind": "addPermissionGrants",
+
+        "actions": [ "updateTeamName", "updateTeamDescription" ],
+
+        "memberIDs": [ "1234a56b7c89d012345e678f", "507f1f77bcf86cd799439011" ]
+
+        }]
+
+        }
+
+        ```
+
+
+        #### addRoleAttribute
+
+
+        Adds a role attribute to a team. Team members will have these role attribute values scoped for all custom roles granted to them. ##### Parameters
+
+
+        - `key`: The role attribute key to add. - `values`: List of role attribute values for that key. Here''s an example:
+
+
+        ```json
+
+        {
+
+        "instructions": [
+
+        {
+
+        "kind": "addRoleAttribute",
+
+        "key": "testAttribute",
+
+        "values": ["someNewValue", "someOtherNewValue"]
+
+        }
+
+        ]
+
+        }
+
+        ```
+
+
+        #### removeCustomRoles
+
+
+        Removes custom roles from the team. The app will no longer grant these custom roles to the team members. ##### Parameters
+
+
+        - `values`: List of custom role keys. Here''s an example:
+
+
+        ```json
+
+        {
+
+        "instructions": [{
+
+        "kind": "removeCustomRoles",
+
+        "values": [ "example-custom-role" ]
+
+        }]
+
+        }
+
+        ```
+
+
+        #### removeMembers
+
+
+        Removes members from the team. ##### Parameters
+
+
+        - `values`: List of member IDs to remove. Here''s an example:
+
+
+        ```json
+
+        {
+
+        "instructions": [{
+
+        "kind": "removeMembers",
+
+        "values": [ "1234a56b7c89d012345e678f", "507f1f77bcf86cd799439011" ]
+
+        }]
+
+        }
+
+        ```
+
+
+        #### removePermissionGrants
+
+
+        Removes permission grants from members for the team. A permission grant may have either an `actionSet` or a list of `actions` but not both at the same time. The `actionSet` and `actions` must match an existing permission grant. ##### Parameters
+
+
+        - `actionSet`: Name of the action set. - `actions`: List of actions. - `memberIDs`: List of member IDs. Here''s an example:
+
+
+        ```json
+
+        {
+
+        "instructions": [{
+
+        "kind": "removePermissionGrants",
+
+        "actions": [ "updateTeamName", "updateTeamDescription" ],
+
+        "memberIDs": [ "1234a56b7c89d012345e678f", "507f1f77bcf86cd799439011" ]
+
+        }]
+
+        }
+
+        ```
+
+
+        #### removeRoleAttribute
+
+
+        Removes a role attribute from the team. ##### Parameters
+
+
+        - `key`: The role attribute key to remove. Here''s an example:
+
+        ```json
+
+        {
+
+        "instructions": [
+
+        {
+
+        "kind": "removeRoleAttribute",
+
+        "key": "testAttribute"
+
+        }
+
+        ]
+
+        }
+
+        ```
+
+
+        #### replaceMembers
+
+
+        Replaces the existing members of the team with the new members. ##### Parameters
+
+
+        - `values`: List of member IDs of the new members.'
+      parameters:
+      - name: teamKey
+        in: path
+        description: The team key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The team key
+      - name: expand
+        in: query
+        description: A comma-separated list of properties that can reveal additional information in the response. Supported fields are explained above.
+        schema:
+          type: string
+          format: string
+          description: A comma-separated list of properties that can reveal additional information in the response. Supported fields are explained above.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/teamPatchInput'
+            example:
+              comment: Optional comment about the update
+              instructions:
+              - kind: updateDescription
+                value: New description for the team
+        required: true
+      operationId: patchTeam
+      security:
+      - ApiKey:
+        - read
+        - write
+    delete:
+      responses:
+        '204':
+          description: Action succeeded
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Teams
+      summary: Delete team
+      description: Delete a team by key. To learn more, read Deleting teams.
+      parameters:
+      - name: teamKey
+        in: path
+        description: The team key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The team key
+      operationId: deleteTeam
+      security:
+      - ApiKey:
+        - read
+        - write
+    servers:
+    - url: https://app.launchdarkly.com
+      description: ' Default'
+    - url: https://app.launchdarkly.us
+      description: ' Federal'
+  /api/v2/teams/{teamKey}/maintainers:
+    get:
+      responses:
+        '200':
+          description: Team maintainers response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeamMaintainers'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '405':
+          description: Method not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MethodNotAllowedErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Teams
+      summary: Get team maintainers
+      description: Fetch the maintainers that have been assigned to the team. To learn more, read Managing team maintainers.
+      parameters:
+      - name: teamKey
+        in: path
+        description: The team key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The team key
+      - name: limit
+        in: query
+        description: The number of maintainers to return in the response. Defaults to 20.
+        schema:
+          type: integer
+          format: int64
+          description: The number of maintainers to return in the response. Defaults to 20.
+      - name: offset
+        in: query
+        description: Where to start in the list. This is for use with pagination. For example, an offset of 10 skips the first ten items and then returns the next items in the list, up to the query `limit`.
+        schema:
+          type: integer
+          format: int64
+          description: Where to start in the list. This is for use with pagination. For example, an offset of 10 skips the first ten items and then returns the next items in the list, up to the query `limit`.
+      operationId: getTeamMaintainers
+      security:
+      - ApiKey:
+        - read
+        - write
+    servers:
+    - url: https://app.launchdarkly.com
+      description: ' Default'
+    - url: https://app.launchdarkly.us
+      description: ' Federal'
+  /api/v2/teams/{teamKey}/members:
+    post:
+      responses:
+        '201':
+          description: Team member imports response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeamImportsRep'
+        '207':
+          description: Partial Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeamImportsRep'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '405':
+          description: Method not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MethodNotAllowedErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Teams
+      summary: Add multiple members to team
+      description: 'Add multiple members to an existing team by uploading a CSV file of member email addresses. Your CSV file must include email addresses in the first column. You can include data in additional columns, but LaunchDarkly ignores all data outside the first column. Headers are optional. To learn more, read Manage team members.
+
+
+        **Members are only added on a `201` response.** A `207` indicates the CSV file contains a combination of valid and invalid entries. A `207` results in no members being added to the team.
+
+
+        On a `207` response, if an entry contains bad input, the `message` field contains the row number as well as the reason for the error. The `message` field is omitted if the entry is valid.
+
+
+        Example `207` response:
+
+        ```json
+
+        {
+
+        "items": [
+
+        {
+
+        "status": "success",
+
+        "value": "new-team-member@acme.com"
+
+        },
+
+        {
+
+        "message": "Line 2: empty row",
+
+        "status": "error",
+
+        "value": ""
+
+        },
+
+        {
+
+        "message": "Line 3: email already exists in the specified team",
+
+        "status": "error",
+
+        "value": "existing-team-member@acme.com"
+
+        },
+
+        {
+
+        "message": "Line 4: invalid email formatting",
+
+        "status": "error",
+
+        "value": "invalid email format"
+
+        }
+
+        ]
+
+        }
+
+        ```
+
+
+        Message | Resolution
+
+        --- | ---
+
+        Empty row | This line is blank. Add an email address and try again.
+
+        Duplicate entry | This email address appears in the file twice. Remove the email from the file and try again.
+
+        Email already exists in the specified team | This member is already on your team. Remove the email from the file and try again.
+
+        Invalid formatting | This email address is not formatted correctly. Fix the formatting and try again.
+
+        Email does not belong to a LaunchDarkly member | The email address doesn''t belong to a LaunchDarkly account member. Invite them to LaunchDarkly, then re-add them to the team.
+
+
+        On a `400` response, the `message` field may contain errors specific to this endpoint.
+
+
+        Example `400` response:
+
+        ```json
+
+        {
+
+        "code": "invalid_request",
+
+        "message": "Unable to process file"
+
+        }
+
+        ```
+
+
+        Message | Resolution
+
+        --- | ---
+
+        Unable to process file | LaunchDarkly could not process the file for an unspecified reason. Review your file for errors and try again.
+
+        File exceeds 25mb | Break up your file into multiple files of less than 25mbs each.
+
+        All emails have invalid formatting | None of the email addresses in the file are in the correct format. Fix the formatting and try again.
+
+        All emails belong to existing team members | All listed members are already on this team. Populate the file with member emails that do not belong to the team and try again.
+
+        File is empty | The CSV file does not contain any email addresses. Populate the file and try again.
+
+        No emails belong to members of your LaunchDarkly organization | None of the email addresses belong to members of your LaunchDarkly account. Invite these members to LaunchDarkly, then re-add them to the team.'
+      parameters:
+      - name: teamKey
+        in: path
+        description: The team key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The team key
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: CSV file containing email addresses
+        required: true
+      operationId: postTeamMembers
+      security:
+      - ApiKey:
+        - read
+        - write
+    servers:
+    - url: https://app.launchdarkly.com
+      description: ' Default'
+    - url: https://app.launchdarkly.us
+      description: ' Federal'
+  /api/v2/teams/{teamKey}/roles:
+    get:
+      responses:
+        '200':
+          description: Team roles response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeamCustomRoles'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '405':
+          description: Method not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MethodNotAllowedErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Teams
+      summary: Get team custom roles
+      description: Fetch the custom roles that have been assigned to the team. To learn more, read Managing team permissions.
+      parameters:
+      - name: teamKey
+        in: path
+        description: The team key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The team key
+      - name: limit
+        in: query
+        description: The number of roles to return in the response. Defaults to 20.
+        schema:
+          type: integer
+          format: int64
+          description: The number of roles to return in the response. Defaults to 20.
+      - name: offset
+        in: query
+        description: Where to start in the list. This is for use with pagination. For example, an offset of 10 skips the first ten items and then returns the next items in the list, up to the query `limit`.
+        schema:
+          type: integer
+          format: int64
+          description: Where to start in the list. This is for use with pagination. For example, an offset of 10 skips the first ten items and then returns the next items in the list, up to the query `limit`.
+      operationId: getTeamRoles
+      security:
+      - ApiKey:
+        - read
+        - write
+    servers:
+    - url: https://app.launchdarkly.com
+      description: ' Default'
+    - url: https://app.launchdarkly.us
+      description: ' Federal'
   /teams:
     get:
       operationId: listTeams
@@ -48,9 +1072,11 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Teams'
+                $ref: '#/components/schemas/Teams_2'
         '401':
           description: Unauthorized. Invalid or missing access token.
+      security:
+      - bearerAuth: []
     post:
       operationId: createTeam
       summary: Create a team
@@ -69,41 +1095,615 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Team'
+                $ref: '#/components/schemas/Team_2'
         '400':
           description: Invalid request body.
         '401':
           description: Unauthorized. Invalid or missing access token.
         '409':
           description: A team with the given key already exists.
+      security:
+      - bearerAuth: []
+    servers:
+    - url: https://app.launchdarkly.com/api/v2
+      description: LaunchDarkly Production API
 components:
   schemas:
-    TeamBody:
+    ProjectSummary:
       type: object
-      description: The request body for creating a new team.
       required:
-      - name
+      - _id
+      - _links
       - key
+      - name
       properties:
-        name:
+        _id:
           type: string
-          description: The human-readable name of the team.
+          description: The ID of this project
+          example: 57be1db38b75bf0772d11383
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+          example:
+            environments:
+              href: /api/v2/projects/example-project/environments
+              type: application/json
+            self:
+              href: /api/v2/projects/example-project
+              type: application/json
         key:
           type: string
-          description: The team key.
-        description:
+          description: The project key
+          example: project-key-123abc
+        name:
           type: string
-          description: A description of the team.
+          description: The project name
+          example: Example project
+    AccessDenied:
+      type: object
+      required:
+      - action
+      - reason
+      properties:
+        action:
+          $ref: '#/components/schemas/ActionIdentifier'
+        reason:
+          $ref: '#/components/schemas/AccessDeniedReason'
+    TeamMaintainers:
+      type: object
+      properties:
+        totalCount:
+          type: integer
+          description: The number of maintainers of the team
+          example: 1
+        items:
+          type: array
+          description: Details on the members that have been assigned as maintainers of the team
+          items:
+            $ref: '#/components/schemas/MemberSummary'
+          example:
+          - _id: 569f183514f4432160000007
+            _links:
+              self:
+                href: /api/v2/members/569f183514f4432160000007
+                type: application/json
+            email: ariel@acme.com
+            firstName: Ariel
+            lastName: Flores
+            role: reader
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+          example:
+            self:
+              href: /api/v2/teams/example-team/maintainers?limit=20
+              type: application/json
+    Teams:
+      type: object
+      required:
+      - items
+      properties:
+        items:
+          type: array
+          description: An array of teams
+          items:
+            $ref: '#/components/schemas/Team'
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+          example:
+            self:
+              href: /api/v2/teams?expand=maintainers%2Cmembers%2Croles%2Cprojects&limit=20
+              type: application/json
+        totalCount:
+          type: integer
+          description: The number of teams
+          example: 1
+    TeamMembers:
+      type: object
+      properties:
+        totalCount:
+          type: integer
+          description: The total count of members that belong to the team
+          example: 15
+    Instructions:
+      type: array
+      items:
+        $ref: '#/components/schemas/Instruction'
+    InvalidRequestErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: invalid_request
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid request body
+    MemberSummary:
+      type: object
+      required:
+      - _links
+      - _id
+      - role
+      - email
+      properties:
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+          example:
+            self:
+              href: /api/v2/members/569f183514f4432160000007
+              type: application/json
+        _id:
+          type: string
+          description: The member's ID
+          example: 569f183514f4432160000007
+        firstName:
+          type: string
+          description: The member's first name
+          example: Ariel
+        lastName:
+          type: string
+          description: The member's last name
+          example: Flores
+        role:
+          type: string
+          description: The member's base role. If the member has no additional roles, this role will be in effect.
+          example: admin
+        email:
+          type: string
+          description: The member's email address
+          example: ariel@acme.com
+    RateLimitedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: rate_limited
+        message:
+          type: string
+          description: Description of the error
+          example: You've exceeded the API rate limit. Try again later.
+    AccessDeniedReason:
+      type: object
+      required:
+      - effect
+      properties:
+        resources:
+          type: array
+          description: Resource specifier strings
+          items:
+            type: string
+          example:
+          - proj/*:env/*;qa_*:/flag/*
+        notResources:
+          type: array
+          description: Targeted resources are the resources NOT in this list. The <code>resources</code> and <code>notActions</code> fields must be empty to use this field.
+          items:
+            type: string
+        actions:
+          type: array
+          description: Actions to perform on a resource
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+          example:
+          - '*'
+        notActions:
+          type: array
+          description: Targeted actions are the actions NOT in this list. The <code>actions</code> and <code>notResources</code> fields must be empty to use this field.
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+        effect:
+          type: string
+          description: Whether this statement should allow or deny actions on the resources.
+          example: allow
+          enum:
+          - allow
+          - deny
+        role_name:
+          type: string
+    UnauthorizedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: unauthorized
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid access token
+    ForbiddenErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: forbidden
+        message:
+          type: string
+          description: Description of the error
+          example: Forbidden. Access to the requested resource was denied.
+    ActionSpecifier:
+      type: string
+    Link:
+      type: object
+      properties:
+        href:
+          type: string
+        type:
+          type: string
+    permissionGrantInput:
+      type: object
+      properties:
+        actionSet:
+          type: string
+          description: A group of related actions to allow. Specify either <code>actionSet</code> or <code>actions</code>. Use <code>maintainTeam</code> to add team maintainers.
+          example: maintainTeam
+          enum:
+          - maintainTeam
+        actions:
+          type: array
+          description: A list of actions to allow. Specify either <code>actionSet</code> or <code>actions</code>. To learn more, read [Role actions](https://launchdarkly.com/docs/ld-docs/home/account/role-actions).
+          items:
+            type: string
+          example:
+          - updateTeamMembers
         memberIDs:
           type: array
-          description: Member identifiers to add to the team.
+          description: A list of member IDs who receive the permission grant.
           items:
             type: string
+          example:
+          - 12ab3c45de678910fgh12345
+    TeamCustomRole:
+      type: object
+      properties:
+        key:
+          type: string
+          description: The key of the custom role
+          example: role-key-123abc
+        name:
+          type: string
+          description: The name of the custom role
+          example: Example role
+        projects:
+          description: Details on the projects where team members have write privileges on at least one resource type (e.g. flags)
+          $ref: '#/components/schemas/TeamProjects'
+        appliedOn:
+          description: Timestamp of when the custom role was assigned to this team
+          example: '1648672018410'
+          $ref: '#/components/schemas/UnixMillis'
+    ActionIdentifier:
+      type: string
+    UnixMillis:
+      type: integer
+      format: int64
+    teamPostInput:
+      type: object
+      required:
+      - key
+      - name
+      properties:
         customRoleKeys:
           type: array
-          description: Custom role keys to assign to the team.
+          description: List of custom role keys the team will access
           items:
             type: string
+          example:
+          - example-role1
+          - example-role2
+        description:
+          type: string
+          description: A description of the team
+          example: An example team
+        key:
+          type: string
+          description: The team key
+          example: team-key-123abc
+        memberIDs:
+          type: array
+          description: A list of member IDs who belong to the team
+          items:
+            type: string
+          example:
+          - 12ab3c45de678910fgh12345
+        name:
+          type: string
+          description: A human-friendly name for the team
+          example: Example team
+        permissionGrants:
+          type: array
+          description: A list of permission grants. Permission grants allow access to a specific action, without having to create or update a custom role.
+          items:
+            $ref: '#/components/schemas/permissionGrantInput'
+        roleAttributes:
+          description: A map of role attributes for the team
+          example: '{"developerProjectKey": ["default"]}'
+          $ref: '#/components/schemas/RoleAttributeMap'
+    Team:
+      type: object
+      properties:
+        description:
+          type: string
+          description: A description of the team
+          example: Description for this team.
+        key:
+          type: string
+          description: The team key
+          example: team-key-123abc
+        name:
+          type: string
+          description: A human-friendly name for the team
+          example: Example team
+        _access:
+          description: Details on the allowed and denied actions for this team
+          $ref: '#/components/schemas/Access'
+        _creationDate:
+          description: Timestamp of when the team was created
+          example: '1648671956143'
+          $ref: '#/components/schemas/UnixMillis'
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+          example:
+            parent:
+              href: /api/v2/teams
+              type: application/json
+            roles:
+              href: /api/v2/teams/example-team/roles
+              type: application/json
+            self:
+              href: /api/v2/teams/example-team
+              type: application/json
+        _lastModified:
+          description: Timestamp of when the team was most recently updated
+          example: '1648672446072'
+          $ref: '#/components/schemas/UnixMillis'
+        _version:
+          type: integer
+          description: The team version
+          example: 3
+        _idpSynced:
+          type: boolean
+          description: Whether the team has been synced with an external identity provider (IdP). Team sync is available to customers on an Enterprise plan.
+          example: true
+        roleAttributes:
+          description: A map of role attributes for the team
+          example: '{"developerProjectKey": ["default"]}'
+          $ref: '#/components/schemas/RoleAttributeMap'
+        roles:
+          description: Paginated list of the custom roles assigned to this team. Only included if specified in the <code>expand</code> query parameter.
+          $ref: '#/components/schemas/TeamCustomRoles'
+        members:
+          description: Details on the total count of members that belong to the team. Only included if specified in the <code>expand</code> query parameter.
+          $ref: '#/components/schemas/TeamMembers'
+        projects:
+          description: Paginated list of the projects that the team has any write access to. Only included if specified in the <code>expand</code> query parameter.
+          $ref: '#/components/schemas/TeamProjects'
+        maintainers:
+          description: Paginated list of the maintainers assigned to this team. Only included if specified in the <code>expand</code> query parameter.
+          $ref: '#/components/schemas/TeamMaintainers'
+    MethodNotAllowedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: method_not_allowed
+        message:
+          type: string
+          description: Description of the error
+          example: Method not allowed
+    RoleAttributeValues:
+      type: array
+      items:
+        type: string
+    Access:
+      type: object
+      required:
+      - denied
+      - allowed
+      properties:
+        denied:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccessDenied'
+        allowed:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccessAllowedRep'
+    StatusConflictErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: optimistic_locking_error
+        message:
+          type: string
+          description: Description of the error
+          example: Conflict. Optimistic lock error. Try again later.
+    NotFoundErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: not_found
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid resource identifier
+    TeamCustomRoles:
+      type: object
+      properties:
+        totalCount:
+          type: integer
+          description: The number of custom roles assigned to this team
+          example: 1
+        items:
+          type: array
+          description: An array of the custom roles that have been assigned to this team
+          items:
+            $ref: '#/components/schemas/TeamCustomRole'
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+          example:
+            self:
+              href: /api/v2/teams/example-team/roles?limit=25
+              type: application/json
+    AccessAllowedReason:
+      type: object
+      required:
+      - effect
+      properties:
+        resources:
+          type: array
+          description: Resource specifier strings
+          items:
+            type: string
+          example:
+          - proj/*:env/*;qa_*:/flag/*
+        notResources:
+          type: array
+          description: Targeted resources are the resources NOT in this list. The <code>resources</code> and <code>notActions</code> fields must be empty to use this field.
+          items:
+            type: string
+        actions:
+          type: array
+          description: Actions to perform on a resource
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+          example:
+          - '*'
+        notActions:
+          type: array
+          description: Targeted actions are the actions NOT in this list. The <code>actions</code> and <code>notResources</code> fields must be empty to use this field.
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+        effect:
+          type: string
+          description: Whether this statement should allow or deny actions on the resources.
+          example: allow
+          enum:
+          - allow
+          - deny
+        role_name:
+          type: string
+    RoleAttributeMap:
+      type: object
+      additionalProperties:
+        $ref: '#/components/schemas/RoleAttributeValues'
+    Instruction:
+      type: object
+      additionalProperties: {}
+    AccessAllowedRep:
+      type: object
+      required:
+      - action
+      - reason
+      properties:
+        action:
+          $ref: '#/components/schemas/ActionIdentifier'
+        reason:
+          $ref: '#/components/schemas/AccessAllowedReason'
+    TeamImportsRep:
+      type: object
+      properties:
+        items:
+          type: array
+          description: An array of details about the members requested to be added to this team
+          items:
+            $ref: '#/components/schemas/MemberImportItem'
+    MemberImportItem:
+      type: object
+      required:
+      - status
+      - value
+      properties:
+        message:
+          type: string
+          description: An error message, including CSV line number, if the <code>status</code> is <code>error</code>
+        status:
+          type: string
+          description: Whether this member can be successfully imported (<code>success</code>) or not (<code>error</code>). Even if the status is <code>success</code>, members are only added to a team on a <code>201</code> response.
+          example: error
+        value:
+          type: string
+          description: The email address for the member requested to be added to this team. May be blank or an error, such as 'invalid email format', if the email address cannot be found or parsed.
+          example: new-team-member@acme.com
+    TeamProjects:
+      type: object
+      properties:
+        totalCount:
+          type: integer
+          example: 1
+        items:
+          type: array
+          description: Details on each project where team members have write privileges on at least one resource type (e.g. flags)
+          items:
+            $ref: '#/components/schemas/ProjectSummary'
+          example:
+          - _links:
+              environments:
+                href: /api/v2/projects/example-project/environments
+                type: application/json
+              self:
+                href: /api/v2/projects/example-project
+                type: application/json
+            key: project-key-123abc
+            name: Example project
+    teamPatchInput:
+      type: object
+      required:
+      - instructions
+      properties:
+        comment:
+          type: string
+          description: Optional comment describing the update
+          example: Optional comment about the update
+        instructions:
+          description: 'The instructions to perform when updating. This should be an array with objects that look like <code>{"kind": "update_action"}</code>. Some instructions also require additional parameters as part of this object.'
+          example: '[ { "kind": "updateDescription", "value": "New description for the team" } ]'
+          $ref: '#/components/schemas/Instructions'
     Links:
       type: object
       description: HATEOAS links for navigating related resources.
@@ -127,21 +1727,7 @@ components:
           type:
             type: string
             description: The media type.
-    Teams:
-      type: object
-      description: A paginated collection of teams.
-      properties:
-        items:
-          type: array
-          description: The list of teams.
-          items:
-            $ref: '#/components/schemas/Team'
-        totalCount:
-          type: integer
-          description: The total number of teams.
-        _links:
-          $ref: '#/components/schemas/Links'
-    Team:
+    Team_2:
       type: object
       description: A team of account members.
       properties:
@@ -175,7 +1761,51 @@ components:
             type: string
         _links:
           $ref: '#/components/schemas/Links'
+    TeamBody:
+      type: object
+      description: The request body for creating a new team.
+      required:
+      - name
+      - key
+      properties:
+        name:
+          type: string
+          description: The human-readable name of the team.
+        key:
+          type: string
+          description: The team key.
+        description:
+          type: string
+          description: A description of the team.
+        memberIDs:
+          type: array
+          description: Member identifiers to add to the team.
+          items:
+            type: string
+        customRoleKeys:
+          type: array
+          description: Custom role keys to assign to the team.
+          items:
+            type: string
+    Teams_2:
+      type: object
+      description: A paginated collection of teams.
+      properties:
+        items:
+          type: array
+          description: The list of teams.
+          items:
+            $ref: '#/components/schemas/Team_2'
+        totalCount:
+          type: integer
+          description: The total number of teams.
+        _links:
+          $ref: '#/components/schemas/Links'
   securitySchemes:
+    ApiKey:
+      type: apiKey
+      in: header
+      name: Authorization
     bearerAuth:
       type: http
       scheme: bearer
@@ -183,3 +1813,6 @@ components:
 externalDocs:
   description: LaunchDarkly API Documentation
   url: https://apidocs.launchdarkly.com/
+x-refined-from:
+- launchdarkly-openapi.json
+- launchdarkly-rest-api-openapi.yml

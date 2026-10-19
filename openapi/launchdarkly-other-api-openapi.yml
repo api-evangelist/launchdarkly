@@ -1,0 +1,339 @@
+openapi: 3.2.0
+info:
+  title: LaunchDarkly REST Other API
+  description: 'This documentation describes LaunchDarkly''s REST API. To access the complete OpenAPI spec directly, use Get OpenAPI spec. To learn how to use LaunchDarkly using the user interface (UI) instead, read our product documentation. ## Authentication
+
+
+    LaunchDarkly''s REST API uses the HTTPS protocol with a minimum TLS version of 1.2. All REST API resources are authenticated with either personal or service access tokens, or session cookies. Other authentication mechanisms are not supported. You can manage personal access tokens on your **Authorization** page in the LaunchDarkly UI. LaunchDarkly also has SDK keys, mobile keys, and client-side IDs that are used by our server-side SDKs, mobile SDKs, and JavaScript-based SDKs, respectively. **These keys cannot be used to access our REST API**. These keys are environment-specific, and can only perform read-only operations such as fetching feature flag settings. | Auth mechanism | Allowed resources | Use cases |
+
+    | ----------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
+
+    | Personal or service access tokens | Can be customized on a per-token basis | Building scripts, custom integrations, data export. |
+
+    | SDK keys | Can only access read-only resources specific to server-side SDKs. Restricted to a single environment. | Server-side SDKs |
+
+    | Mobile keys | Can only access read-only resources specific to mobile SDKs, and only for flags marked available to mobile keys. Restricted to a single environment. | Mobile SDKs |
+
+    | Client-side ID | Can only access read-only resources specific to JavaScript-based client-side SDKs, and only for flags marked available to client-side. Restricted to a single environment. | Client-side JavaScript |
+
+
+    > #### Keep your access tokens and SDK keys private
+
+    >
+
+    > Access tokens should _never_ be exposed in untrusted contexts. Never put an access token in client-side JavaScript, or embed it in a mobile application. LaunchDarkly has special mobile keys that you can embed in mobile apps. If you accidentally expose an access token or SDK key, you can reset it from your **Authorization** page. >
+
+    > The client-side ID is safe to embed in untrusted contexts. It''s designed for use in client-side JavaScript. ### Authentication using request header
+
+
+    The preferred way to authenticate with the API is by adding an `Authorization` header containing your access token to your requests. The value of the `Authorization` header must be your access token. Manage personal access tokens from the **Authorization** page. ### Authentication using session cookie
+
+
+    For testing purposes, you can make API calls directly from your web browser. If you are logged in to the LaunchDarkly application, the API will use your existing session to authenticate calls. Depending on the permissions granted as part of your role, you may not have permission to perform some API calls. You will receive a `401` response code in that case. > ### Modifying the Origin header causes an error
+
+    >
+
+    > LaunchDarkly validates that the Origin header for any API request authenticated by a session cookie matches the expected Origin header. The expected Origin header is `https://app.launchdarkly.com`. >
+
+    > If the Origin header does not match what''s expected, LaunchDarkly returns an error. This error can prevent the LaunchDarkly app from working correctly. >
+
+    > Any browser extension that intentionally changes the Origin header can cause this problem. For example, Cross-Origin Resource Sharing (CORS) extensions used during development can modify the Origin header and cause the app to fail. >
+
+    > To prevent this error, do not modify your Origin header. >
+
+    > LaunchDarkly does not require origin matching when authenticating with an access token, so this issue does not affect normal API usage.'
+  contact:
+    name: LaunchDarkly Technical Support Team
+    url: https://support.launchdarkly.com
+    email: support@launchdarkly.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+  version: '2.0'
+servers:
+- url: https://app.launchdarkly.com
+  description: ' Default'
+- url: https://app.launchdarkly.us
+  description: ' Federal'
+security:
+- ApiKey:
+  - read
+  - write
+tags:
+- name: Other
+  description: Other requests available in the LaunchDarkly API.
+paths:
+  /api/v2:
+    get:
+      responses:
+        '200':
+          description: Root response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RootResponse'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Other
+      summary: Root resource
+      description: Get all of the resource categories the API supports. In the sandbox, click 'Play' and enter any string in the 'Authorization' field to test this endpoint.
+      operationId: getRoot
+  /api/v2/caller-identity:
+    get:
+      responses:
+        '200':
+          description: Caller Identity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CallerIdentityRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Other
+      summary: Identify the caller
+      description: Get basic information about the identity used (session cookie, API token, SDK keys, etc.) to call the API
+      operationId: getCallerIdentity
+  /api/v2/openapi.json:
+    get:
+      responses:
+        '200':
+          description: OpenAPI Spec
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Other
+      summary: Gets the OpenAPI spec in json
+      description: Get the latest version of the OpenAPI specification for LaunchDarkly's API in JSON format. In the sandbox, click 'Play' and enter any string in the 'Authorization' field to test this endpoint.
+      operationId: getOpenapiSpec
+  /api/v2/public-ip-list:
+    get:
+      responses:
+        '200':
+          description: Public IP response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ipList'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Other
+      summary: Gets the public IP list
+      description: 'Get a list of IP ranges the LaunchDarkly service uses. You can use this list to allow LaunchDarkly through your firewall. We post upcoming changes to this list in advance on our status page.
+
+
+        In the sandbox, click ''Play'' and enter any string in the ''Authorization'' field to test this endpoint.'
+      operationId: getIps
+  /api/v2/versions:
+    get:
+      responses:
+        '200':
+          description: Versions information response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VersionsRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Other
+      summary: Get version information
+      description: Get the latest API version, the list of valid API versions in ascending order, and the version being used for this request. These are all in the external, date-based format.
+      operationId: getVersions
+components:
+  schemas:
+    DateVersion:
+      type: integer
+    Link:
+      type: object
+      properties:
+        href:
+          type: string
+        type:
+          type: string
+    CallerIdentityRep:
+      type: object
+      properties:
+        accountId:
+          type: string
+        environmentId:
+          type: string
+        projectId:
+          type: string
+        environmentName:
+          type: string
+        projectName:
+          type: string
+        authKind:
+          type: string
+        tokenKind:
+          type: string
+        clientId:
+          type: string
+        clientName:
+          type: string
+          description: The registered name of the OAuth client the access token was issued to. Only present for OAuth access tokens, and omitted when the client's name can't be resolved.
+        audience:
+          type: array
+          description: The resources (RFC 8707) the OAuth access token was issued for. Only present for OAuth access tokens issued for a specific resource.
+          items:
+            type: string
+        expiresAt:
+          description: When the OAuth access token expires. Only present for OAuth access tokens.
+          $ref: '#/components/schemas/UnixMillis'
+        tokenName:
+          type: string
+        tokenId:
+          type: string
+        memberId:
+          type: string
+        serviceToken:
+          type: boolean
+        scopes:
+          type: array
+          items:
+            type: string
+    VersionsRep:
+      type: object
+      required:
+      - validVersions
+      - latestVersion
+      - currentVersion
+      properties:
+        validVersions:
+          type: array
+          description: A list of all valid API versions. To learn more about our versioning, read [Versioning](https://launchdarkly.com/docs/api#versioning).
+          items:
+            $ref: '#/components/schemas/DateVersion'
+        latestVersion:
+          description: The most recently released version of the API
+          example: '20220603'
+          $ref: '#/components/schemas/DateVersion'
+        currentVersion:
+          description: 'The version of the API currently in use. Typically this is the API version specified for your access token. If you add the <code>LD-API-Version: beta</code> header to your request, this will be equal to the <code>latestVersion</code>.'
+          example: '20220603'
+          $ref: '#/components/schemas/DateVersion'
+        beta:
+          type: boolean
+          description: 'Whether the version of the API currently is use is a beta version. This is always <code>true</code> if you add the <code>LD-API-Version: beta</code> header to your request.'
+          example: false
+    RateLimitedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: rate_limited
+        message:
+          type: string
+          description: Description of the error
+          example: You've exceeded the API rate limit. Try again later.
+    RootResponse:
+      type: object
+      required:
+      - links
+      properties:
+        links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+    UnauthorizedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: unauthorized
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid access token
+    UnixMillis:
+      type: integer
+      format: int64
+    ipList:
+      type: object
+      required:
+      - addresses
+      - outboundAddresses
+      properties:
+        addresses:
+          type: array
+          description: A list of IP addresses used by the LaunchDarkly service
+          items:
+            type: string
+          example:
+          - 104.156.80.0/20
+          - 151.101.0.0/16
+        outboundAddresses:
+          type: array
+          description: A list of the IP addresses outgoing webhook notifications use
+          items:
+            type: string
+          example:
+          - 52.21.152.96/32
+    ForbiddenErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: forbidden
+        message:
+          type: string
+          description: Description of the error
+          example: Forbidden. Access to the requested resource was denied.
+  securitySchemes:
+    ApiKey:
+      type: apiKey
+      in: header
+      name: Authorization

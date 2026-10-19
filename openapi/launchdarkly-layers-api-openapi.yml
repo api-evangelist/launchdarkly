@@ -1,0 +1,602 @@
+openapi: 3.2.0
+info:
+  title: LaunchDarkly REST Layers API
+  description: 'This documentation describes LaunchDarkly''s REST API. To access the complete OpenAPI spec directly, use Get OpenAPI spec. To learn how to use LaunchDarkly using the user interface (UI) instead, read our product documentation. ## Authentication
+
+
+    LaunchDarkly''s REST API uses the HTTPS protocol with a minimum TLS version of 1.2. All REST API resources are authenticated with either personal or service access tokens, or session cookies. Other authentication mechanisms are not supported. You can manage personal access tokens on your **Authorization** page in the LaunchDarkly UI. LaunchDarkly also has SDK keys, mobile keys, and client-side IDs that are used by our server-side SDKs, mobile SDKs, and JavaScript-based SDKs, respectively. **These keys cannot be used to access our REST API**. These keys are environment-specific, and can only perform read-only operations such as fetching feature flag settings. | Auth mechanism | Allowed resources | Use cases |
+
+    | ----------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
+
+    | Personal or service access tokens | Can be customized on a per-token basis | Building scripts, custom integrations, data export. |
+
+    | SDK keys | Can only access read-only resources specific to server-side SDKs. Restricted to a single environment. | Server-side SDKs |
+
+    | Mobile keys | Can only access read-only resources specific to mobile SDKs, and only for flags marked available to mobile keys. Restricted to a single environment. | Mobile SDKs |
+
+    | Client-side ID | Can only access read-only resources specific to JavaScript-based client-side SDKs, and only for flags marked available to client-side. Restricted to a single environment. | Client-side JavaScript |
+
+
+    > #### Keep your access tokens and SDK keys private
+
+    >
+
+    > Access tokens should _never_ be exposed in untrusted contexts. Never put an access token in client-side JavaScript, or embed it in a mobile application. LaunchDarkly has special mobile keys that you can embed in mobile apps. If you accidentally expose an access token or SDK key, you can reset it from your **Authorization** page. >
+
+    > The client-side ID is safe to embed in untrusted contexts. It''s designed for use in client-side JavaScript. ### Authentication using request header
+
+
+    The preferred way to authenticate with the API is by adding an `Authorization` header containing your access token to your requests. The value of the `Authorization` header must be your access token. Manage personal access tokens from the **Authorization** page. ### Authentication using session cookie
+
+
+    For testing purposes, you can make API calls directly from your web browser. If you are logged in to the LaunchDarkly application, the API will use your existing session to authenticate calls. Depending on the permissions granted as part of your role, you may not have permission to perform some API calls. You will receive a `401` response code in that case. > ### Modifying the Origin header causes an error
+
+    >
+
+    > LaunchDarkly validates that the Origin header for any API request authenticated by a session cookie matches the expected Origin header. The expected Origin header is `https://app.launchdarkly.com`. >
+
+    > If the Origin header does not match what''s expected, LaunchDarkly returns an error. This error can prevent the LaunchDarkly app from working correctly. >
+
+    > Any browser extension that intentionally changes the Origin header can cause this problem. For example, Cross-Origin Resource Sharing (CORS) extensions used during development can modify the Origin header and cause the app to fail. >
+
+    > To prevent this error, do not modify your Origin header. >
+
+    > LaunchDarkly does not require origin matching when authenticating with an access token, so this issue does not affect normal API usage.'
+  contact:
+    name: LaunchDarkly Technical Support Team
+    url: https://support.launchdarkly.com
+    email: support@launchdarkly.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+  version: '2.0'
+servers:
+- url: https://app.launchdarkly.com
+  description: ' Default'
+- url: https://app.launchdarkly.us
+  description: ' Federal'
+security:
+- ApiKey:
+  - read
+  - write
+tags:
+- name: Layers
+  description: '> ### Available for customers using Experimentation
+
+    >
+
+    > Layers are available to customers using Experimentation.
+
+
+    There are some cases in which you may not want to include a context in more than one experiment at a time. For example, you may be concerned about collisions between experiments that are testing similar parts of your app, like two different changes to the same section of your app''s user interface (UI), or experiments running on both the back end and front end of the same functionality. In this case you can eliminate the interaction effect between experiments using layers.
+
+
+    A layer contains a set of experiments that cannot share traffic with each other. All of the experiments within a layer are mutually exclusive, which means that if a context is included in one experiment, LaunchDarkly will exclude it from any other experiments in the same layer.
+
+
+    To learn more, read Mutually exclusive experiments.'
+paths:
+  /api/v2/projects/{projectKey}/layers:
+    get:
+      responses:
+        '200':
+          description: Layer Collection response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LayerCollectionRep'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Layers
+      summary: Get layers
+      description: Get a collection of all layers for a project
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: filter
+        in: query
+        description: 'A comma-separated list of filters. This endpoint only accepts filtering by `experimentKey`. The filter returns layers which include that experiment for the selected environment(s). For example: `filter=reservations.experimentKey contains expKey`.'
+        schema:
+          type: string
+          format: string
+          description: 'A comma-separated list of filters. This endpoint only accepts filtering by `experimentKey`. The filter returns layers which include that experiment for the selected environment(s). For example: `filter=reservations.experimentKey contains expKey`.'
+      operationId: getLayers
+    post:
+      responses:
+        '201':
+          description: Layer response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LayerRep'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Layers
+      summary: Create layer
+      description: Create a layer. Experiments running in the same layer are granted mutually-exclusive traffic.
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LayerPost'
+        required: true
+      operationId: createLayer
+  /api/v2/projects/{projectKey}/layers/{layerKey}:
+    patch:
+      responses:
+        '200':
+          description: Layer response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LayerRep'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Layers
+      summary: Update layer
+      description: 'Update a layer by adding, changing, or removing traffic reservations for experiments, or by changing layer name or description.
+
+        Updating a layer uses the semantic patch format.
+
+
+        To make a semantic patch request, you must append `domain-model=launchdarkly.semanticpatch` to your `Content-Type` header. To learn more, read Updates using semantic patch.
+
+
+        ### Instructions
+
+
+        Semantic patch requests support the following `kind` instructions for updating layers.
+
+
+        Click to expand instructions for updating layers
+
+
+        #### updateName
+
+
+        Updates the layer name.
+
+
+        ##### Parameters
+
+
+        - `name`: The new layer name.
+
+
+        Here''s an example:
+
+
+        ```json
+
+        {
+
+        "instructions": [{
+
+        "kind": "updateName",
+
+        "name": "New name"
+
+        }]
+
+        }
+
+        ```
+
+
+        #### updateDescription
+
+
+        Updates the layer description.
+
+
+        ##### Parameters
+
+
+        - `description`: The new description.
+
+
+        Here''s an example:
+
+
+        ```json
+
+        {
+
+        "instructions": [{
+
+        "kind": "updateDescription",
+
+        "description": "New description"
+
+        }]
+
+        }
+
+        ```
+
+
+        #### updateExperimentReservation
+
+
+        Adds or updates a traffic reservation for an experiment in a layer.
+
+
+        ##### Parameters
+
+
+        - `experimentKey`: The key of the experiment whose reservation you are adding to or updating in the layer.
+
+        - `reservationPercent`: The amount of traffic in the layer to reserve. Must be an integer. Zero is allowed until iteration start.
+
+
+        Here''s an example:
+
+
+        ```json
+
+        {
+
+        "environmentKey": "production",
+
+        "instructions": [{
+
+        "kind": "updateExperimentReservation",
+
+        "experimentKey": "exp-key",
+
+        "reservationPercent": 10
+
+        }]
+
+        }
+
+        ```
+
+
+        #### removeExperiment
+
+
+        Removes a traffic reservation for an experiment from a layer.
+
+
+        ##### Parameters
+
+
+        - `experimentKey`: The key of the experiment whose reservation you want to remove from the layer.
+
+
+        Here''s an example:
+
+
+        ```json
+
+        {
+
+        "environmentKey": "production",
+
+        "instructions": [{
+
+        "kind": "removeExperiment",
+
+        "experimentKey": "exp-key"
+
+        }]
+
+        }
+
+        ```'
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: layerKey
+        in: path
+        description: The layer key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The layer key
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LayerPatchInput'
+            example:
+              comment: Example comment describing the update
+              environmentKey: production
+              instructions:
+              - experimentKey: checkout-button-color
+                kind: updateExperimentReservation
+                reservationPercent: 25
+        required: true
+      operationId: updateLayer
+components:
+  schemas:
+    Instruction:
+      type: object
+      additionalProperties: {}
+    LayerCollectionRep:
+      type: object
+      required:
+      - items
+      - totalCount
+      - _links
+      properties:
+        items:
+          type: array
+          description: The layers in the project
+          items:
+            $ref: '#/components/schemas/LayerRep'
+        totalCount:
+          type: integer
+          description: The total number of layers in the project
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+          example:
+            self:
+              href: /api/v2/projects/my-project/layers
+              type: application/json
+    LayerRep:
+      type: object
+      required:
+      - key
+      - name
+      - description
+      - createdAt
+      properties:
+        key:
+          type: string
+          description: The key of the layer
+          example: checkout-flow
+        name:
+          type: string
+          description: The name of the layer
+          example: Checkout Flow
+        description:
+          type: string
+          description: The description of the layer
+          example: The checkout flow for the application
+        createdAt:
+          description: The date and time when the layer was created
+          $ref: '#/components/schemas/UnixMillis'
+        randomizationUnit:
+          type: string
+          description: The unit of randomization for the layer
+          example: user
+        environments:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/LayerConfigurationRep'
+          description: The layer configurations for each requested environment
+    Link:
+      type: object
+      properties:
+        href:
+          type: string
+        type:
+          type: string
+    LayerPost:
+      type: object
+      required:
+      - key
+      - name
+      - description
+      properties:
+        key:
+          type: string
+          description: Unique identifier for the layer
+          example: checkout-flow
+        name:
+          type: string
+          description: Layer name
+          example: Checkout Flow
+        description:
+          type: string
+          description: The checkout flow for the application
+    LayerReservationRep:
+      type: object
+      required:
+      - experimentKey
+      - flagKey
+      - reservationPercent
+      properties:
+        experimentKey:
+          type: string
+          description: The key of the experiment
+          example: checkout-flow-experiment
+        flagKey:
+          type: string
+          description: The key of the flag
+          example: checkout-flow-flag
+        reservationPercent:
+          type: integer
+          description: The percentage of traffic reserved for the experiment
+          example: 20
+    Instructions:
+      type: array
+      items:
+        $ref: '#/components/schemas/Instruction'
+    InvalidRequestErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: invalid_request
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid request body
+    NotFoundErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: not_found
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid resource identifier
+    LayerPatchInput:
+      type: object
+      required:
+      - instructions
+      properties:
+        comment:
+          type: string
+          description: Optional comment describing the update
+          example: Optional comment
+        environmentKey:
+          type: string
+          description: The environment key used for making environment specific updates. For example, updating the reservation of an experiment
+          example: production
+        instructions:
+          description: 'The instructions to perform when updating. This should be an array with objects that look like <code>{"kind": "update_action"}</code>. Some instructions also require a <code>value</code> field in the array element.'
+          example: '[{"kind": "updateName", "name": "Updated layer name"}]'
+          $ref: '#/components/schemas/Instructions'
+    RateLimitedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: rate_limited
+        message:
+          type: string
+          description: Description of the error
+          example: You've exceeded the API rate limit. Try again later.
+    UnixMillis:
+      type: integer
+      format: int64
+    ForbiddenErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: forbidden
+        message:
+          type: string
+          description: Description of the error
+          example: Forbidden. Access to the requested resource was denied.
+    LayerConfigurationRep:
+      type: object
+      required:
+      - reservations
+      properties:
+        reservations:
+          type: array
+          description: The experiment reservations for the layer
+          items:
+            $ref: '#/components/schemas/LayerReservationRep'
+  securitySchemes:
+    ApiKey:
+      type: apiKey
+      in: header
+      name: Authorization

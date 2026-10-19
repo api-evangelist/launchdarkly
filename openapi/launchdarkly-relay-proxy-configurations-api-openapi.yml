@@ -1,31 +1,372 @@
 openapi: 3.2.0
 info:
-  title: LaunchDarkly REST Relay Proxy Configurations API
-  description: The LaunchDarkly REST API provides programmatic access to the full LaunchDarkly feature management platform.
-  version: '20240415'
-  contact:
-    name: LaunchDarkly Support
-    url: https://support.launchdarkly.com
-  termsOfService: https://launchdarkly.com/policies/terms-of-service
+  title: Launchdarkly Relay Proxy configurations API
   license:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
+  version: '1.0'
+  description: 'Operations tagged Relay Proxy configurations across 2 of this provider''s published API definitions: launchdarkly-openapi.json, launchdarkly-rest-api-openapi.yml. Each path carries the servers of the definition it was published in.'
 servers:
+- url: https://app.launchdarkly.com
+  description: ' Default'
+- url: https://app.launchdarkly.us
+  description: ' Federal'
 - url: https://app.launchdarkly.com/api/v2
   description: LaunchDarkly Production API
-security:
-- bearerAuth: []
 tags:
-- name: Relay Proxy Configurations
-  description: Manage automatic configuration entries for LaunchDarkly Relay Proxy instances.
+- name: Relay Proxy configurations
+  description: '> ### Relay Proxy automatic configuration is an Enterprise feature
+
+    >
+
+    > Relay Proxy automatic configuration is available to customers on an Enterprise plan. To learn more, read about our pricing. To upgrade your plan, contact Sales.
+
+
+    The Relay Proxy automatic configuration API provides access to all resources related to relay tokens. To learn more, read Automatic configuration.
+
+
+    Several of the endpoints in the Relay Proxy automatic configuration API require a configuration ID. The Relay Proxy configuration ID is returned as part of the Create a new Relay Proxy config and List Relay Proxy configs responses. It is the `_id` field, or the `_id` field of each element in the `items` array.'
 paths:
+  /api/v2/account/relay-auto-configs:
+    get:
+      responses:
+        '200':
+          description: Relay auto configs collection response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RelayAutoConfigCollectionRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Relay Proxy configurations
+      summary: List Relay Proxy configs
+      description: Get a list of Relay Proxy configurations in the account.
+      operationId: getRelayProxyConfigs
+      security:
+      - ApiKey:
+        - read
+        - write
+    post:
+      responses:
+        '201':
+          description: Relay auto config response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RelayAutoConfigRep'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Relay Proxy configurations
+      summary: Create a new Relay Proxy config
+      description: Create a Relay Proxy config.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RelayAutoConfigPost'
+            example:
+              name: Sample Relay Proxy config for all proj and env
+              policy:
+              - actions:
+                - '*'
+                effect: allow
+                resources:
+                - proj/*:env/*
+        required: true
+      operationId: postRelayAutoConfig
+      security:
+      - ApiKey:
+        - read
+        - write
+    servers:
+    - url: https://app.launchdarkly.com
+      description: ' Default'
+    - url: https://app.launchdarkly.us
+      description: ' Federal'
+  /api/v2/account/relay-auto-configs/{id}:
+    get:
+      responses:
+        '200':
+          description: Relay auto config response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RelayAutoConfigRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Relay Proxy configurations
+      summary: Get Relay Proxy config
+      description: Get a single Relay Proxy auto config by ID.
+      parameters:
+      - name: id
+        in: path
+        description: The relay auto config id
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The relay auto config id
+      operationId: getRelayProxyConfig
+      security:
+      - ApiKey:
+        - read
+        - write
+    patch:
+      responses:
+        '200':
+          description: Relay auto config response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RelayAutoConfigRep'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '409':
+          description: Status conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusConflictErrorRep'
+        '422':
+          description: Invalid patch content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PatchFailedErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Relay Proxy configurations
+      summary: Update a Relay Proxy config
+      description: Update a Relay Proxy configuration. Updating a configuration uses a JSON patch or JSON merge patch representation of the desired changes. To learn more, read Updates.
+      parameters:
+      - name: id
+        in: path
+        description: The relay auto config id
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The relay auto config id
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchWithComment'
+            example:
+              patch:
+              - op: replace
+                path: /policy/0
+                value:
+                  actions:
+                  - '*'
+                  effect: allow
+                  resources:
+                  - proj/*:env/qa
+        required: true
+      operationId: patchRelayAutoConfig
+      security:
+      - ApiKey:
+        - read
+        - write
+    delete:
+      responses:
+        '204':
+          description: Action succeeded
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '409':
+          description: Status conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusConflictErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Relay Proxy configurations
+      summary: Delete Relay Proxy config by ID
+      description: Delete a Relay Proxy config.
+      parameters:
+      - name: id
+        in: path
+        description: The relay auto config id
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The relay auto config id
+      operationId: deleteRelayAutoConfig
+      security:
+      - ApiKey:
+        - read
+        - write
+    servers:
+    - url: https://app.launchdarkly.com
+      description: ' Default'
+    - url: https://app.launchdarkly.us
+      description: ' Federal'
+  /api/v2/account/relay-auto-configs/{id}/reset:
+    post:
+      responses:
+        '200':
+          description: Relay auto config response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RelayAutoConfigRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Relay Proxy configurations
+      summary: Reset Relay Proxy configuration key
+      description: Reset a Relay Proxy configuration's secret key with an optional expiry time for the old key.
+      parameters:
+      - name: id
+        in: path
+        description: The Relay Proxy configuration ID
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The Relay Proxy configuration ID
+      - name: expiry
+        in: query
+        description: An expiration time for the old Relay Proxy configuration key, expressed as a Unix epoch time in milliseconds. By default, the Relay Proxy configuration will expire immediately.
+        schema:
+          type: integer
+          format: int64
+          description: An expiration time for the old Relay Proxy configuration key, expressed as a Unix epoch time in milliseconds. By default, the Relay Proxy configuration will expire immediately.
+      operationId: resetRelayAutoConfig
+      security:
+      - ApiKey:
+        - read
+        - write
+    servers:
+    - url: https://app.launchdarkly.com
+      description: ' Default'
+    - url: https://app.launchdarkly.us
+      description: ' Federal'
   /account/relay-auto-configs:
     get:
       operationId: listRelayProxyConfigs
       summary: List Relay Proxy configurations
       description: Returns a list of all Relay Proxy automatic configuration entries.
       tags:
-      - Relay Proxy Configurations
+      - Relay Proxy configurations
       responses:
         '200':
           description: Successful response containing Relay Proxy configurations.
@@ -35,12 +376,14 @@ paths:
                 $ref: '#/components/schemas/RelayProxyConfigs'
         '401':
           description: Unauthorized. Invalid or missing access token.
+      security:
+      - bearerAuth: []
     post:
       operationId: createRelayProxyConfig
       summary: Create a Relay Proxy configuration
       description: Creates a new Relay Proxy automatic configuration entry that generates a unique key for Relay Proxy instances.
       tags:
-      - Relay Proxy Configurations
+      - Relay Proxy configurations
       requestBody:
         required: true
         content:
@@ -58,9 +401,489 @@ paths:
           description: Invalid request body.
         '401':
           description: Unauthorized. Invalid or missing access token.
+      security:
+      - bearerAuth: []
+    servers:
+    - url: https://app.launchdarkly.com/api/v2
+      description: LaunchDarkly Production API
 components:
   schemas:
+    JSONPatch:
+      type: array
+      items:
+        $ref: '#/components/schemas/PatchOperation'
+    AccessDenied:
+      type: object
+      required:
+      - action
+      - reason
+      properties:
+        action:
+          $ref: '#/components/schemas/ActionIdentifier'
+        reason:
+          $ref: '#/components/schemas/AccessDeniedReason'
+    PatchFailedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: patch_failed
+        message:
+          type: string
+          description: Description of the error
+          example: Unprocessable entity. Could not apply patch.
+    RelayAutoConfigPost:
+      type: object
+      required:
+      - name
+      - policy
+      properties:
+        name:
+          type: string
+          description: A human-friendly name for the Relay Proxy configuration
+        policy:
+          type: array
+          description: A description of what environments and projects the Relay Proxy should include or exclude. To learn more, read [Write an inline policy](https://launchdarkly.com/docs/sdk/relay-proxy/automatic-configuration#write-an-inline-policy).
+          items:
+            $ref: '#/components/schemas/Statement'
+    InvalidRequestErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: invalid_request
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid request body
+    MemberSummary:
+      type: object
+      required:
+      - _links
+      - _id
+      - role
+      - email
+      properties:
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+          example:
+            self:
+              href: /api/v2/members/569f183514f4432160000007
+              type: application/json
+        _id:
+          type: string
+          description: The member's ID
+          example: 569f183514f4432160000007
+        firstName:
+          type: string
+          description: The member's first name
+          example: Ariel
+        lastName:
+          type: string
+          description: The member's last name
+          example: Flores
+        role:
+          type: string
+          description: The member's base role. If the member has no additional roles, this role will be in effect.
+          example: admin
+        email:
+          type: string
+          description: The member's email address
+          example: ariel@acme.com
+    RateLimitedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: rate_limited
+        message:
+          type: string
+          description: Description of the error
+          example: You've exceeded the API rate limit. Try again later.
+    AccessDeniedReason:
+      type: object
+      required:
+      - effect
+      properties:
+        resources:
+          type: array
+          description: Resource specifier strings
+          items:
+            type: string
+          example:
+          - proj/*:env/*;qa_*:/flag/*
+        notResources:
+          type: array
+          description: Targeted resources are the resources NOT in this list. The <code>resources</code> and <code>notActions</code> fields must be empty to use this field.
+          items:
+            type: string
+        actions:
+          type: array
+          description: Actions to perform on a resource
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+          example:
+          - '*'
+        notActions:
+          type: array
+          description: Targeted actions are the actions NOT in this list. The <code>actions</code> and <code>notResources</code> fields must be empty to use this field.
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+        effect:
+          type: string
+          description: Whether this statement should allow or deny actions on the resources.
+          example: allow
+          enum:
+          - allow
+          - deny
+        role_name:
+          type: string
+    UnauthorizedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: unauthorized
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid access token
+    ForbiddenErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: forbidden
+        message:
+          type: string
+          description: Description of the error
+          example: Forbidden. Access to the requested resource was denied.
+    ActionSpecifier:
+      type: string
+    Link:
+      type: object
+      properties:
+        href:
+          type: string
+        type:
+          type: string
+    ActionIdentifier:
+      type: string
+    UnixMillis:
+      type: integer
+      format: int64
+    RelayAutoConfigRep:
+      type: object
+      required:
+      - _id
+      - name
+      - policy
+      - displayKey
+      - creationDate
+      - lastModified
+      properties:
+        _id:
+          description: The ID of the Relay Proxy configuration
+          example: 12ab3c45de678910abc12345
+          $ref: '#/components/schemas/ObjectId'
+        _creator:
+          description: Details on the member who created this Relay Proxy configuration
+          $ref: '#/components/schemas/MemberSummary'
+        _access:
+          description: Details on the allowed and denied actions for this Relay Proxy configuration
+          $ref: '#/components/schemas/Access'
+        name:
+          type: string
+          description: A human-friendly name for the Relay Proxy configuration
+          example: Relay Proxy Demo Config
+        policy:
+          type: array
+          description: A description of what environments and projects the Relay Proxy should include or exclude
+          items:
+            $ref: '#/components/schemas/Statement'
+        fullKey:
+          type: string
+          description: The Relay Proxy configuration key
+        displayKey:
+          type: string
+          description: The last few characters of the Relay Proxy configuration key, displayed in the LaunchDarkly UI
+          example: 7f30
+        creationDate:
+          description: Timestamp of when the Relay Proxy configuration was created
+          example: '1628001602644'
+          $ref: '#/components/schemas/UnixMillis'
+        lastModified:
+          description: Timestamp of when the Relay Proxy configuration was most recently modified
+          example: '1628001602644'
+          $ref: '#/components/schemas/UnixMillis'
     Statement:
+      type: object
+      required:
+      - effect
+      properties:
+        resources:
+          type: array
+          description: Resource specifier strings
+          items:
+            type: string
+          example:
+          - proj/*:env/*;qa_*:/flag/*
+        notResources:
+          type: array
+          description: Targeted resources are the resources NOT in this list. The <code>resources</code> and <code>notActions</code> fields must be empty to use this field.
+          items:
+            type: string
+        actions:
+          type: array
+          description: Actions to perform on a resource
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+          example:
+          - '*'
+        notActions:
+          type: array
+          description: Targeted actions are the actions NOT in this list. The <code>actions</code> and <code>notResources</code> fields must be empty to use this field.
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+        effect:
+          type: string
+          description: Whether this statement should allow or deny actions on the resources.
+          example: allow
+          enum:
+          - allow
+          - deny
+    PatchOperation:
+      type: object
+      required:
+      - op
+      - path
+      properties:
+        op:
+          type: string
+          description: The type of operation to perform
+          example: replace
+        path:
+          type: string
+          description: A JSON Pointer string specifying the part of the document to operate on
+          example: /exampleField
+        value:
+          description: A JSON value used in "add", "replace", and "test" operations
+          example: new example value
+    RelayAutoConfigCollectionRep:
+      type: object
+      required:
+      - items
+      properties:
+        items:
+          type: array
+          description: An array of Relay Proxy configurations
+          items:
+            $ref: '#/components/schemas/RelayAutoConfigRep'
+    Access:
+      type: object
+      required:
+      - denied
+      - allowed
+      properties:
+        denied:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccessDenied'
+        allowed:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccessAllowedRep'
+    StatusConflictErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: optimistic_locking_error
+        message:
+          type: string
+          description: Description of the error
+          example: Conflict. Optimistic lock error. Try again later.
+    NotFoundErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: not_found
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid resource identifier
+    AccessAllowedReason:
+      type: object
+      required:
+      - effect
+      properties:
+        resources:
+          type: array
+          description: Resource specifier strings
+          items:
+            type: string
+          example:
+          - proj/*:env/*;qa_*:/flag/*
+        notResources:
+          type: array
+          description: Targeted resources are the resources NOT in this list. The <code>resources</code> and <code>notActions</code> fields must be empty to use this field.
+          items:
+            type: string
+        actions:
+          type: array
+          description: Actions to perform on a resource
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+          example:
+          - '*'
+        notActions:
+          type: array
+          description: Targeted actions are the actions NOT in this list. The <code>actions</code> and <code>notResources</code> fields must be empty to use this field.
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+        effect:
+          type: string
+          description: Whether this statement should allow or deny actions on the resources.
+          example: allow
+          enum:
+          - allow
+          - deny
+        role_name:
+          type: string
+    PatchWithComment:
+      type: object
+      required:
+      - patch
+      properties:
+        patch:
+          description: A JSON patch representation of the change to make
+          $ref: '#/components/schemas/JSONPatch'
+        comment:
+          type: string
+          description: Optional comment
+    AccessAllowedRep:
+      type: object
+      required:
+      - action
+      - reason
+      properties:
+        action:
+          $ref: '#/components/schemas/ActionIdentifier'
+        reason:
+          $ref: '#/components/schemas/AccessAllowedReason'
+    ObjectId:
+      type: string
+    RelayProxyConfig:
+      type: object
+      description: A Relay Proxy automatic configuration entry.
+      properties:
+        _id:
+          type: string
+          description: The unique identifier of this configuration.
+        name:
+          type: string
+          description: The human-readable name of this configuration.
+        fullKey:
+          type: string
+          description: The full key for authenticating Relay Proxy instances. Only returned at creation time.
+        displayKey:
+          type: string
+          description: The last four characters of the full key.
+        creationDate:
+          type: integer
+          format: int64
+          description: Unix epoch timestamp when the configuration was created.
+        lastModified:
+          type: integer
+          format: int64
+          description: Unix epoch timestamp of the last modification.
+        policy:
+          type: array
+          description: Policy statements controlling which projects and environments this Relay Proxy can access.
+          items:
+            $ref: '#/components/schemas/Statement_2'
+        _links:
+          $ref: '#/components/schemas/Links'
+    RelayProxyConfigBody:
+      type: object
+      description: The request body for creating a Relay Proxy configuration.
+      required:
+      - name
+      - policy
+      properties:
+        name:
+          type: string
+          description: A human-readable name for the configuration.
+        policy:
+          type: array
+          description: Policy statements controlling access.
+          items:
+            $ref: '#/components/schemas/Statement_2'
+    Links:
+      type: object
+      description: HATEOAS links for navigating related resources.
+      properties:
+        self:
+          type: object
+          description: A link to this resource.
+          properties:
+            href:
+              type: string
+              description: The URL of this resource.
+            type:
+              type: string
+              description: The media type.
+      additionalProperties:
+        type: object
+        properties:
+          href:
+            type: string
+            description: The URL of the linked resource.
+          type:
+            type: string
+            description: The media type.
+    RelayProxyConfigs:
+      type: object
+      description: A collection of Relay Proxy configurations.
+      properties:
+        items:
+          type: array
+          description: The list of Relay Proxy configurations.
+          items:
+            $ref: '#/components/schemas/RelayProxyConfig'
+    Statement_2:
       type: object
       description: A policy statement controlling resource access or event filtering.
       properties:
@@ -90,85 +913,11 @@ components:
           description: The actions this statement does not apply to.
           items:
             type: string
-    RelayProxyConfig:
-      type: object
-      description: A Relay Proxy automatic configuration entry.
-      properties:
-        _id:
-          type: string
-          description: The unique identifier of this configuration.
-        name:
-          type: string
-          description: The human-readable name of this configuration.
-        fullKey:
-          type: string
-          description: The full key for authenticating Relay Proxy instances. Only returned at creation time.
-        displayKey:
-          type: string
-          description: The last four characters of the full key.
-        creationDate:
-          type: integer
-          format: int64
-          description: Unix epoch timestamp when the configuration was created.
-        lastModified:
-          type: integer
-          format: int64
-          description: Unix epoch timestamp of the last modification.
-        policy:
-          type: array
-          description: Policy statements controlling which projects and environments this Relay Proxy can access.
-          items:
-            $ref: '#/components/schemas/Statement'
-        _links:
-          $ref: '#/components/schemas/Links'
-    RelayProxyConfigs:
-      type: object
-      description: A collection of Relay Proxy configurations.
-      properties:
-        items:
-          type: array
-          description: The list of Relay Proxy configurations.
-          items:
-            $ref: '#/components/schemas/RelayProxyConfig'
-    Links:
-      type: object
-      description: HATEOAS links for navigating related resources.
-      properties:
-        self:
-          type: object
-          description: A link to this resource.
-          properties:
-            href:
-              type: string
-              description: The URL of this resource.
-            type:
-              type: string
-              description: The media type.
-      additionalProperties:
-        type: object
-        properties:
-          href:
-            type: string
-            description: The URL of the linked resource.
-          type:
-            type: string
-            description: The media type.
-    RelayProxyConfigBody:
-      type: object
-      description: The request body for creating a Relay Proxy configuration.
-      required:
-      - name
-      - policy
-      properties:
-        name:
-          type: string
-          description: A human-readable name for the configuration.
-        policy:
-          type: array
-          description: Policy statements controlling access.
-          items:
-            $ref: '#/components/schemas/Statement'
   securitySchemes:
+    ApiKey:
+      type: apiKey
+      in: header
+      name: Authorization
     bearerAuth:
       type: http
       scheme: bearer
@@ -176,3 +925,6 @@ components:
 externalDocs:
   description: LaunchDarkly API Documentation
   url: https://apidocs.launchdarkly.com/
+x-refined-from:
+- launchdarkly-openapi.json
+- launchdarkly-rest-api-openapi.yml

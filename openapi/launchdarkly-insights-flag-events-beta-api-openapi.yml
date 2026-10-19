@@ -1,0 +1,578 @@
+openapi: 3.2.0
+info:
+  title: LaunchDarkly REST Insights flag events (beta) API
+  description: 'This documentation describes LaunchDarkly''s REST API. To access the complete OpenAPI spec directly, use Get OpenAPI spec. To learn how to use LaunchDarkly using the user interface (UI) instead, read our product documentation. ## Authentication
+
+
+    LaunchDarkly''s REST API uses the HTTPS protocol with a minimum TLS version of 1.2. All REST API resources are authenticated with either personal or service access tokens, or session cookies. Other authentication mechanisms are not supported. You can manage personal access tokens on your **Authorization** page in the LaunchDarkly UI. LaunchDarkly also has SDK keys, mobile keys, and client-side IDs that are used by our server-side SDKs, mobile SDKs, and JavaScript-based SDKs, respectively. **These keys cannot be used to access our REST API**. These keys are environment-specific, and can only perform read-only operations such as fetching feature flag settings. | Auth mechanism | Allowed resources | Use cases |
+
+    | ----------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
+
+    | Personal or service access tokens | Can be customized on a per-token basis | Building scripts, custom integrations, data export. |
+
+    | SDK keys | Can only access read-only resources specific to server-side SDKs. Restricted to a single environment. | Server-side SDKs |
+
+    | Mobile keys | Can only access read-only resources specific to mobile SDKs, and only for flags marked available to mobile keys. Restricted to a single environment. | Mobile SDKs |
+
+    | Client-side ID | Can only access read-only resources specific to JavaScript-based client-side SDKs, and only for flags marked available to client-side. Restricted to a single environment. | Client-side JavaScript |
+
+
+    > #### Keep your access tokens and SDK keys private
+
+    >
+
+    > Access tokens should _never_ be exposed in untrusted contexts. Never put an access token in client-side JavaScript, or embed it in a mobile application. LaunchDarkly has special mobile keys that you can embed in mobile apps. If you accidentally expose an access token or SDK key, you can reset it from your **Authorization** page. >
+
+    > The client-side ID is safe to embed in untrusted contexts. It''s designed for use in client-side JavaScript. ### Authentication using request header
+
+
+    The preferred way to authenticate with the API is by adding an `Authorization` header containing your access token to your requests. The value of the `Authorization` header must be your access token. Manage personal access tokens from the **Authorization** page. ### Authentication using session cookie
+
+
+    For testing purposes, you can make API calls directly from your web browser. If you are logged in to the LaunchDarkly application, the API will use your existing session to authenticate calls. Depending on the permissions granted as part of your role, you may not have permission to perform some API calls. You will receive a `401` response code in that case. > ### Modifying the Origin header causes an error
+
+    >
+
+    > LaunchDarkly validates that the Origin header for any API request authenticated by a session cookie matches the expected Origin header. The expected Origin header is `https://app.launchdarkly.com`. >
+
+    > If the Origin header does not match what''s expected, LaunchDarkly returns an error. This error can prevent the LaunchDarkly app from working correctly. >
+
+    > Any browser extension that intentionally changes the Origin header can cause this problem. For example, Cross-Origin Resource Sharing (CORS) extensions used during development can modify the Origin header and cause the app to fail. >
+
+    > To prevent this error, do not modify your Origin header. >
+
+    > LaunchDarkly does not require origin matching when authenticating with an access token, so this issue does not affect normal API usage.'
+  contact:
+    name: LaunchDarkly Technical Support Team
+    url: https://support.launchdarkly.com
+    email: support@launchdarkly.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+  version: '2.0'
+servers:
+- url: https://app.launchdarkly.com
+  description: ' Default'
+- url: https://app.launchdarkly.us
+  description: ' Federal'
+security:
+- ApiKey:
+  - read
+  - write
+tags:
+- name: Insights flag events (beta)
+  description: '> ### This feature is in beta
+
+    >
+
+    > To use this feature, pass in a header including the `LD-API-Version` key with value set to `beta`. Use this header with each call. To learn more, read Beta resources.
+
+    >
+
+    > Resources that are in beta are still undergoing testing and development. They may change without notice, including becoming backwards incompatible.
+
+
+    The flag events API provides access to flag-event data used in engineering insights project metrics. To learn more, read Flag health.'
+paths:
+  /api/v2/engineering-insights/flag-events:
+    get:
+      responses:
+        '200':
+          description: Flag event collection response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FlagEventCollectionRep'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationFailedErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Insights flag events (beta)
+      summary: List flag events
+      description: 'Get a list of flag events
+
+
+        ### Expanding the flag event collection response
+
+
+        LaunchDarkly supports expanding the flag event collection response to include additional fields.
+
+
+        To expand the response, append the `expand` query parameter and include the following:
+
+
+        * `experiments` includes details on all of the experiments run on each flag
+
+
+        For example, use `?expand=experiments` to include the `experiments` field in the response. By default, this field is **not** included in the response.'
+      parameters:
+      - name: projectKey
+        in: query
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: environmentKey
+        in: query
+        description: The environment key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The environment key
+      - name: applicationKey
+        in: query
+        description: Comma separated list of application keys
+        schema:
+          type: string
+          format: string
+          description: Comma separated list of application keys
+      - name: query
+        in: query
+        description: Filter events by flag key
+        schema:
+          type: string
+          format: string
+          description: Filter events by flag key
+      - name: impactSize
+        in: query
+        description: 'Filter events by impact size. A small impact created a less than 20% change in the proportion of end users receiving one or more flag variations. A medium impact created between a 20%-80% change. A large impact created a more than 80% change. Options: `none`, `small`, `medium`, `large`'
+        schema:
+          type: string
+          format: string
+          description: 'Filter events by impact size. A small impact created a less than 20% change in the proportion of end users receiving one or more flag variations. A medium impact created between a 20%-80% change. A large impact created a more than 80% change. Options: `none`, `small`, `medium`, `large`'
+      - name: hasExperiments
+        in: query
+        description: Filter events to those associated with an experiment (`true`) or without an experiment (`false`)
+        schema:
+          type: boolean
+          format: boolean
+          description: Filter events to those associated with an experiment (`true`) or without an experiment (`false`)
+      - name: global
+        in: query
+        description: 'Filter to include or exclude global events. Default value is `include`. Options: `include`, `exclude`'
+        schema:
+          type: string
+          format: string
+          description: 'Filter to include or exclude global events. Default value is `include`. Options: `include`, `exclude`'
+      - name: expand
+        in: query
+        description: 'Expand properties in response. Options: `experiments`'
+        schema:
+          type: string
+          format: string
+          description: 'Expand properties in response. Options: `experiments`'
+      - name: limit
+        in: query
+        description: The number of deployments to return. Default is 20. Maximum allowed is 100.
+        schema:
+          type: integer
+          format: int64
+          description: The number of deployments to return. Default is 20. Maximum allowed is 100.
+      - name: from
+        in: query
+        description: Unix timestamp in milliseconds. Default value is 7 days ago.
+        schema:
+          type: integer
+          format: int64
+          description: Unix timestamp in milliseconds. Default value is 7 days ago.
+      - name: to
+        in: query
+        description: Unix timestamp in milliseconds. Default value is now.
+        schema:
+          type: integer
+          format: int64
+          description: Unix timestamp in milliseconds. Default value is now.
+      - name: after
+        in: query
+        description: Identifier used for pagination
+        schema:
+          type: string
+          format: string
+          description: Identifier used for pagination
+      - name: before
+        in: query
+        description: Identifier used for pagination
+        schema:
+          type: string
+          format: string
+          description: Identifier used for pagination
+      operationId: getFlagEvents
+components:
+  schemas:
+    FlagEventImpactRep:
+      type: object
+      properties:
+        size:
+          type: string
+          description: 'The size of the flag event impact. Sizes are defined as: none (0%), small (0-20%), medium (20-80%), large (>80%)'
+          example: medium
+          enum:
+          - none
+          - small
+          - medium
+          - large
+        percentage:
+          type: number
+          description: The percentage of the flag event impact
+          example: 50
+        reason:
+          description: The reason for the flag event impact
+          example: evaluations
+          enum:
+          - evaluations
+          - global
+          - waiting
+          $ref: '#/components/schemas/ImpactReason'
+        evaluationsSummary:
+          description: A summary of the change in variation evaluations after the flag event
+          $ref: '#/components/schemas/EvaluationsSummary'
+    RateLimitedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: rate_limited
+        message:
+          type: string
+          description: Description of the error
+          example: You've exceeded the API rate limit. Try again later.
+    UnauthorizedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: unauthorized
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid access token
+    ForbiddenErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: forbidden
+        message:
+          type: string
+          description: Description of the error
+          example: Forbidden. Access to the requested resource was denied.
+    FailureReasonRep:
+      type: object
+      required:
+      - attribute
+      - reason
+      properties:
+        attribute:
+          type: string
+          description: The attribute that failed validation
+          example: projectKey
+        reason:
+          type: string
+          description: The reason the attribute failed validation
+          example: must be present
+    FlagEventMemberRep:
+      type: object
+      required:
+      - id
+      - email
+      - firstName
+      - lastName
+      properties:
+        id:
+          type: string
+          description: The member ID
+          example: 65baa44ecc4b5bce113bb4f7
+        email:
+          type: string
+          description: The member email
+          example: test@launchdarkly.com
+        firstName:
+          type: string
+          description: The member first name
+        lastName:
+          type: string
+          description: The member last name
+    Link:
+      type: object
+      properties:
+        href:
+          type: string
+        type:
+          type: string
+    EventType:
+      type: string
+    FlagEventExperimentCollection:
+      type: object
+      required:
+      - totalCount
+      - items
+      properties:
+        totalCount:
+          type: integer
+          description: The total number of experiments
+          example: 1
+        items:
+          type: array
+          description: A list of experiments
+          items:
+            $ref: '#/components/schemas/FlagEventExperiment'
+    UnixMillis:
+      type: integer
+      format: int64
+    EvaluationsSummary:
+      type: object
+      properties:
+        variations:
+          type: array
+          description: A list of variation evaluations
+          items:
+            $ref: '#/components/schemas/VariationEvalSummary'
+    NotFoundErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: not_found
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid resource identifier
+    FlagEventCollectionRep:
+      type: object
+      required:
+      - totalCount
+      - items
+      properties:
+        totalCount:
+          type: integer
+          description: The total number of flag events
+          example: 1200
+        items:
+          type: array
+          description: A list of flag events
+          items:
+            $ref: '#/components/schemas/FlagEventRep'
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+          example:
+            next:
+              href: /api/v2/engineering-insights/flag-events?after=a4290006-1fd1-4ca5-acf7-9f31fac61cf5
+              type: application/json
+            self:
+              href: /api/v2/engineering-insights/flag-events
+              type: application/json
+    ImpactReason:
+      type: string
+    FlagEventExperimentIteration:
+      type: object
+      required:
+      - id
+      - status
+      - startedAt
+      properties:
+        id:
+          type: string
+          description: The experiment iteration ID
+          example: 65baa44ecc4b5bce113bb4f7
+        status:
+          description: The experiment iteration status
+          example: running
+          enum:
+          - running
+          - stopped
+          $ref: '#/components/schemas/IterationStatus'
+        startedAt:
+          description: Timestamp of when the iteration started
+          example: '1655314200000'
+          $ref: '#/components/schemas/UnixMillis'
+        endedAt:
+          description: Timestamp of when the iteration ended
+          example: '1656610200000'
+          $ref: '#/components/schemas/UnixMillis'
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+    VariationEvalSummary:
+      type: object
+      properties:
+        value:
+          description: The variation value
+          example: 'true'
+        before:
+          type: integer
+          format: int64
+          description: The number of evaluations in the ten minutes before the flag event
+          example: 1000
+        after:
+          type: integer
+          format: int64
+          description: The number of evaluations in the ten minutes after the flag event
+          example: 500
+    FlagEventRep:
+      type: object
+      required:
+      - id
+      - projectId
+      - projectKey
+      - flagKey
+      - eventType
+      - eventTime
+      - description
+      - impact
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The flag event ID
+          example: e3b2b0e0-9e9b-4c9a-8e9a-0e0e0e0e0e0e
+        projectId:
+          type: string
+          description: The project ID
+          example: 65baa44ecc4b5bce113bb4f7
+        projectKey:
+          type: string
+          description: The project key
+          example: default
+        environmentId:
+          type: string
+          description: The environment ID
+          example: 65baa44ecc4b5bce113bb4f7
+        environmentKey:
+          type: string
+          description: The environment key
+          example: production
+        flagKey:
+          type: string
+          description: The flag key
+          example: enable-new-payment-method
+        eventType:
+          description: The event type
+          example: enabled_targeting
+          $ref: '#/components/schemas/EventType'
+        eventTime:
+          description: A Unix timestamp in milliseconds
+          example: '1616425200000'
+          $ref: '#/components/schemas/UnixMillis'
+        description:
+          type: string
+          description: The event description
+          example: Targeting rule enabled
+        auditLogEntryId:
+          type: string
+          description: The audit log entry ID
+          example: e3b2b0e0-9e9b-4c9a-8e9a-0e0e0e0e0e0e
+        member:
+          description: The member data
+          $ref: '#/components/schemas/FlagEventMemberRep'
+        actions:
+          type: array
+          description: The resource actions
+          items:
+            type: string
+        impact:
+          description: The flag event evaluation impact
+          $ref: '#/components/schemas/FlagEventImpactRep'
+        experiments:
+          description: A list of experiment iterations related to the flag event
+          $ref: '#/components/schemas/FlagEventExperimentCollection'
+    ValidationFailedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      - errors
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: invalid_request
+        message:
+          type: string
+          description: Description of the error
+          example: validation failed
+        errors:
+          type: array
+          description: List of validation errors
+          items:
+            $ref: '#/components/schemas/FailureReasonRep'
+    FlagEventExperiment:
+      type: object
+      required:
+      - key
+      - name
+      - iteration
+      properties:
+        key:
+          type: string
+          description: The experiment key
+          example: experiment-1
+        name:
+          type: string
+          description: The experiment name
+          example: Experiment 1
+        iteration:
+          description: The experiment iteration
+          $ref: '#/components/schemas/FlagEventExperimentIteration'
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+    IterationStatus:
+      type: string
+  securitySchemes:
+    ApiKey:
+      type: apiKey
+      in: header
+      name: Authorization

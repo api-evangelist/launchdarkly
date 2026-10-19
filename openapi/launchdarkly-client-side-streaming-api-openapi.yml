@@ -40,18 +40,18 @@ paths:
           description: Service unavailable. Flag data not yet available.
 components:
   parameters:
-    EnvironmentId:
-      name: envId
-      in: path
-      required: true
-      description: The client-side environment ID.
-      schema:
-        type: string
     ContextBase64:
       name: contextBase64
       in: path
       required: true
       description: A base64-encoded JSON representation of the evaluation context.
+      schema:
+        type: string
+    EnvironmentId:
+      name: envId
+      in: path
+      required: true
+      description: The client-side environment ID.
       schema:
         type: string
   securitySchemes:

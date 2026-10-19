@@ -1,31 +1,899 @@
 openapi: 3.2.0
 info:
-  title: LaunchDarkly REST Code References API
-  description: The LaunchDarkly REST API provides programmatic access to the full LaunchDarkly feature management platform.
-  version: '20240415'
-  contact:
-    name: LaunchDarkly Support
-    url: https://support.launchdarkly.com
-  termsOfService: https://launchdarkly.com/policies/terms-of-service
+  title: Launchdarkly Code references API
   license:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
+  version: '1.0'
+  description: 'Operations tagged Code references across 2 of this provider''s published API definitions: launchdarkly-openapi.json, launchdarkly-rest-api-openapi.yml. Each path carries the servers of the definition it was published in.'
 servers:
+- url: https://app.launchdarkly.com
+  description: ' Default'
+- url: https://app.launchdarkly.us
+  description: ' Federal'
 - url: https://app.launchdarkly.com/api/v2
   description: LaunchDarkly Production API
-security:
-- bearerAuth: []
 tags:
-- name: Code References
-  description: View code references that show where feature flags are used in your codebase.
+- name: Code references
+  description: '> ### Code references is an Enterprise feature
+
+    >
+
+    > Code references is available to customers on an Enterprise plan. To learn more, read about our pricing. To upgrade your plan, contact Sales.
+
+
+    > ### Use ld-find-code-refs
+
+    >
+
+    > LaunchDarkly provides the ld-find-code-refs utility that creates repository connections, generates code reference data, and creates calls to the code references API. Most customers do not need to call this API directly.
+
+
+    The code references API provides access to all resources related to each connected repository, and associated feature flag code reference data for all branches. To learn more, read Code references.'
 paths:
+  /api/v2/code-refs/extinctions:
+    get:
+      responses:
+        '200':
+          description: Extinction collection response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExtinctionCollectionRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Code references
+      summary: List extinctions
+      description: Get a list of all extinctions. LaunchDarkly creates an extinction event after you remove all code references to a flag. To learn more, read About extinction events.
+      parameters:
+      - name: repoName
+        in: query
+        description: Filter results to a specific repository
+        schema:
+          type: string
+          format: string
+          description: Filter results to a specific repository
+      - name: branchName
+        in: query
+        description: Filter results to a specific branch. By default, only the default branch will be queried for extinctions.
+        schema:
+          type: string
+          format: string
+          description: Filter results to a specific branch. By default, only the default branch will be queried for extinctions.
+      - name: projKey
+        in: query
+        description: Filter results to a specific project
+        schema:
+          type: string
+          format: string
+          description: Filter results to a specific project
+      - name: flagKey
+        in: query
+        description: Filter results to a specific flag key
+        schema:
+          type: string
+          format: string
+          description: Filter results to a specific flag key
+      - name: from
+        in: query
+        description: Filter results to a specific timeframe based on commit time, expressed as a Unix epoch time in milliseconds. Must be used with `to`.
+        schema:
+          type: integer
+          format: int64
+          description: Filter results to a specific timeframe based on commit time, expressed as a Unix epoch time in milliseconds. Must be used with `to`.
+      - name: to
+        in: query
+        description: Filter results to a specific timeframe based on commit time, expressed as a Unix epoch time in milliseconds. Must be used with `from`.
+        schema:
+          type: integer
+          format: int64
+          description: Filter results to a specific timeframe based on commit time, expressed as a Unix epoch time in milliseconds. Must be used with `from`.
+      operationId: getExtinctions
+      security:
+      - ApiKey:
+        - read
+        - write
+    servers:
+    - url: https://app.launchdarkly.com
+      description: ' Default'
+    - url: https://app.launchdarkly.us
+      description: ' Federal'
+  /api/v2/code-refs/repositories:
+    get:
+      responses:
+        '200':
+          description: Repository collection response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RepositoryCollectionRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Code references
+      summary: List repositories
+      description: Get a list of connected repositories. Optionally, you can include branch metadata with the `withBranches` query parameter. Embed references for the default branch with `ReferencesForDefaultBranch`. You can also filter the list of code references by project key and flag key.
+      parameters:
+      - name: withBranches
+        in: query
+        description: If set to any value, the endpoint returns repositories with associated branch data
+        schema:
+          type: string
+          format: string
+          description: If set to any value, the endpoint returns repositories with associated branch data
+      - name: withReferencesForDefaultBranch
+        in: query
+        description: If set to any value, the endpoint returns repositories with associated branch data, as well as code references for the default git branch
+        schema:
+          type: string
+          format: string
+          description: If set to any value, the endpoint returns repositories with associated branch data, as well as code references for the default git branch
+      - name: projKey
+        in: query
+        description: A LaunchDarkly project key. If provided, this filters code reference results to the specified project.
+        schema:
+          type: string
+          format: string
+          description: A LaunchDarkly project key. If provided, this filters code reference results to the specified project.
+      - name: flagKey
+        in: query
+        description: If set to any value, the endpoint returns repositories with associated branch data, as well as code references for the default git branch
+        schema:
+          type: string
+          format: string
+          description: If set to any value, the endpoint returns repositories with associated branch data, as well as code references for the default git branch
+      operationId: getRepositories
+      security:
+      - ApiKey:
+        - read
+        - write
+    post:
+      responses:
+        '200':
+          description: Repository response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RepositoryRep'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '409':
+          description: Status conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusConflictErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Code references
+      summary: Create repository
+      description: Create a repository with the specified name.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/repositoryPost'
+        required: true
+      operationId: postRepository
+      security:
+      - ApiKey:
+        - read
+        - write
+    servers:
+    - url: https://app.launchdarkly.com
+      description: ' Default'
+    - url: https://app.launchdarkly.us
+      description: ' Federal'
+  /api/v2/code-refs/repositories/{repo}:
+    get:
+      responses:
+        '200':
+          description: Repository response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RepositoryRep'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Code references
+      summary: Get repository
+      description: Get a single repository by name.
+      parameters:
+      - name: repo
+        in: path
+        description: The repository name
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The repository name
+      operationId: getRepository
+      security:
+      - ApiKey:
+        - read
+        - write
+    patch:
+      responses:
+        '200':
+          description: Repository response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RepositoryRep'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Code references
+      summary: Update repository
+      description: Update a repository's settings. Updating repository settings uses a JSON patch or JSON merge patch representation of the desired changes. To learn more, read Updates.
+      parameters:
+      - name: repo
+        in: path
+        description: The repository name
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The repository name
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JSONPatch'
+            example:
+            - op: replace
+              path: /defaultBranch
+              value: main
+        required: true
+      operationId: patchRepository
+      security:
+      - ApiKey:
+        - read
+        - write
+    delete:
+      responses:
+        '204':
+          description: Action succeeded
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Code references
+      summary: Delete repository
+      description: Delete a repository with the specified name.
+      parameters:
+      - name: repo
+        in: path
+        description: The repository name
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The repository name
+      operationId: deleteRepository
+      security:
+      - ApiKey:
+        - read
+        - write
+    servers:
+    - url: https://app.launchdarkly.com
+      description: ' Default'
+    - url: https://app.launchdarkly.us
+      description: ' Federal'
+  /api/v2/code-refs/repositories/{repo}/branch-delete-tasks:
+    post:
+      responses:
+        '200':
+          description: Action succeeded
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Code references
+      summary: Delete branches
+      description: Asynchronously delete a number of branches.
+      parameters:
+      - name: repo
+        in: path
+        description: The repository name to delete branches for.
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The repository name to delete branches for.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+            example:
+            - branch-to-be-deleted
+            - another-branch-to-be-deleted
+        required: true
+      operationId: deleteBranches
+      security:
+      - ApiKey:
+        - read
+        - write
+    servers:
+    - url: https://app.launchdarkly.com
+      description: ' Default'
+    - url: https://app.launchdarkly.us
+      description: ' Federal'
+  /api/v2/code-refs/repositories/{repo}/branches:
+    get:
+      responses:
+        '200':
+          description: Branch collection response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BranchCollectionRep'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Code references
+      summary: List branches
+      description: Get a list of branches.
+      parameters:
+      - name: repo
+        in: path
+        description: The repository name
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The repository name
+      operationId: getBranches
+      security:
+      - ApiKey:
+        - read
+        - write
+    servers:
+    - url: https://app.launchdarkly.com
+      description: ' Default'
+    - url: https://app.launchdarkly.us
+      description: ' Federal'
+  /api/v2/code-refs/repositories/{repo}/branches/{branch}:
+    get:
+      responses:
+        '200':
+          description: Branch response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BranchRep'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Code references
+      summary: Get branch
+      description: Get a specific branch in a repository.
+      parameters:
+      - name: repo
+        in: path
+        description: The repository name
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The repository name
+      - name: branch
+        in: path
+        description: The url-encoded branch name
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The url-encoded branch name
+      - name: projKey
+        in: query
+        description: Filter results to a specific project
+        schema:
+          type: string
+          format: string
+          description: Filter results to a specific project
+      - name: flagKey
+        in: query
+        description: Filter results to a specific flag key
+        schema:
+          type: string
+          format: string
+          description: Filter results to a specific flag key
+      operationId: getBranch
+      security:
+      - ApiKey:
+        - read
+        - write
+    put:
+      responses:
+        '200':
+          description: Action succeeded
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '409':
+          description: Status conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusConflictErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Code references
+      summary: Upsert branch
+      description: Create a new branch if it doesn't exist, or update the branch if it already exists.
+      parameters:
+      - name: repo
+        in: path
+        description: The repository name
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The repository name
+      - name: branch
+        in: path
+        description: The URL-encoded branch name
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The URL-encoded branch name
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/putBranch'
+        required: true
+      operationId: putBranch
+      security:
+      - ApiKey:
+        - read
+        - write
+    servers:
+    - url: https://app.launchdarkly.com
+      description: ' Default'
+    - url: https://app.launchdarkly.us
+      description: ' Federal'
+  /api/v2/code-refs/repositories/{repo}/branches/{branch}/extinction-events:
+    post:
+      responses:
+        '200':
+          description: Action succeeded
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Code references
+      summary: Create extinction
+      description: Create a new extinction.
+      parameters:
+      - name: repo
+        in: path
+        description: The repository name
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The repository name
+      - name: branch
+        in: path
+        description: The URL-encoded branch name
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The URL-encoded branch name
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExtinctionListPost'
+        required: true
+      operationId: postExtinction
+      security:
+      - ApiKey:
+        - read
+        - write
+    servers:
+    - url: https://app.launchdarkly.com
+      description: ' Default'
+    - url: https://app.launchdarkly.us
+      description: ' Federal'
+  /api/v2/code-refs/statistics:
+    get:
+      responses:
+        '200':
+          description: Statistic root response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatisticsRoot'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Code references
+      summary: Get links to code reference repositories for each project
+      description: Get links for all projects that have code references.
+      operationId: getRootStatistic
+      security:
+      - ApiKey:
+        - read
+        - write
+    servers:
+    - url: https://app.launchdarkly.com
+      description: ' Default'
+    - url: https://app.launchdarkly.us
+      description: ' Federal'
+  /api/v2/code-refs/statistics/{projectKey}:
+    get:
+      responses:
+        '200':
+          description: Statistic collection response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatisticCollectionRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Code references
+      summary: Get code references statistics for flags
+      description: Get statistics about all the code references across repositories for all flags in your project that have code references in the default branch, for example, `main`. Optionally, you can include the `flagKey` query parameter to limit your request to statistics about code references for a single flag. This endpoint returns the number of references to your flag keys in your repositories, as well as a link to each repository.
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: flagKey
+        in: query
+        description: Filter results to a specific flag key
+        schema:
+          type: string
+          format: string
+          description: Filter results to a specific flag key
+      operationId: getStatistics
+      security:
+      - ApiKey:
+        - read
+        - write
+    servers:
+    - url: https://app.launchdarkly.com
+      description: ' Default'
+    - url: https://app.launchdarkly.us
+      description: ' Federal'
   /code-refs/repositories:
     get:
       operationId: listCodeReferenceRepositories
       summary: List code reference repositories
       description: Returns a list of all repositories connected for code reference scanning.
       tags:
-      - Code References
+      - Code references
       responses:
         '200':
           description: Successful response containing code reference repositories.
@@ -35,29 +903,619 @@ paths:
                 $ref: '#/components/schemas/CodeReferenceRepositories'
         '401':
           description: Unauthorized. Invalid or missing access token.
+      security:
+      - bearerAuth: []
+    servers:
+    - url: https://app.launchdarkly.com/api/v2
+      description: LaunchDarkly Production API
 components:
   schemas:
-    CodeReferenceRepositories:
+    Extinction:
       type: object
-      description: A collection of code reference repositories.
+      required:
+      - revision
+      - message
+      - time
+      - flagKey
+      - projKey
       properties:
+        revision:
+          type: string
+          description: The identifier for the revision where flag became extinct. For example, a commit SHA.
+          example: a94a8fe5ccb19ba61c4c0873d391e987982fbbd3
+        message:
+          type: string
+          description: Description of the extinction. For example, the commit message for the revision.
+          example: Remove flag for launched feature
+        time:
+          description: Time of extinction
+          example: '1636558831870'
+          $ref: '#/components/schemas/UnixMillis'
+        flagKey:
+          type: string
+          description: The feature flag key
+          example: enable-feature
+        projKey:
+          type: string
+          description: The project key
+          example: default
+    JSONPatch:
+      type: array
+      items:
+        $ref: '#/components/schemas/PatchOperation'
+    AccessDenied:
+      type: object
+      required:
+      - action
+      - reason
+      properties:
+        action:
+          $ref: '#/components/schemas/ActionIdentifier'
+        reason:
+          $ref: '#/components/schemas/AccessDeniedReason'
+    StatisticsRoot:
+      type: object
+      properties:
+        projects:
+          type: array
+          description: The location and content type of all projects that have code references
+          items:
+            $ref: '#/components/schemas/Link'
+          example:
+          - href: /api/v2/code-refs/statistics/example-project-with-code-refs
+            type: application/json
+        self:
+          description: The location and content type for accessing this resource
+          example: '{"href": "/api/v2/code-refs/statistics", "type": "application/json"}'
+          $ref: '#/components/schemas/Link'
+    InvalidRequestErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: invalid_request
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid request body
+    ExtinctionCollectionRep:
+      type: object
+      required:
+      - _links
+      - items
+      properties:
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+        items:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/Extinction'
+          description: An array of extinction events
+    ReferenceRep:
+      type: object
+      required:
+      - path
+      - hunks
+      properties:
+        path:
+          type: string
+          description: File path of the reference
+          example: /main/index.js
+        hint:
+          type: string
+          description: Programming language used in the file
+          example: javascript
+        hunks:
+          type: array
+          items:
+            $ref: '#/components/schemas/HunkRep'
+    RateLimitedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: rate_limited
+        message:
+          type: string
+          description: Description of the error
+          example: You've exceeded the API rate limit. Try again later.
+    AccessDeniedReason:
+      type: object
+      required:
+      - effect
+      properties:
+        resources:
+          type: array
+          description: Resource specifier strings
+          items:
+            type: string
+          example:
+          - proj/*:env/*;qa_*:/flag/*
+        notResources:
+          type: array
+          description: Targeted resources are the resources NOT in this list. The <code>resources</code> and <code>notActions</code> fields must be empty to use this field.
+          items:
+            type: string
+        actions:
+          type: array
+          description: Actions to perform on a resource
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+          example:
+          - '*'
+        notActions:
+          type: array
+          description: Targeted actions are the actions NOT in this list. The <code>actions</code> and <code>notResources</code> fields must be empty to use this field.
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+        effect:
+          type: string
+          description: Whether this statement should allow or deny actions on the resources.
+          example: allow
+          enum:
+          - allow
+          - deny
+        role_name:
+          type: string
+    UnauthorizedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: unauthorized
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid access token
+    ForbiddenErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: forbidden
+        message:
+          type: string
+          description: Description of the error
+          example: Forbidden. Access to the requested resource was denied.
+    RepositoryCollectionRep:
+      type: object
+      required:
+      - _links
+      - items
+      properties:
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
         items:
           type: array
-          description: The list of code reference repositories.
+          description: An array of repositories
           items:
-            type: object
-            properties:
-              name:
-                type: string
-                description: The repository name.
-              sourceLink:
-                type: string
-                description: The URL to the repository source.
-              type:
-                type: string
-                description: The repository hosting type.
-              _links:
-                $ref: '#/components/schemas/Links'
+            $ref: '#/components/schemas/RepositoryRep'
+    ActionSpecifier:
+      type: string
+    Link:
+      type: object
+      properties:
+        href:
+          type: string
+        type:
+          type: string
+    ActionIdentifier:
+      type: string
+    StatisticRep:
+      type: object
+      required:
+      - name
+      - type
+      - sourceLink
+      - defaultBranch
+      - enabled
+      - version
+      - hunkCount
+      - fileCount
+      - _links
+      properties:
+        name:
+          type: string
+          description: The repository name
+          example: LaunchDarkly-Docs
+        type:
+          type: string
+          description: The type of repository
+          example: github
+          enum:
+          - bitbucket
+          - custom
+          - github
+          - gitlab
+        sourceLink:
+          type: string
+          description: A URL to access the repository
+          example: https://github.com/launchdarkly/LaunchDarkly-Docs
+        defaultBranch:
+          type: string
+          description: The repository's default branch
+          example: main
+        enabled:
+          type: boolean
+          description: Whether or not a repository is enabled for code reference scanning
+          example: true
+        version:
+          type: integer
+          description: The version of the repository's saved information
+          example: 3
+        hunkCount:
+          type: integer
+          description: The number of code reference hunks in which the flag appears in this repository
+        fileCount:
+          type: integer
+          description: The number of files in which the flag appears in this repository
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+        latestCommitTime:
+          description: The timestamp of the latest commit in the repository including the flag
+          example: '1636558831870'
+          $ref: '#/components/schemas/UnixMillis'
+    BranchCollectionRep:
+      type: object
+      required:
+      - _links
+      - items
+      properties:
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+        items:
+          type: array
+          description: An array of branches
+          items:
+            $ref: '#/components/schemas/BranchRep'
+    UnixMillis:
+      type: integer
+      format: int64
+    PatchOperation:
+      type: object
+      required:
+      - op
+      - path
+      properties:
+        op:
+          type: string
+          description: The type of operation to perform
+          example: replace
+        path:
+          type: string
+          description: A JSON Pointer string specifying the part of the document to operate on
+          example: /exampleField
+        value:
+          description: A JSON value used in "add", "replace", and "test" operations
+          example: new example value
+    repositoryPost:
+      type: object
+      required:
+      - name
+      properties:
+        name:
+          type: string
+          description: The repository name
+          example: LaunchDarkly-Docs
+        sourceLink:
+          type: string
+          description: A URL to access the repository
+          example: https://github.com/launchdarkly/LaunchDarkly-Docs
+        commitUrlTemplate:
+          type: string
+          description: A template for constructing a valid URL to view the commit
+          example: https://github.com/launchdarkly/LaunchDarkly-Docs/commit/${sha}
+        hunkUrlTemplate:
+          type: string
+          description: A template for constructing a valid URL to view the hunk
+          example: https://github.com/launchdarkly/LaunchDarkly-Docs/blob/${sha}/${filePath}#L${lineNumber}
+        type:
+          type: string
+          description: The type of repository. If not specified, the default value is <code>custom</code>.
+          example: github
+          enum:
+          - bitbucket
+          - custom
+          - github
+          - gitlab
+        defaultBranch:
+          type: string
+          description: The repository's default branch. If not specified, the default value is <code>main</code>.
+          example: main
+    putBranch:
+      type: object
+      required:
+      - name
+      - head
+      - syncTime
+      properties:
+        name:
+          type: string
+          description: The branch name
+          example: main
+        head:
+          type: string
+          description: An ID representing the branch HEAD. For example, a commit SHA.
+          example: a94a8fe5ccb19ba61c4c0873d391e987982fbbd3
+        updateSequenceId:
+          type: integer
+          format: int64
+          description: An optional ID used to prevent older data from overwriting newer data. If no sequence ID is included, the newly submitted data will always be saved.
+          example: 25
+        syncTime:
+          description: A timestamp indicating when the branch was last synced
+          example: '1636558831870'
+          $ref: '#/components/schemas/UnixMillis'
+        references:
+          type: array
+          description: An array of flag references found on the branch
+          items:
+            $ref: '#/components/schemas/ReferenceRep'
+        commitTime:
+          description: A timestamp of the current commit
+          example: '1636558831870'
+          $ref: '#/components/schemas/UnixMillis'
+    Access:
+      type: object
+      required:
+      - denied
+      - allowed
+      properties:
+        denied:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccessDenied'
+        allowed:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccessAllowedRep'
+    StatisticCollectionRep:
+      type: object
+      required:
+      - flags
+      - _links
+      properties:
+        flags:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/StatisticRep'
+          description: A map of flag keys to a list of code reference statistics for each code repository in which the flag key appears
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+    NotFoundErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: not_found
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid resource identifier
+    ExtinctionListPost:
+      type: array
+      items:
+        $ref: '#/components/schemas/Extinction'
+    StatusConflictErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: optimistic_locking_error
+        message:
+          type: string
+          description: Description of the error
+          example: Conflict. Optimistic lock error. Try again later.
+    AccessAllowedReason:
+      type: object
+      required:
+      - effect
+      properties:
+        resources:
+          type: array
+          description: Resource specifier strings
+          items:
+            type: string
+          example:
+          - proj/*:env/*;qa_*:/flag/*
+        notResources:
+          type: array
+          description: Targeted resources are the resources NOT in this list. The <code>resources</code> and <code>notActions</code> fields must be empty to use this field.
+          items:
+            type: string
+        actions:
+          type: array
+          description: Actions to perform on a resource
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+          example:
+          - '*'
+        notActions:
+          type: array
+          description: Targeted actions are the actions NOT in this list. The <code>actions</code> and <code>notResources</code> fields must be empty to use this field.
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+        effect:
+          type: string
+          description: Whether this statement should allow or deny actions on the resources.
+          example: allow
+          enum:
+          - allow
+          - deny
+        role_name:
+          type: string
+    HunkRep:
+      type: object
+      required:
+      - startingLineNumber
+      properties:
+        startingLineNumber:
+          type: integer
+          description: Line number of beginning of code reference hunk
+          example: 45
+        lines:
+          type: string
+          description: Contextual lines of code that include the referenced feature flag
+          example: var enableFeature = 'enable-feature';
+        projKey:
+          type: string
+          description: The project key
+          example: default
+        flagKey:
+          type: string
+          description: The feature flag key
+          example: enable-feature
+        aliases:
+          type: array
+          description: An array of flag key aliases
+          items:
+            type: string
+          example:
+          - enableFeature
+          - EnableFeature
+    BranchRep:
+      type: object
+      required:
+      - name
+      - head
+      - syncTime
+      - _links
+      properties:
+        name:
+          type: string
+          description: The branch name
+          example: main
+        head:
+          type: string
+          description: An ID representing the branch HEAD. For example, a commit SHA.
+          example: a94a8fe5ccb19ba61c4c0873d391e987982fbbd3
+        updateSequenceId:
+          type: integer
+          format: int64
+          description: An optional ID used to prevent older data from overwriting newer data
+          example: 25
+        syncTime:
+          description: A timestamp indicating when the branch was last synced
+          example: '1636558831870'
+          $ref: '#/components/schemas/UnixMillis'
+        references:
+          type: array
+          description: An array of flag references found on the branch
+          items:
+            $ref: '#/components/schemas/ReferenceRep'
+        _links:
+          type: object
+          additionalProperties: {}
+          description: The location and content type of related resources
+    RepositoryRep:
+      type: object
+      required:
+      - name
+      - type
+      - defaultBranch
+      - enabled
+      - version
+      - _links
+      properties:
+        name:
+          type: string
+          description: The repository name
+          example: LaunchDarkly-Docs
+        sourceLink:
+          type: string
+          description: A URL to access the repository
+          example: https://github.com/launchdarkly/LaunchDarkly-Docs
+        commitUrlTemplate:
+          type: string
+          description: A template for constructing a valid URL to view the commit
+          example: https://github.com/launchdarkly/LaunchDarkly-Docs/commit/${sha}
+        hunkUrlTemplate:
+          type: string
+          description: A template for constructing a valid URL to view the hunk
+          example: https://github.com/launchdarkly/LaunchDarkly-Docs/blob/${sha}/${filePath}#L${lineNumber}
+        type:
+          type: string
+          description: The type of repository
+          example: github
+          enum:
+          - bitbucket
+          - custom
+          - github
+          - gitlab
+        defaultBranch:
+          type: string
+          description: The repository's default branch
+          example: main
+        enabled:
+          type: boolean
+          description: Whether or not a repository is enabled for code reference scanning
+          example: true
+        version:
+          type: integer
+          description: The version of the repository's saved information
+          example: 3
+        branches:
+          type: array
+          description: An array of the repository's branches that have been scanned for code references
+          items:
+            $ref: '#/components/schemas/BranchRep'
+        _links:
+          type: object
+          additionalProperties: {}
+        _access:
+          $ref: '#/components/schemas/Access'
+    AccessAllowedRep:
+      type: object
+      required:
+      - action
+      - reason
+      properties:
+        action:
+          $ref: '#/components/schemas/ActionIdentifier'
+        reason:
+          $ref: '#/components/schemas/AccessAllowedReason'
     Links:
       type: object
       description: HATEOAS links for navigating related resources.
@@ -81,7 +1539,32 @@ components:
           type:
             type: string
             description: The media type.
+    CodeReferenceRepositories:
+      type: object
+      description: A collection of code reference repositories.
+      properties:
+        items:
+          type: array
+          description: The list of code reference repositories.
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+                description: The repository name.
+              sourceLink:
+                type: string
+                description: The URL to the repository source.
+              type:
+                type: string
+                description: The repository hosting type.
+              _links:
+                $ref: '#/components/schemas/Links'
   securitySchemes:
+    ApiKey:
+      type: apiKey
+      in: header
+      name: Authorization
     bearerAuth:
       type: http
       scheme: bearer
@@ -89,3 +1572,6 @@ components:
 externalDocs:
   description: LaunchDarkly API Documentation
   url: https://apidocs.launchdarkly.com/
+x-refined-from:
+- launchdarkly-openapi.json
+- launchdarkly-rest-api-openapi.yml

@@ -1,24 +1,611 @@
 openapi: 3.2.0
 info:
-  title: LaunchDarkly REST Environments API
-  description: The LaunchDarkly REST API provides programmatic access to the full LaunchDarkly feature management platform.
-  version: '20240415'
-  contact:
-    name: LaunchDarkly Support
-    url: https://support.launchdarkly.com
-  termsOfService: https://launchdarkly.com/policies/terms-of-service
+  title: Launchdarkly Environments API
   license:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
+  version: '1.0'
+  description: 'Operations tagged Environments across 2 of this provider''s published API definitions: launchdarkly-openapi.json, launchdarkly-rest-api-openapi.yml. Each path carries the servers of the definition it was published in.'
 servers:
+- url: https://app.launchdarkly.com
+  description: ' Default'
+- url: https://app.launchdarkly.us
+  description: ' Federal'
 - url: https://app.launchdarkly.com/api/v2
   description: LaunchDarkly Production API
-security:
-- bearerAuth: []
 tags:
 - name: Environments
-  description: Manage environments within projects such as production, staging, and development.
+  description: Environments allow you to maintain separate rollout rules in different contexts, from local development to QA, staging, and production. With the LaunchDarkly Environments API, you can programmatically list, create, and manage environments. To learn more, read Environments.
 paths:
+  /api/v2/projects/{projectKey}/environments:
+    get:
+      responses:
+        '200':
+          description: Environments collection response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Environments'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '405':
+          description: Method not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MethodNotAllowedErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Environments
+      summary: List environments
+      description: 'Return a list of environments for the specified project.
+
+
+        By default, this returns the first 20 environments. Page through this list with the `limit` parameter and by following the `first`, `prev`, `next`, and `last` links in the `_links` field that returns. If those links do not appear, the pages they refer to don''t exist. For example, the `first` and `prev` links will be missing from the response on the first page, because there is no previous page and you cannot return to the first page when you are already on the first page.
+
+
+        ### Filtering environments
+
+
+        LaunchDarkly supports the following fields for filters:
+
+        - `query` is a string that matches against the environments'' names and keys. It is not case sensitive.
+
+        - `tags` is a `+`-separated list of environment tags. It filters the list of environments that have all of the tags in the list.
+
+        - `critical` is a boolean filter. `critical:true` returns only environments marked as critical, and `critical:false` returns only non-critical environments.
+
+
+        For example, the filter `filter=query:abc,tags:tag-1+tag-2` matches environments with the string `abc` in their name or key and also are tagged with `tag-1` and `tag-2`. The filter is not case-sensitive.
+
+
+        The documented values for `filter` query parameters are prior to URL encoding. For example, the `+` in `filter=tags:tag-1+tag-2` must be encoded to `%2B`.
+
+
+        ### Sorting environments
+
+
+        LaunchDarkly supports the following fields for sorting:
+
+
+        - `createdOn` sorts by the creation date of the environment.
+
+        - `critical` sorts by whether the environments are marked as critical.
+
+        - `name` sorts by environment name.
+
+
+        For example, `sort=name` sorts the response by environment name in ascending order.'
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: limit
+        in: query
+        description: The number of environments to return in the response. Defaults to 20.
+        schema:
+          type: integer
+          format: int64
+          description: The number of environments to return in the response. Defaults to 20.
+      - name: offset
+        in: query
+        description: Where to start in the list. This is for use with pagination. For example, an offset of 10 skips the first ten items and then returns the next items in the list, up to the query `limit`.
+        schema:
+          type: integer
+          format: int64
+          description: Where to start in the list. This is for use with pagination. For example, an offset of 10 skips the first ten items and then returns the next items in the list, up to the query `limit`.
+      - name: filter
+        in: query
+        description: A comma-separated list of filters. Each filter is of the form `field:value`.
+        schema:
+          type: string
+          format: string
+          description: A comma-separated list of filters. Each filter is of the form `field:value`.
+      - name: sort
+        in: query
+        description: A comma-separated list of fields to sort by. Fields prefixed by a dash ( - ) sort in descending order.
+        schema:
+          type: string
+          format: string
+          description: A comma-separated list of fields to sort by. Fields prefixed by a dash ( - ) sort in descending order.
+      operationId: getEnvironmentsByProject
+      security:
+      - ApiKey:
+        - read
+        - write
+    post:
+      responses:
+        '201':
+          description: Environment response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Environment'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '409':
+          description: Status conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusConflictErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Environments
+      summary: Create environment
+      description: '> ### Approval settings
+
+        >
+
+        > You cannot configure approval settings when you create a new environment. Use Update environment to update approval settings.
+
+        >
+
+        > The `approvalSettings` and `resourceApprovalSettings` keys are only returned when the approvals feature is enabled.
+
+
+        Create a new environment in a specified project with a given name, key, swatch color, and default TTL.'
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EnvironmentPost'
+            example:
+              color: DADBEE
+              key: environment-key-123abc
+              name: My Environment
+        required: true
+      operationId: postEnvironment
+      security:
+      - ApiKey:
+        - read
+        - write
+    servers:
+    - url: https://app.launchdarkly.com
+      description: ' Default'
+    - url: https://app.launchdarkly.us
+      description: ' Federal'
+  /api/v2/projects/{projectKey}/environments/{environmentKey}:
+    get:
+      responses:
+        '200':
+          description: Environment response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Environment'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Environments
+      summary: Get environment
+      description: '> ### Approval settings
+
+        >
+
+        > The `approvalSettings` and `resourceApprovalSettings` keys are only returned when the approvals feature is enabled.
+
+
+        Get an environment given a project and key.'
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: environmentKey
+        in: path
+        description: The environment key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The environment key
+      operationId: getEnvironment
+      security:
+      - ApiKey:
+        - read
+        - write
+    patch:
+      responses:
+        '200':
+          description: Environment response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Environment'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '409':
+          description: Status conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusConflictErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Environments
+      summary: Update environment
+      description: 'Update an environment. Updating an environment uses a JSON patch representation of the desired changes. To learn more, read Updates.
+
+
+        To update fields in the environment object that are arrays, set the `path` to the name of the field and then append `/`. Using `/0` appends to the beginning of the array.
+
+
+        ### Approval settings
+
+
+        This request only returns the `approvalSettings` and `resourceApprovalSettings` if the approvals feature is enabled.
+
+
+        Only the `canReviewOwnRequest`, `canApplyDeclinedChanges`, `minNumApprovals`, `required` and `requiredApprovalTagsfields` are editable.
+
+
+        If you try to patch the environment by setting both `required` and `requiredApprovalTags`, the request fails and an error appears. You can specify either required approvals for all flags in an environment or those with specific tags, but not both.'
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: environmentKey
+        in: path
+        description: The environment key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The environment key
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JSONPatch'
+            example:
+            - op: replace
+              path: /requireComments
+              value: true
+        required: true
+      operationId: patchEnvironment
+      security:
+      - ApiKey:
+        - read
+        - write
+    delete:
+      responses:
+        '204':
+          description: Action succeeded
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Environments
+      summary: Delete environment
+      description: Delete a environment by key.
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: environmentKey
+        in: path
+        description: The environment key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The environment key
+      operationId: deleteEnvironment
+      security:
+      - ApiKey:
+        - read
+        - write
+    servers:
+    - url: https://app.launchdarkly.com
+      description: ' Default'
+    - url: https://app.launchdarkly.us
+      description: ' Federal'
+  /api/v2/projects/{projectKey}/environments/{environmentKey}/apiKey:
+    post:
+      responses:
+        '200':
+          description: Environment response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Environment'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '409':
+          description: Status conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusConflictErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Environments
+      summary: Reset environment SDK key
+      description: Reset an environment's SDK key with an optional expiry time for the old key.
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: environmentKey
+        in: path
+        description: The environment key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The environment key
+      - name: expiry
+        in: query
+        description: The time at which you want the old SDK key to expire, in UNIX milliseconds. By default, the key expires immediately. During the period between this call and the time when the old SDK key expires, both the old SDK key and the new SDK key will work.
+        schema:
+          type: integer
+          format: int64
+          description: The time at which you want the old SDK key to expire, in UNIX milliseconds. By default, the key expires immediately. During the period between this call and the time when the old SDK key expires, both the old SDK key and the new SDK key will work.
+      operationId: resetEnvironmentSDKKey
+      security:
+      - ApiKey:
+        - read
+        - write
+    servers:
+    - url: https://app.launchdarkly.com
+      description: ' Default'
+    - url: https://app.launchdarkly.us
+      description: ' Federal'
+  /api/v2/projects/{projectKey}/environments/{environmentKey}/mobileKey:
+    post:
+      responses:
+        '200':
+          description: Environment response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Environment'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '409':
+          description: Status conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusConflictErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Environments
+      summary: Reset environment mobile SDK key
+      description: Reset an environment's mobile key. The optional expiry for the old key is deprecated for this endpoint, so the old key will always expire immediately.
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: environmentKey
+        in: path
+        description: The environment key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The environment key
+      operationId: resetEnvironmentMobileKey
+      security:
+      - ApiKey:
+        - read
+        - write
+    servers:
+    - url: https://app.launchdarkly.com
+      description: ' Default'
+    - url: https://app.launchdarkly.us
+      description: ' Federal'
   /projects/{projectKey}/environments:
     get:
       operationId: listEnvironments
@@ -44,11 +631,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Environments'
+                $ref: '#/components/schemas/Environments_2'
         '401':
           description: Unauthorized. Invalid or missing access token.
         '404':
           description: Project not found.
+      security:
+      - bearerAuth: []
     post:
       operationId: createEnvironment
       summary: Create an environment
@@ -69,16 +658,21 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Environment'
+                $ref: '#/components/schemas/Environment_2'
         '400':
           description: Invalid request body.
         '401':
           description: Unauthorized. Invalid or missing access token.
         '409':
           description: An environment with the given key already exists.
+      security:
+      - bearerAuth: []
+    servers:
+    - url: https://app.launchdarkly.com/api/v2
+      description: LaunchDarkly Production API
   /projects/{projectKey}/environments/{environmentKey}:
     get:
-      operationId: getEnvironment
+      operationId: getProjectsByProjectKeyEnvironmentsByEnvironmentKey
       summary: Get an environment
       description: Returns a single environment by its key within the specified project.
       tags:
@@ -92,13 +686,17 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Environment'
+                $ref: '#/components/schemas/Environment_2'
         '401':
           description: Unauthorized. Invalid or missing access token.
         '404':
           description: Environment or project not found.
+      security:
+      - bearerAuth: []
+      x-operation-id-source: normalized
+      x-operation-id-original: getEnvironment
     patch:
-      operationId: patchEnvironment
+      operationId: patchProjectsByProjectKeyEnvironmentsByEnvironmentKey
       summary: Update an environment
       description: Updates an environment using a JSON Patch representation.
       tags:
@@ -111,22 +709,26 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PatchOperation'
+              $ref: '#/components/schemas/PatchOperation_2'
       responses:
         '200':
           description: Environment updated successfully.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Environment'
+                $ref: '#/components/schemas/Environment_2'
         '400':
           description: Invalid patch request.
         '401':
           description: Unauthorized. Invalid or missing access token.
         '404':
           description: Environment or project not found.
+      security:
+      - bearerAuth: []
+      x-operation-id-source: normalized
+      x-operation-id-original: patchEnvironment
     delete:
-      operationId: deleteEnvironment
+      operationId: deleteProjectsByProjectKeyEnvironmentsByEnvironmentKey
       summary: Delete an environment
       description: Permanently deletes an environment from the specified project.
       tags:
@@ -141,26 +743,484 @@ paths:
           description: Unauthorized. Invalid or missing access token.
         '404':
           description: Environment or project not found.
+      security:
+      - bearerAuth: []
+      x-operation-id-source: normalized
+      x-operation-id-original: deleteEnvironment
+    servers:
+    - url: https://app.launchdarkly.com/api/v2
+      description: LaunchDarkly Production API
 components:
-  parameters:
-    ProjectKey:
-      name: projectKey
-      in: path
-      required: true
-      description: The project key identifying a LaunchDarkly project.
-      schema:
-        type: string
-        pattern: ^[a-z0-9]([a-z0-9-])*$
-    EnvironmentKey:
-      name: environmentKey
-      in: path
-      required: true
-      description: The environment key identifying a specific environment.
-      schema:
-        type: string
-        pattern: ^[a-z0-9]([a-z0-9-])*$
   schemas:
     Environment:
+      type: object
+      required:
+      - _links
+      - _id
+      - key
+      - name
+      - apiKey
+      - mobileKey
+      - color
+      - defaultTtl
+      - secureMode
+      - defaultTrackEvents
+      - requireComments
+      - confirmChanges
+      - tags
+      - critical
+      properties:
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+          example:
+            self:
+              href: /api/v2/projects/my-project/environments/my-environment
+              type: application/json
+        _id:
+          type: string
+          description: The ID for the environment. Use this as the client-side ID for authorization in some client-side SDKs, and to associate LaunchDarkly environments with CDN integrations in edge SDKs.
+          example: 57be1db38b75bf0772d11384
+        key:
+          type: string
+          description: A project-unique key for the new environment
+          example: environment-key-123abc
+        name:
+          type: string
+          description: A human-friendly name for the new environment
+          example: My Environment
+        apiKey:
+          type: string
+          description: The SDK key for the environment. Use this for authorization in server-side SDKs.
+          example: sdk-xxx
+        mobileKey:
+          type: string
+          description: The mobile key for the environment. Use this for authorization in mobile SDKs.
+          example: mob-xxx
+        color:
+          type: string
+          description: The color used to indicate this environment in the UI
+          example: F5A623
+        defaultTtl:
+          type: integer
+          description: The default time (in minutes) that the PHP SDK can cache feature flag rules locally
+          example: 5
+        secureMode:
+          type: boolean
+          description: Ensures that one end user of the client-side SDK cannot inspect the variations for another end user
+          example: true
+        _access:
+          $ref: '#/components/schemas/Access'
+        defaultTrackEvents:
+          type: boolean
+          description: The initial value of trackEvents for flags created in this environment. Does not affect existing flags. Required for Data Export, but doesn't enable Data Export on its own.
+          example: false
+        requireComments:
+          type: boolean
+          description: Whether members who modify flags and segments through the LaunchDarkly user interface are required to add a comment
+          example: true
+        confirmChanges:
+          type: boolean
+          description: Whether members who modify flags and segments through the LaunchDarkly user interface are required to confirm those changes
+          example: true
+        tags:
+          type: array
+          description: A list of tags for this environment
+          items:
+            type: string
+          example:
+          - ops
+        approvalSettings:
+          description: Details about the approval settings for flags in this environment
+          $ref: '#/components/schemas/ApprovalSettings'
+        resourceApprovalSettings:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/ApprovalSettings'
+          description: Details about the approval settings for other resources in this environment, organized by resource kind (for example, "aiconfig" and "segment")
+        critical:
+          type: boolean
+          description: Whether the environment is critical
+          example: true
+    JSONPatch:
+      type: array
+      items:
+        $ref: '#/components/schemas/PatchOperation'
+    AccessDenied:
+      type: object
+      required:
+      - action
+      - reason
+      properties:
+        action:
+          $ref: '#/components/schemas/ActionIdentifier'
+        reason:
+          $ref: '#/components/schemas/AccessDeniedReason'
+    InvalidRequestErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: invalid_request
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid request body
+    RateLimitedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: rate_limited
+        message:
+          type: string
+          description: Description of the error
+          example: You've exceeded the API rate limit. Try again later.
+    AccessDeniedReason:
+      type: object
+      required:
+      - effect
+      properties:
+        resources:
+          type: array
+          description: Resource specifier strings
+          items:
+            type: string
+          example:
+          - proj/*:env/*;qa_*:/flag/*
+        notResources:
+          type: array
+          description: Targeted resources are the resources NOT in this list. The <code>resources</code> and <code>notActions</code> fields must be empty to use this field.
+          items:
+            type: string
+        actions:
+          type: array
+          description: Actions to perform on a resource
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+          example:
+          - '*'
+        notActions:
+          type: array
+          description: Targeted actions are the actions NOT in this list. The <code>actions</code> and <code>notResources</code> fields must be empty to use this field.
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+        effect:
+          type: string
+          description: Whether this statement should allow or deny actions on the resources.
+          example: allow
+          enum:
+          - allow
+          - deny
+        role_name:
+          type: string
+    UnauthorizedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: unauthorized
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid access token
+    ForbiddenErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: forbidden
+        message:
+          type: string
+          description: Description of the error
+          example: Forbidden. Access to the requested resource was denied.
+    ActionSpecifier:
+      type: string
+    Link:
+      type: object
+      properties:
+        href:
+          type: string
+        type:
+          type: string
+    ActionIdentifier:
+      type: string
+    EnvironmentPost:
+      type: object
+      required:
+      - name
+      - key
+      - color
+      properties:
+        name:
+          type: string
+          description: A human-friendly name for the new environment
+          example: My Environment
+        key:
+          type: string
+          description: A project-unique key for the new environment
+          example: environment-key-123abc
+        color:
+          type: string
+          description: A color to indicate this environment in the UI
+          example: F5A623
+        defaultTtl:
+          type: integer
+          description: The default time (in minutes) that the PHP SDK can cache feature flag rules locally
+          example: 5
+        secureMode:
+          type: boolean
+          description: Ensures that one end user of the client-side SDK cannot inspect the variations for another end user
+          example: true
+        defaultTrackEvents:
+          type: boolean
+          description: The initial value of trackEvents for flags created in this environment. Does not affect existing flags. Required for Data Export, but doesn't enable Data Export on its own.
+          example: false
+        confirmChanges:
+          type: boolean
+          description: Requires confirmation for all flag and segment changes via the UI in this environment
+          example: false
+        requireComments:
+          type: boolean
+          description: Requires comments for all flag and segment changes via the UI in this environment
+          example: false
+        tags:
+          type: array
+          description: Tags to apply to the new environment
+          items:
+            type: string
+          example:
+          - ops
+        source:
+          description: Indicates that the new environment created will be cloned from the provided source environment
+          $ref: '#/components/schemas/SourceEnv'
+        critical:
+          type: boolean
+          description: Whether the environment is critical
+          example: true
+    ApprovalSettings:
+      type: object
+      required:
+      - required
+      - bypassApprovalsForPendingChanges
+      - minNumApprovals
+      - canReviewOwnRequest
+      - canApplyDeclinedChanges
+      - serviceKind
+      - serviceConfig
+      - requiredApprovalTags
+      properties:
+        required:
+          type: boolean
+          description: If approvals are required for this environment
+          example: true
+        bypassApprovalsForPendingChanges:
+          type: boolean
+          description: Whether to skip approvals for pending changes
+          example: false
+        minNumApprovals:
+          type: integer
+          description: Sets the amount of approvals required before a member can apply a change. The minimum is one and the maximum is five.
+          example: 1
+        canReviewOwnRequest:
+          type: boolean
+          description: Allow someone who makes an approval request to apply their own change
+          example: false
+        canApplyDeclinedChanges:
+          type: boolean
+          description: Allow applying the change as long as at least one person has approved
+          example: true
+        autoApplyApprovedChanges:
+          type: boolean
+          description: Automatically apply changes that have been approved by all reviewers. This field is only applicable for approval services other than LaunchDarkly.
+          example: true
+        serviceKind:
+          type: string
+          description: Which service to use for managing approvals
+          example: launchdarkly
+        serviceConfig:
+          type: object
+          additionalProperties: {}
+          example: {}
+        requiredApprovalTags:
+          type: array
+          description: Require approval only on flags with the provided tags. Otherwise all flags will require approval.
+          items:
+            type: string
+          example:
+          - require-approval
+        serviceKindConfigurationId:
+          type: string
+          description: Optional field for integration configuration ID of a custom approval integration. This is an Enterprise-only feature.
+          example: 1ef45a85-218f-4428-a8b2-a97e5f56c258
+    Environments:
+      type: object
+      required:
+      - items
+      properties:
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+        totalCount:
+          type: integer
+          description: The number of environments returned
+          example: 2
+        items:
+          type: array
+          description: An array of environments
+          items:
+            $ref: '#/components/schemas/Environment'
+    PatchOperation:
+      type: object
+      required:
+      - op
+      - path
+      properties:
+        op:
+          type: string
+          description: The type of operation to perform
+          example: replace
+        path:
+          type: string
+          description: A JSON Pointer string specifying the part of the document to operate on
+          example: /exampleField
+        value:
+          description: A JSON value used in "add", "replace", and "test" operations
+          example: new example value
+    MethodNotAllowedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: method_not_allowed
+        message:
+          type: string
+          description: Description of the error
+          example: Method not allowed
+    Access:
+      type: object
+      required:
+      - denied
+      - allowed
+      properties:
+        denied:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccessDenied'
+        allowed:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccessAllowedRep'
+    StatusConflictErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: optimistic_locking_error
+        message:
+          type: string
+          description: Description of the error
+          example: Conflict. Optimistic lock error. Try again later.
+    NotFoundErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: not_found
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid resource identifier
+    AccessAllowedReason:
+      type: object
+      required:
+      - effect
+      properties:
+        resources:
+          type: array
+          description: Resource specifier strings
+          items:
+            type: string
+          example:
+          - proj/*:env/*;qa_*:/flag/*
+        notResources:
+          type: array
+          description: Targeted resources are the resources NOT in this list. The <code>resources</code> and <code>notActions</code> fields must be empty to use this field.
+          items:
+            type: string
+        actions:
+          type: array
+          description: Actions to perform on a resource
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+          example:
+          - '*'
+        notActions:
+          type: array
+          description: Targeted actions are the actions NOT in this list. The <code>actions</code> and <code>notResources</code> fields must be empty to use this field.
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+        effect:
+          type: string
+          description: Whether this statement should allow or deny actions on the resources.
+          example: allow
+          enum:
+          - allow
+          - deny
+        role_name:
+          type: string
+    AccessAllowedRep:
+      type: object
+      required:
+      - action
+      - reason
+      properties:
+        action:
+          $ref: '#/components/schemas/ActionIdentifier'
+        reason:
+          $ref: '#/components/schemas/AccessAllowedReason'
+    SourceEnv:
+      type: object
+      properties:
+        key:
+          type: string
+          description: The key of the source environment to clone from
+        version:
+          type: integer
+          description: (Optional) The version number of the source environment to clone from. Used for optimistic locking
+    Environment_2:
       type: object
       description: An environment within a project, such as production or staging.
       properties:
@@ -196,7 +1256,7 @@ components:
             type: string
         _links:
           $ref: '#/components/schemas/Links'
-    PatchOperation:
+    PatchOperation_2:
       type: object
       description: A JSON Patch or semantic patch request.
       properties:
@@ -227,6 +1287,29 @@ components:
         comment:
           type: string
           description: An optional comment describing the change.
+    Links:
+      type: object
+      description: HATEOAS links for navigating related resources.
+      properties:
+        self:
+          type: object
+          description: A link to this resource.
+          properties:
+            href:
+              type: string
+              description: The URL of this resource.
+            type:
+              type: string
+              description: The media type.
+      additionalProperties:
+        type: object
+        properties:
+          href:
+            type: string
+            description: The URL of the linked resource.
+          type:
+            type: string
+            description: The media type.
     EnvironmentBody:
       type: object
       description: The request body for creating a new environment.
@@ -257,30 +1340,7 @@ components:
           description: Tags to apply to the environment.
           items:
             type: string
-    Links:
-      type: object
-      description: HATEOAS links for navigating related resources.
-      properties:
-        self:
-          type: object
-          description: A link to this resource.
-          properties:
-            href:
-              type: string
-              description: The URL of this resource.
-            type:
-              type: string
-              description: The media type.
-      additionalProperties:
-        type: object
-        properties:
-          href:
-            type: string
-            description: The URL of the linked resource.
-          type:
-            type: string
-            description: The media type.
-    Environments:
+    Environments_2:
       type: object
       description: A collection of environments.
       properties:
@@ -288,13 +1348,34 @@ components:
           type: array
           description: The list of environments.
           items:
-            $ref: '#/components/schemas/Environment'
+            $ref: '#/components/schemas/Environment_2'
         totalCount:
           type: integer
           description: The total number of environments.
         _links:
           $ref: '#/components/schemas/Links'
+  parameters:
+    EnvironmentKey:
+      name: environmentKey
+      in: path
+      required: true
+      description: The environment key identifying a specific environment.
+      schema:
+        type: string
+        pattern: ^[a-z0-9]([a-z0-9-])*$
+    ProjectKey:
+      name: projectKey
+      in: path
+      required: true
+      description: The project key identifying a LaunchDarkly project.
+      schema:
+        type: string
+        pattern: ^[a-z0-9]([a-z0-9-])*$
   securitySchemes:
+    ApiKey:
+      type: apiKey
+      in: header
+      name: Authorization
     bearerAuth:
       type: http
       scheme: bearer
@@ -302,3 +1383,6 @@ components:
 externalDocs:
   description: LaunchDarkly API Documentation
   url: https://apidocs.launchdarkly.com/
+x-refined-from:
+- launchdarkly-openapi.json
+- launchdarkly-rest-api-openapi.yml

@@ -1,0 +1,477 @@
+openapi: 3.2.0
+info:
+  title: LaunchDarkly REST Follow flags API
+  description: 'This documentation describes LaunchDarkly''s REST API. To access the complete OpenAPI spec directly, use Get OpenAPI spec. To learn how to use LaunchDarkly using the user interface (UI) instead, read our product documentation. ## Authentication
+
+
+    LaunchDarkly''s REST API uses the HTTPS protocol with a minimum TLS version of 1.2. All REST API resources are authenticated with either personal or service access tokens, or session cookies. Other authentication mechanisms are not supported. You can manage personal access tokens on your **Authorization** page in the LaunchDarkly UI. LaunchDarkly also has SDK keys, mobile keys, and client-side IDs that are used by our server-side SDKs, mobile SDKs, and JavaScript-based SDKs, respectively. **These keys cannot be used to access our REST API**. These keys are environment-specific, and can only perform read-only operations such as fetching feature flag settings. | Auth mechanism | Allowed resources | Use cases |
+
+    | ----------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
+
+    | Personal or service access tokens | Can be customized on a per-token basis | Building scripts, custom integrations, data export. |
+
+    | SDK keys | Can only access read-only resources specific to server-side SDKs. Restricted to a single environment. | Server-side SDKs |
+
+    | Mobile keys | Can only access read-only resources specific to mobile SDKs, and only for flags marked available to mobile keys. Restricted to a single environment. | Mobile SDKs |
+
+    | Client-side ID | Can only access read-only resources specific to JavaScript-based client-side SDKs, and only for flags marked available to client-side. Restricted to a single environment. | Client-side JavaScript |
+
+
+    > #### Keep your access tokens and SDK keys private
+
+    >
+
+    > Access tokens should _never_ be exposed in untrusted contexts. Never put an access token in client-side JavaScript, or embed it in a mobile application. LaunchDarkly has special mobile keys that you can embed in mobile apps. If you accidentally expose an access token or SDK key, you can reset it from your **Authorization** page. >
+
+    > The client-side ID is safe to embed in untrusted contexts. It''s designed for use in client-side JavaScript. ### Authentication using request header
+
+
+    The preferred way to authenticate with the API is by adding an `Authorization` header containing your access token to your requests. The value of the `Authorization` header must be your access token. Manage personal access tokens from the **Authorization** page. ### Authentication using session cookie
+
+
+    For testing purposes, you can make API calls directly from your web browser. If you are logged in to the LaunchDarkly application, the API will use your existing session to authenticate calls. Depending on the permissions granted as part of your role, you may not have permission to perform some API calls. You will receive a `401` response code in that case. > ### Modifying the Origin header causes an error
+
+    >
+
+    > LaunchDarkly validates that the Origin header for any API request authenticated by a session cookie matches the expected Origin header. The expected Origin header is `https://app.launchdarkly.com`. >
+
+    > If the Origin header does not match what''s expected, LaunchDarkly returns an error. This error can prevent the LaunchDarkly app from working correctly. >
+
+    > Any browser extension that intentionally changes the Origin header can cause this problem. For example, Cross-Origin Resource Sharing (CORS) extensions used during development can modify the Origin header and cause the app to fail. >
+
+    > To prevent this error, do not modify your Origin header. >
+
+    > LaunchDarkly does not require origin matching when authenticating with an access token, so this issue does not affect normal API usage.'
+  contact:
+    name: LaunchDarkly Technical Support Team
+    url: https://support.launchdarkly.com
+    email: support@launchdarkly.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+  version: '2.0'
+servers:
+- url: https://app.launchdarkly.com
+  description: ' Default'
+- url: https://app.launchdarkly.us
+  description: ' Federal'
+security:
+- ApiKey:
+  - read
+  - write
+tags:
+- name: Follow flags
+  description: 'Follow flags to receive email updates about targeting changes to a flag in a project and environment.
+
+
+    Several of the endpoints in the follow flags API require a member ID. The member ID is returned as part of the Invite new members and List account members responses. It is the `_id` field of each element in the `items` array.'
+paths:
+  /api/v2/projects/{projectKey}/environments/{environmentKey}/followers:
+    get:
+      responses:
+        '200':
+          description: Flags and flag followers response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FlagFollowersByProjEnvGetRep'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+      tags:
+      - Follow flags
+      summary: Get followers of all flags in a given project and environment
+      description: Get followers of all flags in a given environment and project
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: environmentKey
+        in: path
+        description: The environment key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The environment key
+      operationId: getFollowersByProjEnv
+  /api/v2/projects/{projectKey}/flags/{featureFlagKey}/environments/{environmentKey}/followers:
+    get:
+      responses:
+        '200':
+          description: Flag followers response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FlagFollowersGetRep'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+      tags:
+      - Follow flags
+      summary: Get followers of a flag in a project and environment
+      description: Get a list of members following a flag in a project and environment
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: featureFlagKey
+        in: path
+        description: The feature flag key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The feature flag key
+      - name: environmentKey
+        in: path
+        description: The environment key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The environment key
+      operationId: getFlagFollowers
+  /api/v2/projects/{projectKey}/flags/{featureFlagKey}/environments/{environmentKey}/followers/{memberId}:
+    put:
+      responses:
+        '204':
+          description: Action succeeded
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+      tags:
+      - Follow flags
+      summary: Add a member as a follower of a flag in a project and environment
+      description: Add a member as a follower to a flag in a project and environment
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: featureFlagKey
+        in: path
+        description: The feature flag key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The feature flag key
+      - name: environmentKey
+        in: path
+        description: The environment key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The environment key
+      - name: memberId
+        in: path
+        description: The memberId of the member to add as a follower of the flag. Reader roles can only add themselves.
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The memberId of the member to add as a follower of the flag. Reader roles can only add themselves.
+      operationId: putFlagFollower
+    delete:
+      responses:
+        '204':
+          description: Action succeeded
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+      tags:
+      - Follow flags
+      summary: Remove a member as a follower of a flag in a project and environment
+      description: Remove a member as a follower to a flag in a project and environment
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: featureFlagKey
+        in: path
+        description: The feature flag key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The feature flag key
+      - name: environmentKey
+        in: path
+        description: The environment key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The environment key
+      - name: memberId
+        in: path
+        description: The memberId of the member to remove as a follower of the flag. Reader roles can only remove themselves.
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The memberId of the member to remove as a follower of the flag. Reader roles can only remove themselves.
+      operationId: deleteFlagFollower
+components:
+  schemas:
+    followersPerFlag:
+      type: object
+      properties:
+        flagKey:
+          type: string
+          description: The flag key
+          example: example-flag-key
+        followers:
+          type: array
+          description: A list of members who are following this flag
+          items:
+            $ref: '#/components/schemas/FollowFlagMember'
+    Link:
+      type: object
+      properties:
+        href:
+          type: string
+        type:
+          type: string
+    FlagFollowersGetRep:
+      type: object
+      required:
+      - _links
+      - items
+      properties:
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+          example:
+            self:
+              href: /api/v2/projects/my-project/flags/my-flay/environments/my-environment/followers
+              type: application/json
+        items:
+          type: array
+          description: An array of members who are following this flag
+          items:
+            $ref: '#/components/schemas/FollowFlagMember'
+    InvalidRequestErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: invalid_request
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid request body
+    FollowFlagMember:
+      type: object
+      required:
+      - _links
+      - _id
+      - role
+      - email
+      properties:
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+          example:
+            self:
+              href: /api/v2/members/569f183514f4432160000007
+              type: application/json
+        _id:
+          type: string
+          description: The member's ID
+          example: 569f183514f4432160000007
+        firstName:
+          type: string
+          description: The member's first name
+          example: Ariel
+        lastName:
+          type: string
+          description: The member's last name
+          example: Flores
+        role:
+          type: string
+          description: The member's base role. If the member has no additional roles, this role will be in effect.
+          example: admin
+        email:
+          type: string
+          description: The member's email address
+          example: ariel@acme.com
+    NotFoundErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: not_found
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid resource identifier
+    FlagFollowersByProjEnvGetRep:
+      type: object
+      required:
+      - _links
+      properties:
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+          example:
+            self:
+              href: /api/v2/projects/my-project/flags/my-flay/environments/my-environment/followers
+              type: application/json
+        items:
+          type: array
+          description: An array of flags and their followers
+          items:
+            $ref: '#/components/schemas/followersPerFlag'
+    UnauthorizedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: unauthorized
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid access token
+    ForbiddenErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: forbidden
+        message:
+          type: string
+          description: Description of the error
+          example: Forbidden. Access to the requested resource was denied.
+  securitySchemes:
+    ApiKey:
+      type: apiKey
+      in: header
+      name: Authorization

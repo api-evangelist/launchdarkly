@@ -1,24 +1,587 @@
 openapi: 3.2.0
 info:
-  title: LaunchDarkly REST Workflows API
-  description: The LaunchDarkly REST API provides programmatic access to the full LaunchDarkly feature management platform.
-  version: '20240415'
-  contact:
-    name: LaunchDarkly Support
-    url: https://support.launchdarkly.com
-  termsOfService: https://launchdarkly.com/policies/terms-of-service
+  title: Launchdarkly Workflows API
   license:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
+  version: '1.0'
+  description: 'Operations tagged Workflows across 2 of this provider''s published API definitions: launchdarkly-openapi.json, launchdarkly-rest-api-openapi.yml. Each path carries the servers of the definition it was published in.'
 servers:
+- url: https://app.launchdarkly.com
+  description: ' Default'
+- url: https://app.launchdarkly.us
+  description: ' Federal'
 - url: https://app.launchdarkly.com/api/v2
   description: LaunchDarkly Production API
-security:
-- bearerAuth: []
 tags:
 - name: Workflows
-  description: Create and manage automated workflows for scheduling and orchestrating flag changes.
+  description: '> ### Workflows are in maintenance mode
+
+    >
+
+    > The workflows feature is in maintenance mode, and is planned for future deprecation at a date not yet specified. We will work with existing customers using workflows to migrate to a replacement solution when deprecation occurs.
+
+
+    A workflow is a set of actions that you can schedule in advance to make changes to a feature flag at a future date and time. You can also include approval requests at different stages of a workflow. To learn more, read Workflows.
+
+
+    The actions supported are as follows:
+
+
+    - Turning targeting `ON` or `OFF`
+
+    - Setting the default variation
+
+    - Adding targets to a given variation
+
+    - Creating a rule to target by segment
+
+    - Modifying the rollout percentage for rules
+
+
+    You can create multiple stages of a flag release workflow. Unique stages are defined by their conditions: either approvals and/or scheduled changes.
+
+
+    Several of the endpoints in the workflows API require a workflow ID or one or more member IDs. The workflow ID is returned as part of the Create workflow and Get workflows responses. It is the `_id` field, or the `_id` field of each element in the `items` array. The member ID is returned as part of the List account members response. It is the `_id` field of each element in the `items` array.'
 paths:
+  /api/v2/projects/{projectKey}/flags/{featureFlagKey}/environments/{environmentKey}/workflows:
+    get:
+      responses:
+        '200':
+          description: Workflows collection response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomWorkflowsListingOutput'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Workflows
+      summary: Get workflows
+      description: Display workflows associated with a feature flag.
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: featureFlagKey
+        in: path
+        description: The feature flag key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The feature flag key
+      - name: environmentKey
+        in: path
+        description: The environment key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The environment key
+      - name: status
+        in: query
+        description: Filter results by workflow status. Valid status filters are `active`, `completed`, and `failed`.
+        schema:
+          type: string
+          format: string
+          description: Filter results by workflow status. Valid status filters are `active`, `completed`, and `failed`.
+      - name: sort
+        in: query
+        description: A field to sort the items by. Prefix field by a dash ( - ) to sort in descending order. This endpoint supports sorting by `creationDate` or `stopDate`.
+        schema:
+          type: string
+          format: string
+          description: A field to sort the items by. Prefix field by a dash ( - ) to sort in descending order. This endpoint supports sorting by `creationDate` or `stopDate`.
+      - name: limit
+        in: query
+        description: The maximum number of workflows to return. Defaults to 20.
+        schema:
+          type: integer
+          format: int64
+          description: The maximum number of workflows to return. Defaults to 20.
+      - name: offset
+        in: query
+        description: Where to start in the list. Defaults to 0. Use this with pagination. For example, an offset of 10 skips the first ten items and then returns the next items in the list, up to the query `limit`.
+        schema:
+          type: integer
+          format: int64
+          description: Where to start in the list. Defaults to 0. Use this with pagination. For example, an offset of 10 skips the first ten items and then returns the next items in the list, up to the query `limit`.
+      operationId: getWorkflows
+      security:
+      - ApiKey:
+        - read
+        - write
+    post:
+      responses:
+        '201':
+          description: Workflow response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomWorkflowOutput'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Workflows
+      summary: Create workflow
+      description: '> ### Workflows are in maintenance mode
+
+        >
+
+        > The workflows feature is in maintenance mode, and is planned for future deprecation at a date not yet specified. We will work with existing customers using workflows to migrate to a replacement solution when deprecation occurs.
+
+
+        Create a workflow for a feature flag. You can create a workflow directly, or you can apply a template to create a new workflow.
+
+
+        ### Creating a workflow
+
+
+        You can use the create workflow endpoint to create a workflow directly by adding a `stages` array to the request body.
+
+
+        For each stage, define the `name`, `conditions` when the stage should be executed, and `action` that describes the stage. For approval stages, only standard LaunchDarkly approvals are permitted. Workflows of `kind` `integration-approval` cannot be used for custom workflows.
+
+
+        Click to expand example
+
+
+        _Example request body_
+
+        ```json
+
+        {
+
+        "name": "Progressive rollout starting in two days",
+
+        "description": "Turn flag targeting on and increase feature rollout in 10% increments each day",
+
+        "stages": [
+
+        {
+
+        "name": "10% rollout on day 1",
+
+        "conditions": [
+
+        {
+
+        "kind": "schedule",
+
+        "scheduleKind": "relative", // or "absolute"
+
+        // If "scheduleKind" is "absolute", set "executionDate";
+
+        // "waitDuration" and "waitDurationUnit" will be ignored
+
+        "waitDuration": 2,
+
+        "waitDurationUnit": "calendarDay"
+
+        },
+
+        {
+
+        "kind": "ld-approval",
+
+        "notifyMemberIds": [ "507f1f77bcf86cd799439011" ],
+
+        "notifyTeamKeys": [ "team-key-123abc" ]
+
+        }
+
+        ],
+
+        "action": {
+
+        "instructions": [
+
+        {
+
+        "kind": "turnFlagOn"
+
+        },
+
+        {
+
+        "kind": "updateFallthroughVariationOrRollout",
+
+        "rolloutWeights": {
+
+        "452f5fb5-7320-4ba3-81a1-8f4324f79d49": 90000,
+
+        "fc15f6a4-05d3-4aa4-a997-446be461345d": 10000
+
+        }
+
+        }
+
+        ]
+
+        }
+
+        }
+
+        ]
+
+        }
+
+        ```
+
+
+        ### Creating a workflow by applying a workflow template
+
+
+        You can also create a workflow by applying a workflow template. If you pass a valid workflow template key as the `templateKey` query parameter with the request, the API will attempt to create a new workflow with the stages defined in the workflow template with the corresponding key.
+
+
+        #### Applicability of stages
+
+        Templates are created in the context of a particular flag in a particular environment in a particular project. However, because workflows created from a template can be applied to any project, environment, and flag, some steps of the workflow may need to be updated in order to be applicable for the target resource.
+
+
+        You can pass a `dryRun` query parameter to tell the API to return a report of which steps of the workflow template are applicable in the target project/environment/flag, and which will need to be updated. When the `dryRun` query parameter is present the response body includes a `meta` property that holds a list of parameters that could potentially be inapplicable for the target resource. Each of these parameters will include a `valid` field. You will need to update any invalid parameters in order to create the new workflow. You can do this using the `parameters` property, which overrides the workflow template parameters.
+
+
+        #### Overriding template parameters
+
+        You can use the `parameters` property in the request body to tell the API to override the specified workflow template parameters with new values that are specific to your target project/environment/flag.
+
+
+        Click to expand example
+
+
+        _Example request body_
+
+        ```json
+
+        {
+
+        "name": "workflow created from my-template",
+
+        "description": "description of my workflow",
+
+        "parameters": [
+
+        {
+
+        "_id": "62cf2bc4cadbeb7697943f3b",
+
+        "path": "/clauses/0/values",
+
+        "default": {
+
+        "value": ["updated-segment"]
+
+        }
+
+        },
+
+        {
+
+        "_id": "62cf2bc4cadbeb7697943f3d",
+
+        "path": "/variationId",
+
+        "default": {
+
+        "value": "abcd1234-abcd-1234-abcd-1234abcd12"
+
+        }
+
+        }
+
+        ]
+
+        }
+
+        ```
+
+
+        If there are any steps in the template that are not applicable to the target resource, the workflow will not be created, and the `meta` property will be included in the response body detailing which parameters need to be updated.'
+      parameters:
+      - name: templateKey
+        in: query
+        description: The template key to apply as a starting point for the new workflow
+        schema:
+          type: string
+          format: string
+          description: The template key to apply as a starting point for the new workflow
+      - name: dryRun
+        in: query
+        description: Whether to call the endpoint in dry-run mode
+        schema:
+          type: boolean
+          description: Whether to call the endpoint in dry-run mode
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: featureFlagKey
+        in: path
+        description: The feature flag key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The feature flag key
+      - name: environmentKey
+        in: path
+        description: The environment key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The environment key
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomWorkflowInput'
+            example:
+              description: Turn flag on for 10% of customers each day
+              name: Progressive rollout starting in two days
+              stages:
+              - action:
+                  instructions:
+                  - kind: turnFlagOn
+                  - kind: updateFallthroughVariationOrRollout
+                    rolloutWeights:
+                      452f5fb5-7320-4ba3-81a1-8f4324f79d49: 90000
+                      fc15f6a4-05d3-4aa4-a997-446be461345d: 10000
+                conditions:
+                - kind: schedule
+                  scheduleKind: relative
+                  waitDuration: 2
+                  waitDurationUnit: calendarDay
+                name: 10% rollout on day 1
+        required: true
+      operationId: postWorkflow
+      security:
+      - ApiKey:
+        - read
+        - write
+    servers:
+    - url: https://app.launchdarkly.com
+      description: ' Default'
+    - url: https://app.launchdarkly.us
+      description: ' Federal'
+  /api/v2/projects/{projectKey}/flags/{featureFlagKey}/environments/{environmentKey}/workflows/{workflowId}:
+    get:
+      responses:
+        '200':
+          description: Workflow response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomWorkflowOutput'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Workflows
+      summary: Get custom workflow
+      description: Get a specific workflow by ID.
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: featureFlagKey
+        in: path
+        description: The feature flag key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The feature flag key
+      - name: environmentKey
+        in: path
+        description: The environment key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The environment key
+      - name: workflowId
+        in: path
+        description: The workflow ID
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The workflow ID
+      operationId: getCustomWorkflow
+      security:
+      - ApiKey:
+        - read
+        - write
+    delete:
+      responses:
+        '204':
+          description: Action completed successfully
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Workflows
+      summary: Delete workflow
+      description: Delete a workflow from a feature flag.
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: featureFlagKey
+        in: path
+        description: The feature flag key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The feature flag key
+      - name: environmentKey
+        in: path
+        description: The environment key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The environment key
+      - name: workflowId
+        in: path
+        description: The workflow id
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The workflow id
+      operationId: deleteWorkflow
+      security:
+      - ApiKey:
+        - read
+        - write
+    servers:
+    - url: https://app.launchdarkly.com
+      description: ' Default'
+    - url: https://app.launchdarkly.us
+      description: ' Federal'
   /projects/{projectKey}/flags/{flagKey}/environments/{environmentKey}/workflows:
     get:
       operationId: listWorkflows
@@ -41,51 +604,506 @@ paths:
           description: Unauthorized. Invalid or missing access token.
         '404':
           description: Flag or environment not found.
+      security:
+      - bearerAuth: []
+    servers:
+    - url: https://app.launchdarkly.com/api/v2
+      description: LaunchDarkly Production API
 components:
-  parameters:
-    FlagKey:
-      name: flagKey
-      in: path
-      required: true
-      description: The feature flag key identifying a specific flag.
-      schema:
-        type: string
-        pattern: ^[a-z0-9]([a-z0-9._-])*$
-    ProjectKey:
-      name: projectKey
-      in: path
-      required: true
-      description: The project key identifying a LaunchDarkly project.
-      schema:
-        type: string
-        pattern: ^[a-z0-9]([a-z0-9-])*$
-    EnvironmentKey:
-      name: environmentKey
-      in: path
-      required: true
-      description: The environment key identifying a specific environment.
-      schema:
-        type: string
-        pattern: ^[a-z0-9]([a-z0-9-])*$
   schemas:
-    Workflows:
+    CustomWorkflowOutput:
       type: object
-      description: A collection of workflows.
+      required:
+      - _id
+      - _version
+      - _conflicts
+      - _creationDate
+      - _maintainerId
+      - _links
+      - name
+      - _execution
+      properties:
+        _id:
+          type: string
+          description: The ID of the workflow
+          example: 12ab3c4d5ef1a2345bcde67f
+        _version:
+          type: integer
+          description: The version of the workflow
+          example: 1
+        _conflicts:
+          type: array
+          description: Any conflicts that are present in the workflow stages
+          items:
+            $ref: '#/components/schemas/ConflictOutput'
+        _creationDate:
+          description: Timestamp of when the workflow was created
+          example: '1654104600000'
+          $ref: '#/components/schemas/UnixMillis'
+        _maintainerId:
+          type: string
+          description: The member ID of the maintainer of the workflow. Defaults to the workflow creator.
+          example: 12ab3c45de678910abc12345
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+        name:
+          type: string
+          description: The name of the workflow
+          example: Progressive rollout starting in two days
+        description:
+          type: string
+          description: A brief description of the workflow
+          example: Turn flag on for 10% of customers each day
+        kind:
+          type: string
+          description: The kind of workflow
+          example: custom
+        stages:
+          type: array
+          description: The stages that make up the workflow. Each stage contains conditions and actions.
+          items:
+            $ref: '#/components/schemas/StageOutput'
+        _execution:
+          description: The current execution status of the workflow
+          example: '{"status": "completed"}'
+          $ref: '#/components/schemas/ExecutionOutput'
+        meta:
+          description: For workflows being created from a workflow template, this value holds any parameters that could potentially be incompatible with the current project, environment, or flag
+          $ref: '#/components/schemas/WorkflowTemplateMetadata'
+        templateKey:
+          type: string
+          description: For workflows being created from a workflow template, this value is the template's key
+          example: example-workflow-template
+    FormVariableConfig:
+      type: object
+      additionalProperties: {}
+    InvalidRequestErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: invalid_request
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid request body
+    Instructions:
+      type: array
+      items:
+        $ref: '#/components/schemas/Instruction'
+    WorkflowTemplateParameter:
+      type: object
+      properties:
+        _id:
+          description: The ID of the condition or instruction referenced by this parameter
+          $ref: '#/components/schemas/ObjectId'
+        path:
+          type: string
+          description: The path of the property to parameterize, relative to its parent condition or instruction
+        default:
+          description: The default value of the parameter and other relevant metadata
+          $ref: '#/components/schemas/ParameterDefault'
+        valid:
+          type: boolean
+          description: Whether the default value is valid for the target flag and environment
+    RateLimitedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: rate_limited
+        message:
+          type: string
+          description: Description of the error
+          example: You've exceeded the API rate limit. Try again later.
+    UnauthorizedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: unauthorized
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid access token
+    ForbiddenErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: forbidden
+        message:
+          type: string
+          description: Description of the error
+          example: Forbidden. Access to the requested resource was denied.
+    ReviewOutput:
+      type: object
+      required:
+      - _id
+      - kind
+      properties:
+        _id:
+          type: string
+        kind:
+          type: string
+        creationDate:
+          $ref: '#/components/schemas/UnixMillis'
+        comment:
+          type: string
+        memberId:
+          type: string
+        serviceTokenId:
+          type: string
+    CustomWorkflowsListingOutput:
+      type: object
+      required:
+      - items
+      - totalCount
+      - _links
       properties:
         items:
           type: array
-          description: The list of workflows.
+          description: An array of workflows
           items:
-            type: object
-            properties:
-              _id:
-                type: string
-                description: The workflow identifier.
-              name:
-                type: string
-                description: The workflow name.
-              _links:
-                $ref: '#/components/schemas/Links'
+            $ref: '#/components/schemas/CustomWorkflowOutput'
+        totalCount:
+          type: integer
+          description: Total number of workflows
+          example: 1
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+    ActionInput:
+      type: object
+      properties:
+        instructions:
+          description: An array of instructions for the stage. Each object in the array uses the semantic patch format for updating a feature flag.
+          example: '{"instructions": [{ "kind": "turnFlagOn"}]}'
+    Link:
+      type: object
+      properties:
+        href:
+          type: string
+        type:
+          type: string
+    ConflictOutput:
+      type: object
+      required:
+      - stageId
+      - message
+      properties:
+        stageId:
+          type: string
+          description: The stage ID
+          example: 12ab3c4d5ef1a2345bcde67f
+        message:
+          type: string
+          description: Message about the conflict
+    UnixMillis:
+      type: integer
+      format: int64
+    WorkflowTemplateMetadata:
+      type: object
+      properties:
+        parameters:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkflowTemplateParameter'
+    ExecutionOutput:
+      type: object
+      required:
+      - status
+      properties:
+        status:
+          type: string
+          description: The status of the execution of this workflow stage
+          example: completed
+        stopDate:
+          description: Timestamp of when the workflow was completed.
+          example: '1718467200000'
+          $ref: '#/components/schemas/UnixMillis'
+    NotFoundErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: not_found
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid resource identifier
+    RuleClause:
+      type: object
+      properties:
+        attribute:
+          type: string
+          description: The attribute the rule applies to, for example, last name or email address
+        op:
+          type: string
+          description: The operator to apply to the given attribute
+          enum:
+          - in
+          - endsWith
+          - startsWith
+          - matches
+          - contains
+          - lessThan
+          - lessThanOrEqual
+          - greaterThan
+          - greaterThanOrEqual
+          - before
+          - after
+          - segmentMatch
+          - semVerEqual
+          - semVerLessThan
+          - semVerGreaterThan
+        negate:
+          type: boolean
+          description: Whether the operator should be negated
+    DurationUnit:
+      type: string
+    ConditionInput:
+      type: object
+      properties:
+        scheduleKind:
+          description: Whether the scheduled execution of the workflow stage is relative or absolute. If relative, the <code>waitDuration</code> and <code>waitDurationUnit</code> specify when the execution occurs. If absolute, the <code>executionDate</code> specifies when the execution occurs.
+          example: relative
+          enum:
+          - absolute
+          - relative
+          $ref: '#/components/schemas/ScheduleKind'
+        executionDate:
+          description: For workflow stages whose scheduled execution is absolute, the time, in Unix milliseconds, when the stage should start.
+          example: '1706810400000'
+          $ref: '#/components/schemas/UnixMillis'
+        waitDuration:
+          type: integer
+          description: For workflow stages whose scheduled execution is relative, how far in the future the stage should start.
+          example: 2
+        waitDurationUnit:
+          description: For workflow stages whose scheduled execution is relative, the unit of measure for the <code>waitDuration</code>.
+          example: calendarDay
+          enum:
+          - minute
+          - hour
+          - calendarDay
+          - calendarWeek
+          $ref: '#/components/schemas/DurationUnit'
+        executeNow:
+          type: boolean
+          description: Whether the workflow stage should be executed immediately
+          example: false
+        description:
+          type: string
+          description: A description of the approval required for this stage
+          example: Require example-team approval for final stage
+        notifyMemberIds:
+          type: array
+          description: A list of member IDs for the members to request approval from for this stage
+          items:
+            type: string
+          example:
+          - 507f1f77bcf86cd799439011
+        notifyTeamKeys:
+          type: array
+          description: A list of team keys for the teams to request approval from for this stage
+          items:
+            type: string
+          example:
+          - example-team
+        integrationConfig:
+          description: Additional approval request fields for third-party integration approval systems. If you are using a third-party integration to manage approval requests, these additional fields will be described in the <code>manifest.json</code> for that integration, at https://github.com/launchdarkly/integration-framework.
+          $ref: '#/components/schemas/FormVariableConfig'
+        kind:
+          description: The type of condition to meet before executing this stage of the workflow. Use <code>schedule</code> to schedule a workflow stage. Use <code>ld-approval</code> to add an approval request to a workflow stage.
+          example: schedule
+          $ref: '#/components/schemas/ConditionKind'
+    StageInput:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The stage name
+          example: 10% rollout on day 1
+        executeConditionsInSequence:
+          type: boolean
+          description: Whether to execute the conditions in sequence for the given stage
+          example: true
+        conditions:
+          type: array
+          description: An array of conditions for the stage
+          items:
+            $ref: '#/components/schemas/ConditionInput'
+          example:
+          - kind: schedule
+            scheduleKind: relative
+            waitDuration: 2
+            waitDurationUnit: calendarDay
+        action:
+          description: An <code>instructions</code> field containing an array of instructions for the stage. Each object in the array uses the semantic patch format for updating a feature flag.
+          example: '{"instructions": [{ "kind": "turnFlagOn"}]}'
+          $ref: '#/components/schemas/ActionInput'
+    ConditionOutput:
+      type: object
+      required:
+      - _id
+      - _execution
+      - description
+      - notifyMemberIds
+      - allReviews
+      - reviewStatus
+      properties:
+        _id:
+          type: string
+        kind:
+          type: string
+        _execution:
+          $ref: '#/components/schemas/ExecutionOutput'
+        scheduleKind:
+          $ref: '#/components/schemas/ScheduleKind'
+        executionDate:
+          $ref: '#/components/schemas/UnixMillis'
+        waitDuration:
+          type: integer
+        waitDurationUnit:
+          $ref: '#/components/schemas/DurationUnit'
+        description:
+          type: string
+        notifyMemberIds:
+          type: array
+          items:
+            type: string
+        allReviews:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReviewOutput'
+        reviewStatus:
+          type: string
+        appliedDate:
+          $ref: '#/components/schemas/UnixMillis'
+        creationConfig:
+          $ref: '#/components/schemas/FormVariableConfig'
+    Instruction:
+      type: object
+      additionalProperties: {}
+    StageOutput:
+      type: object
+      required:
+      - _id
+      - conditions
+      - action
+      - _execution
+      properties:
+        _id:
+          type: string
+          description: The ID of this stage
+          example: 12ab3c45de678910abc12345
+        name:
+          type: string
+          description: The stage name
+          example: 10% rollout on day 1
+        conditions:
+          type: array
+          description: An array of conditions for the stage
+          items:
+            $ref: '#/components/schemas/ConditionOutput'
+          example:
+          - _execution:
+              status: completed
+            id: 12ab3c45de678910abc12345
+            kind: schedule
+            scheduleKind: relative
+            waitDuration: 2
+            waitDurationUnit: calendarDay
+        action:
+          description: The type of instruction, and an array of instructions for the stage. Each object in the array uses the semantic patch format for updating a feature flag.
+          example: '{ "kind": "patch", "instructions": [{ "kind": "turnFlagOn"}] }'
+          $ref: '#/components/schemas/ActionOutput'
+        _execution:
+          description: Details on the execution of this stage
+          example: '{ "status": "completed" }'
+          $ref: '#/components/schemas/ExecutionOutput'
+    ConditionKind:
+      type: string
+    ScheduleKind:
+      type: string
+    CustomWorkflowInput:
+      type: object
+      required:
+      - name
+      properties:
+        maintainerId:
+          description: The ID of the workflow maintainer. Defaults to the workflow creator.
+          example: 12ab3c45de678910abc12345
+          $ref: '#/components/schemas/ObjectId'
+        name:
+          type: string
+          description: The workflow name
+          example: Progressive rollout starting in two days
+        description:
+          type: string
+          description: The workflow description
+          example: Turn flag on for 10% of users each day
+        stages:
+          type: array
+          description: A list of the workflow stages
+          items:
+            $ref: '#/components/schemas/StageInput'
+        templateKey:
+          type: string
+          description: The template key
+    ObjectId:
+      type: string
+    ActionOutput:
+      type: object
+      required:
+      - kind
+      - instructions
+      properties:
+        kind:
+          type: string
+          description: The type of action for this stage
+          example: patch
+        instructions:
+          description: An array of instructions for the stage. Each object in the array uses the semantic patch format for updating a feature flag.
+          example: '[{"kind": "turnFlagOn"}]'
+          $ref: '#/components/schemas/Instructions'
+    ParameterDefault:
+      type: object
+      properties:
+        value:
+          description: The default value for the given parameter
+        booleanVariationValue:
+          type: boolean
+          description: Variation value for boolean flags. Not applicable for non-boolean flags.
+        ruleClause:
+          description: Metadata related to add rule instructions
+          $ref: '#/components/schemas/RuleClause'
     Links:
       type: object
       description: HATEOAS links for navigating related resources.
@@ -109,7 +1127,54 @@ components:
           type:
             type: string
             description: The media type.
+    Workflows:
+      type: object
+      description: A collection of workflows.
+      properties:
+        items:
+          type: array
+          description: The list of workflows.
+          items:
+            type: object
+            properties:
+              _id:
+                type: string
+                description: The workflow identifier.
+              name:
+                type: string
+                description: The workflow name.
+              _links:
+                $ref: '#/components/schemas/Links'
+  parameters:
+    FlagKey:
+      name: flagKey
+      in: path
+      required: true
+      description: The feature flag key identifying a specific flag.
+      schema:
+        type: string
+        pattern: ^[a-z0-9]([a-z0-9._-])*$
+    EnvironmentKey:
+      name: environmentKey
+      in: path
+      required: true
+      description: The environment key identifying a specific environment.
+      schema:
+        type: string
+        pattern: ^[a-z0-9]([a-z0-9-])*$
+    ProjectKey:
+      name: projectKey
+      in: path
+      required: true
+      description: The project key identifying a LaunchDarkly project.
+      schema:
+        type: string
+        pattern: ^[a-z0-9]([a-z0-9-])*$
   securitySchemes:
+    ApiKey:
+      type: apiKey
+      in: header
+      name: Authorization
     bearerAuth:
       type: http
       scheme: bearer
@@ -117,3 +1182,6 @@ components:
 externalDocs:
   description: LaunchDarkly API Documentation
   url: https://apidocs.launchdarkly.com/
+x-refined-from:
+- launchdarkly-openapi.json
+- launchdarkly-rest-api-openapi.yml

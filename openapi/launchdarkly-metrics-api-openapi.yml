@@ -1,24 +1,504 @@
 openapi: 3.2.0
 info:
-  title: LaunchDarkly REST Metrics API
-  description: The LaunchDarkly REST API provides programmatic access to the full LaunchDarkly feature management platform.
-  version: '20240415'
-  contact:
-    name: LaunchDarkly Support
-    url: https://support.launchdarkly.com
-  termsOfService: https://launchdarkly.com/policies/terms-of-service
+  title: Launchdarkly Metrics API
   license:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
+  version: '1.0'
+  description: 'Operations tagged Metrics across 2 of this provider''s published API definitions: launchdarkly-openapi.json, launchdarkly-rest-api-openapi.yml. Each path carries the servers of the definition it was published in.'
 servers:
+- url: https://app.launchdarkly.com
+  description: ' Default'
+- url: https://app.launchdarkly.us
+  description: ' Federal'
 - url: https://app.launchdarkly.com/api/v2
   description: LaunchDarkly Production API
-security:
-- bearerAuth: []
 tags:
 - name: Metrics
-  description: Define and manage metrics used to measure experiment outcomes and feature flag impact.
+  description: 'Metrics track flag behavior over time when an experiment is running. The data generated from experiments gives you more insight into the impact of a particular flag. To learn more, read Metrics.
+
+
+    Using the metrics API, you can create, delete, and manage metrics.
+
+
+    > ### Metric keys and event keys are different
+
+    >
+
+    > LaunchDarkly automatically generates a metric key when you create a metric. You can use the metric key to identify the metric in API calls.
+
+    >
+
+    > Custom conversion/binary and custom numeric metrics also require an event key. You can set the event key to anything you want. Adding this event key to your codebase lets your SDK track actions customers take in your app as events. To learn more, read Sending custom events.
+
+
+    ### Importing metric events
+
+
+    The metric import API is separate from the metrics API.
+
+
+    The metric import API lets you import metric events from your data pipeline for use with Experimentation and guarded rollouts. This means you can send your already-instrumented metrics into LaunchDarkly without writing and deploying new code for each metric.
+
+
+    For details on the metric import API, read Importing metric events.
+
+
+    > #### The metric import API uses a different base URL
+
+    >
+
+    > The metric import API differs from other LaunchDarkly REST APIs because it uses a different base URL: it requires `https://events.launchdarkly.com` rather than `https://app.launchdarkly.com`. For this reason, the metric import API is also not included as part of LaunchDarkly''s generated client libraries, and details are not included in the OpenAPI specification. To learn more, read Importing metric events.'
 paths:
+  /api/v2/metrics/{projectKey}:
+    get:
+      responses:
+        '200':
+          description: Metrics collection response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetricCollectionRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+      tags:
+      - Metrics
+      summary: List metrics
+      description: 'Get a list of all metrics for the specified project.
+
+
+        ### Filtering metrics
+
+
+        The `filter` parameter supports the following operators: `contains`, `equals`, `anyOf`.
+
+
+        #### Supported fields and operators
+
+
+        You can only filter certain fields in metrics when using the `filter` parameter. Additionally, you can only filter some fields with certain operators.
+
+
+        When you search for metrics, the `filter` parameter supports the following fields and operators:
+
+
+        |
+
+        Field
+
+        |Description |Supported operators |
+
+        |---|---|---|
+
+        | `dataSourceKeys` | The data source that provides events for this metric (for example, "launchdarkly-hosted"). | `anyOf`, `notEquals` |
+
+        | `eventKeys` | The metric event key. | `anyOf` |
+
+        | `eventKind` | The metric event kind. One of `custom`, `pageview`, `click`. | `equals` |
+
+        | `hasConnections` | Whether the metric has connections to experiments or guarded rollouts. One of `true`, `false`. | `equals` |
+
+        | `isNumeric` | Whether the metric is numeric. One of `true`, `false`. | `equals` |
+
+        | `maintainerIds` | A comma-separated list of metric maintainer IDs. | `anyOf` |
+
+        | `maintainerTeamKey` | The metric maintainer team key. | `equals` |
+
+        | `metricUsedIn` | Filter by where the metric is used. One of `experiments`, `guarded_rollouts`, `any`, `none`. | `equals` |
+
+        | `query` | A "fuzzy" search across metric key and name. Supply a string or list of strings to the operator. | `equals` |
+
+        | `tags` | The metric tags. | `contains` |
+
+        | `unitAggregationType` | The metric''s unit aggregation type. One of `sum`, `average`. | `equals` |
+
+        | `versionIds` | The metric version number. | `anyOf` |
+
+        | `view` | The view used to restrict access to the metric. | `equals` |
+
+
+        For example, the filter `?filter=tags contains ["tag1", "tag2", "tag3"]` matches metrics that have all three tags.
+
+
+        The documented values for `filter` query parameters are prior to URL encoding. For example, the `[` in `?filter=tags contains ["tag1", "tag2", "tag3"]` must be encoded to `%5B`.
+
+
+        ### Expanding the metric list response
+
+
+        LaunchDarkly supports expanding the "List metrics" response. By default, the expandable field is **not** included in the response.
+
+
+        To expand the response, append the `expand` query parameter and add the following supported field:
+
+
+        - `experimentCount` includes the number of experiments from the specific project that use the metric
+
+
+        For example, `expand=experimentCount` includes the `experimentCount` field for each metric in the response.'
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: expand
+        in: query
+        description: A comma-separated list of properties that can reveal additional information in the response.
+        schema:
+          type: string
+          format: string
+          description: A comma-separated list of properties that can reveal additional information in the response.
+      - name: limit
+        in: query
+        description: The number of metrics to return in the response. Defaults to 20. Maximum limit is 50.
+        schema:
+          type: integer
+          format: int64
+          description: The number of metrics to return in the response. Defaults to 20. Maximum limit is 50.
+      - name: offset
+        in: query
+        description: Where to start in the list. Use this with pagination. For example, an offset of 10 skips the first ten items and returns the next `limit` items.
+        schema:
+          type: integer
+          format: int64
+          description: Where to start in the list. Use this with pagination. For example, an offset of 10 skips the first ten items and returns the next `limit` items.
+      - name: sort
+        in: query
+        description: A field to sort the items by. Prefix field by a dash ( - ) to sort in descending order. This endpoint supports sorting by `createdAt` or `name`.
+        schema:
+          type: string
+          format: string
+          description: A field to sort the items by. Prefix field by a dash ( - ) to sort in descending order. This endpoint supports sorting by `createdAt` or `name`.
+      - name: filter
+        in: query
+        description: A comma-separated list of filters. This endpoint accepts filtering by `query`, `tags`, `eventKind`, `isNumeric`, `unitAggregationType`, `hasConnections`, `maintainerIds`, `maintainerTeamKey`, `view`, `dataSourceKeys`, `metricUsedIn`, `eventKeys`, and `versionIds`. To learn more about the filter syntax, read the 'Filtering metrics' section above.
+        schema:
+          type: string
+          format: string
+          description: A comma-separated list of filters. This endpoint accepts filtering by `query`, `tags`, `eventKind`, `isNumeric`, `unitAggregationType`, `hasConnections`, `maintainerIds`, `maintainerTeamKey`, `view`, `dataSourceKeys`, `metricUsedIn`, `eventKeys`, and `versionIds`. To learn more about the filter syntax, read the 'Filtering metrics' section above.
+      operationId: getMetrics
+      security:
+      - ApiKey:
+        - read
+        - write
+    post:
+      responses:
+        '201':
+          description: Metric response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetricRep'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '409':
+          description: Status conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusConflictErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Metrics
+      summary: Create metric
+      description: Create a new metric in the specified project. The expected `POST` body differs depending on the specified `kind` property.
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MetricPost'
+            example:
+              eventKey: Order placed
+              isNumeric: false
+              key: metric-key-123abc
+              kind: custom
+        required: true
+      operationId: postMetric
+      security:
+      - ApiKey:
+        - read
+        - write
+    servers:
+    - url: https://app.launchdarkly.com
+      description: ' Default'
+    - url: https://app.launchdarkly.us
+      description: ' Federal'
+  /api/v2/metrics/{projectKey}/{metricKey}:
+    get:
+      responses:
+        '200':
+          description: Metric response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetricRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Metrics
+      summary: Get metric
+      description: 'Get information for a single metric from the specific project.
+
+
+        ### Expanding the metric response
+
+        LaunchDarkly supports four fields for expanding the "Get metric" response. By default, these fields are **not** included in the response.
+
+
+        To expand the response, append the `expand` query parameter and add a comma-separated list with any of the following fields:
+
+
+        - `experiments` includes all experiments from the specific project that use the metric
+
+        - `experimentCount` includes the number of experiments from the specific project that use the metric
+
+        - `metricGroups` includes all metric groups from the specific project that use the metric
+
+        - `metricGroupCount` includes the number of metric groups from the specific project that use the metric
+
+
+        For example, `expand=experiments` includes the `experiments` field in the response.'
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: metricKey
+        in: path
+        description: The metric key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The metric key
+      - name: expand
+        in: query
+        description: A comma-separated list of properties that can reveal additional information in the response. Supported fields are `experiments`, `experimentCount`, `metricGroups`, `metricGroupCount`, `eventSources`, `guardedRollouts`, `guardedRolloutCount`, `lastUsedInExperiment`, and `lastUsedInGuardedRollout`.
+        schema:
+          type: string
+          format: string
+          description: A comma-separated list of properties that can reveal additional information in the response. Supported fields are `experiments`, `experimentCount`, `metricGroups`, `metricGroupCount`, `eventSources`, `guardedRollouts`, `guardedRolloutCount`, `lastUsedInExperiment`, and `lastUsedInGuardedRollout`.
+      - name: versionId
+        in: query
+        description: The specific version ID of the metric
+        schema:
+          type: string
+          format: string
+          description: The specific version ID of the metric
+      operationId: getMetric
+      security:
+      - ApiKey:
+        - read
+        - write
+    patch:
+      responses:
+        '200':
+          description: Metric response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetricRep'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '409':
+          description: Status conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusConflictErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Metrics
+      summary: Update metric
+      description: Patch a metric by key. Updating a metric uses a JSON patch representation of the desired changes. To learn more, read Updates.
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: metricKey
+        in: path
+        description: The metric key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The metric key
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JSONPatch'
+            example:
+            - op: replace
+              path: /name
+              value: my-updated-metric
+        required: true
+      operationId: patchMetric
+      security:
+      - ApiKey:
+        - read
+        - write
+    delete:
+      responses:
+        '204':
+          description: Action succeeded
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Metrics
+      summary: Delete metric
+      description: Delete a metric by key.
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: metricKey
+        in: path
+        description: The metric key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The metric key
+      operationId: deleteMetric
+      security:
+      - ApiKey:
+        - read
+        - write
+    servers:
+    - url: https://app.launchdarkly.com
+      description: ' Default'
+    - url: https://app.launchdarkly.us
+      description: ' Federal'
   /metrics/{projectKey}:
     get:
       operationId: listMetrics
@@ -39,6 +519,8 @@ paths:
           description: Unauthorized. Invalid or missing access token.
         '404':
           description: Project not found.
+      security:
+      - bearerAuth: []
     post:
       operationId: createMetric
       summary: Create a metric
@@ -66,17 +548,1268 @@ paths:
           description: Unauthorized. Invalid or missing access token.
         '409':
           description: A metric with the given key already exists.
+      security:
+      - bearerAuth: []
+    servers:
+    - url: https://app.launchdarkly.com/api/v2
+      description: LaunchDarkly Production API
 components:
-  parameters:
-    ProjectKey:
-      name: projectKey
-      in: path
-      required: true
-      description: The project key identifying a LaunchDarkly project.
-      schema:
-        type: string
-        pattern: ^[a-z0-9]([a-z0-9-])*$
   schemas:
+    MetricRep:
+      type: object
+      required:
+      - _id
+      - _versionId
+      - key
+      - name
+      - kind
+      - _links
+      - tags
+      - _creationDate
+      - dataSource
+      properties:
+        experimentCount:
+          type: integer
+          description: The number of experiments using this metric
+          example: 0
+        metricGroupCount:
+          type: integer
+          description: The number of metric groups using this metric
+          example: 0
+        activeExperimentCount:
+          type: integer
+          description: The number of active experiments using this metric
+          example: 2
+        activeGuardedRolloutCount:
+          type: integer
+          description: The number of active guarded rollouts using this metric
+          example: 1
+        _id:
+          type: string
+          description: The ID of this metric
+          example: 5902deadbeef667524a01290
+        _versionId:
+          type: string
+          description: The version ID of the metric
+          example: version-id-123abc
+        _version:
+          type: integer
+          description: Version of the metric
+          example: 1
+        key:
+          type: string
+          description: A unique key to reference the metric
+          example: metric-key-123abc
+        name:
+          type: string
+          description: A human-friendly name for the metric
+          example: My metric
+        kind:
+          type: string
+          description: The kind of event the metric tracks
+          example: custom
+          enum:
+          - pageview
+          - click
+          - custom
+          - trace
+        _attachedFlagCount:
+          type: integer
+          description: The number of feature flags currently attached to this metric
+          example: 0
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+          example:
+            parent:
+              href: /api/v2/metrics/my-project
+              type: application/json
+            self:
+              href: /api/v2/metrics/my-project/my-metric
+              type: application/json
+        _site:
+          description: Details on how to access the metric in the LaunchDarkly UI
+          example: '{"href":"/my-project/metrics/my-metric/details","type":"text/html"}'
+          $ref: '#/components/schemas/Link'
+        _access:
+          description: Details on the allowed and denied actions for this metric
+          $ref: '#/components/schemas/Access'
+        tags:
+          type: array
+          description: Tags for the metric
+          items:
+            type: string
+          example: []
+        _creationDate:
+          description: Timestamp of when the metric was created
+          example: '1628192791148'
+          $ref: '#/components/schemas/UnixMillis'
+        lastModified:
+          $ref: '#/components/schemas/Modification'
+        maintainerId:
+          type: string
+          description: The ID of the member who maintains this metric
+          example: 569fdeadbeef1644facecafe
+        _maintainer:
+          description: Details on the member who maintains this metric
+          example: '{"_links":{"self":{"href":"/api/v2/members/569fdeadbeef1644facecafe","type":"application/json"}},"_id":"569fdeadbeef1644facecafe","firstName":"Ariel","lastName":"Flores","role":"owner","email":"ariel@acme.com"}'
+          $ref: '#/components/schemas/MemberSummary'
+        description:
+          type: string
+          description: Description of the metric
+        category:
+          type: string
+          description: The category of the metric
+          example: Error monitoring
+        isNumeric:
+          type: boolean
+          description: For custom and trace metrics, whether to track numeric changes in value against a baseline (<code>true</code>) or to track a conversion when an end user takes an action (<code>false</code>).
+          example: true
+        successCriteria:
+          type: string
+          description: For custom and trace metrics, the success criteria
+          enum:
+          - HigherThanBaseline
+          - LowerThanBaseline
+        unit:
+          type: string
+          description: For numeric custom and trace metrics, the unit of measure
+        eventKey:
+          type: string
+          description: For custom metrics, the event key to use in your code
+          example: Order placed
+        randomizationUnits:
+          type: array
+          description: Deprecated, use <code>analysisUnits</code> instead.
+          items:
+            type: string
+          example:
+          - user
+          deprecated: true
+        analysisUnits:
+          type: array
+          description: An array of analysis units allowed for this metric.
+          items:
+            type: string
+          example:
+          - user
+        filters:
+          description: The filters narrowing down the audience based on context attributes or event properties.
+          example: '{"type":"group","op":"and","values":[{"type":"contextAttribute","op":"in","contextKind":"user","attribute":"country","values":["JP"],"negate":false},{"type":"eventProperty","op":"in","attribute":"category","values":["magic-wands"],"negate":false}]}'
+          $ref: '#/components/schemas/Filter'
+        unitAggregationType:
+          type: string
+          description: The method by which multiple unit event values are aggregated
+          example: average
+          enum:
+          - average
+          - sum
+          - count_distinct
+        analysisType:
+          type: string
+          description: The method for analyzing metric events
+          example: mean
+          enum:
+          - mean
+          - percentile
+        percentileValue:
+          type: integer
+          description: The percentile for the analysis method. An integer denoting the target percentile between 0 and 100. Required when <code>analysisType</code> is <code>percentile</code>.
+          example: 95
+        eventDefault:
+          $ref: '#/components/schemas/MetricEventDefaultRep'
+        dataSource:
+          $ref: '#/components/schemas/MetricDataSourceRefRep'
+        lastSeen:
+          description: Timestamp of most recent data for this metric, at one-hour fidelity
+          $ref: '#/components/schemas/UnixMillis'
+        archived:
+          type: boolean
+          description: Whether the metric version is archived
+        archivedAt:
+          description: Timestamp when the metric version was archived
+          example: '1609459200000'
+          $ref: '#/components/schemas/UnixMillis'
+        selector:
+          type: string
+          description: For click metrics, the CSS selectors
+        urls:
+          description: For click and pageview metrics, the target URLs
+          example: '[{"kind":"exact","url":"https://www.example.com/page1"}]'
+          $ref: '#/components/schemas/UrlMatchers'
+        windowStartOffset:
+          type: integer
+          format: int64
+          description: Not yet implemented - The start of the measurement window, in milliseconds relative to the unit's first exposure to a flag variation
+        windowEndOffset:
+          type: integer
+          format: int64
+          description: Not yet implemented - The end of the measurement window, in milliseconds relative to the unit's first exposure to a flag variation
+        winsorLowerPercentile:
+          type: number
+          description: Lower winsorization percentile, expressed as a percent in the open interval (0, 100). When both bounds are set, defines a two-sided clamp range. Otherwise lower-only winsorization.
+          example: 1
+        winsorUpperPercentile:
+          type: number
+          description: Upper winsorization percentile, expressed as a percent in the open interval (0, 100). When both bounds are set, must be greater than winsorLowerPercentile.
+          example: 99.5
+        winsorIncludeImputed:
+          type: boolean
+          description: When true, the percentile bound calculation includes imputed zeros. Only meaningful when at least one bound is set and the metric includes units that didn't send events.
+          example: false
+        traceQuery:
+          type: string
+          description: For trace metrics, the trace query to use for the metric.
+          example: service.name = "checkout"
+        traceValueLocation:
+          type: string
+          description: For trace metrics, the location in the trace to use for numeric values.
+          example: duration
+        unitAggregationField:
+          type: string
+          description: For count_distinct metrics, the column to count distinct values of
+        denominator:
+          description: For ratio metrics, the denominator event configuration
+          $ref: '#/components/schemas/MetricDenominatorRep'
+        experiments:
+          description: Experiments that use this metric, including those using a metric group that contains this metric
+          $ref: '#/components/schemas/DependentExperimentListRep'
+        metricGroups:
+          type: array
+          description: Metric groups that use this metric
+          items:
+            $ref: '#/components/schemas/DependentMetricGroupRep'
+        lastUsedInExperiment:
+          description: The most recent experiment that used this metric
+          $ref: '#/components/schemas/DependentExperimentRep'
+        lastUsedInGuardedRollout:
+          description: The most recent guarded rollout that used this metric
+          $ref: '#/components/schemas/DependentReleasePhaseRep'
+        isActive:
+          type: boolean
+          description: Whether the metric is active
+          example: true
+        _attachedFeatures:
+          type: array
+          description: Details on the flags attached to this metric
+          items:
+            $ref: '#/components/schemas/FlagListingRep'
+    JSONPatch:
+      type: array
+      items:
+        $ref: '#/components/schemas/PatchOperation'
+    AccessDenied:
+      type: object
+      required:
+      - action
+      - reason
+      properties:
+        action:
+          $ref: '#/components/schemas/ActionIdentifier'
+        reason:
+          $ref: '#/components/schemas/AccessDeniedReason'
+    EventFilter:
+      type: object
+      required:
+      - type
+      - op
+      - values
+      - negate
+      properties:
+        type:
+          type: string
+          description: Filter type. One of [contextAttribute, eventProperty, group]
+          example: contextAttribute
+        attribute:
+          type: string
+          description: If not a group node, the context attribute name or event property name to filter on
+          example: country
+        op:
+          description: The function to perform
+          example: in
+          $ref: '#/components/schemas/Operator'
+        values:
+          type: array
+          description: The context attribute / event property values or group member nodes. Numeric values must not exceed 14 decimal places.
+          items: {}
+          example:
+          - JP
+        contextKind:
+          type: string
+          description: For context attribute filters, the context kind.
+          example: user
+        negate:
+          type: boolean
+          description: If set, then take the inverse of the operator. 'in' becomes 'not in'.
+          example: false
+    MetricCollectionRep:
+      type: object
+      properties:
+        items:
+          type: array
+          description: An array of metrics
+          items:
+            $ref: '#/components/schemas/MetricListingRep'
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+          example:
+            self:
+              href: /api/v2/metrics/my-project?limit=20
+              type: application/json
+        totalCount:
+          type: integer
+    UrlMatcher:
+      additionalProperties: {}
+      type: object
+    InvalidRequestErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: invalid_request
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid request body
+    Modification:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date-time
+          example: '2021-08-05T19:46:31.148082Z'
+    MetricDenominatorRep:
+      type: object
+      properties:
+        eventName:
+          type: string
+          description: The warehouse event column for the denominator
+        isNumeric:
+          type: boolean
+          description: Whether the denominator aggregates a numeric value
+        unitAggregationType:
+          type: string
+          description: How individual unit values are aggregated for the denominator
+        unitAggregationField:
+          type: string
+          description: The column to count distinct values of; required when unitAggregationType is count_distinct
+        valueColumn:
+          type: string
+          description: For a numeric denominator, the column holding the numeric value
+        dataSource:
+          description: The data source for the denominator events. Uses 'launchdarkly-hosted' for SDK-tracked events.
+          $ref: '#/components/schemas/MetricDataSourceRefRep'
+        filters:
+          description: Optional filters to narrow which denominator events are included
+          $ref: '#/components/schemas/Filter'
+        windowStartOffset:
+          type: integer
+          format: int64
+          description: Start of the measurement window in milliseconds
+        windowEndOffset:
+          type: integer
+          format: int64
+          description: End of the measurement window in milliseconds
+        winsorLowerPercentile:
+          type: number
+          description: Lower winsorization percentile in the open interval (0, 100)
+        winsorUpperPercentile:
+          type: number
+          description: Upper winsorization percentile in the open interval (0, 100)
+        winsorIncludeImputed:
+          type: boolean
+          description: When true, the percentile bound calculation includes imputed zeros
+    MemberSummary:
+      type: object
+      required:
+      - _links
+      - _id
+      - role
+      - email
+      properties:
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+          example:
+            self:
+              href: /api/v2/members/569f183514f4432160000007
+              type: application/json
+        _id:
+          type: string
+          description: The member's ID
+          example: 569f183514f4432160000007
+        firstName:
+          type: string
+          description: The member's first name
+          example: Ariel
+        lastName:
+          type: string
+          description: The member's last name
+          example: Flores
+        role:
+          type: string
+          description: The member's base role. If the member has no additional roles, this role will be in effect.
+          example: admin
+        email:
+          type: string
+          description: The member's email address
+          example: ariel@acme.com
+    RateLimitedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: rate_limited
+        message:
+          type: string
+          description: Description of the error
+          example: You've exceeded the API rate limit. Try again later.
+    AccessDeniedReason:
+      type: object
+      required:
+      - effect
+      properties:
+        resources:
+          type: array
+          description: Resource specifier strings
+          items:
+            type: string
+          example:
+          - proj/*:env/*;qa_*:/flag/*
+        notResources:
+          type: array
+          description: Targeted resources are the resources NOT in this list. The <code>resources</code> and <code>notActions</code> fields must be empty to use this field.
+          items:
+            type: string
+        actions:
+          type: array
+          description: Actions to perform on a resource
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+          example:
+          - '*'
+        notActions:
+          type: array
+          description: Targeted actions are the actions NOT in this list. The <code>actions</code> and <code>notResources</code> fields must be empty to use this field.
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+        effect:
+          type: string
+          description: Whether this statement should allow or deny actions on the resources.
+          example: allow
+          enum:
+          - allow
+          - deny
+        role_name:
+          type: string
+    UnauthorizedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: unauthorized
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid access token
+    Operator:
+      type: string
+    ForbiddenErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: forbidden
+        message:
+          type: string
+          description: Description of the error
+          example: Forbidden. Access to the requested resource was denied.
+    ActionSpecifier:
+      type: string
+    UrlMatchers:
+      items:
+        $ref: '#/components/schemas/UrlMatcher'
+      type: array
+    MetricListingRep:
+      type: object
+      required:
+      - _id
+      - _versionId
+      - key
+      - name
+      - kind
+      - _links
+      - tags
+      - _creationDate
+      - dataSource
+      properties:
+        experimentCount:
+          type: integer
+          description: The number of experiments using this metric
+          example: 0
+        metricGroupCount:
+          type: integer
+          description: The number of metric groups using this metric
+          example: 0
+        activeExperimentCount:
+          type: integer
+          description: The number of active experiments using this metric
+          example: 2
+        activeGuardedRolloutCount:
+          type: integer
+          description: The number of active guarded rollouts using this metric
+          example: 1
+        _id:
+          type: string
+          description: The ID of this metric
+          example: 5902deadbeef667524a01290
+        _versionId:
+          type: string
+          description: The version ID of the metric
+          example: version-id-123abc
+        _version:
+          type: integer
+          description: Version of the metric
+          example: 1
+        key:
+          type: string
+          description: A unique key to reference the metric
+          example: metric-key-123abc
+        name:
+          type: string
+          description: A human-friendly name for the metric
+          example: My metric
+        kind:
+          type: string
+          description: The kind of event the metric tracks
+          example: custom
+          enum:
+          - pageview
+          - click
+          - custom
+          - trace
+        _attachedFlagCount:
+          type: integer
+          description: The number of feature flags currently attached to this metric
+          example: 0
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+          example:
+            parent:
+              href: /api/v2/metrics/my-project
+              type: application/json
+            self:
+              href: /api/v2/metrics/my-project/my-metric
+              type: application/json
+        _site:
+          description: Details on how to access the metric in the LaunchDarkly UI
+          example: '{"href":"/my-project/metrics/my-metric/details","type":"text/html"}'
+          $ref: '#/components/schemas/Link'
+        _access:
+          description: Details on the allowed and denied actions for this metric
+          $ref: '#/components/schemas/Access'
+        tags:
+          type: array
+          description: Tags for the metric
+          items:
+            type: string
+          example: []
+        _creationDate:
+          description: Timestamp of when the metric was created
+          example: '1628192791148'
+          $ref: '#/components/schemas/UnixMillis'
+        lastModified:
+          $ref: '#/components/schemas/Modification'
+        maintainerId:
+          type: string
+          description: The ID of the member who maintains this metric
+          example: 569fdeadbeef1644facecafe
+        _maintainer:
+          description: Details on the member who maintains this metric
+          example: '{"_links":{"self":{"href":"/api/v2/members/569fdeadbeef1644facecafe","type":"application/json"}},"_id":"569fdeadbeef1644facecafe","firstName":"Ariel","lastName":"Flores","role":"owner","email":"ariel@acme.com"}'
+          $ref: '#/components/schemas/MemberSummary'
+        description:
+          type: string
+          description: Description of the metric
+        category:
+          type: string
+          description: The category of the metric
+          example: Error monitoring
+        isNumeric:
+          type: boolean
+          description: For custom and trace metrics, whether to track numeric changes in value against a baseline (<code>true</code>) or to track a conversion when an end user takes an action (<code>false</code>).
+          example: true
+        successCriteria:
+          type: string
+          description: For custom and trace metrics, the success criteria
+          enum:
+          - HigherThanBaseline
+          - LowerThanBaseline
+        unit:
+          type: string
+          description: For numeric custom and trace metrics, the unit of measure
+        eventKey:
+          type: string
+          description: For custom metrics, the event key to use in your code
+          example: Order placed
+        randomizationUnits:
+          type: array
+          description: Deprecated, use <code>analysisUnits</code> instead.
+          items:
+            type: string
+          example:
+          - user
+          deprecated: true
+        analysisUnits:
+          type: array
+          description: An array of analysis units allowed for this metric.
+          items:
+            type: string
+          example:
+          - user
+        filters:
+          description: The filters narrowing down the audience based on context attributes or event properties.
+          example: '{"type":"group","op":"and","values":[{"type":"contextAttribute","op":"in","contextKind":"user","attribute":"country","values":["JP"],"negate":false},{"type":"eventProperty","op":"in","attribute":"category","values":["magic-wands"],"negate":false}]}'
+          $ref: '#/components/schemas/Filter'
+        unitAggregationType:
+          type: string
+          description: The method by which multiple unit event values are aggregated
+          example: average
+          enum:
+          - average
+          - sum
+          - count_distinct
+        analysisType:
+          type: string
+          description: The method for analyzing metric events
+          example: mean
+          enum:
+          - mean
+          - percentile
+        percentileValue:
+          type: integer
+          description: The percentile for the analysis method. An integer denoting the target percentile between 0 and 100. Required when <code>analysisType</code> is <code>percentile</code>.
+          example: 95
+        eventDefault:
+          $ref: '#/components/schemas/MetricEventDefaultRep'
+        dataSource:
+          $ref: '#/components/schemas/MetricDataSourceRefRep'
+        lastSeen:
+          description: Timestamp of most recent data for this metric, at one-hour fidelity
+          $ref: '#/components/schemas/UnixMillis'
+        archived:
+          type: boolean
+          description: Whether the metric version is archived
+        archivedAt:
+          description: Timestamp when the metric version was archived
+          example: '1609459200000'
+          $ref: '#/components/schemas/UnixMillis'
+        selector:
+          type: string
+          description: For click metrics, the CSS selectors
+        urls:
+          description: For click and pageview metrics, the target URLs
+          example: '[{"kind":"exact","url":"https://www.example.com/page1"}]'
+          $ref: '#/components/schemas/UrlMatchers'
+        windowStartOffset:
+          type: integer
+          format: int64
+          description: Not yet implemented - The start of the measurement window, in milliseconds relative to the unit's first exposure to a flag variation
+        windowEndOffset:
+          type: integer
+          format: int64
+          description: Not yet implemented - The end of the measurement window, in milliseconds relative to the unit's first exposure to a flag variation
+        winsorLowerPercentile:
+          type: number
+          description: Lower winsorization percentile, expressed as a percent in the open interval (0, 100). When both bounds are set, defines a two-sided clamp range. Otherwise lower-only winsorization.
+          example: 1
+        winsorUpperPercentile:
+          type: number
+          description: Upper winsorization percentile, expressed as a percent in the open interval (0, 100). When both bounds are set, must be greater than winsorLowerPercentile.
+          example: 99.5
+        winsorIncludeImputed:
+          type: boolean
+          description: When true, the percentile bound calculation includes imputed zeros. Only meaningful when at least one bound is set and the metric includes units that didn't send events.
+          example: false
+        traceQuery:
+          type: string
+          description: For trace metrics, the trace query to use for the metric.
+          example: service.name = "checkout"
+        traceValueLocation:
+          type: string
+          description: For trace metrics, the location in the trace to use for numeric values.
+          example: duration
+        unitAggregationField:
+          type: string
+          description: For count_distinct metrics, the column to count distinct values of
+        denominator:
+          description: For ratio metrics, the denominator event configuration
+          $ref: '#/components/schemas/MetricDenominatorRep'
+    MetricEventDefaultRep:
+      type: object
+      properties:
+        disabled:
+          type: boolean
+          description: Whether to disable defaulting missing unit events when calculating results. Defaults to false
+        value:
+          type: number
+          description: The default value applied to missing unit events. Set to 0 when <code>disabled</code> is false. No other values are currently supported.
+          example: 0
+    Link:
+      type: object
+      properties:
+        href:
+          type: string
+        type:
+          type: string
+    ActionIdentifier:
+      type: string
+    Filter:
+      type: object
+      required:
+      - type
+      - op
+      - values
+      - negate
+      properties:
+        type:
+          type: string
+          description: Filter type. One of [contextAttribute, eventProperty, group]
+          example: contextAttribute
+          enum:
+          - group
+          - contextAttribute
+          - eventProperty
+        attribute:
+          type: string
+          description: If not a group node, the context attribute name or event property name to filter on
+          example: country
+        op:
+          description: The function to perform
+          example: in
+          $ref: '#/components/schemas/Operator'
+        values:
+          type: array
+          description: The context attribute / event property values or group member nodes
+          items: {}
+          example:
+          - JP
+        contextKind:
+          type: string
+          description: For context attribute filters, the context kind.
+          example: user
+        negate:
+          type: boolean
+          description: If set, then take the inverse of the operator. 'in' becomes 'not in'.
+          example: false
+    DependentMetricGroupRep:
+      type: object
+      required:
+      - key
+      - name
+      - kind
+      - _links
+      properties:
+        key:
+          type: string
+          description: A unique key to reference the metric group
+          example: metric-group-key-123abc
+        name:
+          type: string
+          description: A human-friendly name for the metric group
+          example: My metric group
+        kind:
+          type: string
+          description: The type of the metric group
+          example: funnel
+          enum:
+          - funnel
+          - standard
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+          example:
+            parent:
+              href: /api/v2/projects/my-project
+              type: application/json
+            self:
+              href: /api/v2/projects/my-project/metric-groups/my-metric-group
+              type: application/json
+    UnixMillis:
+      type: integer
+      format: int64
+    PatchOperation:
+      type: object
+      required:
+      - op
+      - path
+      properties:
+        op:
+          type: string
+          description: The type of operation to perform
+          example: replace
+        path:
+          type: string
+          description: A JSON Pointer string specifying the part of the document to operate on
+          example: /exampleField
+        value:
+          description: A JSON value used in "add", "replace", and "test" operations
+          example: new example value
+    DenominatorPost:
+      type: object
+      properties:
+        eventName:
+          type: string
+          description: The warehouse event column for the denominator. Required.
+          example: checkout.started
+        isNumeric:
+          type: boolean
+          description: Whether the denominator aggregates a numeric value
+        dataSource:
+          description: Warehouse data source for the denominator events. Omit or use 'launchdarkly-hosted' for SDK-tracked events.
+          $ref: '#/components/schemas/MetricDataSourceRefRep'
+        unitAggregationType:
+          type: string
+          description: 'How individual unit values are aggregated. One of: average, sum, count_distinct'
+          example: sum
+        unitAggregationField:
+          type: string
+          description: The warehouse column to use for counting distinct values. Required when the unitAggregationType is count_distinct.
+        valueColumn:
+          type: string
+          description: For a numeric denominator, the column holding the numeric value. Overrides the value column mapped on the denominator data source.
+        filters:
+          description: Optional filters to narrow which denominator events are included
+          $ref: '#/components/schemas/EventFilter'
+        windowStartOffset:
+          type: integer
+          format: int64
+          description: Start of the measurement window in milliseconds
+        windowEndOffset:
+          type: integer
+          format: int64
+          description: End of the measurement window in milliseconds
+        winsorLowerPercentile:
+          type: number
+          description: Lower winsorization percentile in the open interval (0, 100)
+        winsorUpperPercentile:
+          type: number
+          description: Upper winsorization percentile in the open interval (0, 100)
+        winsorIncludeImputed:
+          type: boolean
+          description: When true, includes imputed zeros in the percentile bound calculation
+    FlagListingRep:
+      type: object
+      required:
+      - name
+      - key
+      properties:
+        name:
+          type: string
+          description: The flag name
+          example: Example flag
+        key:
+          type: string
+          description: The flag key
+          example: flag-key-123abc
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+        _site:
+          $ref: '#/components/schemas/Link'
+    MetricPost:
+      type: object
+      required:
+      - key
+      - kind
+      properties:
+        key:
+          type: string
+          description: A unique key to reference the metric
+          example: metric-key-123abc
+        name:
+          type: string
+          description: A human-friendly name for the metric
+          example: Example metric
+        description:
+          type: string
+          description: Description of the metric
+          example: optional description
+        kind:
+          type: string
+          description: The kind of event your metric will track
+          example: custom
+          enum:
+          - pageview
+          - click
+          - custom
+          - trace
+        selector:
+          type: string
+          description: One or more CSS selectors. Required for click metrics only.
+          example: .dropdown-toggle
+        urls:
+          type: array
+          description: One or more target URLs. Required for click and pageview metrics only.
+          items:
+            $ref: '#/components/schemas/UrlPost'
+          example: invalid example
+        isNumeric:
+          type: boolean
+          description: Whether to track numeric changes in value against a baseline (<code>true</code>) or to track a conversion when an end user takes an action (<code>false</code>). Required for custom and trace metrics only.
+          example: false
+        unit:
+          type: string
+          description: The unit of measure. Applicable for numeric custom and trace metrics only.
+          example: orders
+        eventKey:
+          type: string
+          description: The event key to use in your code. Required for custom conversion/binary and custom numeric metrics only.
+          example: Order placed
+        successCriteria:
+          type: string
+          description: Success criteria. Required for custom and trace numeric metrics, optional for custom and trace conversion metrics.
+          example: HigherThanBaseline
+          enum:
+          - HigherThanBaseline
+          - LowerThanBaseline
+        tags:
+          type: array
+          description: Tags for the metric
+          items:
+            type: string
+          example:
+          - example-tag
+        randomizationUnits:
+          type: array
+          description: Deprecated, use <code>analysisUnits</code> instead.
+          items:
+            type: string
+          example:
+          - user
+          deprecated: true
+        analysisUnits:
+          type: array
+          description: An array of analysis units allowed for this metric.
+          items:
+            type: string
+          example:
+          - user
+        maintainerId:
+          type: string
+          description: The ID of the member who maintains this metric
+          example: 569fdeadbeef1644facecafe
+        unitAggregationType:
+          type: string
+          description: The method by which multiple unit event values are aggregated
+          example: average
+          enum:
+          - average
+          - sum
+          - count_distinct
+        analysisType:
+          type: string
+          description: The method for analyzing metric events
+          example: mean
+        percentileValue:
+          type: integer
+          description: The percentile for the analysis method. An integer denoting the target percentile between 0 and 100. Required when <code>analysisType</code> is <code>percentile</code>.
+          example: 95
+        eventDefault:
+          $ref: '#/components/schemas/MetricEventDefaultRep'
+        dataSource:
+          $ref: '#/components/schemas/MetricDataSourceRefRep'
+        filters:
+          description: Filters for the metric to exclude certain events from being included. This is only supported for custom metrics.
+          $ref: '#/components/schemas/EventFilter'
+        windowStartOffset:
+          type: integer
+          format: int64
+          description: Not yet implemented - The start of the measurement window, in milliseconds relative to the unit's first exposure to a flag variation
+        windowEndOffset:
+          type: integer
+          format: int64
+          description: Not yet implemented - The end of the measurement window, in milliseconds relative to the unit's first exposure to a flag variation
+        winsorLowerPercentile:
+          type: number
+          description: Lower winsorization percentile, expressed as a percent in the open interval (0, 100). When both bounds are set, defines a two-sided clamp range. Otherwise lower-only winsorization.
+          example: 1
+        winsorUpperPercentile:
+          type: number
+          description: Upper winsorization percentile, expressed as a percent in the open interval (0, 100). When both bounds are set, must be greater than winsorLowerPercentile.
+          example: 99.5
+        winsorIncludeImputed:
+          type: boolean
+          description: When true, the percentile bound calculation includes imputed zeros. Only meaningful when at least one bound is set and the metric includes units that didn't send events.
+          example: false
+        traceQuery:
+          type: string
+          description: The trace query to use for the metric. Required for trace metrics.
+          example: service.name = "checkout"
+        traceValueLocation:
+          type: string
+          description: The location in the trace to use for numeric values. Required for numeric trace metrics.
+          example: duration
+        unitAggregationField:
+          type: string
+          description: The warehouse column to use for counting distinct values. Required when the unitAggregationType is count_distinct.
+        valueColumn:
+          type: string
+          description: For numeric warehouse-native metrics, the column holding the numeric value. Overrides the value column mapped on the data source.
+        denominator:
+          description: For ratio metrics, the denominator event configuration. Only supported for warehouse native custom metrics.
+          $ref: '#/components/schemas/DenominatorPost'
+    Access:
+      type: object
+      required:
+      - denied
+      - allowed
+      properties:
+        denied:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccessDenied'
+        allowed:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccessAllowedRep'
+    DependentReleasePhaseRep:
+      type: object
+      required:
+      - _id
+      - flagKey
+      - flagName
+      - environmentKey
+      - environmentName
+      - status
+      - creationDate
+      - _links
+      properties:
+        _id:
+          type: string
+          description: The guarded rollout release phase ID
+          example: 885ccadf-181b-4a9a-8414-7ad6f7ba2db0
+        flagKey:
+          type: string
+          description: 'The guarded rollout flag key '
+          example: my-flag
+        flagName:
+          type: string
+          description: 'The guarded rollout flag name '
+          example: My Flag
+        flagPurpose:
+          type: string
+          description: The guarded rollout flag purpose
+          example: migration
+        environmentKey:
+          type: string
+          description: The guarded rollout environment key
+          example: production
+        environmentName:
+          type: string
+          description: The guarded rollout environment name
+          example: Production
+        status:
+          type: string
+          description: The guarded rollout status
+          example: monitoring
+        creationDate:
+          description: Timestamp of when the guarded rollout was created
+          example: '1654104600000'
+          $ref: '#/components/schemas/UnixMillis'
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+          example:
+            self:
+              href: /internal/projects/my-project/flags/my-flag/environments/production/releases/1b2a3c4d-5e6f-4a7b-8c9d-0e1f2a3b4c5d
+              type: application/json
+    StatusConflictErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: optimistic_locking_error
+        message:
+          type: string
+          description: Description of the error
+          example: Conflict. Optimistic lock error. Try again later.
+    NotFoundErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: not_found
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid resource identifier
+    DependentExperimentRep:
+      type: object
+      required:
+      - key
+      - name
+      - environmentId
+      - environmentKey
+      - creationDate
+      - _links
+      properties:
+        key:
+          type: string
+          description: The experiment key
+          example: experiment-key-123abc
+        name:
+          type: string
+          description: The experiment name
+          example: Example experiment
+        environmentId:
+          type: string
+          description: The environment ID
+          example: 1234a56b7c89d012345e678f
+        environmentKey:
+          type: string
+          description: The environment key
+          example: production
+        creationDate:
+          description: Timestamp of when the experiment was created
+          example: '1654104600000'
+          $ref: '#/components/schemas/UnixMillis'
+        archivedDate:
+          description: Timestamp of when the experiment was archived
+          example: '1654104600000'
+          $ref: '#/components/schemas/UnixMillis'
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+          example:
+            parent:
+              href: /api/v2/projects/my-project/environments/my-environment
+              type: application/json
+            self:
+              href: /api/v2/projects/my-project/environments/my-environment/experiments/example-experiment
+              type: application/json
+    UrlPost:
+      type: object
+      properties:
+        kind:
+          type: string
+          enum:
+          - exact
+          - canonical
+          - substring
+          - regex
+        url:
+          type: string
+        substring:
+          type: string
+        pattern:
+          type: string
+    AccessAllowedReason:
+      type: object
+      required:
+      - effect
+      properties:
+        resources:
+          type: array
+          description: Resource specifier strings
+          items:
+            type: string
+          example:
+          - proj/*:env/*;qa_*:/flag/*
+        notResources:
+          type: array
+          description: Targeted resources are the resources NOT in this list. The <code>resources</code> and <code>notActions</code> fields must be empty to use this field.
+          items:
+            type: string
+        actions:
+          type: array
+          description: Actions to perform on a resource
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+          example:
+          - '*'
+        notActions:
+          type: array
+          description: Targeted actions are the actions NOT in this list. The <code>actions</code> and <code>notResources</code> fields must be empty to use this field.
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+        effect:
+          type: string
+          description: Whether this statement should allow or deny actions on the resources.
+          example: allow
+          enum:
+          - allow
+          - deny
+        role_name:
+          type: string
+    AccessAllowedRep:
+      type: object
+      required:
+      - action
+      - reason
+      properties:
+        action:
+          $ref: '#/components/schemas/ActionIdentifier'
+        reason:
+          $ref: '#/components/schemas/AccessAllowedReason'
+    DependentExperimentListRep:
+      type: array
+      items:
+        $ref: '#/components/schemas/DependentExperimentRep'
+    MetricDataSourceRefRep:
+      type: object
+      required:
+      - key
+      properties:
+        key:
+          type: string
+        environmentKey:
+          type: string
+        _name:
+          type: string
+        _integrationKey:
+          type: string
     MetricBody:
       type: object
       description: The request body for creating a new metric.
@@ -194,7 +1927,20 @@ components:
             $ref: '#/components/schemas/Metric'
         _links:
           $ref: '#/components/schemas/Links'
+  parameters:
+    ProjectKey:
+      name: projectKey
+      in: path
+      required: true
+      description: The project key identifying a LaunchDarkly project.
+      schema:
+        type: string
+        pattern: ^[a-z0-9]([a-z0-9-])*$
   securitySchemes:
+    ApiKey:
+      type: apiKey
+      in: header
+      name: Authorization
     bearerAuth:
       type: http
       scheme: bearer
@@ -202,3 +1948,6 @@ components:
 externalDocs:
   description: LaunchDarkly API Documentation
   url: https://apidocs.launchdarkly.com/
+x-refined-from:
+- launchdarkly-openapi.json
+- launchdarkly-rest-api-openapi.yml

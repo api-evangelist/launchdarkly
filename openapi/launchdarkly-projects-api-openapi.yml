@@ -2,9 +2,13 @@ openapi: 3.2.0
 info:
   title: Launchdarkly Projects API
   version: '1.0'
-  description: 'Operations tagged Projects across 2 of this provider''s published API definitions: launchdarkly-dev-server-openapi.yml, launchdarkly-rest-api-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: 'Operations tagged Projects across 3 of this provider''s published API definitions: launchdarkly-dev-server-openapi.yml, launchdarkly-openapi.json, launchdarkly-rest-api-openapi.yml. Each path carries the servers of the definition it was published in.'
 servers:
 - url: http://localhost:8765/dev
+- url: https://app.launchdarkly.com
+  description: ' Default'
+- url: https://app.launchdarkly.us
+  description: ' Federal'
 - url: https://app.launchdarkly.com/api/v2
   description: LaunchDarkly Production API
 tags:
@@ -45,7 +49,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Project_2'
+                $ref: '#/components/schemas/Project_3'
         '400':
           description: Invalid request body.
         '401':
@@ -248,39 +252,602 @@ paths:
       - Projects
     servers:
     - url: http://localhost:8765/dev
-components:
-  parameters:
-    projectExpand:
-      name: expand
-      description: Available expand options for this endpoint.
-      in: query
-      schema:
-        type: array
-        items:
+  /api/v2/projects:
+    get:
+      responses:
+        '200':
+          description: Project collection response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Projects'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Projects
+      summary: List projects
+      description: 'Return a list of projects.
+
+
+        By default, this returns the first 20 projects. Page through this list with the `limit` parameter and by following the `first`, `prev`, `next`, and `last` links in the `_links` field that returns. If those links do not appear, the pages they refer to don''t exist. For example, the `first` and `prev` links will be missing from the response on the first page, because there is no previous page and you cannot return to the first page when you are already on the first page.
+
+
+        ### Filtering projects
+
+
+        LaunchDarkly supports three fields for filters:
+
+        - `query` is a string that matches against the projects'' names and keys. It is not case sensitive.
+
+        - `tags` is a `+`-separated list of project tags. It filters the list of projects that have all of the tags in the list.
+
+        - `keys` is a `|` separated list of project keys. It filters the list to projects that have any of the keys in the list.
+
+
+        For example, the filter `filter=query:abc,tags:tag-1+tag-2` matches projects with the string `abc` in their name or key and also are tagged with `tag-1` and `tag-2`. The filter is not case-sensitive.
+
+
+        The documented values for `filter` query parameters are prior to URL encoding. For example, the `+` in `filter=tags:tag-1+tag-2` must be encoded to `%2B`.
+
+
+        ### Sorting projects
+
+
+        LaunchDarkly supports two fields for sorting:
+
+        - `name` sorts by project name.
+
+        - `createdOn` sorts by the creation date of the project.
+
+
+        For example, `sort=name` sorts the response by project name in ascending order.
+
+
+        ### Expanding the projects response
+
+
+        LaunchDarkly supports one field for expanding the "List projects" response. By default, these fields are **not** included in the response.
+
+
+        To expand the response, append the `expand` query parameter and add a comma-separated list with the `environments` field.
+
+
+        * `environments` includes a paginated list of the project environments.
+
+
+        For example, `expand=environments` includes the `environments` field for each project in the response.'
+      parameters:
+      - name: limit
+        in: query
+        description: The number of projects to return in the response. Defaults to 20.
+        schema:
+          type: integer
+          format: int64
+          description: The number of projects to return in the response. Defaults to 20.
+      - name: offset
+        in: query
+        description: Where to start in the list. Use this with pagination. For example, an offset of 10 skips the first ten items and returns the next `limit` items.
+        schema:
+          type: integer
+          format: int64
+          description: Where to start in the list. Use this with pagination. For example, an offset of 10 skips the first ten items and returns the next `limit` items.
+      - name: filter
+        in: query
+        description: A comma-separated list of filters. Each filter is constructed as `field:value`.
+        schema:
           type: string
-          enum:
-          - overrides
-          - availableVariations
-    projectKey:
-      name: projectKey
-      in: path
-      required: true
-      schema:
-        type: string
-    flagKey:
-      name: flagKey
-      in: path
-      required: true
-      schema:
-        type: string
-    ProjectKey:
-      name: projectKey
-      in: path
-      required: true
-      description: The project key identifying a LaunchDarkly project.
-      schema:
-        type: string
-        pattern: ^[a-z0-9]([a-z0-9-])*$
+          format: string
+          description: A comma-separated list of filters. Each filter is constructed as `field:value`.
+      - name: sort
+        in: query
+        description: A comma-separated list of fields to sort by. Fields prefixed by a dash ( - ) sort in descending order.
+        schema:
+          type: string
+          format: string
+          description: A comma-separated list of fields to sort by. Fields prefixed by a dash ( - ) sort in descending order.
+      - name: expand
+        in: query
+        description: A comma-separated list of properties that can reveal additional information in the response.
+        schema:
+          type: string
+          format: string
+          description: A comma-separated list of properties that can reveal additional information in the response.
+      operationId: getApiV2Projects
+      security:
+      - ApiKey:
+        - read
+        - write
+      x-operation-id-source: normalized
+      x-operation-id-original: getProjects
+    post:
+      responses:
+        '201':
+          description: Project response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectRep'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '409':
+          description: Status conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusConflictErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Projects
+      summary: Create project
+      description: Create a new project with the given key and name. Project keys must be unique within an account.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectPost'
+            example:
+              key: project-key-123abc
+              name: My Project
+        required: true
+      operationId: postProject
+      security:
+      - ApiKey:
+        - read
+        - write
+    servers:
+    - url: https://app.launchdarkly.com
+      description: ' Default'
+    - url: https://app.launchdarkly.us
+      description: ' Federal'
+  /api/v2/projects/{projectKey}:
+    get:
+      responses:
+        '200':
+          description: Project response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project_2'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Projects
+      summary: Get project
+      description: 'Get a single project by key.
+
+
+        ### Expanding the project response
+
+
+        LaunchDarkly supports one field for expanding the "Get project" response. By default, these fields are **not** included in the response.
+
+
+        To expand the response, append the `expand` query parameter and add a comma-separated list with any of the following fields:
+
+        * `environments` includes a paginated list of the project environments.
+
+
+        For example, `expand=environments` includes the `environments` field for the project in the response.'
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key.
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key.
+      - name: expand
+        in: query
+        description: A comma-separated list of properties that can reveal additional information in the response.
+        schema:
+          type: string
+          format: string
+          description: A comma-separated list of properties that can reveal additional information in the response.
+      operationId: getApiV2ProjectsByProjectKey
+      security:
+      - ApiKey:
+        - read
+        - write
+      x-operation-id-source: normalized
+      x-operation-id-original: getProject
+    patch:
+      responses:
+        '200':
+          description: Project response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectRep'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '409':
+          description: Status conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusConflictErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Projects
+      summary: Update project
+      description: 'Update a project. Updating a project uses a JSON patch representation of the desired changes. To learn more, read Updates.
+
+
+        To add an element to the project fields that are arrays, set the `path` to the name of the field and then append `/`. Use `/0` to add to the beginning of the array. Use `/-` to add to the end of the array. For example, `"path": "/tags/0"` adds a tag.
+
+
+        Note that `tags` are always deduplicated and returned in alphabetical order, regardless of the array index used in the patch path.'
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JSONPatch'
+            example:
+            - op: add
+              path: /tags/0
+              value: another-tag
+        required: true
+      operationId: patchApiV2ProjectsByProjectKey
+      security:
+      - ApiKey:
+        - read
+        - write
+      x-operation-id-source: normalized
+      x-operation-id-original: patchProject
+    delete:
+      responses:
+        '204':
+          description: Action succeeded
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Projects
+      summary: Delete project
+      description: Delete a project by key. Use this endpoint with caution. Deleting a project will delete all associated environments and feature flags. You cannot delete the last project in an account.
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      operationId: deleteApiV2ProjectsByProjectKey
+      security:
+      - ApiKey:
+        - read
+        - write
+      x-operation-id-source: normalized
+      x-operation-id-original: deleteProject
+    servers:
+    - url: https://app.launchdarkly.com
+      description: ' Default'
+    - url: https://app.launchdarkly.us
+      description: ' Federal'
+  /api/v2/projects/{projectKey}/flag-defaults:
+    get:
+      responses:
+        '200':
+          description: Flag defaults response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/flagDefaultsRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+      tags:
+      - Projects
+      summary: Get flag defaults for project
+      description: Get the flag defaults for a specific project.
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      operationId: getFlagDefaultsByProject
+      security:
+      - ApiKey:
+        - read
+        - write
+    patch:
+      responses:
+        '200':
+          description: Flag default response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/upsertPayloadRep'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '409':
+          description: Status conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusConflictErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Projects
+      summary: Update flag default for project
+      description: Update a flag default. Updating a flag default uses a JSON patch or JSON merge patch representation of the desired changes. To learn more, read Updates.
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JSONPatch'
+        required: true
+      operationId: patchFlagDefaultsByProject
+      security:
+      - ApiKey:
+        - read
+        - write
+    put:
+      responses:
+        '200':
+          description: Flag default response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/upsertPayloadRep'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '409':
+          description: Status conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusConflictErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Projects
+      summary: Create or update flag defaults for project
+      description: Create or update flag defaults for a project.
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpsertFlagDefaultsPayload'
+        required: true
+      operationId: putFlagDefaultsByProject
+      security:
+      - ApiKey:
+        - read
+        - write
+    servers:
+    - url: https://app.launchdarkly.com
+      description: ' Default'
+    - url: https://app.launchdarkly.us
+      description: ' Federal'
+components:
   schemas:
     Context:
       type: object
@@ -291,17 +858,6 @@ components:
       default:
         key: dev-environment
         kind: user
-    Environment:
-      description: Environment
-      type: object
-      required:
-      - key
-      - name
-      properties:
-        key:
-          type: string
-        name:
-          type: string
     Project:
       description: Project
       type: object
@@ -348,6 +904,17 @@ components:
       x-go-type: ldvalue.Value
       x-go-type-import:
         path: github.com/launchdarkly/go-sdk-common/v3/ldvalue
+    Environment:
+      description: Environment
+      type: object
+      required:
+      - key
+      - name
+      properties:
+        key:
+          type: string
+        name:
+          type: string
     Variation:
       description: variation of a flag
       required:
@@ -362,7 +929,856 @@ components:
           type: string
         value:
           $ref: '#/components/schemas/FlagValue'
+    ProjectPost:
+      type: object
+      required:
+      - name
+      - key
+      properties:
+        name:
+          type: string
+          description: A human-friendly name for the project.
+          example: My Project
+        key:
+          type: string
+          description: A unique key used to reference the project in your code.
+          example: project-key-123abc
+        includeInSnippetByDefault:
+          type: boolean
+          description: Whether or not flags created in this project are made available to the client-side JavaScript SDK by default.
+          example: true
+        defaultClientSideAvailability:
+          description: Controls which client-side SDKs can use new flags by default.
+          $ref: '#/components/schemas/DefaultClientSideAvailabilityPost'
+        tags:
+          type: array
+          description: Tags for the project
+          items:
+            type: string
+          example:
+          - ops
+        environments:
+          type: array
+          description: Creates the provided environments for this project. If omitted default environments will be created instead.
+          items:
+            $ref: '#/components/schemas/EnvironmentPost'
+        namingConvention:
+          description: The flag key convention for this project. Omit this field if you don't want to enforce any conventions for flag keys.
+          $ref: '#/components/schemas/NamingConvention'
     Environment_2:
+      type: object
+      required:
+      - _links
+      - _id
+      - key
+      - name
+      - apiKey
+      - mobileKey
+      - color
+      - defaultTtl
+      - secureMode
+      - defaultTrackEvents
+      - requireComments
+      - confirmChanges
+      - tags
+      - critical
+      properties:
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+          example:
+            self:
+              href: /api/v2/projects/my-project/environments/my-environment
+              type: application/json
+        _id:
+          type: string
+          description: The ID for the environment. Use this as the client-side ID for authorization in some client-side SDKs, and to associate LaunchDarkly environments with CDN integrations in edge SDKs.
+          example: 57be1db38b75bf0772d11384
+        key:
+          type: string
+          description: A project-unique key for the new environment
+          example: environment-key-123abc
+        name:
+          type: string
+          description: A human-friendly name for the new environment
+          example: My Environment
+        apiKey:
+          type: string
+          description: The SDK key for the environment. Use this for authorization in server-side SDKs.
+          example: sdk-xxx
+        mobileKey:
+          type: string
+          description: The mobile key for the environment. Use this for authorization in mobile SDKs.
+          example: mob-xxx
+        color:
+          type: string
+          description: The color used to indicate this environment in the UI
+          example: F5A623
+        defaultTtl:
+          type: integer
+          description: The default time (in minutes) that the PHP SDK can cache feature flag rules locally
+          example: 5
+        secureMode:
+          type: boolean
+          description: Ensures that one end user of the client-side SDK cannot inspect the variations for another end user
+          example: true
+        _access:
+          $ref: '#/components/schemas/Access'
+        defaultTrackEvents:
+          type: boolean
+          description: The initial value of trackEvents for flags created in this environment. Does not affect existing flags. Required for Data Export, but doesn't enable Data Export on its own.
+          example: false
+        requireComments:
+          type: boolean
+          description: Whether members who modify flags and segments through the LaunchDarkly user interface are required to add a comment
+          example: true
+        confirmChanges:
+          type: boolean
+          description: Whether members who modify flags and segments through the LaunchDarkly user interface are required to confirm those changes
+          example: true
+        tags:
+          type: array
+          description: A list of tags for this environment
+          items:
+            type: string
+          example:
+          - ops
+        approvalSettings:
+          description: Details about the approval settings for flags in this environment
+          $ref: '#/components/schemas/ApprovalSettings'
+        resourceApprovalSettings:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/ApprovalSettings'
+          description: Details about the approval settings for other resources in this environment, organized by resource kind (for example, "aiconfig" and "segment")
+        critical:
+          type: boolean
+          description: Whether the environment is critical
+          example: true
+    JSONPatch:
+      type: array
+      items:
+        $ref: '#/components/schemas/PatchOperation'
+    AccessDenied:
+      type: object
+      required:
+      - action
+      - reason
+      properties:
+        action:
+          $ref: '#/components/schemas/ActionIdentifier'
+        reason:
+          $ref: '#/components/schemas/AccessDeniedReason'
+    InvalidRequestErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: invalid_request
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid request body
+    upsertPayloadRep:
+      type: object
+      required:
+      - tags
+      - temporary
+      - booleanDefaults
+      - defaultClientSideAvailability
+      properties:
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+        tags:
+          type: array
+          description: A list of default tags for each flag
+          items:
+            type: string
+          example:
+          - tag-1
+          - tag-2
+        temporary:
+          type: boolean
+          description: Whether the flag should be temporary by default
+          example: true
+        booleanDefaults:
+          $ref: '#/components/schemas/BooleanFlagDefaults'
+        defaultClientSideAvailability:
+          description: Which client-side SDK types can use this flag by default.
+          $ref: '#/components/schemas/DefaultClientSideAvailability'
+    AccessDeniedReason:
+      type: object
+      required:
+      - effect
+      properties:
+        resources:
+          type: array
+          description: Resource specifier strings
+          items:
+            type: string
+          example:
+          - proj/*:env/*;qa_*:/flag/*
+        notResources:
+          type: array
+          description: Targeted resources are the resources NOT in this list. The <code>resources</code> and <code>notActions</code> fields must be empty to use this field.
+          items:
+            type: string
+        actions:
+          type: array
+          description: Actions to perform on a resource
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+          example:
+          - '*'
+        notActions:
+          type: array
+          description: Targeted actions are the actions NOT in this list. The <code>actions</code> and <code>notResources</code> fields must be empty to use this field.
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+        effect:
+          type: string
+          description: Whether this statement should allow or deny actions on the resources.
+          example: allow
+          enum:
+          - allow
+          - deny
+        role_name:
+          type: string
+    RateLimitedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: rate_limited
+        message:
+          type: string
+          description: Description of the error
+          example: You've exceeded the API rate limit. Try again later.
+    UnauthorizedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: unauthorized
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid access token
+    DefaultClientSideAvailability:
+      type: object
+      required:
+      - usingMobileKey
+      - usingEnvironmentId
+      properties:
+        usingMobileKey:
+          type: boolean
+          description: Whether to enable availability for mobile SDKs
+          example: true
+        usingEnvironmentId:
+          type: boolean
+          description: Whether to enable availability for client-side SDKs
+          example: true
+    ForbiddenErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: forbidden
+        message:
+          type: string
+          description: Description of the error
+          example: Forbidden. Access to the requested resource was denied.
+    ActionSpecifier:
+      type: string
+    NamingConvention:
+      type: object
+      properties:
+        case:
+          type: string
+          description: The casing convention to enforce for new flag keys in this project
+          example: kebabCase
+          enum:
+          - camelCase
+          - upperCamelCase
+          - snakeCase
+          - kebabCase
+          - constantCase
+        prefix:
+          type: string
+          description: The prefix to enforce for new flag keys in this project
+          example: enable-
+    Link:
+      type: object
+      properties:
+        href:
+          type: string
+        type:
+          type: string
+    ActionIdentifier:
+      type: string
+    EnvironmentPost:
+      type: object
+      required:
+      - name
+      - key
+      - color
+      properties:
+        name:
+          type: string
+          description: A human-friendly name for the new environment
+          example: My Environment
+        key:
+          type: string
+          description: A project-unique key for the new environment
+          example: environment-key-123abc
+        color:
+          type: string
+          description: A color to indicate this environment in the UI
+          example: F5A623
+        defaultTtl:
+          type: integer
+          description: The default time (in minutes) that the PHP SDK can cache feature flag rules locally
+          example: 5
+        secureMode:
+          type: boolean
+          description: Ensures that one end user of the client-side SDK cannot inspect the variations for another end user
+          example: true
+        defaultTrackEvents:
+          type: boolean
+          description: The initial value of trackEvents for flags created in this environment. Does not affect existing flags. Required for Data Export, but doesn't enable Data Export on its own.
+          example: false
+        confirmChanges:
+          type: boolean
+          description: Requires confirmation for all flag and segment changes via the UI in this environment
+          example: false
+        requireComments:
+          type: boolean
+          description: Requires comments for all flag and segment changes via the UI in this environment
+          example: false
+        tags:
+          type: array
+          description: Tags to apply to the new environment
+          items:
+            type: string
+          example:
+          - ops
+        source:
+          description: Indicates that the new environment created will be cloned from the provided source environment
+          $ref: '#/components/schemas/SourceEnv'
+        critical:
+          type: boolean
+          description: Whether the environment is critical
+          example: true
+    ClientSideAvailability:
+      type: object
+      properties:
+        usingMobileKey:
+          type: boolean
+        usingEnvironmentId:
+          type: boolean
+    ApprovalSettings:
+      type: object
+      required:
+      - required
+      - bypassApprovalsForPendingChanges
+      - minNumApprovals
+      - canReviewOwnRequest
+      - canApplyDeclinedChanges
+      - serviceKind
+      - serviceConfig
+      - requiredApprovalTags
+      properties:
+        required:
+          type: boolean
+          description: If approvals are required for this environment
+          example: true
+        bypassApprovalsForPendingChanges:
+          type: boolean
+          description: Whether to skip approvals for pending changes
+          example: false
+        minNumApprovals:
+          type: integer
+          description: Sets the amount of approvals required before a member can apply a change. The minimum is one and the maximum is five.
+          example: 1
+        canReviewOwnRequest:
+          type: boolean
+          description: Allow someone who makes an approval request to apply their own change
+          example: false
+        canApplyDeclinedChanges:
+          type: boolean
+          description: Allow applying the change as long as at least one person has approved
+          example: true
+        autoApplyApprovedChanges:
+          type: boolean
+          description: Automatically apply changes that have been approved by all reviewers. This field is only applicable for approval services other than LaunchDarkly.
+          example: true
+        serviceKind:
+          type: string
+          description: Which service to use for managing approvals
+          example: launchdarkly
+        serviceConfig:
+          type: object
+          additionalProperties: {}
+          example: {}
+        requiredApprovalTags:
+          type: array
+          description: Require approval only on flags with the provided tags. Otherwise all flags will require approval.
+          items:
+            type: string
+          example:
+          - require-approval
+        serviceKindConfigurationId:
+          type: string
+          description: Optional field for integration configuration ID of a custom approval integration. This is an Enterprise-only feature.
+          example: 1ef45a85-218f-4428-a8b2-a97e5f56c258
+    Environments:
+      type: object
+      required:
+      - items
+      properties:
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+        totalCount:
+          type: integer
+          description: The number of environments returned
+          example: 2
+        items:
+          type: array
+          description: An array of environments
+          items:
+            $ref: '#/components/schemas/Environment_2'
+    PatchOperation:
+      type: object
+      required:
+      - op
+      - path
+      properties:
+        op:
+          type: string
+          description: The type of operation to perform
+          example: replace
+        path:
+          type: string
+          description: A JSON Pointer string specifying the part of the document to operate on
+          example: /exampleField
+        value:
+          description: A JSON value used in "add", "replace", and "test" operations
+          example: new example value
+    DefaultClientSideAvailabilityPost:
+      type: object
+      required:
+      - usingEnvironmentId
+      - usingMobileKey
+      properties:
+        usingEnvironmentId:
+          type: boolean
+          description: Whether to enable availability for client-side SDKs.
+          example: true
+        usingMobileKey:
+          type: boolean
+          description: Whether to enable availability for mobile SDKs.
+          example: true
+    Project_2:
+      type: object
+      required:
+      - _links
+      - _id
+      - key
+      - includeInSnippetByDefault
+      - name
+      - tags
+      properties:
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+          example:
+            environments:
+              href: /api/v2/projects/my-project/environments
+              type: application/json
+            self:
+              href: /api/v2/projects/my-project
+              type: application/json
+        _id:
+          type: string
+          description: The ID of this project
+          example: 57be1db38b75bf0772d11383
+        key:
+          type: string
+          description: The key of this project
+          example: project-key-123abc
+        includeInSnippetByDefault:
+          type: boolean
+          description: Whether or not flags created in this project are made available to the client-side JavaScript SDK by default
+          example: true
+        defaultClientSideAvailability:
+          description: Describes which client-side SDKs can use new flags by default
+          $ref: '#/components/schemas/ClientSideAvailability'
+        name:
+          type: string
+          description: A human-friendly name for the project
+          example: My Project
+        _access:
+          description: Details on the allowed and denied actions for this project
+          $ref: '#/components/schemas/Access'
+        tags:
+          type: array
+          description: A list of tags for the project
+          items:
+            type: string
+          example:
+          - ops
+        defaultReleasePipelineKey:
+          type: string
+          description: The key of the default release pipeline for this project
+        environments:
+          description: A paginated list of environments for the project. By default this field is omitted unless expanded by the client.
+          $ref: '#/components/schemas/Environments'
+    Projects:
+      type: object
+      required:
+      - _links
+      - items
+      properties:
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: A link to this resource.
+          example:
+            self:
+              href: /api/v2/projects
+              type: application/json
+        items:
+          type: array
+          description: List of projects.
+          items:
+            $ref: '#/components/schemas/Project_2'
+        totalCount:
+          type: integer
+    Access:
+      type: object
+      required:
+      - denied
+      - allowed
+      properties:
+        denied:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccessDenied'
+        allowed:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccessAllowedRep'
+    NotFoundErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: not_found
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid resource identifier
+    StatusConflictErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: optimistic_locking_error
+        message:
+          type: string
+          description: Description of the error
+          example: Conflict. Optimistic lock error. Try again later.
+    AccessAllowedReason:
+      type: object
+      required:
+      - effect
+      properties:
+        resources:
+          type: array
+          description: Resource specifier strings
+          items:
+            type: string
+          example:
+          - proj/*:env/*;qa_*:/flag/*
+        notResources:
+          type: array
+          description: Targeted resources are the resources NOT in this list. The <code>resources</code> and <code>notActions</code> fields must be empty to use this field.
+          items:
+            type: string
+        actions:
+          type: array
+          description: Actions to perform on a resource
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+          example:
+          - '*'
+        notActions:
+          type: array
+          description: Targeted actions are the actions NOT in this list. The <code>actions</code> and <code>notResources</code> fields must be empty to use this field.
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+        effect:
+          type: string
+          description: Whether this statement should allow or deny actions on the resources.
+          example: allow
+          enum:
+          - allow
+          - deny
+        role_name:
+          type: string
+    BooleanFlagDefaults:
+      type: object
+      required:
+      - trueDisplayName
+      - falseDisplayName
+      - trueDescription
+      - falseDescription
+      - onVariation
+      - offVariation
+      properties:
+        trueDisplayName:
+          type: string
+          description: The display name for the true variation, displayed in the LaunchDarkly user interface
+          example: 'True'
+        falseDisplayName:
+          type: string
+          description: The display name for the false variation, displayed in the LaunchDarkly user interface
+          example: 'False'
+        trueDescription:
+          type: string
+          description: The description for the true variation
+          example: serve true
+        falseDescription:
+          type: string
+          description: The description for the false variation
+          example: serve false
+        onVariation:
+          type: integer
+          description: The variation index of the flag variation to use for the default targeting behavior when a flag's targeting is on and the target did not match any rules
+          example: 0
+        offVariation:
+          type: integer
+          description: The variation index of the flag variation to use for the default targeting behavior when a flag's targeting is off
+          example: 1
+    UpsertFlagDefaultsPayload:
+      type: object
+      required:
+      - tags
+      - temporary
+      - booleanDefaults
+      - defaultClientSideAvailability
+      properties:
+        tags:
+          type: array
+          description: A list of default tags for each flag
+          items:
+            type: string
+          example:
+          - tag-1
+          - tag-2
+        temporary:
+          type: boolean
+          description: Whether the flag should be temporary by default
+          example: true
+        booleanDefaults:
+          $ref: '#/components/schemas/BooleanFlagDefaults'
+        defaultClientSideAvailability:
+          description: Which client-side SDK types can use this flag by default.
+          $ref: '#/components/schemas/DefaultClientSideAvailability'
+    flagDefaultsRep:
+      type: object
+      properties:
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+        key:
+          type: string
+          description: A unique key for the flag default
+        tags:
+          type: array
+          description: A list of default tags for each flag
+          items:
+            type: string
+          example:
+          - tag-1
+          - tag-2
+        temporary:
+          type: boolean
+          description: Whether the flag should be temporary by default
+          example: true
+        defaultClientSideAvailability:
+          description: Which client-side SDK types can use this flag by default. Set <code>usingMobileKey</code> to make the flag available for mobile SDKs. Set <code>usingEnvironmentId</code> to make the flag available for client-side SDKs.
+          example: '{"usingMobileKey": true, "usingEnvironmentId": false}'
+          $ref: '#/components/schemas/ClientSideAvailability'
+        booleanDefaults:
+          description: Defaults for boolean flags within this project
+          $ref: '#/components/schemas/BooleanDefaults'
+    BooleanDefaults:
+      type: object
+      properties:
+        trueDisplayName:
+          type: string
+          description: The display name for the true variation, displayed in the LaunchDarkly user interface
+          example: 'True'
+        falseDisplayName:
+          type: string
+          description: The display name for the false variation, displayed in the LaunchDarkly user interface
+          example: 'False'
+        trueDescription:
+          type: string
+          description: The description for the true variation
+          example: serve true
+        falseDescription:
+          type: string
+          description: The description for the false variation
+          example: serve false
+        onVariation:
+          type: integer
+          description: The variation index of the flag variation to use for the default targeting behavior when a flag's targeting is on and the target did not match any rules
+          example: 0
+        offVariation:
+          type: integer
+          description: The variation index of the flag variation to use for the default targeting behavior when a flag's targeting is off
+          example: 1
+    AccessAllowedRep:
+      type: object
+      required:
+      - action
+      - reason
+      properties:
+        action:
+          $ref: '#/components/schemas/ActionIdentifier'
+        reason:
+          $ref: '#/components/schemas/AccessAllowedReason'
+    ProjectRep:
+      type: object
+      required:
+      - _links
+      - _id
+      - key
+      - includeInSnippetByDefault
+      - name
+      - tags
+      - environments
+      properties:
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+          example:
+            environments:
+              href: /api/v2/projects/my-project/environments
+              type: application/json
+            self:
+              href: /api/v2/projects/my-project
+              type: application/json
+        _id:
+          type: string
+          description: The ID of this project
+          example: 57be1db38b75bf0772d11383
+        key:
+          type: string
+          description: The key of this project
+          example: project-key-123abc
+        includeInSnippetByDefault:
+          type: boolean
+          description: Whether or not flags created in this project are made available to the client-side JavaScript SDK by default
+          example: true
+        defaultClientSideAvailability:
+          description: Describes which client-side SDKs can use new flags by default
+          $ref: '#/components/schemas/ClientSideAvailability'
+        name:
+          type: string
+          description: A human-friendly name for the project
+          example: My Project
+        _access:
+          description: Details on the allowed and denied actions for this project
+          $ref: '#/components/schemas/Access'
+        tags:
+          type: array
+          description: A list of tags for the project
+          items:
+            type: string
+          example:
+          - ops
+        defaultReleasePipelineKey:
+          type: string
+          description: The key of the default release pipeline for this project
+        environments:
+          type: array
+          description: A list of environments for the project
+          items:
+            $ref: '#/components/schemas/Environment_2'
+    SourceEnv:
+      type: object
+      properties:
+        key:
+          type: string
+          description: The key of the source environment to clone from
+        version:
+          type: integer
+          description: (Optional) The version number of the source environment to clone from. Used for optimistic locking
+    Project_3:
+      type: object
+      description: A LaunchDarkly project containing feature flags and environments.
+      properties:
+        _id:
+          type: string
+          description: The unique identifier of this project.
+        key:
+          type: string
+          description: The project key.
+        name:
+          type: string
+          description: The human-readable name of the project.
+        tags:
+          type: array
+          description: Tags applied to this project.
+          items:
+            type: string
+        environments:
+          $ref: '#/components/schemas/Environments_2'
+        _links:
+          $ref: '#/components/schemas/Links'
+    Environment_3:
       type: object
       description: An environment within a project, such as production or staging.
       properties:
@@ -398,28 +1814,6 @@ components:
             type: string
         _links:
           $ref: '#/components/schemas/Links'
-    Project_2:
-      type: object
-      description: A LaunchDarkly project containing feature flags and environments.
-      properties:
-        _id:
-          type: string
-          description: The unique identifier of this project.
-        key:
-          type: string
-          description: The project key.
-        name:
-          type: string
-          description: The human-readable name of the project.
-        tags:
-          type: array
-          description: Tags applied to this project.
-          items:
-            type: string
-        environments:
-          $ref: '#/components/schemas/Environments'
-        _links:
-          $ref: '#/components/schemas/Links'
     ProjectBody:
       type: object
       description: The request body for creating a new project.
@@ -444,37 +1838,43 @@ components:
           description: Initial environments to create with the project.
           items:
             $ref: '#/components/schemas/EnvironmentBody'
-    PatchOperation:
+    Projects_2:
       type: object
-      description: A JSON Patch or semantic patch request.
+      description: A paginated collection of projects.
       properties:
-        patch:
+        items:
           type: array
-          description: An array of JSON Patch operations.
+          description: The list of projects.
           items:
-            type: object
-            required:
-            - op
-            - path
-            properties:
-              op:
-                type: string
-                description: The patch operation type.
-                enum:
-                - add
-                - remove
-                - replace
-                - move
-                - copy
-                - test
-              path:
-                type: string
-                description: The JSON Pointer path to the target field.
-              value:
-                description: The value to apply for add or replace operations.
-        comment:
-          type: string
-          description: An optional comment describing the change.
+            $ref: '#/components/schemas/Project_3'
+        totalCount:
+          type: integer
+          description: The total number of projects.
+        _links:
+          $ref: '#/components/schemas/Links'
+    Links:
+      type: object
+      description: HATEOAS links for navigating related resources.
+      properties:
+        self:
+          type: object
+          description: A link to this resource.
+          properties:
+            href:
+              type: string
+              description: The URL of this resource.
+            type:
+              type: string
+              description: The media type.
+      additionalProperties:
+        type: object
+        properties:
+          href:
+            type: string
+            description: The URL of the linked resource.
+          type:
+            type: string
+            description: The media type.
     EnvironmentBody:
       type: object
       description: The request body for creating a new environment.
@@ -505,30 +1905,7 @@ components:
           description: Tags to apply to the environment.
           items:
             type: string
-    Links:
-      type: object
-      description: HATEOAS links for navigating related resources.
-      properties:
-        self:
-          type: object
-          description: A link to this resource.
-          properties:
-            href:
-              type: string
-              description: The URL of this resource.
-            type:
-              type: string
-              description: The media type.
-      additionalProperties:
-        type: object
-        properties:
-          href:
-            type: string
-            description: The URL of the linked resource.
-          type:
-            type: string
-            description: The media type.
-    Environments:
+    Environments_2:
       type: object
       description: A collection of environments.
       properties:
@@ -536,33 +1913,44 @@ components:
           type: array
           description: The list of environments.
           items:
-            $ref: '#/components/schemas/Environment_2'
+            $ref: '#/components/schemas/Environment_3'
         totalCount:
           type: integer
           description: The total number of environments.
         _links:
           $ref: '#/components/schemas/Links'
-    Projects:
+    PatchOperation_2:
       type: object
-      description: A paginated collection of projects.
+      description: A JSON Patch or semantic patch request.
       properties:
-        items:
+        patch:
           type: array
-          description: The list of projects.
+          description: An array of JSON Patch operations.
           items:
-            $ref: '#/components/schemas/Project_2'
-        totalCount:
-          type: integer
-          description: The total number of projects.
-        _links:
-          $ref: '#/components/schemas/Links'
+            type: object
+            required:
+            - op
+            - path
+            properties:
+              op:
+                type: string
+                description: The patch operation type.
+                enum:
+                - add
+                - remove
+                - replace
+                - move
+                - copy
+                - test
+              path:
+                type: string
+                description: The JSON Pointer path to the target field.
+              value:
+                description: The value to apply for add or replace operations.
+        comment:
+          type: string
+          description: An optional comment describing the change.
   responses:
-    Project:
-      description: Project
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Project'
     ErrorResponse:
       description: Error response object
       content:
@@ -594,7 +1982,49 @@ components:
               override:
                 type: boolean
                 description: whether or not this is an overridden value or one from the source environment
+    Project:
+      description: Project
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Project'
+  parameters:
+    projectExpand:
+      name: expand
+      description: Available expand options for this endpoint.
+      in: query
+      schema:
+        type: array
+        items:
+          type: string
+          enum:
+          - overrides
+          - availableVariations
+    flagKey:
+      name: flagKey
+      in: path
+      required: true
+      schema:
+        type: string
+    projectKey:
+      name: projectKey
+      in: path
+      required: true
+      schema:
+        type: string
+    ProjectKey:
+      name: projectKey
+      in: path
+      required: true
+      description: The project key identifying a LaunchDarkly project.
+      schema:
+        type: string
+        pattern: ^[a-z0-9]([a-z0-9-])*$
   securitySchemes:
+    ApiKey:
+      type: apiKey
+      in: header
+      name: Authorization
     bearerAuth:
       type: http
       scheme: bearer
@@ -604,4 +2034,5 @@ externalDocs:
   url: https://apidocs.launchdarkly.com/
 x-refined-from:
 - launchdarkly-dev-server-openapi.yml
+- launchdarkly-openapi.json
 - launchdarkly-rest-api-openapi.yml

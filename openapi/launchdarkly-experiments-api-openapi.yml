@@ -1,24 +1,1005 @@
 openapi: 3.2.0
 info:
-  title: LaunchDarkly REST Experiments API
-  description: The LaunchDarkly REST API provides programmatic access to the full LaunchDarkly feature management platform.
-  version: '20240415'
-  contact:
-    name: LaunchDarkly Support
-    url: https://support.launchdarkly.com
-  termsOfService: https://launchdarkly.com/policies/terms-of-service
+  title: Launchdarkly Experiments API
   license:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
+  version: '1.0'
+  description: 'Operations tagged Experiments across 2 of this provider''s published API definitions: launchdarkly-openapi.json, launchdarkly-rest-api-openapi.yml. Each path carries the servers of the definition it was published in.'
 servers:
+- url: https://app.launchdarkly.com
+  description: ' Default'
+- url: https://app.launchdarkly.us
+  description: ' Federal'
 - url: https://app.launchdarkly.com/api/v2
   description: LaunchDarkly Production API
-security:
-- bearerAuth: []
 tags:
 - name: Experiments
-  description: Create and manage experiments to measure the impact of feature flag variations on metrics.
+  description: '> ### Available for subscription customers
+
+    >
+
+    > Experimentation is available to all customers on a Developer, Foundation, Enterprise, or Guardian plan. If you''re on an older Pro or Enterprise plan, Experimentation is available as an add-on. To learn more, read about our pricing. To change your plan, contact Sales.
+
+
+    Experimentation lets you validate the impact of features you roll out to your app or infrastructure. You can measure things like page views, clicks, load time, infrastructure costs, and more. By connecting metrics you create to flags in your LaunchDarkly environment, you can measure the changes in your customers'' behavior based on what flags they evaluate. You can run experiments with any type of flag, including boolean, string, number, and JSON flags. To learn more, read Experimentation.
+
+
+    You can manage experiments by using the dedicated experiment endpoints described below.
+
+
+    Several of the endpoints require a treatment ID or a flag rule ID. Treatment IDs are returned as part of the expanded Get experiment response. Winning treatment IDs are also returned as part of the Get experiment response. They are the `winningTreatmentId` in the `currentIteration`, the `winningTreatmentId` in the `draftIteration`, and the `winningTreatmentId` in each element of the `previousIterations` array. In the flags object, the rule ID is the ID of the variation or rollout of the flag. Each flag variation ID is returned as part of the Get feature flag response. It is the `_id` field in each element of the `variations` array.'
 paths:
+  /api/v2/projects/{projectKey}/environments/{environmentKey}/experiments:
+    get:
+      responses:
+        '200':
+          description: Experiment collection response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExperimentCollectionRep'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '405':
+          description: Method not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MethodNotAllowedErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Experiments
+      summary: Get experiments
+      description: 'Get details about all experiments in an environment.
+
+
+        ### Filtering experiments
+
+
+        LaunchDarkly supports the `filter` query param for filtering, with the following fields:
+
+
+        - `flagKey` filters for only experiments that use the flag with the given key.
+
+        - `metricKey` filters for only experiments that use the metric with the given key.
+
+        - `status` filters for only experiments with an iteration with the given status. An iteration can have the status `not_started`, `running` or `stopped`.
+
+
+        For example, `filter=flagKey:my-flag,status:running,metricKey:page-load-ms` filters for experiments for the given flag key and the given metric key which have a currently running iteration.
+
+
+        ### Expanding the experiments response
+
+
+        LaunchDarkly supports five fields for expanding the "Get experiments" response. By default, these fields are **not** included in the response.
+
+
+        To expand the response, append the `expand` query parameter and add a comma-separated list with any of the following fields:
+
+
+        - `previousIterations` includes all iterations prior to the current iteration. By default only the current iteration is included in the response.
+
+        - `draftIteration` includes the iteration which has not been started yet, if any.
+
+        - `secondaryMetrics` includes secondary metrics. By default only the primary metric is included in the response.
+
+        - `treatments` includes all treatment and parameter details. By default treatment data is not included in the response.
+
+        - `analysisConfig` includes the analysis configuration for the experiment, such as the Bayesian threshold or significance threshold.
+
+
+        For example, `expand=draftIteration,treatments` includes the `draftIteration` and `treatments` fields in the response. If fields that you request with the `expand` query parameter are empty, they are not included in the response.'
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: environmentKey
+        in: path
+        description: The environment key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The environment key
+      - name: limit
+        in: query
+        description: The maximum number of experiments to return. Defaults to 20.
+        schema:
+          type: integer
+          format: int64
+          description: The maximum number of experiments to return. Defaults to 20.
+      - name: offset
+        in: query
+        description: Where to start in the list. Use this with pagination. For example, an offset of 10 skips the first ten items and then returns the next items in the list, up to the query `limit`.
+        schema:
+          type: integer
+          format: int64
+          description: Where to start in the list. Use this with pagination. For example, an offset of 10 skips the first ten items and then returns the next items in the list, up to the query `limit`.
+      - name: filter
+        in: query
+        description: A comma-separated list of filters. Each filter is of the form `field:value`. Supported fields are explained above.
+        schema:
+          type: string
+          format: string
+          description: A comma-separated list of filters. Each filter is of the form `field:value`. Supported fields are explained above.
+      - name: expand
+        in: query
+        description: A comma-separated list of properties that can reveal additional information in the response. Supported fields are explained above.
+        schema:
+          type: string
+          format: string
+          description: A comma-separated list of properties that can reveal additional information in the response. Supported fields are explained above.
+      - name: lifecycleState
+        in: query
+        description: A comma-separated list of experiment archived states. Supports `archived`, `active`, or both. Defaults to `active` experiments.
+        schema:
+          type: string
+          format: string
+          description: A comma-separated list of experiment archived states. Supports `archived`, `active`, or both. Defaults to `active` experiments.
+      operationId: getExperiments
+      security:
+      - ApiKey:
+        - read
+        - write
+    post:
+      responses:
+        '201':
+          description: Experiment response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Experiment'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Experiments
+      summary: Create experiment
+      description: 'Create an experiment.
+
+
+        To run this experiment, you''ll need to create an iteration and then update the experiment with the `startIteration` instruction.
+
+
+        ### Experiment types
+
+
+        Use the `type` field to specify the experiment type: `experiment` (default), `mab` (multi-armed bandit), or `holdout`.
+
+
+        For multi-armed bandit experiments, set `reallocationFrequencyMillis` on the iteration to control how often traffic is reallocated across variations.
+
+
+        ### Results analysis
+
+
+        Use the `methodology` field to specify the results analysis approach: `frequentist` (default) or `bayesian`. Multi-armed bandit experiments support only `bayesian`, which is their default.
+
+
+        Use the `dataSource` field to specify the source of metric data: `launchdarkly` (default), `snowflake`, or `databricks`.
+
+
+        Use the `analysisConfig` field to customize analysis settings such as the Bayesian threshold, significance threshold, or multiple comparison correction method.
+
+
+        To learn more, read Creating experiments.'
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: environmentKey
+        in: path
+        description: The environment key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The environment key
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExperimentPost'
+        required: true
+      operationId: createExperiment
+      security:
+      - ApiKey:
+        - read
+        - write
+    servers:
+    - url: https://app.launchdarkly.com
+      description: ' Default'
+    - url: https://app.launchdarkly.us
+      description: ' Federal'
+  /api/v2/projects/{projectKey}/environments/{environmentKey}/experiments/{experimentKey}:
+    get:
+      responses:
+        '200':
+          description: Experiment response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Experiment'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '405':
+          description: Method not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MethodNotAllowedErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Experiments
+      summary: Get experiment
+      description: 'Get details about an experiment.
+
+
+        ### Expanding the experiment response
+
+
+        LaunchDarkly supports five fields for expanding the "Get experiment" response. By default, these fields are **not** included in the response.
+
+
+        To expand the response, append the `expand` query parameter and add a comma-separated list with any of the following fields:
+
+
+        - `previousIterations` includes all iterations prior to the current iteration. By default only the current iteration is included in the response.
+
+        - `draftIteration` includes the iteration which has not been started yet, if any.
+
+        - `secondaryMetrics` includes secondary metrics. By default only the primary metric is included in the response.
+
+        - `treatments` includes all treatment and parameter details. By default treatment data is not included in the response.
+
+        - `analysisConfig` includes the analysis configuration for the experiment, such as the Bayesian threshold or significance threshold.
+
+
+        For example, `expand=draftIteration,treatments` includes the `draftIteration` and `treatments` fields in the response. If fields that you request with the `expand` query parameter are empty, they are not included in the response.'
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: environmentKey
+        in: path
+        description: The environment key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The environment key
+      - name: experimentKey
+        in: path
+        description: The experiment key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The experiment key
+      - name: expand
+        in: query
+        description: A comma-separated list of properties that can reveal additional information in the response. Supported fields are explained above.
+        schema:
+          type: string
+          format: string
+          description: A comma-separated list of properties that can reveal additional information in the response. Supported fields are explained above.
+      operationId: getExperiment
+      security:
+      - ApiKey:
+        - read
+        - write
+    patch:
+      responses:
+        '200':
+          description: Experiment response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Experiment'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusConflictErrorRep'
+        '422':
+          description: The patch cannot be applied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PatchFailedErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Experiments
+      summary: Patch experiment
+      description: 'Update an experiment. Updating an experiment uses the semantic patch format. To make a semantic patch request, you must append `domain-model=launchdarkly.semanticpatch` to your `Content-Type` header. To learn more, read Updates using semantic patch. ### Instructions
+
+
+        Semantic patch requests support the following `kind` instructions for updating experiments. #### updateName
+
+
+        > **Deprecated**: `updateName` will be removed in a future version. Use `updateExperimentFields` instead. Updates the experiment name. ##### Parameters
+
+
+        - `value`: The new name. Here''s an example:
+
+
+        ```json
+
+        {
+
+        "instructions": [{
+
+        "kind": "updateName",
+
+        "value": "Example updated experiment name"
+
+        }]
+
+        }
+
+        ```
+
+
+        #### updateDescription
+
+
+        > **Deprecated**: `updateDescription` will be removed in a future version. Use `updateExperimentFields` instead. Updates the experiment description. ##### Parameters
+
+
+        - `value`: The new description. Here''s an example:
+
+
+        ```json
+
+        {
+
+        "instructions": [{
+
+        "kind": "updateDescription",
+
+        "value": "Example updated description"
+
+        }]
+
+        }
+
+        ```
+
+
+        #### updateExperimentFields
+
+
+        Updates one or more fields on an experiment or its current iteration. Each field update specifies an operation (`add`, `update`, or `remove`) and an optional value. Which fields are mutable depends on the current iteration status. To discover which fields and operations are allowed, expand `mutableFieldsByStatus` on the Get experiment response. ##### Parameters
+
+
+        - `value`: An object mapping field names to field updates. Each field update has the following properties:
+
+        - `operation`: The operation to perform. One of `add`, `update`, or `remove`. - `value`: The new value for the field. Required for `add` and `update` operations. To find which fields are supported and which operations are allowed for each iteration status, expand `mutableFieldsByStatus` on the Get experiment response. Here''s an example:
+
+
+        ```json
+
+        {
+
+        "instructions": [{
+
+        "kind": "updateExperimentFields",
+
+        "value": {
+
+        "name": {
+
+        "operation": "update",
+
+        "value": "Updated experiment name"
+
+        },
+
+        "tags": {
+
+        "operation": "add",
+
+        "value": ["tag1", "tag2"]
+
+        }
+
+        }
+
+        }]
+
+        }
+
+        ```
+
+
+        #### saveAndStartNewIteration
+
+
+        Stops the current running iteration, creates a new iteration from it, optionally applies field updates, and starts the new iteration. This is a convenience instruction that combines stopping, updating, and starting in a single operation. ##### Parameters
+
+
+        - `changeJustification`: (Optional) The reason for stopping and starting a new iteration. - `value`: (Optional) An object mapping field names to field updates, using the same format as `updateExperimentFields`. These updates are applied to the new iteration before it is started. Here''s an example:
+
+
+        ```json
+
+        {
+
+        "instructions": [{
+
+        "kind": "saveAndStartNewIteration",
+
+        "changeJustification": "Adjusting hypothesis based on early results",
+
+        "value": {
+
+        "hypothesis": {
+
+        "operation": "update",
+
+        "value": "Updated hypothesis text"
+
+        }
+
+        }
+
+        }]
+
+        }
+
+        ```
+
+
+        #### startIteration
+
+
+        Starts a new iteration for this experiment. You must create a new iteration before calling this instruction. An iteration may not be started until it meets the following criteria:
+
+
+        * Its associated flag is toggled on and is not archived
+
+        * Its `randomizationUnit` is set
+
+        * At least one of its `treatments` has a non-zero `allocationPercent`
+
+
+        ##### Parameters
+
+
+        - `changeJustification`: The reason for starting a new iteration. Required when you call `startIteration` on an already running experiment, otherwise optional. Here''s an example:
+
+
+        ```json
+
+        {
+
+        "instructions": [{
+
+        "kind": "startIteration",
+
+        "changeJustification": "It''s time to start a new iteration"
+
+        }]
+
+        }
+
+        ```
+
+
+        #### stopIteration
+
+
+        Stops the current iteration for this experiment. ##### Parameters
+
+
+        - `winningTreatmentId`: The ID of the winning treatment. Treatment IDs are returned as part of the Get experiment response. They are the `_id` of each element in the `treatments` array.'
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: environmentKey
+        in: path
+        description: The environment key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The environment key
+      - name: experimentKey
+        in: path
+        description: The experiment key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The experiment key
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExperimentPatchInput'
+            example:
+              comment: Example comment describing the update
+              instructions:
+              - kind: updateName
+                value: Updated experiment name
+        required: true
+      operationId: patchExperiment
+      security:
+      - ApiKey:
+        - read
+        - write
+    servers:
+    - url: https://app.launchdarkly.com
+      description: ' Default'
+    - url: https://app.launchdarkly.us
+      description: ' Federal'
+  /api/v2/projects/{projectKey}/environments/{environmentKey}/experiments/{experimentKey}/iterations:
+    post:
+      responses:
+        '200':
+          description: Iteration response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IterationRep'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Experiments
+      summary: Create iteration
+      description: '> **Deprecated**: This endpoint will be removed in a future version. Use the `updateExperimentFields` and `saveAndStartNewIteration` instructions on Update experiment instead.
+
+
+        Create an experiment iteration.
+
+
+        Experiment iterations let you record experiments in individual blocks of time. Initially, iterations are created with a status of `not_started` and appear in the `draftIteration` field of an experiment. To start or stop an iteration, update the experiment with the `startIteration` or `stopIteration` instruction.
+
+
+        To learn more, read Start experiment iterations.'
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: environmentKey
+        in: path
+        description: The environment key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The environment key
+      - name: experimentKey
+        in: path
+        description: The experiment key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The experiment key
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IterationInput'
+        required: true
+      operationId: createIteration
+      deprecated: true
+      security:
+      - ApiKey:
+        - read
+        - write
+    servers:
+    - url: https://app.launchdarkly.com
+      description: ' Default'
+    - url: https://app.launchdarkly.us
+      description: ' Federal'
+  /api/v2/projects/{projectKey}/experimentation-settings:
+    get:
+      responses:
+        '200':
+          description: Experimentation settings response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RandomizationSettingsRep'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '405':
+          description: Method not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MethodNotAllowedErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Experiments
+      summary: Get experimentation settings
+      description: Get current experimentation settings for the given project
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      operationId: getExperimentationSettings
+      security:
+      - ApiKey:
+        - read
+        - write
+    put:
+      responses:
+        '200':
+          description: Experimentation settings response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RandomizationSettingsRep'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '405':
+          description: Method not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MethodNotAllowedErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Experiments
+      summary: Update experimentation settings
+      description: Update experimentation settings for the given project
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RandomizationSettingsPut'
+        required: true
+      operationId: putExperimentationSettings
+      security:
+      - ApiKey:
+        - read
+        - write
+    servers:
+    - url: https://app.launchdarkly.com
+      description: ' Default'
+    - url: https://app.launchdarkly.us
+      description: ' Federal'
+  /api/v2/projects/{projectKey}/experiments:
+    get:
+      responses:
+        '200':
+          description: Experiment collection response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExperimentCollectionRep'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '405':
+          description: Method not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MethodNotAllowedErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Experiments
+      summary: Get experiments any environment
+      description: Get a list of experiments from across all environments in the project
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: limit
+        in: query
+        description: The maximum number of experiments to return. Defaults to 20.
+        schema:
+          type: integer
+          format: int64
+          description: The maximum number of experiments to return. Defaults to 20.
+      - name: offset
+        in: query
+        description: Where to start in the list. Use this with pagination. For example, an offset of 10 skips the first ten items and then returns the next items in the list, up to the query `limit`.
+        schema:
+          type: integer
+          format: int64
+          description: Where to start in the list. Use this with pagination. For example, an offset of 10 skips the first ten items and then returns the next items in the list, up to the query `limit`.
+      - name: filter
+        in: query
+        description: A comma-separated list of filters. Each filter is of the form `field:value`. Supported fields are explained above.
+        schema:
+          type: string
+          format: string
+          description: A comma-separated list of filters. Each filter is of the form `field:value`. Supported fields are explained above.
+      - name: expand
+        in: query
+        description: A comma-separated list of properties that can reveal additional information in the response. Supported fields are explained above.
+        schema:
+          type: string
+          format: string
+          description: A comma-separated list of properties that can reveal additional information in the response. Supported fields are explained above.
+      - name: lifecycleState
+        in: query
+        description: A comma-separated list of experiment archived states. Supports `archived`, `active`, or both. Defaults to `active` experiments.
+        schema:
+          type: string
+          format: string
+          description: A comma-separated list of experiment archived states. Supports `archived`, `active`, or both. Defaults to `active` experiments.
+      operationId: getExperimentsAnyEnv
+      security:
+      - ApiKey:
+        - read
+        - write
+    servers:
+    - url: https://app.launchdarkly.com
+      description: ' Default'
+    - url: https://app.launchdarkly.us
+      description: ' Federal'
   /projects/{projectKey}/environments/{environmentKey}/experiments:
     get:
       operationId: listExperiments
@@ -50,8 +1031,10 @@ paths:
           description: Unauthorized. Invalid or missing access token.
         '404':
           description: Project or environment not found.
+      security:
+      - bearerAuth: []
     post:
-      operationId: createExperiment
+      operationId: postProjectsByProjectKeyEnvironmentsByEnvironmentKeyExperiments
       summary: Create an experiment
       description: Creates a new experiment in the specified project and environment.
       tags:
@@ -71,47 +1054,1223 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Experiment'
+                $ref: '#/components/schemas/Experiment_2'
         '400':
           description: Invalid request body.
         '401':
           description: Unauthorized. Invalid or missing access token.
+      security:
+      - bearerAuth: []
+      x-operation-id-source: normalized
+      x-operation-id-original: createExperiment
+    servers:
+    - url: https://app.launchdarkly.com/api/v2
+      description: LaunchDarkly Production API
 components:
   schemas:
-    ExperimentBody:
+    FlagsInput:
       type: object
-      description: The request body for creating a new experiment.
+      additionalProperties:
+        $ref: '#/components/schemas/FlagInput'
+    IterationRep:
+      type: object
       required:
-      - name
-      - key
+      - hypothesis
+      - status
+      - createdAt
       properties:
-        name:
+        _id:
           type: string
-          description: The human-readable name of the experiment.
+          description: The iteration ID
+          example: 12ab3c45de678910fgh12345
+        hypothesis:
+          type: string
+          description: The expected outcome of this experiment
+          example: The new button placement will increase conversion
+        status:
+          type: string
+          description: 'The status of the iteration: <code>not_started</code>, <code>running</code>, <code>stopped</code>'
+          example: running
+          enum:
+          - not_started
+          - running
+          - stopped
+        createdAt:
+          description: Timestamp of when the iteration was created
+          example: '1654104600000'
+          $ref: '#/components/schemas/UnixMillis'
+        startedAt:
+          description: Timestamp of when the iteration started
+          example: '1655314200000'
+          $ref: '#/components/schemas/UnixMillis'
+        endedAt:
+          description: Timestamp of when the iteration ended
+          example: '1656610200000'
+          $ref: '#/components/schemas/UnixMillis'
+        winningTreatmentId:
+          type: string
+          description: The ID of the treatment chosen when the experiment stopped
+          example: 122c9f3e-da26-4321-ba68-e0fc02eced58
+        winningReason:
+          type: string
+          description: The reason you stopped the experiment
+          example: We ran this iteration for two weeks and the winning variation was clear
+        canReshuffleTraffic:
+          type: boolean
+          description: Whether the experiment may reassign traffic to different variations when the experiment audience changes (true) or must keep all traffic assigned to its initial variation (false).
+          example: true
+        flags:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/FlagRep'
+          description: Details on the flag used in this experiment
+        reallocationFrequencyMillis:
+          type: integer
+          description: The cadence (in milliseconds) to update the allocation. Only present for multi-armed bandits.
+          example: 3600000
+        version:
+          type: integer
+          description: The current version that the iteration is on
+          example: 0
+        primaryMetric:
+          description: Deprecated, use <code>primarySingleMetric</code> and <code>primaryFunnel</code> instead. Details on the primary metric for this experiment.
+          deprecated: true
+          $ref: '#/components/schemas/DependentMetricOrMetricGroupRep'
+        primarySingleMetric:
+          description: Details on the primary metric for this experiment
+          $ref: '#/components/schemas/MetricV2Rep'
+        primaryFunnel:
+          description: Details on the primary funnel group for this experiment
+          $ref: '#/components/schemas/DependentMetricGroupRepWithMetrics'
+        randomizationUnit:
+          type: string
+          description: The unit of randomization for this iteration
+          example: user
+        attributes:
+          type: array
+          description: The available attribute filters for this iteration
+          items:
+            type: string
+        treatments:
+          type: array
+          description: Details on the variations you are testing in the experiment
+          items:
+            $ref: '#/components/schemas/TreatmentRep'
+        secondaryMetrics:
+          type: array
+          description: Deprecated, use <code>metrics</code> instead. Details on the secondary metrics for this experiment.
+          items:
+            $ref: '#/components/schemas/MetricV2Rep'
+          deprecated: true
+        metrics:
+          type: array
+          description: Details on the metrics for this experiment
+          items:
+            $ref: '#/components/schemas/DependentMetricOrMetricGroupRep'
+        layerSnapshot:
+          description: Snapshot of the layer state on iteration stop, if part of a layer. Otherwise omitted.
+          $ref: '#/components/schemas/LayerSnapshotRep'
+        covariateInfo:
+          description: Details of the covariate file for stratified sampling
+          $ref: '#/components/schemas/CovariateInfoRep'
+    AccessDenied:
+      type: object
+      required:
+      - action
+      - reason
+      properties:
+        action:
+          $ref: '#/components/schemas/ActionIdentifier'
+        reason:
+          $ref: '#/components/schemas/AccessDeniedReason'
+    ExperimentPatchInput:
+      type: object
+      required:
+      - instructions
+      properties:
+        comment:
+          type: string
+          description: Optional comment describing the update
+          example: Optional comment
+        instructions:
+          description: 'The instructions to perform when updating. This should be an array with objects that look like <code>{"kind": "update_action"}</code>. Some instructions also require a <code>value</code> field in the array element.'
+          example: '[{"kind": "updateName", "value": "Updated experiment name"}]'
+          $ref: '#/components/schemas/Instructions'
+    AnalysisConfigRep:
+      type: object
+      properties:
+        bayesianThreshold:
+          type: string
+          description: The threshold for the Probability to Beat Baseline (PBBL) and Probability to Be Best (PBB) comparisons for the Bayesian results analysis approach.  Value should be between 0-100 inclusive.
+        significanceThreshold:
+          type: string
+          description: The significance threshold for the frequentist results analysis approach. Value should be between 0.0-1.0 inclusive.
+        testDirection:
+          type: string
+          description: The test sided direction for the frequentist results analysis approach.
+        multipleComparisonCorrectionMethod:
+          type: string
+          description: The method for multiple comparison correction.
+          enum:
+          - bonferroni
+          - benjamini-hochberg
+        multipleComparisonCorrectionScope:
+          type: string
+          description: The scope for multiple comparison correction.
+          enum:
+          - variations
+          - variations-and-metrics
+          - metrics
+        sequentialTestingEnabled:
+          type: boolean
+          description: Whether sequential testing is enabled for Frequentist analysis
+    FlagInput:
+      type: object
+      required:
+      - ruleId
+      - flagConfigVersion
+      properties:
+        ruleId:
+          type: string
+          description: The ID of the variation or rollout of the flag to use. Use "fallthrough" for the default targeting behavior when the flag is on.
+          example: e432f62b-55f6-49dd-a02f-eb24acf39d05
+        flagConfigVersion:
+          type: integer
+          description: The flag version
+          example: 12
+        notInExperimentVariationId:
+          type: string
+          description: The ID of the variation to route traffic not part of the experiment analysis to. Defaults to variation ID of baseline treatment, if set.
+          example: e432f62b-55f6-49dd-a02f-eb24acf39d05
+    PatchFailedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: patch_failed
+        message:
+          type: string
+          description: Description of the error
+          example: Unprocessable entity. Could not apply patch.
+    InvalidRequestErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: invalid_request
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid request body
+    Instructions:
+      type: array
+      items:
+        $ref: '#/components/schemas/Instruction'
+    RateLimitedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: rate_limited
+        message:
+          type: string
+          description: Description of the error
+          example: You've exceeded the API rate limit. Try again later.
+    AccessDeniedReason:
+      type: object
+      required:
+      - effect
+      properties:
+        resources:
+          type: array
+          description: Resource specifier strings
+          items:
+            type: string
+          example:
+          - proj/*:env/*;qa_*:/flag/*
+        notResources:
+          type: array
+          description: Targeted resources are the resources NOT in this list. The <code>resources</code> and <code>notActions</code> fields must be empty to use this field.
+          items:
+            type: string
+        actions:
+          type: array
+          description: Actions to perform on a resource
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+          example:
+          - '*'
+        notActions:
+          type: array
+          description: Targeted actions are the actions NOT in this list. The <code>actions</code> and <code>notResources</code> fields must be empty to use this field.
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+        effect:
+          type: string
+          description: Whether this statement should allow or deny actions on the resources.
+          example: allow
+          enum:
+          - allow
+          - deny
+        role_name:
+          type: string
+    UnauthorizedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: unauthorized
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid access token
+    AnalysisConfigInput:
+      type: object
+      properties:
+        bayesianThreshold:
+          type: string
+          description: The threshold for the Probability to Beat Baseline (PBBL) and Probability to Be Best (PBB) comparisons for the Bayesian results analysis approach.
+          example: '10'
+        significanceThreshold:
+          type: string
+          description: The significance threshold for the frequentist results analysis approach.
+          example: '5'
+        testDirection:
+          type: string
+          description: The test sided direction for the frequentist results analysis approach.
+        multipleComparisonCorrectionMethod:
+          type: string
+          description: The method to use for multiple comparison correction.
+          example: bonferroni
+          enum:
+          - bonferroni
+          - benjamini-hochberg
+        multipleComparisonCorrectionScope:
+          type: string
+          description: The scope of the multiple comparison correction.
+          example: variations
+          enum:
+          - variations
+          - variations-and-metrics
+          - metrics
+        sequentialTestingEnabled:
+          type: boolean
+          description: Whether sequential testing is enabled for Frequentist analysis
+    ForbiddenErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: forbidden
+        message:
+          type: string
+          description: Description of the error
+          example: Forbidden. Access to the requested resource was denied.
+    ActionSpecifier:
+      type: string
+    MetricsInput:
+      type: array
+      items:
+        $ref: '#/components/schemas/MetricInput'
+    Link:
+      type: object
+      properties:
+        href:
+          type: string
+        type:
+          type: string
+    ActionIdentifier:
+      type: string
+    FlagRep:
+      type: object
+      required:
+      - _links
+      properties:
+        targetingRule:
+          type: string
+          description: The targeting rule
+          example: fallthrough
+        targetingRuleDescription:
+          type: string
+          description: The rule description
+          example: Customers who live in Canada
+        targetingRuleClauses:
+          type: array
+          description: An array of clauses used for individual targeting based on attributes
+          items: {}
+        flagConfigVersion:
+          type: integer
+          description: The flag version
+          example: 12
+        notInExperimentVariationId:
+          type: string
+          description: The ID of the variation to route traffic not part of the experiment analysis to
+          example: e432f62b-55f6-49dd-a02f-eb24acf39d05
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+          example:
+            self:
+              href: /api/v2/flags/my-project/my-flag
+              type: application/json
+    TreatmentsInput:
+      type: array
+      items:
+        $ref: '#/components/schemas/TreatmentInput'
+    RandomizationUnitInput:
+      type: object
+      required:
+      - randomizationUnit
+      properties:
+        randomizationUnit:
+          type: string
+          description: The unit of randomization. Must match the key of an existing context kind in this project.
+          example: user
+        default:
+          type: boolean
+          description: If true, any experiment iterations created within this project will default to using this randomization unit. A project can only have one default randomization unit.
+          example: true
+        standardRandomizationUnit:
+          type: string
+          description: (deprecated) This field is deprecated and will be removed. Use randomizationUnit instead.
+          example: user
+    DependentMetricGroupRepWithMetrics:
+      type: object
+      required:
+      - key
+      - name
+      - kind
+      - _links
+      properties:
         key:
           type: string
-          description: The experiment key.
-        description:
+          description: A unique key to reference the metric group
+          example: metric-group-key-123abc
+        name:
           type: string
-          description: A description of the experiment.
-        maintainerId:
+          description: A human-friendly name for the metric group
+          example: My metric group
+        kind:
           type: string
-          description: The member ID of the experiment maintainer.
-    Experiments:
+          description: The type of the metric group
+          example: funnel
+          enum:
+          - funnel
+          - standard
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+          example:
+            parent:
+              href: /api/v2/projects/my-project
+              type: application/json
+            self:
+              href: /api/v2/projects/my-project/metric-groups/my-metric-group
+              type: application/json
+        metrics:
+          type: array
+          description: The metrics in the metric group
+          items:
+            $ref: '#/components/schemas/MetricInGroupRep'
+    UnixMillis:
+      type: integer
+      format: int64
+    ExperimentCollectionRep:
       type: object
-      description: A paginated collection of experiments.
+      required:
+      - items
       properties:
         items:
           type: array
-          description: The list of experiments.
+          description: An array of experiments
           items:
             $ref: '#/components/schemas/Experiment'
-        totalCount:
+        total_count:
           type: integer
-          description: The total number of experiments.
+          description: The total number of experiments in this project and environment. Does not include legacy experiments.
         _links:
-          $ref: '#/components/schemas/Links'
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+    TreatmentInput:
+      type: object
+      required:
+      - name
+      - baseline
+      - allocationPercent
+      - parameters
+      properties:
+        name:
+          type: string
+          description: The treatment name
+          example: Treatment 1
+        baseline:
+          type: boolean
+          description: Whether this treatment is the baseline to compare other treatments against
+          example: true
+        allocationPercent:
+          type: string
+          description: The percentage of traffic allocated to this treatment during the iteration
+          example: '10'
+        parameters:
+          type: array
+          description: Details on the flag and variation to use for this treatment
+          items:
+            $ref: '#/components/schemas/TreatmentParameterInput'
+    LayerSnapshotRep:
+      type: object
+      required:
+      - key
+      - name
+      - reservationPercent
+      - otherReservationPercent
+      properties:
+        key:
+          type: string
+          description: Key of the layer the experiment was part of
+          example: checkout-flow
+        name:
+          type: string
+          description: Layer name at the time this experiment iteration was stopped
+          example: Checkout Flow
+        reservationPercent:
+          type: integer
+          description: Percent of layer traffic that was reserved in the layer for this experiment iteration
+          example: 10
+        otherReservationPercent:
+          type: integer
+          description: Percent of layer traffic that was reserved for other experiments in the same environment, when this experiment iteration was stopped
+          example: 70
+    MutableFieldsByStatusRep:
+      type: object
+      properties:
+        not_started:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/FieldAction'
+        running:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/FieldAction'
+        stopped:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/FieldAction'
+    MethodNotAllowedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: method_not_allowed
+        message:
+          type: string
+          description: Description of the error
+          example: Method not allowed
+    MetricV2Rep:
+      type: object
+      required:
+      - key
+      - name
+      - kind
+      - _links
+      properties:
+        key:
+          type: string
+          description: The metric key
+          example: metric-key-123abc
+        _versionId:
+          type: string
+          description: The version ID of the metric
+          example: version-id-123abc
+        name:
+          type: string
+          description: The metric name
+          example: Example metric
+        kind:
+          type: string
+          description: The kind of event the metric tracks
+          example: custom
+          enum:
+          - pageview
+          - click
+          - custom
+          - trace
+        isNumeric:
+          type: boolean
+          description: For custom metrics, whether to track numeric changes in value against a baseline (<code>true</code>) or to track a conversion when an end user takes an action (<code>false</code>).
+          example: true
+        unitAggregationType:
+          type: string
+          description: The type of unit aggregation to use for the metric
+          example: sum
+          enum:
+          - sum
+          - average
+          - count_distinct
+        analysisType:
+          type: string
+          description: The method for analyzing metric events
+          example: mean
+          enum:
+          - mean
+          - percentile
+        eventKey:
+          type: string
+          description: The event key sent with the metric. Only relevant for custom metrics.
+          example: event-key-123abc
+        analysisUnit:
+          type: string
+          description: The context kind used as the analysis unit for this metric in the experiment iteration
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+          example:
+            self:
+              href: /api/v2/metrics/my-project/my-metric
+              type: application/json
+    Access:
+      type: object
+      required:
+      - denied
+      - allowed
+      properties:
+        denied:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccessDenied'
+        allowed:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccessAllowedRep'
+    MetricInput:
+      type: object
+      required:
+      - key
+      properties:
+        key:
+          type: string
+          description: The metric key
+          example: metric-key-123abc
+        isGroup:
+          type: boolean
+          description: Whether this is a metric group (true) or a metric (false). Defaults to false
+          example: true
+        primary:
+          type: boolean
+          description: Deprecated, use <code>primarySingleMetricKey</code> and <code>primaryFunnelKey</code>. Whether this is a primary metric (true) or a secondary metric (false)
+          example: true
+          deprecated: true
+        analysisUnit:
+          type: string
+          description: The analysis unit to use for this metric. If omitted, analysis uses the iteration's randomization unit.
+          example: user
+    StatusConflictErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: optimistic_locking_error
+        message:
+          type: string
+          description: Description of the error
+          example: Conflict. Optimistic lock error. Try again later.
+    NotFoundErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: not_found
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid resource identifier
+    CovariateInfoRep:
+      type: object
+      required:
+      - id
+      - fileName
+      - createdAt
+      properties:
+        id:
+          type: string
+          description: The ID of the covariate matrix
+          example: 74a49a2b-4834-4246-917e-5d85231d8c2a
+        fileName:
+          type: string
+          description: The file name of the uploaded covariate matrix
+          example: covariate.csv
+        createdAt:
+          description: Timestamp of when the covariate was uploaded
+          example: '1654104600000'
+          $ref: '#/components/schemas/UnixMillis'
+    ParameterRep:
+      type: object
+      properties:
+        variationId:
+          type: string
+        flagKey:
+          type: string
+    AccessAllowedReason:
+      type: object
+      required:
+      - effect
+      properties:
+        resources:
+          type: array
+          description: Resource specifier strings
+          items:
+            type: string
+          example:
+          - proj/*:env/*;qa_*:/flag/*
+        notResources:
+          type: array
+          description: Targeted resources are the resources NOT in this list. The <code>resources</code> and <code>notActions</code> fields must be empty to use this field.
+          items:
+            type: string
+        actions:
+          type: array
+          description: Actions to perform on a resource
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+          example:
+          - '*'
+        notActions:
+          type: array
+          description: Targeted actions are the actions NOT in this list. The <code>actions</code> and <code>notResources</code> fields must be empty to use this field.
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+        effect:
+          type: string
+          description: Whether this statement should allow or deny actions on the resources.
+          example: allow
+          enum:
+          - allow
+          - deny
+        role_name:
+          type: string
+    MetricInGroupRep:
+      type: object
+      required:
+      - key
+      - name
+      - kind
+      - _links
+      properties:
+        key:
+          type: string
+          description: The metric key
+          example: metric-key-123abc
+        _versionId:
+          type: string
+          description: The version ID of the metric
+          example: version-id-123abc
+        name:
+          type: string
+          description: The metric name
+          example: Example metric
+        kind:
+          type: string
+          description: The kind of event the metric tracks
+          example: custom
+          enum:
+          - pageview
+          - click
+          - custom
+          - trace
+        isNumeric:
+          type: boolean
+          description: For custom metrics, whether to track numeric changes in value against a baseline (<code>true</code>) or to track a conversion when an end user takes an action (<code>false</code>).
+          example: true
+        unitAggregationType:
+          type: string
+          description: The type of unit aggregation to use for the metric
+          example: sum
+          enum:
+          - sum
+          - average
+          - count_distinct
+        analysisType:
+          type: string
+          description: The method for analyzing metric events
+          example: mean
+          enum:
+          - mean
+          - percentile
+        eventKey:
+          type: string
+          description: The event key sent with the metric. Only relevant for custom metrics.
+          example: event-key-123abc
+        analysisUnit:
+          type: string
+          description: The context kind used as the analysis unit for this metric in the experiment iteration
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+          example:
+            self:
+              href: /api/v2/metrics/my-project/my-metric
+              type: application/json
+        nameInGroup:
+          type: string
+          description: Name of the metric when used within the associated metric group. Can be different from the original name of the metric. Required if and only if the metric group is a <code>funnel</code>.
+          example: Step 1
+        randomizationUnits:
+          type: array
+          description: Deprecated, use <code>analysisUnits</code> instead.
+          items:
+            type: string
+          example:
+          - user
+          deprecated: true
+        analysisUnits:
+          type: array
+          description: An array of analysis units allowed for this metric.
+          items:
+            type: string
+          example:
+          - user
+    Instruction:
+      type: object
+      additionalProperties: {}
+    RandomizationSettingsRep:
+      type: object
+      properties:
+        _projectId:
+          type: string
+          description: The project ID
+          example: 12345abcde67890fghij
+        _projectKey:
+          type: string
+          description: The project key
+          example: project-key-123abc
+        randomizationUnits:
+          type: array
+          description: An array of the randomization units in this project
+          items:
+            $ref: '#/components/schemas/RandomizationUnitRep'
+        _creationDate:
+          description: Timestamp of when the experiment was created
+          example: '1654104600000'
+          $ref: '#/components/schemas/UnixMillis'
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
     Experiment:
+      type: object
+      required:
+      - key
+      - name
+      - _maintainerId
+      - _creationDate
+      - environmentKey
+      - _links
+      properties:
+        _id:
+          type: string
+          description: The experiment ID
+          example: 12ab3c45de678910fgh12345
+        key:
+          type: string
+          description: The experiment key
+          example: experiment-key-123abc
+        name:
+          type: string
+          description: The experiment name
+          example: Example experiment
+        description:
+          type: string
+          description: The experiment description
+          example: An example experiment, used in testing
+        _maintainerId:
+          type: string
+          description: The ID of the member who maintains this experiment.
+          example: 12ab3c45de678910fgh12345
+        _creationDate:
+          description: Timestamp of when the experiment was created
+          example: '1654104600000'
+          $ref: '#/components/schemas/UnixMillis'
+        environmentKey:
+          type: string
+        methodology:
+          type: string
+          description: The results analysis approach.
+          example: bayesian
+          enum:
+          - bayesian
+          - frequentist
+          - export_only
+        dataSource:
+          type: string
+          description: The source of metric data in order to analyze results. Defaults to "launchdarkly" when not provided.
+          example: snowflake
+          enum:
+          - launchdarkly
+          - snowflake
+        archivedDate:
+          description: Timestamp of when the experiment was archived
+          example: '1654104600000'
+          $ref: '#/components/schemas/UnixMillis'
+        tags:
+          type: array
+          description: Tags for the experiment
+          items:
+            type: string
+          example:
+          - experiment
+          - feature
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+          example:
+            parent:
+              href: /api/v2/projects/my-project/environments/my-environment
+              type: application/json
+            self:
+              href: /api/v2/projects/my-project/environments/my-environment/experiments/my-experiment
+              type: application/json
+        holdoutId:
+          type: string
+          description: The holdout ID
+          example: f3b74309-d581-44e1-8a2b-bb2933b4fe40
+        currentIteration:
+          description: Details on the current iteration
+          $ref: '#/components/schemas/IterationRep'
+        type:
+          type: string
+          description: The experiment type
+          example: experiment
+        _access:
+          description: Details on the allowed and denied actions for this experiment
+          $ref: '#/components/schemas/Access'
+        draftIteration:
+          description: Details on the current iteration. This iteration may be already started, or may still be a draft.
+          $ref: '#/components/schemas/IterationRep'
+        previousIterations:
+          type: array
+          description: Details on the previous iterations for this experiment.
+          items:
+            $ref: '#/components/schemas/IterationRep'
+        analysisConfig:
+          description: Details of the Analysis Configuration for this experiment.
+          $ref: '#/components/schemas/AnalysisConfigRep'
+        mutableFieldsByStatus:
+          description: Fields that can be changed for each iteration status.
+          $ref: '#/components/schemas/MutableFieldsByStatusRep'
+    TreatmentParameterInput:
+      type: object
+      required:
+      - flagKey
+      - variationId
+      properties:
+        flagKey:
+          type: string
+          description: The flag key
+          example: example-flag-for-experiment
+        variationId:
+          type: string
+          description: The ID of the flag variation
+          example: e432f62b-55f6-49dd-a02f-eb24acf39d05
+    FieldAction:
+      type: string
+    ExperimentPost:
+      type: object
+      required:
+      - name
+      - key
+      - iteration
+      properties:
+        name:
+          type: string
+          description: The experiment name
+          example: Example experiment
+        description:
+          type: string
+          description: The experiment description
+          example: An example experiment, used in testing
+        maintainerId:
+          type: string
+          description: The ID of the member who maintains this experiment
+          example: 12ab3c45de678910fgh12345
+        key:
+          type: string
+          description: The experiment key
+          example: experiment-key-123abc
+        iteration:
+          description: Details on the construction of the initial iteration
+          $ref: '#/components/schemas/IterationInput'
+        holdoutId:
+          type: string
+          description: The ID of the holdout
+          example: f3b74309-d581-44e1-8a2b-bb2933b4fe40
+        tags:
+          type: array
+          description: Tags for the experiment
+          items:
+            type: string
+        methodology:
+          type: string
+          description: The results analysis approach. Defaults to "frequentist" when not provided, or "bayesian" for multi-armed bandit experiments.
+          example: frequentist
+          enum:
+          - bayesian
+          - frequentist
+          - export_only
+        analysisConfig:
+          description: Details of the Analysis Configuration for this experiment
+          $ref: '#/components/schemas/AnalysisConfigInput'
+        dataSource:
+          type: string
+          description: The source of metric data in order to analyze results. Defaults to "launchdarkly" when not provided.
+          example: snowflake
+          enum:
+          - launchdarkly
+          - snowflake
+        type:
+          type: string
+          description: The type of experiment.
+          example: experiment
+          enum:
+          - experiment
+          - mab
+          - holdout
+    AccessAllowedRep:
+      type: object
+      required:
+      - action
+      - reason
+      properties:
+        action:
+          $ref: '#/components/schemas/ActionIdentifier'
+        reason:
+          $ref: '#/components/schemas/AccessAllowedReason'
+    RandomizationSettingsPut:
+      type: object
+      required:
+      - randomizationUnits
+      properties:
+        randomizationUnits:
+          type: array
+          description: An array of randomization units allowed for this project.
+          items:
+            $ref: '#/components/schemas/RandomizationUnitInput'
+    TreatmentRep:
+      type: object
+      required:
+      - name
+      - allocationPercent
+      properties:
+        _id:
+          type: string
+          description: The treatment ID. This is the variation ID from the flag.
+          example: 122c9f3e-da26-4321-ba68-e0fc02eced58
+        name:
+          type: string
+          description: The treatment name. This is the variation name from the flag.
+          example: Treatment 1
+        allocationPercent:
+          type: string
+          description: The percentage of traffic allocated to this treatment during the iteration
+          example: '10'
+        baseline:
+          type: boolean
+          description: Whether this treatment is the baseline to compare other treatments against
+          example: true
+        parameters:
+          type: array
+          description: Details on the flag and variation used for this treatment
+          items:
+            $ref: '#/components/schemas/ParameterRep'
+    DependentMetricOrMetricGroupRep:
+      type: object
+      required:
+      - key
+      - _versionId
+      - name
+      - kind
+      - _links
+      - isGroup
+      properties:
+        key:
+          type: string
+          description: A unique key to reference the metric or metric group
+          example: metric-key-123abc
+        _versionId:
+          type: string
+          description: The version ID of the metric or metric group
+        name:
+          type: string
+          description: A human-friendly name for the metric or metric group
+          example: My metric
+        kind:
+          type: string
+          description: If this is a metric, then it represents the kind of event the metric tracks. If this is a metric group, then it represents the group type
+          example: custom
+          enum:
+          - pageview
+          - click
+          - custom
+          - trace
+          - funnel
+          - standard
+        isNumeric:
+          type: boolean
+          description: For custom and trace metrics, whether to track numeric changes in value against a baseline (<code>true</code>) or to track a conversion when an end user takes an action (<code>false</code>).
+          example: true
+        eventKey:
+          type: string
+          description: The event key sent with the metric. Only relevant for custom metrics.
+          example: event-key-123abc
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+          example:
+            self:
+              href: /api/v2/metrics/my-project/my-metric
+              type: application/json
+        isGroup:
+          type: boolean
+          description: Whether this is a metric group or a metric
+        metrics:
+          type: array
+          description: An ordered list of the metrics in this metric group
+          items:
+            $ref: '#/components/schemas/MetricInGroupRep'
+        analysisType:
+          type: string
+          description: The method for analyzing metric events. Only set for individual metrics, not metric groups.
+          example: mean
+          enum:
+          - mean
+          - percentile
+        analysisUnit:
+          type: string
+          description: The context kind chosen as the analysis unit for this metric in the iteration. If null, analysis uses the iteration's randomization unit.
+          example: user
+    IterationInput:
+      type: object
+      required:
+      - hypothesis
+      - metrics
+      - treatments
+      - flags
+      properties:
+        hypothesis:
+          type: string
+          description: The expected outcome of this experiment
+          example: Example hypothesis, the new button placement will increase conversion
+        canReshuffleTraffic:
+          type: boolean
+          description: Whether to allow the experiment to reassign traffic to different variations when you increase or decrease the traffic in your experiment audience (true) or keep all traffic assigned to its initial variation (false). Defaults to true.
+          example: true
+        metrics:
+          description: Details on the metrics for this experiment
+          $ref: '#/components/schemas/MetricsInput'
+        primarySingleMetricKey:
+          type: string
+          description: The key of the primary metric for this experiment. Either <code>primarySingleMetricKey</code> or <code>primaryFunnelKey</code> must be present.
+          example: metric-key-123abc
+        primaryFunnelKey:
+          type: string
+          description: The key of the primary funnel group for this experiment. Either <code>primarySingleMetricKey</code> or <code>primaryFunnelKey</code> must be present.
+          example: metric-group-key-123abc
+        treatments:
+          description: Details on the variations you are testing in the experiment. You establish these variations in feature flags, and then reuse them in experiments.
+          $ref: '#/components/schemas/TreatmentsInput'
+        flags:
+          description: Details on the feature flag and targeting rules for this iteration
+          example: '{"example-flag-key": { "ruleId": "e432f62b-55f6-49dd-a02f-eb24acf39d05", "flagConfigVersion": 12, "notInExperimentVariationId": "e432f62b-55f6-49dd-a02f-eb24acf39d05" }}'
+          $ref: '#/components/schemas/FlagsInput'
+        randomizationUnit:
+          type: string
+          description: The unit of randomization for this iteration. Defaults to user.
+          example: user
+        reallocationFrequencyMillis:
+          type: integer
+          description: The cadence (in milliseconds) to update the allocation.
+          example: 3600000
+        covariateId:
+          type: string
+          description: The ID of the covariate CSV
+        attributes:
+          type: array
+          description: The attributes that this iteration's results can be sliced by
+          items:
+            type: string
+          example:
+          - country
+          - device
+          - os
+    RandomizationUnitRep:
+      type: object
+      properties:
+        randomizationUnit:
+          type: string
+          description: The unit of randomization. Defaults to user.
+          example: user
+        default:
+          type: boolean
+          description: Whether this randomization unit is the default for experiments
+          example: true
+        _hidden:
+          type: boolean
+        _displayName:
+          type: string
+          description: The display name for the randomization unit, displayed in the LaunchDarkly user interface.
+          example: User
+    Experiment_2:
       type: object
       description: An experiment measuring the impact of flag variations on metrics.
       properties:
@@ -174,6 +2333,39 @@ components:
           type:
             type: string
             description: The media type.
+    Experiments:
+      type: object
+      description: A paginated collection of experiments.
+      properties:
+        items:
+          type: array
+          description: The list of experiments.
+          items:
+            $ref: '#/components/schemas/Experiment_2'
+        totalCount:
+          type: integer
+          description: The total number of experiments.
+        _links:
+          $ref: '#/components/schemas/Links'
+    ExperimentBody:
+      type: object
+      description: The request body for creating a new experiment.
+      required:
+      - name
+      - key
+      properties:
+        name:
+          type: string
+          description: The human-readable name of the experiment.
+        key:
+          type: string
+          description: The experiment key.
+        description:
+          type: string
+          description: A description of the experiment.
+        maintainerId:
+          type: string
+          description: The member ID of the experiment maintainer.
   parameters:
     ProjectKey:
       name: projectKey
@@ -192,6 +2384,10 @@ components:
         type: string
         pattern: ^[a-z0-9]([a-z0-9-])*$
   securitySchemes:
+    ApiKey:
+      type: apiKey
+      in: header
+      name: Authorization
     bearerAuth:
       type: http
       scheme: bearer
@@ -199,3 +2395,6 @@ components:
 externalDocs:
   description: LaunchDarkly API Documentation
   url: https://apidocs.launchdarkly.com/
+x-refined-from:
+- launchdarkly-openapi.json
+- launchdarkly-rest-api-openapi.yml

@@ -1,0 +1,1280 @@
+openapi: 3.2.0
+info:
+  title: LaunchDarkly REST SDK Keys (beta) API
+  description: 'This documentation describes LaunchDarkly''s REST API. To access the complete OpenAPI spec directly, use Get OpenAPI spec. To learn how to use LaunchDarkly using the user interface (UI) instead, read our product documentation. ## Authentication
+
+
+    LaunchDarkly''s REST API uses the HTTPS protocol with a minimum TLS version of 1.2. All REST API resources are authenticated with either personal or service access tokens, or session cookies. Other authentication mechanisms are not supported. You can manage personal access tokens on your **Authorization** page in the LaunchDarkly UI. LaunchDarkly also has SDK keys, mobile keys, and client-side IDs that are used by our server-side SDKs, mobile SDKs, and JavaScript-based SDKs, respectively. **These keys cannot be used to access our REST API**. These keys are environment-specific, and can only perform read-only operations such as fetching feature flag settings. | Auth mechanism | Allowed resources | Use cases |
+
+    | ----------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
+
+    | Personal or service access tokens | Can be customized on a per-token basis | Building scripts, custom integrations, data export. |
+
+    | SDK keys | Can only access read-only resources specific to server-side SDKs. Restricted to a single environment. | Server-side SDKs |
+
+    | Mobile keys | Can only access read-only resources specific to mobile SDKs, and only for flags marked available to mobile keys. Restricted to a single environment. | Mobile SDKs |
+
+    | Client-side ID | Can only access read-only resources specific to JavaScript-based client-side SDKs, and only for flags marked available to client-side. Restricted to a single environment. | Client-side JavaScript |
+
+
+    > #### Keep your access tokens and SDK keys private
+
+    >
+
+    > Access tokens should _never_ be exposed in untrusted contexts. Never put an access token in client-side JavaScript, or embed it in a mobile application. LaunchDarkly has special mobile keys that you can embed in mobile apps. If you accidentally expose an access token or SDK key, you can reset it from your **Authorization** page. >
+
+    > The client-side ID is safe to embed in untrusted contexts. It''s designed for use in client-side JavaScript. ### Authentication using request header
+
+
+    The preferred way to authenticate with the API is by adding an `Authorization` header containing your access token to your requests. The value of the `Authorization` header must be your access token. Manage personal access tokens from the **Authorization** page. ### Authentication using session cookie
+
+
+    For testing purposes, you can make API calls directly from your web browser. If you are logged in to the LaunchDarkly application, the API will use your existing session to authenticate calls. Depending on the permissions granted as part of your role, you may not have permission to perform some API calls. You will receive a `401` response code in that case. > ### Modifying the Origin header causes an error
+
+    >
+
+    > LaunchDarkly validates that the Origin header for any API request authenticated by a session cookie matches the expected Origin header. The expected Origin header is `https://app.launchdarkly.com`. >
+
+    > If the Origin header does not match what''s expected, LaunchDarkly returns an error. This error can prevent the LaunchDarkly app from working correctly. >
+
+    > Any browser extension that intentionally changes the Origin header can cause this problem. For example, Cross-Origin Resource Sharing (CORS) extensions used during development can modify the Origin header and cause the app to fail. >
+
+    > To prevent this error, do not modify your Origin header. >
+
+    > LaunchDarkly does not require origin matching when authenticating with an access token, so this issue does not affect normal API usage.'
+  contact:
+    name: LaunchDarkly Technical Support Team
+    url: https://support.launchdarkly.com
+    email: support@launchdarkly.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+  version: '2.0'
+servers:
+- url: https://app.launchdarkly.com
+  description: ' Default'
+- url: https://app.launchdarkly.us
+  description: ' Federal'
+security:
+- ApiKey:
+  - read
+  - write
+tags:
+- name: SDK Keys (beta)
+  description: '> ### This feature is in beta
+
+    >
+
+    > To use this feature, pass in a header including the `LD-API-Version` key with value set to `beta`. Use this header with each call. To learn more, read Beta resources.
+
+    >
+
+    > Resources that are in beta are still undergoing testing and development. They may change without notice, including becoming backwards incompatible.
+
+
+    The SDK keys API lets you create, retrieve, and manage additional server-side and mobile SDK keys for your environments.
+
+
+    To learn more, read SDK keys.'
+paths:
+  /api/v2/projects/{projectKey}/sdk-keys:
+    get:
+      description: Get all SDK keys for a given project across environments.
+      operationId: getProjectSdkKeys
+      parameters:
+      - description: Version of the endpoint.
+        explode: false
+        in: header
+        name: LD-API-Version
+        required: true
+        schema:
+          enum:
+          - beta
+          type: string
+          x-enum-varnames:
+          - GetProjectSdkKeysParamsLDAPIVersionBeta
+        style: simple
+      - example: default
+        explode: false
+        in: path
+        name: projectKey
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: 'A queryfilter expression to apply to the list of SDK keys. Supports the following fields and operators: `kind` (`equals`, `anyOf`; values: "sdk", "mobile"), `active` (`equals`, `anyOf`; values: `true`, `false`), `environmentKey` (`equals`, `anyOf`; values: environment keys), `viewKey` (`equals`, `anyOf`; values: view key strings — returns only SDK keys linked to the specified view(s)), `name` (`equals` only; returns SDK keys whose name or key contains the value, matched case-insensitively). Example: `kind anyOf ["sdk","mobile"], environmentKey anyOf ["production","test"], viewKey equals my-view, name equals "production"`.'
+        explode: true
+        in: query
+        name: filter
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: The number of SDK keys to return. Defaults to 20. Maximum is 100.
+        explode: true
+        in: query
+        name: limit
+        required: false
+        schema:
+          type: integer
+        style: form
+      - description: The number of SDK keys to skip. Used for pagination.
+        explode: true
+        in: query
+        name: offset
+        required: false
+        schema:
+          type: integer
+        style: form
+      - description: 'A comma-separated list of fields to expand in the response. Supported fields: `environmentSummary`, `viewSummaries`.'
+        explode: true
+        in: query
+        name: expand
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: 'A sort to apply to the list of SDK keys. Supported fields: `createdAt` and `environmentKey`. Prefix `createdAt` with `-` to sort in descending order (for example, `-createdAt`). `environmentKey` orders keys by environment key ascending, then by creation time ascending within each environment, so each page is environment-contiguous.'
+        explode: true
+        in: query
+        name: sort
+        required: false
+        schema:
+          enum:
+          - createdAt
+          - -createdAt
+          - environmentKey
+          type: string
+        style: form
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SdkKeys'
+          description: Successful response
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Bad request
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Not found
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Internal server error
+      summary: Get all project SDK keys
+      tags:
+      - SDK Keys (beta)
+  /api/v2/projects/{projectKey}/environments/{environmentKey}/sdk-keys:
+    get:
+      description: Get all SDK keys for a given project and environment. Can filter by kind.
+      operationId: getSdkKeys
+      parameters:
+      - description: Version of the endpoint.
+        explode: false
+        in: header
+        name: LD-API-Version
+        required: true
+        schema:
+          enum:
+          - beta
+          type: string
+        style: simple
+      - example: default
+        explode: false
+        in: path
+        name: projectKey
+        required: true
+        schema:
+          type: string
+        style: simple
+      - example: production
+        explode: false
+        in: path
+        name: environmentKey
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: 'A filter to apply to the list of SDK keys. Supports the following fields and operators: `kind` (equals "sdk" or "mobile"), `active` (equals true or false). Format: `field:value`. Example: `kind:sdk`.'
+        explode: true
+        in: query
+        name: filter
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: The number of SDK keys to return. Defaults to 20. Maximum is 100.
+        explode: true
+        in: query
+        name: limit
+        required: false
+        schema:
+          type: integer
+        style: form
+      - description: The number of SDK keys to skip. Used for pagination.
+        explode: true
+        in: query
+        name: offset
+        required: false
+        schema:
+          type: integer
+        style: form
+      - description: 'A sort to apply to the list of SDK keys. Supported field: `createdAt`. Prefix the field with `-` to sort in descending order (for example, `-createdAt`).'
+        explode: true
+        in: query
+        name: sort
+        required: false
+        schema:
+          enum:
+          - createdAt
+          - -createdAt
+          type: string
+        style: form
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SdkKeysForGetSdkKeys'
+          description: Successful response
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Bad request
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Not found
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Internal server error
+      summary: Get all environment SDK keys
+      tags:
+      - SDK Keys (beta)
+    post:
+      description: 'Create a new server-side or mobile SDK key.
+
+
+        Deleted SDK keys are retained for 180 days. During that period you cannot reuse the `key` of a deleted SDK key, even though the deleted key no longer appears in the list of SDK keys for the environment.'
+      operationId: postSdkKey
+      parameters:
+      - description: Version of the endpoint.
+        explode: false
+        in: header
+        name: LD-API-Version
+        required: true
+        schema:
+          enum:
+          - beta
+          type: string
+        style: simple
+      - example: default
+        explode: false
+        in: path
+        name: projectKey
+        required: true
+        schema:
+          type: string
+        style: simple
+      - example: production
+        explode: false
+        in: path
+        name: environmentKey
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SdkKeyPost'
+        description: Parameters for creating a new SDK key
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SdkKey'
+          description: SDK key created
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Bad request
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Not found
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Conflict
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Internal server error
+      summary: Create SDK key
+      tags:
+      - SDK Keys (beta)
+  /api/v2/projects/{projectKey}/environments/{environmentKey}/sdk-keys/{sdkKeyKey}:
+    delete:
+      description: Delete a specific SDK key by its key.
+      operationId: deleteSdkKeyByKey
+      parameters:
+      - description: Version of the endpoint.
+        explode: false
+        in: header
+        name: LD-API-Version
+        required: true
+        schema:
+          enum:
+          - beta
+          type: string
+        style: simple
+      - example: default
+        explode: false
+        in: path
+        name: projectKey
+        required: true
+        schema:
+          type: string
+        style: simple
+      - example: production
+        explode: false
+        in: path
+        name: environmentKey
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: The user-defined identifying key of the SDK key. This is used solely to identify an SDK key and is distinct from the value field, which is the actual SDK key value.
+        example: my-sdk-key
+        explode: false
+        in: path
+        name: sdkKeyKey
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        '204':
+          description: SDK key deleted
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Bad request
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Not found
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Conflict
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Internal server error
+      summary: Delete SDK key
+      tags:
+      - SDK Keys (beta)
+    get:
+      description: Get a specific SDK key by its key.
+      operationId: getSdkKeyByKey
+      parameters:
+      - description: Version of the endpoint.
+        explode: false
+        in: header
+        name: LD-API-Version
+        required: true
+        schema:
+          enum:
+          - beta
+          type: string
+        style: simple
+      - example: default
+        explode: false
+        in: path
+        name: projectKey
+        required: true
+        schema:
+          type: string
+        style: simple
+      - example: production
+        explode: false
+        in: path
+        name: environmentKey
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: The user-defined identifying key of the SDK key. This is used solely to identify an SDK key and is distinct from the value field, which is the actual SDK key value.
+        example: my-sdk-key
+        explode: false
+        in: path
+        name: sdkKeyKey
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SdkKey'
+          description: Successful response
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Bad request
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Not found
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Internal server error
+      summary: Get SDK key
+      tags:
+      - SDK Keys (beta)
+    patch:
+      description: Update a an existing SDK key by its identifying key.
+      operationId: patchSdkKeyByKey
+      parameters:
+      - description: Version of the endpoint.
+        explode: false
+        in: header
+        name: LD-API-Version
+        required: true
+        schema:
+          enum:
+          - beta
+          type: string
+        style: simple
+      - example: default
+        explode: false
+        in: path
+        name: projectKey
+        required: true
+        schema:
+          type: string
+        style: simple
+      - example: production
+        explode: false
+        in: path
+        name: environmentKey
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: The user-defined identifying key of the SDK key. This is used solely to identify an SDK key and is distinct from the value field, which is the actual SDK key value.
+        example: my-sdk-key
+        explode: false
+        in: path
+        name: sdkKeyKey
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: The version of the SDK key for optimistic locking. If provided, the update will only succeed if the current version matches.
+        explode: true
+        in: query
+        name: version
+        required: false
+        schema:
+          type: integer
+        style: form
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SdkKeyPatch'
+        description: 'An array of patches for updating an existing SDK key. The following fields are supported: `name`, `description`, `expiry`.'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SdkKey'
+          description: Successful response
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Bad request
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Not found
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Conflict
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Internal server error
+      summary: Update SDK key
+      tags:
+      - SDK Keys (beta)
+  /api/v2/projects/{projectKey}/environments/{environmentKey}/sdk-keys/{sdkKeyKey}/views:
+    put:
+      description: Replace the set of views associated with an SDK key. The `viewKeys` field is required. To remove all views from the SDK key, pass an empty `viewKeys` array.
+      operationId: putSdkKeyViews
+      parameters:
+      - description: Version of the endpoint.
+        explode: false
+        in: header
+        name: LD-API-Version
+        required: true
+        schema:
+          enum:
+          - beta
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: projectKey
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: environmentKey
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: sdkKeyKey
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: 'A comma-separated list of fields to expand in the response. Supported fields: `viewSummaries`.'
+        explode: true
+        in: query
+        name: expand
+        required: false
+        schema:
+          type: string
+        style: form
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SdkKeyViewsPut'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SdkKeyForPutSdkKeyViews'
+          description: Successful response
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Bad request
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Not found
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Internal server error
+      summary: Replace SDK key views
+      tags:
+      - SDK Keys (beta)
+components:
+  schemas:
+    SdkKeyPatch:
+      example:
+        name: name
+        description: description
+        expiry: 0
+      properties:
+        name:
+          description: (Optional)The human-readable name of the SDK key.
+          type: string
+        description:
+          description: (Optional) The description of the SDK key.
+          type: string
+        expiry:
+          format: int64
+          type: integer
+      type: object
+    SdkKeysSelfLink:
+      example:
+        self:
+          href: href
+          type: type
+      properties:
+        self:
+          $ref: '#/components/schemas/CoreLink'
+      required:
+      - self
+      type: object
+    Error:
+      example:
+        code: code
+        message: message
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+      required:
+      - code
+      - message
+      type: object
+    SdkKeysForGetSdkKeys:
+      example:
+        _links:
+          self:
+            href: href
+            type: type
+        totalCount: 5
+        items:
+        - isDefault: true
+          _links:
+            parent:
+              href: href
+              type: type
+            self:
+              href: href
+              type: type
+          kind: sdk
+          _createdAt: 6
+          name: name
+          description: description
+          expiry: 0
+          value: value
+          _updatedAt: 1
+          _version: 5
+          key: key
+          _createdByMemberId: _createdByMemberId
+        - isDefault: true
+          _links:
+            parent:
+              href: href
+              type: type
+            self:
+              href: href
+              type: type
+          kind: sdk
+          _createdAt: 6
+          name: name
+          description: description
+          expiry: 0
+          value: value
+          _updatedAt: 1
+          _version: 5
+          key: key
+          _createdByMemberId: _createdByMemberId
+      properties:
+        _links:
+          $ref: '#/components/schemas/SdkKeysSelfLink'
+        items:
+          items:
+            $ref: '#/components/schemas/SdkKey'
+          type: array
+        totalCount:
+          description: The total number of SDK keys matching the query, before pagination.
+          type: integer
+      required:
+      - items
+      - totalCount
+      type: object
+    SdkKey:
+      example:
+        isDefault: true
+        _links:
+          parent:
+            href: href
+            type: type
+          self:
+            href: href
+            type: type
+        kind: sdk
+        _createdAt: 6
+        name: name
+        description: description
+        expiry: 0
+        value: value
+        _updatedAt: 1
+        _version: 5
+        key: key
+        _createdByMemberId: _createdByMemberId
+      properties:
+        _links:
+          $ref: '#/components/schemas/ParentAndSelfLinks'
+        kind:
+          $ref: '#/components/schemas/SdkKeyKind'
+        key:
+          description: The user-defined identifying key of the SDK key. This is used solely to identify an SDK key and is distinct from the value field, which is the actual SDK key value.
+          type: string
+        name:
+          description: The human-readable name of the SDK key.
+          type: string
+        description:
+          description: The optional description of the SDK key.
+          type: string
+        expiry:
+          format: int64
+          type: integer
+        value:
+          description: The string value of the SDK key. Use this when configuring your SDK.
+          type: string
+        isDefault:
+          description: Indicates if this SDK key is the system-defined default for the environment. There may also be an expiring default SDK key for the environment (not possible with mobile keys).
+          type: boolean
+        _createdByMemberId:
+          description: The ID of the member who created the SDK key. This field is immutable.
+          type: string
+        _createdAt:
+          format: int64
+          type: integer
+        _updatedAt:
+          format: int64
+          type: integer
+        _version:
+          description: The auto-incremented version number of the SDK key.
+          type: integer
+      required:
+      - _createdAt
+      - _updatedAt
+      - _version
+      - isDefault
+      - key
+      - kind
+      - name
+      - value
+      type: object
+    SdkKeyViewsPut:
+      example:
+        viewKeys:
+        - viewKeys
+        - viewKeys
+      properties:
+        viewKeys:
+          description: The complete target list of view keys to associate with this SDK key. An empty array removes all views from the SDK key.
+          items:
+            type: string
+          type: array
+      required:
+      - viewKeys
+      type: object
+    ViewResourceSummary:
+      example:
+        flagCount: 5
+        segmentCount: 2
+      properties:
+        flagCount:
+          description: The number of flags associated with the view.
+          type: integer
+        segmentCount:
+          description: The number of segments associated with the view.
+          type: integer
+      required:
+      - flagCount
+      - segmentCount
+      type: object
+    Link:
+      type: object
+      properties:
+        href:
+          type: string
+        type:
+          type: string
+    SdkKeyForPutSdkKeyViews:
+      allOf:
+      - $ref: '#/components/schemas/SdkKey'
+      - properties:
+          viewSummaries:
+            description: Summaries of views associated with the SDK key.
+            items:
+              $ref: '#/components/schemas/ViewSummary'
+            type: array
+        type: object
+      example:
+        _links:
+          parent:
+            href: href
+            type: type
+          self:
+            href: href
+            type: type
+        kind: sdk
+        description: description
+        _createdByMemberId: _createdByMemberId
+        isDefault: true
+        viewSummaries:
+        - _links:
+            parent:
+              href: href
+              type: type
+            self:
+              href: href
+              type: type
+          resourceSummary:
+            flagCount: 5
+            segmentCount: 2
+          name: name
+          key: key
+        - _links:
+            parent:
+              href: href
+              type: type
+            self:
+              href: href
+              type: type
+          resourceSummary:
+            flagCount: 5
+            segmentCount: 2
+          name: name
+          key: key
+        _createdAt: 6
+        name: name
+        expiry: 0
+        value: value
+        _updatedAt: 1
+        _version: 5
+        key: key
+    ParentAndSelfLinks:
+      description: The location and content type of related resources
+      example:
+        parent:
+          href: href
+          type: type
+        self:
+          href: href
+          type: type
+      properties:
+        self:
+          $ref: '#/components/schemas/CoreLink'
+        parent:
+          $ref: '#/components/schemas/CoreLink'
+      required:
+      - parent
+      - self
+      type: object
+    SdkKeyKind:
+      description: The kind of SDK key. Can be either "sdk" (server-side) or "mobile" (mobile).
+      enum:
+      - sdk
+      - mobile
+      type: string
+    SdkKeyListItem:
+      allOf:
+      - $ref: '#/components/schemas/SdkKey'
+      - properties:
+          environmentSummary:
+            $ref: '#/components/schemas/SdkKeysEnvironmentSummary'
+          viewSummaries:
+            description: Summaries of views associated with the SDK key.
+            items:
+              $ref: '#/components/schemas/ViewSummary'
+            type: array
+        type: object
+      example:
+        _links:
+          parent:
+            href: href
+            type: type
+          self:
+            href: href
+            type: type
+        kind: sdk
+        description: description
+        environmentSummary:
+          color: F5A623
+          _links:
+            self:
+              href: /api/v2/projects/my-project/environments/my-environment
+              type: application/json
+          name: My Environment
+          key: environment-key-123abc
+        _createdByMemberId: _createdByMemberId
+        isDefault: true
+        viewSummaries:
+        - _links:
+            parent:
+              href: href
+              type: type
+            self:
+              href: href
+              type: type
+          resourceSummary:
+            flagCount: 5
+            segmentCount: 2
+          name: name
+          key: key
+        - _links:
+            parent:
+              href: href
+              type: type
+            self:
+              href: href
+              type: type
+          resourceSummary:
+            flagCount: 5
+            segmentCount: 2
+          name: name
+          key: key
+        _createdAt: 6
+        name: name
+        expiry: 0
+        value: value
+        _updatedAt: 1
+        _version: 5
+        key: key
+    SdkKeyPost:
+      example:
+        kind: sdk
+        name: name
+        description: description
+        viewKeys:
+        - viewKeys
+        - viewKeys
+        expiry: 0
+        key: key
+      properties:
+        kind:
+          default: sdk
+          description: The kind of SDK key. Can be either "sdk" (server-side) or "mobile" (mobile). Defaults to "sdk" when not explicitly defined.
+          enum:
+          - sdk
+          - mobile
+          type: string
+        key:
+          description: The user-defined key of the SDK key.
+          type: string
+        name:
+          description: The human-readable name of the SDK key.
+          type: string
+        description:
+          description: The optional description of the SDK key.
+          type: string
+        expiry:
+          format: int64
+          type: integer
+        viewKeys:
+          description: List of view keys to associate with the SDK key.
+          items:
+            type: string
+          type: array
+      required:
+      - key
+      - name
+      type: object
+    SdkKeys:
+      example:
+        _links:
+          self:
+            href: href
+            type: type
+        totalCount: 7
+        items:
+        - _links:
+            parent:
+              href: href
+              type: type
+            self:
+              href: href
+              type: type
+          kind: sdk
+          description: description
+          environmentSummary:
+            color: F5A623
+            _links:
+              self:
+                href: /api/v2/projects/my-project/environments/my-environment
+                type: application/json
+            name: My Environment
+            key: environment-key-123abc
+          _createdByMemberId: _createdByMemberId
+          isDefault: true
+          viewSummaries:
+          - _links:
+              parent:
+                href: href
+                type: type
+              self:
+                href: href
+                type: type
+            resourceSummary:
+              flagCount: 5
+              segmentCount: 2
+            name: name
+            key: key
+          - _links:
+              parent:
+                href: href
+                type: type
+              self:
+                href: href
+                type: type
+            resourceSummary:
+              flagCount: 5
+              segmentCount: 2
+            name: name
+            key: key
+          _createdAt: 6
+          name: name
+          expiry: 0
+          value: value
+          _updatedAt: 1
+          _version: 5
+          key: key
+        - _links:
+            parent:
+              href: href
+              type: type
+            self:
+              href: href
+              type: type
+          kind: sdk
+          description: description
+          environmentSummary:
+            color: F5A623
+            _links:
+              self:
+                href: /api/v2/projects/my-project/environments/my-environment
+                type: application/json
+            name: My Environment
+            key: environment-key-123abc
+          _createdByMemberId: _createdByMemberId
+          isDefault: true
+          viewSummaries:
+          - _links:
+              parent:
+                href: href
+                type: type
+              self:
+                href: href
+                type: type
+            resourceSummary:
+              flagCount: 5
+              segmentCount: 2
+            name: name
+            key: key
+          - _links:
+              parent:
+                href: href
+                type: type
+              self:
+                href: href
+                type: type
+            resourceSummary:
+              flagCount: 5
+              segmentCount: 2
+            name: name
+            key: key
+          _createdAt: 6
+          name: name
+          expiry: 0
+          value: value
+          _updatedAt: 1
+          _version: 5
+          key: key
+      properties:
+        _links:
+          $ref: '#/components/schemas/SdkKeysSelfLink'
+        items:
+          items:
+            $ref: '#/components/schemas/SdkKeyListItem'
+          type: array
+        totalCount:
+          description: The total number of SDK keys matching the query, before pagination.
+          type: integer
+      required:
+      - items
+      - totalCount
+      type: object
+    CoreLink:
+      example:
+        href: href
+        type: type
+      properties:
+        href:
+          type: string
+        type:
+          type: string
+      required:
+      - href
+      - type
+      type: object
+    SdkKeysEnvironmentSummary:
+      example:
+        color: F5A623
+        _links:
+          self:
+            href: /api/v2/projects/my-project/environments/my-environment
+            type: application/json
+        name: My Environment
+        key: environment-key-123abc
+      properties:
+        _links:
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+          example:
+            self:
+              href: /api/v2/projects/my-project/environments/my-environment
+              type: application/json
+          type: object
+        key:
+          description: A project-unique key for the environment
+          example: environment-key-123abc
+          type: string
+        name:
+          description: A human-friendly name for the environment
+          example: My Environment
+          type: string
+        color:
+          description: The color used to indicate this environment in the UI
+          example: F5A623
+          type: string
+      required:
+      - _links
+      - color
+      - key
+      - name
+      type: object
+    ViewSummary:
+      example:
+        _links:
+          parent:
+            href: href
+            type: type
+          self:
+            href: href
+            type: type
+        resourceSummary:
+          flagCount: 5
+          segmentCount: 2
+        name: name
+        key: key
+      properties:
+        _links:
+          $ref: '#/components/schemas/ParentAndSelfLinks'
+        key:
+          description: The key of the view.
+          type: string
+        name:
+          description: The human-readable name of the view.
+          type: string
+        resourceSummary:
+          $ref: '#/components/schemas/ViewResourceSummary'
+      required:
+      - key
+      - name
+      - resourceSummary
+      type: object
+  securitySchemes:
+    ApiKey:
+      type: apiKey
+      in: header
+      name: Authorization

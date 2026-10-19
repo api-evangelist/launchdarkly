@@ -1,24 +1,456 @@
 openapi: 3.2.0
 info:
-  title: LaunchDarkly REST Webhooks API
-  description: The LaunchDarkly REST API provides programmatic access to the full LaunchDarkly feature management platform.
-  version: '20240415'
-  contact:
-    name: LaunchDarkly Support
-    url: https://support.launchdarkly.com
-  termsOfService: https://launchdarkly.com/policies/terms-of-service
+  title: Launchdarkly Webhooks API
   license:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
+  version: '1.0'
+  description: 'Operations tagged Webhooks across 2 of this provider''s published API definitions: launchdarkly-openapi.json, launchdarkly-rest-api-openapi.yml. Each path carries the servers of the definition it was published in.'
 servers:
+- url: https://app.launchdarkly.com
+  description: ' Default'
+- url: https://app.launchdarkly.us
+  description: ' Federal'
 - url: https://app.launchdarkly.com/api/v2
   description: LaunchDarkly Production API
-security:
-- bearerAuth: []
 tags:
 - name: Webhooks
-  description: Configure webhooks to receive HTTP POST notifications when changes occur in LaunchDarkly.
+  description: 'The webhooks API lets you build your own integrations that subscribe to activities in LaunchDarkly. When you generate an activity in LaunchDarkly, such as when you change a flag or you create a project, LaunchDarkly sends an HTTP POST payload to the webhook''s URL. Use webhooks to update external issue trackers, update support tickets, notify customers of new feature rollouts, and more.
+
+
+    Several of the endpoints in the webhooks API require a webhook ID. The webhook ID is returned as part of the Creates a webhook and List webhooks responses. It is the `_id` field, or the `_id` field of each element in the `items` array.
+
+
+    ## Designating the payload
+
+
+    The webhook payload is identical to an audit log entry. To learn more, read Get audit log entry.
+
+
+    Here''s a sample payload:
+
+
+    > ### Webhook delivery order
+
+    >
+
+    > Webhooks may not be delivered in chronological order. We recommend using the payload''s "date" field as a timestamp to reorder webhooks as they are received.
+
+
+    ```json
+
+    {
+
+    "_links": {
+
+    "canonical": {
+
+    "href": "/api/v2/projects/alexis/environments/test",
+
+    "type": "application/json"
+
+    },
+
+    "parent": {
+
+    "href": "/api/v2/auditlog",
+
+    "type": "application/json"
+
+    },
+
+    "self": {
+
+    "href": "/api/v2/auditlog/57c0a8e29969090743529965",
+
+    "type": "application/json"
+
+    },
+
+    "site": {
+
+    "href": "/settings#/projects",
+
+    "type": "text/html"
+
+    }
+
+    },
+
+    "_id": "57c0a8e29969090743529965",
+
+    "date": 1472243938774,
+
+    "accesses": [
+
+    {
+
+    "action": "updateName",
+
+    "resource": "proj/alexis:env/test"
+
+    }
+
+    ],
+
+    "kind": "environment",
+
+    "name": "Testing",
+
+    "description": "- Changed the name from ~~Test~~ to *Testing*",
+
+    "member": {
+
+    "_links": {
+
+    "parent": {
+
+    "href": "/internal/account/members",
+
+    "type": "application/json"
+
+    },
+
+    "self": {
+
+    "href": "/internal/account/members/548f6741c1efad40031b18ae",
+
+    "type": "application/json"
+
+    }
+
+    },
+
+    "_id": "548f6741c1efad40031b18ae",
+
+    "email": "ariel@acme.com",
+
+    "firstName": "Ariel",
+
+    "lastName": "Flores"
+
+    },
+
+    "titleVerb": "changed the name of",
+
+    "title": "Ariel Flores changed the name of Testing",
+
+    "target": {
+
+    "_links": {
+
+    "canonical": {
+
+    "href": "/api/v2/projects/alexis/environments/test",
+
+    "type": "application/json"
+
+    },
+
+    "site": {
+
+    "href": "/settings#/projects",
+
+    "type": "text/html"
+
+    }
+
+    },
+
+    "name": "Testing",
+
+    "resources": ["proj/alexis:env/test"]
+
+    }
+
+    }
+
+    ```
+
+
+    ## Signing the webhook
+
+
+    Optionally, you can define a `secret` when you create a webhook. If you define the secret, the webhook `POST` request will include an `X-LD-Signature header`, whose value will contain an HMAC SHA256 hex digest of the webhook payload, using the `secret` as the key.
+
+
+    Compute the signature of the payload using the same shared secret in your code to verify that the webhook was triggered by LaunchDarkly.
+
+
+    ## Understanding connection retries
+
+
+    If LaunchDarkly receives a non-`2xx` response to a webhook `POST`, it will retry the delivery one time. Webhook delivery is not guaranteed. If you build an integration on webhooks, make sure it is tolerant of delivery failures.'
 paths:
+  /api/v2/webhooks:
+    get:
+      responses:
+        '200':
+          description: Webhooks response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Webhooks'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Webhooks
+      summary: List webhooks
+      description: Fetch a list of all webhooks.
+      operationId: getAllWebhooks
+      security:
+      - ApiKey:
+        - read
+        - write
+    post:
+      responses:
+        '200':
+          description: Webhook response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Webhook'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Webhooks
+      summary: Creates a webhook
+      description: Create a new webhook.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/webhookPost'
+            example:
+              name: apidocs test webhook
+              'on': true
+              sign: false
+              statements:
+              - actions:
+                - '*'
+                effect: allow
+                resources:
+                - proj/test
+              tags:
+              - example-tag
+              url: https://example.com
+        required: true
+      operationId: postWebhook
+      security:
+      - ApiKey:
+        - read
+        - write
+    servers:
+    - url: https://app.launchdarkly.com
+      description: ' Default'
+    - url: https://app.launchdarkly.us
+      description: ' Federal'
+  /api/v2/webhooks/{id}:
+    get:
+      responses:
+        '200':
+          description: Webhook response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Webhook'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Webhooks
+      summary: Get webhook
+      description: Get a single webhook by ID.
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the webhook
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The ID of the webhook
+      operationId: getWebhook
+      security:
+      - ApiKey:
+        - read
+        - write
+    patch:
+      responses:
+        '200':
+          description: Webhook response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Webhook'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Webhooks
+      summary: Update webhook
+      description: Update a webhook's settings. Updating webhook settings uses a JSON patch representation of the desired changes. To learn more, read Updates.
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the webhook to update
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The ID of the webhook to update
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JSONPatch'
+            example:
+            - op: replace
+              path: /on
+              value: false
+        required: true
+      operationId: patchWebhook
+      security:
+      - ApiKey:
+        - read
+        - write
+    delete:
+      responses:
+        '204':
+          description: Action succeeded
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Webhooks
+      summary: Delete webhook
+      description: Delete a webhook by ID.
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the webhook to delete
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The ID of the webhook to delete
+      operationId: deleteWebhook
+      security:
+      - ApiKey:
+        - read
+        - write
+    servers:
+    - url: https://app.launchdarkly.com
+      description: ' Default'
+    - url: https://app.launchdarkly.us
+      description: ' Federal'
   /webhooks:
     get:
       operationId: listWebhooks
@@ -32,9 +464,11 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Webhooks'
+                $ref: '#/components/schemas/Webhooks_2'
         '401':
           description: Unauthorized. Invalid or missing access token.
+      security:
+      - bearerAuth: []
     post:
       operationId: createWebhook
       summary: Create a webhook
@@ -53,14 +487,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Webhook'
+                $ref: '#/components/schemas/Webhook_2'
         '400':
           description: Invalid request body.
         '401':
           description: Unauthorized. Invalid or missing access token.
+      security:
+      - bearerAuth: []
+    servers:
+    - url: https://app.launchdarkly.com/api/v2
+      description: LaunchDarkly Production API
   /webhooks/{webhookId}:
     get:
-      operationId: getWebhook
+      operationId: getWebhooksByWebhookId
       summary: Get a webhook
       description: Returns a single webhook by its identifier.
       tags:
@@ -73,13 +512,17 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Webhook'
+                $ref: '#/components/schemas/Webhook_2'
         '401':
           description: Unauthorized. Invalid or missing access token.
         '404':
           description: Webhook not found.
+      security:
+      - bearerAuth: []
+      x-operation-id-source: normalized
+      x-operation-id-original: getWebhook
     patch:
-      operationId: patchWebhook
+      operationId: patchWebhooksByWebhookId
       summary: Update a webhook
       description: Updates a webhook using a JSON Patch representation.
       tags:
@@ -91,22 +534,26 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PatchOperation'
+              $ref: '#/components/schemas/PatchOperation_2'
       responses:
         '200':
           description: Webhook updated successfully.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Webhook'
+                $ref: '#/components/schemas/Webhook_2'
         '400':
           description: Invalid patch request.
         '401':
           description: Unauthorized. Invalid or missing access token.
         '404':
           description: Webhook not found.
+      security:
+      - bearerAuth: []
+      x-operation-id-source: normalized
+      x-operation-id-original: patchWebhook
     delete:
-      operationId: deleteWebhook
+      operationId: deleteWebhooksByWebhookId
       summary: Delete a webhook
       description: Permanently deletes a webhook subscription.
       tags:
@@ -120,70 +567,405 @@ paths:
           description: Unauthorized. Invalid or missing access token.
         '404':
           description: Webhook not found.
+      security:
+      - bearerAuth: []
+      x-operation-id-source: normalized
+      x-operation-id-original: deleteWebhook
+    servers:
+    - url: https://app.launchdarkly.com/api/v2
+      description: LaunchDarkly Production API
 components:
   schemas:
-    Statement:
+    JSONPatch:
+      type: array
+      items:
+        $ref: '#/components/schemas/PatchOperation'
+    AccessDenied:
       type: object
-      description: A policy statement controlling resource access or event filtering.
+      required:
+      - action
+      - reason
       properties:
-        effect:
+        action:
+          $ref: '#/components/schemas/ActionIdentifier'
+        reason:
+          $ref: '#/components/schemas/AccessDeniedReason'
+    webhookPost:
+      type: object
+      required:
+      - url
+      - sign
+      - 'on'
+      properties:
+        name:
           type: string
-          description: Whether this statement allows or denies the action.
-          enum:
-          - allow
-          - deny
-        resources:
+          description: A human-readable name for your webhook
+          example: Example hook
+        url:
+          type: string
+          description: The URL of the remote webhook
+          example: http://www.example.com
+        secret:
+          type: string
+          description: If sign is true, and the secret attribute is omitted, LaunchDarkly automatically generates a secret for you.
+          example: frobozz
+        statements:
+          description: Represents a Custom role policy, defining a resource kinds filter the webhook should respond to.
+          $ref: '#/components/schemas/StatementPostList'
+        sign:
+          type: boolean
+          description: If sign is false, the webhook does not include a signature header, and the secret can be omitted.
+          example: true
+        'on':
+          type: boolean
+          description: Whether or not this webhook is enabled.
+          example: true
+        tags:
           type: array
-          description: Resource specifiers this statement applies to.
+          description: List of tags for this webhook
           items:
             type: string
+          example: []
+    StatementPost:
+      type: object
+      required:
+      - effect
+      properties:
+        resources:
+          type: array
+          description: Resource specifier strings
+          items:
+            type: string
+          example:
+          - proj/*:env/*:flag/*;testing-tag
         notResources:
           type: array
-          description: Resource specifiers this statement does not apply to.
+          description: Targeted resources are the resources NOT in this list. The <code>resources</code> field must be empty to use this field.
           items:
             type: string
         actions:
           type: array
-          description: The actions this statement applies to.
+          description: Actions to perform on a resource
           items:
-            type: string
+            $ref: '#/components/schemas/ActionSpecifier'
+          example:
+          - '*'
         notActions:
           type: array
-          description: The actions this statement does not apply to.
+          description: Targeted actions are the actions NOT in this list. The <code>actions</code> field must be empty to use this field.
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+        effect:
+          type: string
+          description: Whether this statement should allow or deny actions on the resources.
+          example: allow
+          enum:
+          - allow
+          - deny
+    InvalidRequestErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: invalid_request
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid request body
+    RateLimitedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: rate_limited
+        message:
+          type: string
+          description: Description of the error
+          example: You've exceeded the API rate limit. Try again later.
+    AccessDeniedReason:
+      type: object
+      required:
+      - effect
+      properties:
+        resources:
+          type: array
+          description: Resource specifier strings
           items:
             type: string
+          example:
+          - proj/*:env/*;qa_*:/flag/*
+        notResources:
+          type: array
+          description: Targeted resources are the resources NOT in this list. The <code>resources</code> and <code>notActions</code> fields must be empty to use this field.
+          items:
+            type: string
+        actions:
+          type: array
+          description: Actions to perform on a resource
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+          example:
+          - '*'
+        notActions:
+          type: array
+          description: Targeted actions are the actions NOT in this list. The <code>actions</code> and <code>notResources</code> fields must be empty to use this field.
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+        effect:
+          type: string
+          description: Whether this statement should allow or deny actions on the resources.
+          example: allow
+          enum:
+          - allow
+          - deny
+        role_name:
+          type: string
+    UnauthorizedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: unauthorized
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid access token
+    ForbiddenErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: forbidden
+        message:
+          type: string
+          description: Description of the error
+          example: Forbidden. Access to the requested resource was denied.
+    ActionSpecifier:
+      type: string
+    Webhooks:
+      type: object
+      required:
+      - _links
+      - items
+      properties:
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+        items:
+          type: array
+          description: An array of webhooks
+          items:
+            $ref: '#/components/schemas/Webhook'
+    Link:
+      type: object
+      properties:
+        href:
+          type: string
+        type:
+          type: string
+    ActionIdentifier:
+      type: string
     PatchOperation:
       type: object
-      description: A JSON Patch or semantic patch request.
+      required:
+      - op
+      - path
       properties:
-        patch:
-          type: array
-          description: An array of JSON Patch operations.
-          items:
-            type: object
-            required:
-            - op
-            - path
-            properties:
-              op:
-                type: string
-                description: The patch operation type.
-                enum:
-                - add
-                - remove
-                - replace
-                - move
-                - copy
-                - test
-              path:
-                type: string
-                description: The JSON Pointer path to the target field.
-              value:
-                description: The value to apply for add or replace operations.
-        comment:
+        op:
           type: string
-          description: An optional comment describing the change.
-    Webhooks:
+          description: The type of operation to perform
+          example: replace
+        path:
+          type: string
+          description: A JSON Pointer string specifying the part of the document to operate on
+          example: /exampleField
+        value:
+          description: A JSON value used in "add", "replace", and "test" operations
+          example: new example value
+    Statement:
+      type: object
+      required:
+      - effect
+      properties:
+        resources:
+          type: array
+          description: Resource specifier strings
+          items:
+            type: string
+          example:
+          - proj/*:env/*;qa_*:/flag/*
+        notResources:
+          type: array
+          description: Targeted resources are the resources NOT in this list. The <code>resources</code> and <code>notActions</code> fields must be empty to use this field.
+          items:
+            type: string
+        actions:
+          type: array
+          description: Actions to perform on a resource
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+          example:
+          - '*'
+        notActions:
+          type: array
+          description: Targeted actions are the actions NOT in this list. The <code>actions</code> and <code>notResources</code> fields must be empty to use this field.
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+        effect:
+          type: string
+          description: Whether this statement should allow or deny actions on the resources.
+          example: allow
+          enum:
+          - allow
+          - deny
+    StatementPostList:
+      type: array
+      items:
+        $ref: '#/components/schemas/StatementPost'
+    Access:
+      type: object
+      required:
+      - denied
+      - allowed
+      properties:
+        denied:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccessDenied'
+        allowed:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccessAllowedRep'
+    NotFoundErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: not_found
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid resource identifier
+    AccessAllowedReason:
+      type: object
+      required:
+      - effect
+      properties:
+        resources:
+          type: array
+          description: Resource specifier strings
+          items:
+            type: string
+          example:
+          - proj/*:env/*;qa_*:/flag/*
+        notResources:
+          type: array
+          description: Targeted resources are the resources NOT in this list. The <code>resources</code> and <code>notActions</code> fields must be empty to use this field.
+          items:
+            type: string
+        actions:
+          type: array
+          description: Actions to perform on a resource
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+          example:
+          - '*'
+        notActions:
+          type: array
+          description: Targeted actions are the actions NOT in this list. The <code>actions</code> and <code>notResources</code> fields must be empty to use this field.
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+        effect:
+          type: string
+          description: Whether this statement should allow or deny actions on the resources.
+          example: allow
+          enum:
+          - allow
+          - deny
+        role_name:
+          type: string
+    AccessAllowedRep:
+      type: object
+      required:
+      - action
+      - reason
+      properties:
+        action:
+          $ref: '#/components/schemas/ActionIdentifier'
+        reason:
+          $ref: '#/components/schemas/AccessAllowedReason'
+    Webhook:
+      type: object
+      required:
+      - _links
+      - _id
+      - url
+      - 'on'
+      - tags
+      properties:
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+        _id:
+          type: string
+          description: The ID of this webhook
+          example: 57be1db38b75bf0772d11384
+        name:
+          type: string
+          description: A human-readable name for this webhook
+          example: Example hook
+        url:
+          type: string
+          description: The URL to which LaunchDarkly sends an HTTP POST payload for this webhook
+          example: http://www.example.com
+        secret:
+          type: string
+          description: The secret for this webhook
+          example: frobozz
+        statements:
+          type: array
+          description: Represents a Custom role policy, defining a resource kinds filter the webhook responds to.
+          items:
+            $ref: '#/components/schemas/Statement'
+        'on':
+          type: boolean
+          description: Whether or not this webhook is enabled
+          example: true
+        tags:
+          type: array
+          description: List of tags for this webhook
+          items:
+            type: string
+          example:
+          - examples
+        _access:
+          description: Details on the allowed and denied actions for this webhook
+          $ref: '#/components/schemas/Access'
+    Webhooks_2:
       type: object
       description: A collection of webhooks.
       properties:
@@ -191,7 +973,7 @@ components:
           type: array
           description: The list of webhooks.
           items:
-            $ref: '#/components/schemas/Webhook'
+            $ref: '#/components/schemas/Webhook_2'
         _links:
           $ref: '#/components/schemas/Links'
     WebhookBody:
@@ -223,7 +1005,7 @@ components:
           type: array
           description: Policy statements filtering which events trigger this webhook.
           items:
-            $ref: '#/components/schemas/Statement'
+            $ref: '#/components/schemas/Statement_2'
     Links:
       type: object
       description: HATEOAS links for navigating related resources.
@@ -247,7 +1029,7 @@ components:
           type:
             type: string
             description: The media type.
-    Webhook:
+    Webhook_2:
       type: object
       description: A webhook configuration for receiving change notifications.
       properties:
@@ -276,9 +1058,70 @@ components:
           type: array
           description: Policy statements filtering which events trigger this webhook.
           items:
-            $ref: '#/components/schemas/Statement'
+            $ref: '#/components/schemas/Statement_2'
         _links:
           $ref: '#/components/schemas/Links'
+    PatchOperation_2:
+      type: object
+      description: A JSON Patch or semantic patch request.
+      properties:
+        patch:
+          type: array
+          description: An array of JSON Patch operations.
+          items:
+            type: object
+            required:
+            - op
+            - path
+            properties:
+              op:
+                type: string
+                description: The patch operation type.
+                enum:
+                - add
+                - remove
+                - replace
+                - move
+                - copy
+                - test
+              path:
+                type: string
+                description: The JSON Pointer path to the target field.
+              value:
+                description: The value to apply for add or replace operations.
+        comment:
+          type: string
+          description: An optional comment describing the change.
+    Statement_2:
+      type: object
+      description: A policy statement controlling resource access or event filtering.
+      properties:
+        effect:
+          type: string
+          description: Whether this statement allows or denies the action.
+          enum:
+          - allow
+          - deny
+        resources:
+          type: array
+          description: Resource specifiers this statement applies to.
+          items:
+            type: string
+        notResources:
+          type: array
+          description: Resource specifiers this statement does not apply to.
+          items:
+            type: string
+        actions:
+          type: array
+          description: The actions this statement applies to.
+          items:
+            type: string
+        notActions:
+          type: array
+          description: The actions this statement does not apply to.
+          items:
+            type: string
   parameters:
     WebhookId:
       name: webhookId
@@ -288,6 +1131,10 @@ components:
       schema:
         type: string
   securitySchemes:
+    ApiKey:
+      type: apiKey
+      in: header
+      name: Authorization
     bearerAuth:
       type: http
       scheme: bearer
@@ -295,3 +1142,6 @@ components:
 externalDocs:
   description: LaunchDarkly API Documentation
   url: https://apidocs.launchdarkly.com/
+x-refined-from:
+- launchdarkly-openapi.json
+- launchdarkly-rest-api-openapi.yml

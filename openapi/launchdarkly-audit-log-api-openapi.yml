@@ -1,24 +1,373 @@
 openapi: 3.2.0
 info:
-  title: LaunchDarkly REST Audit Log API
-  description: The LaunchDarkly REST API provides programmatic access to the full LaunchDarkly feature management platform.
-  version: '20240415'
-  contact:
-    name: LaunchDarkly Support
-    url: https://support.launchdarkly.com
-  termsOfService: https://launchdarkly.com/policies/terms-of-service
+  title: Launchdarkly Audit log API
   license:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
+  version: '1.0'
+  description: 'Operations tagged Audit log across 2 of this provider''s published API definitions: launchdarkly-openapi.json, launchdarkly-rest-api-openapi.yml. Each path carries the servers of the definition it was published in.'
 servers:
+- url: https://app.launchdarkly.com
+  description: ' Default'
+- url: https://app.launchdarkly.us
+  description: ' Federal'
 - url: https://app.launchdarkly.com/api/v2
   description: LaunchDarkly Production API
-security:
-- bearerAuth: []
 tags:
 - name: Audit Log
-  description: Access the change history of all modifications made to resources in the LaunchDarkly account.
+  description: 'LaunchDarkly maintains a record of all the changes made to any resource in the system. You can access this history using the audit log API, including filtering by timestamps, or using a custom policy to select which entries to receive.
+
+
+    Several of the endpoints in the audit log API require an audit log entry ID. The audit log entry ID is returned as part of the List audit log entries response. It is the `_id` field of each element in the `items` array.
+
+
+    In the LaunchDarkly UI, this information appears on the **Change history** page. To learn more, read Change history.'
 paths:
+  /api/v2/auditlog:
+    get:
+      responses:
+        '200':
+          description: Audit log entries response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuditLogEntryListingRepCollection'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Audit Log
+      summary: List audit log entries
+      description: 'Get a list of all audit log entries. The query parameters let you restrict the results that return by date ranges, resource specifiers, or a full-text search query.
+
+
+        LaunchDarkly uses a resource specifier syntax to name resources or collections of resources. To learn more, read Specifying resources in the advanced editor.'
+      parameters:
+      - name: before
+        in: query
+        description: A timestamp filter, expressed as a Unix epoch time in milliseconds.  All entries this returns occurred before the timestamp.
+        schema:
+          type: integer
+          format: int64
+          description: A timestamp filter, expressed as a Unix epoch time in milliseconds.  All entries this returns occurred before the timestamp.
+      - name: after
+        in: query
+        description: A timestamp filter, expressed as a Unix epoch time in milliseconds. All entries this returns occurred after the timestamp.
+        schema:
+          type: integer
+          format: int64
+          description: A timestamp filter, expressed as a Unix epoch time in milliseconds. All entries this returns occurred after the timestamp.
+      - name: q
+        in: query
+        description: Text to search for. You can search for the full or partial name of the resource.
+        schema:
+          type: string
+          format: string
+          description: Text to search for. You can search for the full or partial name of the resource.
+      - name: limit
+        in: query
+        description: A limit on the number of audit log entries that return. Set between 1 and 20. The default is 10.
+        schema:
+          type: integer
+          format: int64
+          description: A limit on the number of audit log entries that return. Set between 1 and 20. The default is 10.
+      - name: spec
+        in: query
+        description: A resource specifier that lets you filter audit log listings by resource
+        schema:
+          type: string
+          format: string
+          description: A resource specifier that lets you filter audit log listings by resource
+      - name: member
+        in: query
+        description: A member ID that lets you filter audit log listings by the member who made the change. Repeat the parameter to filter by multiple members.
+        schema:
+          type: string
+          format: string
+          description: A member ID that lets you filter audit log listings by the member who made the change. Repeat the parameter to filter by multiple members.
+      - name: token
+        in: query
+        description: An access token ID that lets you filter audit log listings by the token that made the change. Repeat the parameter to filter by multiple tokens.
+        schema:
+          type: string
+          format: string
+          description: An access token ID that lets you filter audit log listings by the token that made the change. Repeat the parameter to filter by multiple tokens.
+      operationId: getAuditLogEntries
+      security:
+      - ApiKey:
+        - read
+        - write
+    post:
+      responses:
+        '200':
+          description: Audit log entries response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuditLogEntryListingRepCollection'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Audit Log
+      summary: Search audit log entries
+      description: 'Search your audit log entries. The query parameters let you restrict the results that return by date ranges, or a full-text search query. The request body lets you restrict the results that return by resource specifiers.
+
+
+        LaunchDarkly uses a resource specifier syntax to name resources or collections of resources. To learn more, read Specifying resources in the advanced editor.'
+      parameters:
+      - name: before
+        in: query
+        description: A timestamp filter, expressed as a Unix epoch time in milliseconds.  All entries returned occurred before the timestamp.
+        schema:
+          type: integer
+          format: int64
+          description: A timestamp filter, expressed as a Unix epoch time in milliseconds.  All entries returned occurred before the timestamp.
+      - name: after
+        in: query
+        description: A timestamp filter, expressed as a Unix epoch time in milliseconds. All entries returned occurred after the timestamp.
+        schema:
+          type: integer
+          format: int64
+          description: A timestamp filter, expressed as a Unix epoch time in milliseconds. All entries returned occurred after the timestamp.
+      - name: q
+        in: query
+        description: Text to search for. You can search for the full or partial name of the resource.
+        schema:
+          type: string
+          format: string
+          description: Text to search for. You can search for the full or partial name of the resource.
+      - name: limit
+        in: query
+        description: A limit on the number of audit log entries that return. Set between 1 and 20. The default is 10.
+        schema:
+          type: integer
+          format: int64
+          description: A limit on the number of audit log entries that return. Set between 1 and 20. The default is 10.
+      - name: member
+        in: query
+        description: A member ID that lets you filter audit log listings by the member who made the change. Repeat the parameter to filter by multiple members.
+        schema:
+          type: string
+          format: string
+          description: A member ID that lets you filter audit log listings by the member who made the change. Repeat the parameter to filter by multiple members.
+      - name: token
+        in: query
+        description: An access token ID that lets you filter audit log listings by the token that made the change. Repeat the parameter to filter by multiple tokens.
+        schema:
+          type: string
+          format: string
+          description: An access token ID that lets you filter audit log listings by the token that made the change. Repeat the parameter to filter by multiple tokens.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StatementPostList'
+      operationId: postAuditLogEntries
+      security:
+      - ApiKey:
+        - read
+        - write
+    servers:
+    - url: https://app.launchdarkly.com
+      description: ' Default'
+    - url: https://app.launchdarkly.us
+      description: ' Federal'
+  /api/v2/auditlog/counts:
+    post:
+      responses:
+        '200':
+          description: Audit log entry counts response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CountBucketsResult'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Audit Log
+      summary: Get audit log entry counts
+      description: Returns aggregate counts of audit log entries per time bucket. Used for dashboard overlays that show flag targeting changes.
+      parameters:
+      - name: before
+        in: query
+        description: A timestamp filter, expressed as a Unix epoch time in milliseconds. Defaults to now.
+        schema:
+          type: integer
+          format: int64
+          description: A timestamp filter, expressed as a Unix epoch time in milliseconds. Defaults to now.
+      - name: after
+        in: query
+        description: A timestamp filter, expressed as a Unix epoch time in milliseconds. Required.
+        required: true
+        schema:
+          type: integer
+          format: int64
+          description: A timestamp filter, expressed as a Unix epoch time in milliseconds. Required.
+      - name: buckets
+        in: query
+        description: Number of time buckets to divide the range into. Default 50, max 500.
+        schema:
+          type: integer
+          format: int64
+          description: Number of time buckets to divide the range into. Default 50, max 500.
+      - name: member
+        in: query
+        description: A member ID that lets you filter counts to changes made by that member. Repeat the parameter to filter by multiple members.
+        schema:
+          type: string
+          format: string
+          description: A member ID that lets you filter counts to changes made by that member. Repeat the parameter to filter by multiple members.
+      - name: token
+        in: query
+        description: An access token ID that lets you filter counts to changes made by that token. Repeat the parameter to filter by multiple tokens.
+        schema:
+          type: string
+          format: string
+          description: An access token ID that lets you filter counts to changes made by that token. Repeat the parameter to filter by multiple tokens.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StatementPostList'
+        required: true
+      operationId: postAuditLogEntryCounts
+      security:
+      - ApiKey:
+        - read
+        - write
+    servers:
+    - url: https://app.launchdarkly.com
+      description: ' Default'
+    - url: https://app.launchdarkly.us
+      description: ' Federal'
+  /api/v2/auditlog/{id}:
+    get:
+      responses:
+        '200':
+          description: Audit log entry response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuditLogEntryRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Audit Log
+      summary: Get audit log entry
+      description: 'Fetch a detailed audit log entry representation. The detailed representation includes several fields that are not present in the summary representation, including:
+
+
+        - `previousVersion`: a JSON representation of the previous version of the entity.
+
+        - `currentVersion`: a JSON representation of the current version of the entity.
+
+        - `delta`: the JSON patch body that was used in the request to update the entity. This is only included if the update was made through a JSON patch. It is null when the update was made using semantic patch. Because most flag updates are made using semantic patch, this field is rarely returned.'
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the audit log entry
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The ID of the audit log entry
+      operationId: getAuditLogEntry
+      security:
+      - ApiKey:
+        - read
+        - write
+    servers:
+    - url: https://app.launchdarkly.com
+      description: ' Default'
+    - url: https://app.launchdarkly.us
+      description: ' Federal'
   /auditlog:
     get:
       operationId: listAuditLogEntries
@@ -63,9 +412,14 @@ paths:
                 $ref: '#/components/schemas/AuditLogEntries'
         '401':
           description: Unauthorized. Invalid or missing access token.
+      security:
+      - bearerAuth: []
+    servers:
+    - url: https://app.launchdarkly.com/api/v2
+      description: LaunchDarkly Production API
   /auditlog/{auditLogId}:
     get:
-      operationId: getAuditLogEntry
+      operationId: getAuditlogByAuditLogId
       summary: Get an audit log entry
       description: Returns a single audit log entry by its identifier.
       tags:
@@ -88,8 +442,573 @@ paths:
           description: Unauthorized. Invalid or missing access token.
         '404':
           description: Audit log entry not found.
+      security:
+      - bearerAuth: []
+      x-operation-id-source: normalized
+      x-operation-id-original: getAuditLogEntry
+    servers:
+    - url: https://app.launchdarkly.com/api/v2
+      description: LaunchDarkly Production API
 components:
   schemas:
+    AuditLogEntryListingRepCollection:
+      type: object
+      required:
+      - items
+      - _links
+      properties:
+        items:
+          type: array
+          description: An array of audit log entries
+          items:
+            $ref: '#/components/schemas/AuditLogEntryListingRep'
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+    RelatedAIConfig:
+      type: object
+      required:
+      - key
+      properties:
+        key:
+          type: string
+    ParentResourceRep:
+      type: object
+      properties:
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+        name:
+          type: string
+          description: The name of the parent resource
+        resource:
+          type: string
+          description: The parent's resource specifier
+    StatementPost:
+      type: object
+      required:
+      - effect
+      properties:
+        resources:
+          type: array
+          description: Resource specifier strings
+          items:
+            type: string
+          example:
+          - proj/*:env/*:flag/*;testing-tag
+        notResources:
+          type: array
+          description: Targeted resources are the resources NOT in this list. The <code>resources</code> field must be empty to use this field.
+          items:
+            type: string
+        actions:
+          type: array
+          description: Actions to perform on a resource
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+          example:
+          - '*'
+        notActions:
+          type: array
+          description: Targeted actions are the actions NOT in this list. The <code>actions</code> field must be empty to use this field.
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+        effect:
+          type: string
+          description: Whether this statement should allow or deny actions on the resources.
+          example: allow
+          enum:
+          - allow
+          - deny
+    InvalidRequestErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: invalid_request
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid request body
+    RateLimitedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: rate_limited
+        message:
+          type: string
+          description: Description of the error
+          example: You've exceeded the API rate limit. Try again later.
+    UnauthorizedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: unauthorized
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid access token
+    ForbiddenErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: forbidden
+        message:
+          type: string
+          description: Description of the error
+          example: Forbidden. Access to the requested resource was denied.
+    ActionSpecifier:
+      type: string
+    ResourceAccess:
+      type: object
+      properties:
+        action:
+          $ref: '#/components/schemas/ActionIdentifier'
+        resource:
+          type: string
+    ResourceKind:
+      type: string
+    Link:
+      type: object
+      properties:
+        href:
+          type: string
+        type:
+          type: string
+    ActionIdentifier:
+      type: string
+    SubjectDataRep:
+      type: object
+      properties:
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+        name:
+          type: string
+          description: The subject's name
+        avatarUrl:
+          type: string
+          description: The subject's avatar
+    CountBucket:
+      type: object
+      required:
+      - timestamp
+      - count
+      properties:
+        timestamp:
+          type: integer
+          format: int64
+        count:
+          type: integer
+          format: int64
+    UnixMillis:
+      type: integer
+      format: int64
+    StatementPostList:
+      type: array
+      items:
+        $ref: '#/components/schemas/StatementPost'
+    RelatedFlag:
+      type: object
+      required:
+      - key
+      properties:
+        key:
+          type: string
+    MemberDataRep:
+      type: object
+      properties:
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+        _id:
+          type: string
+          description: The member ID
+          example: 507f1f77bcf86cd799439011
+        email:
+          type: string
+          description: The member email
+          example: ariel@acme.com
+        firstName:
+          type: string
+          description: The member first name
+          example: Ariel
+        lastName:
+          type: string
+          description: The member last name
+          example: Flores
+    NotFoundErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: not_found
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid resource identifier
+    TokenSummary:
+      type: object
+      properties:
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+        _id:
+          type: string
+        name:
+          type: string
+          description: The name of the token
+          example: DevOps token
+        ending:
+          type: string
+          description: The last few characters of the token
+          example: '2345'
+        serviceToken:
+          type: boolean
+          description: Whether this is a service token
+          example: false
+    AuditLogEntryRep:
+      type: object
+      required:
+      - _links
+      - _id
+      - _accountId
+      - date
+      - accesses
+      - kind
+      - name
+      - description
+      - shortDescription
+      properties:
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+        _id:
+          type: string
+          description: The ID of the audit log entry
+          example: 1234a56b7c89d012345e678f
+        _accountId:
+          type: string
+          description: The ID of the account to which this audit log entry belongs
+          example: 1234a56b7c89d012345e678f
+        date:
+          description: Timestamp of the audit log entry
+          example: '1654104600000'
+          $ref: '#/components/schemas/UnixMillis'
+        accesses:
+          type: array
+          description: Details on the actions performed and resources acted on in this audit log entry
+          items:
+            $ref: '#/components/schemas/ResourceAccess'
+        kind:
+          description: The type of resource this audit log entry refers to
+          example: flag
+          $ref: '#/components/schemas/ResourceKind'
+        name:
+          type: string
+          description: The name of the resource this audit log entry refers to
+          example: Example feature flag
+        description:
+          type: string
+          description: Description of the change recorded in the audit log entry
+          example: Example, turning on the flag for testing
+        shortDescription:
+          type: string
+          description: Shorter version of the change recorded in the audit log entry
+          example: Example, turning on the flag
+        comment:
+          type: string
+          description: Optional comment for the audit log entry
+          example: This is an automated test
+        relatedFlag:
+          description: Flag that this audit log entry updated as a side effect
+          $ref: '#/components/schemas/RelatedFlag'
+        relatedExperiment:
+          description: Experiment that this audit log entry was updated as a side effect of
+          $ref: '#/components/schemas/RelatedExperiment'
+        relatedAIConfig:
+          description: AgentControl config that this audit log entry updated as a side effect
+          $ref: '#/components/schemas/RelatedAIConfig'
+        subject:
+          description: Details of the subject who initiated the action described in the audit log entry
+          $ref: '#/components/schemas/SubjectDataRep'
+        member:
+          description: Details of the member who initiated the action described in the audit log entry
+          $ref: '#/components/schemas/MemberDataRep'
+        token:
+          description: Details of the access token that initiated the action described in the audit log entry
+          $ref: '#/components/schemas/TokenSummary'
+        app:
+          description: Details of the authorized application that initiated the action described in the audit log entry
+          $ref: '#/components/schemas/AuthorizedAppDataRep'
+        titleVerb:
+          type: string
+          description: The action and resource recorded in this audit log entry
+          example: turned on the flag
+        title:
+          type: string
+          description: A description of what occurred, in the format <code>member</code> <code>titleVerb</code> <code>target</code>
+        target:
+          description: Details of the resource acted upon in this audit log entry
+          example: '[Ariel Flores](mailto:ariel@acme.com) turned on the flag [example-flag](https://app.launchdarkly.com/example-project/production/features/example-flag) in Production'
+          $ref: '#/components/schemas/TargetResourceRep'
+        parent:
+          $ref: '#/components/schemas/ParentResourceRep'
+        delta:
+          description: If the audit log entry has been updated, this is the JSON patch body that was used in the request to update the entity
+        triggerBody:
+          description: A JSON representation of the external trigger for this audit log entry, if any
+        merge:
+          description: A JSON representation of the merge information for this audit log entry, if any
+        previousVersion:
+          description: If the audit log entry has been updated, this is a JSON representation of the previous version of the entity
+        currentVersion:
+          description: If the audit log entry has been updated, this is a JSON representation of the current version of the entity
+        subentries:
+          type: array
+          items:
+            $ref: '#/components/schemas/AuditLogEntryListingRep'
+    AuthorizedAppDataRep:
+      type: object
+      properties:
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+        _id:
+          type: string
+          description: The ID of the authorized application
+        isScim:
+          type: boolean
+          description: Whether the application is authorized through SCIM
+        name:
+          type: string
+          description: The authorized application name
+        iconUrl:
+          type: string
+          description: The icon for this authorized application, if it has one
+        maintainerName:
+          type: string
+          description: The name of the maintainer for this authorized application
+        isAgent:
+          type: boolean
+          description: Whether this application acted on behalf of the member in this entry. When true, the member and the application are co-authors of the change rather than the member acting alone. Omitted for applications that act on their own.
+          example: true
+    AuditLogEntryListingRep:
+      type: object
+      required:
+      - _links
+      - _id
+      - _accountId
+      - date
+      - accesses
+      - kind
+      - name
+      - description
+      - shortDescription
+      properties:
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+        _id:
+          type: string
+          description: The ID of the audit log entry
+          example: 1234a56b7c89d012345e678f
+        _accountId:
+          type: string
+          description: The ID of the account to which this audit log entry belongs
+          example: 1234a56b7c89d012345e678f
+        date:
+          description: Timestamp of the audit log entry
+          example: '1654104600000'
+          $ref: '#/components/schemas/UnixMillis'
+        accesses:
+          type: array
+          description: Details on the actions performed and resources acted on in this audit log entry
+          items:
+            $ref: '#/components/schemas/ResourceAccess'
+        kind:
+          description: The type of resource this audit log entry refers to
+          example: flag
+          $ref: '#/components/schemas/ResourceKind'
+        name:
+          type: string
+          description: The name of the resource this audit log entry refers to
+          example: Example feature flag
+        description:
+          type: string
+          description: Description of the change recorded in the audit log entry
+          example: Example, turning on the flag for testing
+        shortDescription:
+          type: string
+          description: Shorter version of the change recorded in the audit log entry
+          example: Example, turning on the flag
+        comment:
+          type: string
+          description: Optional comment for the audit log entry
+          example: This is an automated test
+        relatedFlag:
+          description: Flag that this audit log entry updated as a side effect
+          $ref: '#/components/schemas/RelatedFlag'
+        relatedExperiment:
+          description: Experiment that this audit log entry was updated as a side effect of
+          $ref: '#/components/schemas/RelatedExperiment'
+        relatedAIConfig:
+          description: AgentControl config that this audit log entry updated as a side effect
+          $ref: '#/components/schemas/RelatedAIConfig'
+        subject:
+          description: Details of the subject who initiated the action described in the audit log entry
+          $ref: '#/components/schemas/SubjectDataRep'
+        member:
+          description: Details of the member who initiated the action described in the audit log entry
+          $ref: '#/components/schemas/MemberDataRep'
+        token:
+          description: Details of the access token that initiated the action described in the audit log entry
+          $ref: '#/components/schemas/TokenSummary'
+        app:
+          description: Details of the authorized application that initiated the action described in the audit log entry
+          $ref: '#/components/schemas/AuthorizedAppDataRep'
+        titleVerb:
+          type: string
+          description: The action and resource recorded in this audit log entry
+          example: turned on the flag
+        title:
+          type: string
+          description: A description of what occurred, in the format <code>member</code> <code>titleVerb</code> <code>target</code>
+        target:
+          description: Details of the resource acted upon in this audit log entry
+          example: '[Ariel Flores](mailto:ariel@acme.com) turned on the flag [example-flag](https://app.launchdarkly.com/example-project/production/features/example-flag) in Production'
+          $ref: '#/components/schemas/TargetResourceRep'
+        parent:
+          $ref: '#/components/schemas/ParentResourceRep'
+    TargetResourceRep:
+      type: object
+      properties:
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+        name:
+          type: string
+          description: The name of the resource
+          example: Example flag name
+        resources:
+          type: array
+          description: The resource specifier
+          items:
+            type: string
+          example:
+          - proj/example-project:env/production:flag/example-flag
+    RelatedExperiment:
+      type: object
+      required:
+      - key
+      properties:
+        key:
+          type: string
+    CountBucketsResult:
+      type: object
+      required:
+      - buckets
+      - totalCount
+      - bucketIntervalMs
+      properties:
+        buckets:
+          type: array
+          items:
+            $ref: '#/components/schemas/CountBucket'
+        totalCount:
+          type: integer
+          format: int64
+        bucketIntervalMs:
+          type: integer
+          format: int64
+    Links:
+      type: object
+      description: HATEOAS links for navigating related resources.
+      properties:
+        self:
+          type: object
+          description: A link to this resource.
+          properties:
+            href:
+              type: string
+              description: The URL of this resource.
+            type:
+              type: string
+              description: The media type.
+      additionalProperties:
+        type: object
+        properties:
+          href:
+            type: string
+            description: The URL of the linked resource.
+          type:
+            type: string
+            description: The media type.
+    AuditLogEntries:
+      type: object
+      description: A paginated collection of audit log entries.
+      properties:
+        items:
+          type: array
+          description: The list of audit log entries.
+          items:
+            $ref: '#/components/schemas/AuditLogEntry'
+        _links:
+          $ref: '#/components/schemas/Links'
+    MemberSummary:
+      type: object
+      description: A summary of a member who performed an action.
+      properties:
+        _id:
+          type: string
+          description: The unique identifier of the member.
+        email:
+          type: string
+          format: email
+          description: The email address of the member.
+        firstName:
+          type: string
+          description: The first name of the member.
+        lastName:
+          type: string
+          description: The last name of the member.
+        _links:
+          $ref: '#/components/schemas/Links'
     AuditLogEntry:
       type: object
       description: A single audit log entry recording a change to a resource.
@@ -129,60 +1048,11 @@ components:
                 description: The resource specifier.
         _links:
           $ref: '#/components/schemas/Links'
-    Links:
-      type: object
-      description: HATEOAS links for navigating related resources.
-      properties:
-        self:
-          type: object
-          description: A link to this resource.
-          properties:
-            href:
-              type: string
-              description: The URL of this resource.
-            type:
-              type: string
-              description: The media type.
-      additionalProperties:
-        type: object
-        properties:
-          href:
-            type: string
-            description: The URL of the linked resource.
-          type:
-            type: string
-            description: The media type.
-    MemberSummary:
-      type: object
-      description: A summary of a member who performed an action.
-      properties:
-        _id:
-          type: string
-          description: The unique identifier of the member.
-        email:
-          type: string
-          format: email
-          description: The email address of the member.
-        firstName:
-          type: string
-          description: The first name of the member.
-        lastName:
-          type: string
-          description: The last name of the member.
-        _links:
-          $ref: '#/components/schemas/Links'
-    AuditLogEntries:
-      type: object
-      description: A paginated collection of audit log entries.
-      properties:
-        items:
-          type: array
-          description: The list of audit log entries.
-          items:
-            $ref: '#/components/schemas/AuditLogEntry'
-        _links:
-          $ref: '#/components/schemas/Links'
   securitySchemes:
+    ApiKey:
+      type: apiKey
+      in: header
+      name: Authorization
     bearerAuth:
       type: http
       scheme: bearer
@@ -190,3 +1060,6 @@ components:
 externalDocs:
   description: LaunchDarkly API Documentation
   url: https://apidocs.launchdarkly.com/
+x-refined-from:
+- launchdarkly-openapi.json
+- launchdarkly-rest-api-openapi.yml

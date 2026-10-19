@@ -1,0 +1,981 @@
+openapi: 3.2.0
+info:
+  title: LaunchDarkly REST Release pipelines (beta) API
+  description: 'This documentation describes LaunchDarkly''s REST API. To access the complete OpenAPI spec directly, use Get OpenAPI spec. To learn how to use LaunchDarkly using the user interface (UI) instead, read our product documentation. ## Authentication
+
+
+    LaunchDarkly''s REST API uses the HTTPS protocol with a minimum TLS version of 1.2. All REST API resources are authenticated with either personal or service access tokens, or session cookies. Other authentication mechanisms are not supported. You can manage personal access tokens on your **Authorization** page in the LaunchDarkly UI. LaunchDarkly also has SDK keys, mobile keys, and client-side IDs that are used by our server-side SDKs, mobile SDKs, and JavaScript-based SDKs, respectively. **These keys cannot be used to access our REST API**. These keys are environment-specific, and can only perform read-only operations such as fetching feature flag settings. | Auth mechanism | Allowed resources | Use cases |
+
+    | ----------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
+
+    | Personal or service access tokens | Can be customized on a per-token basis | Building scripts, custom integrations, data export. |
+
+    | SDK keys | Can only access read-only resources specific to server-side SDKs. Restricted to a single environment. | Server-side SDKs |
+
+    | Mobile keys | Can only access read-only resources specific to mobile SDKs, and only for flags marked available to mobile keys. Restricted to a single environment. | Mobile SDKs |
+
+    | Client-side ID | Can only access read-only resources specific to JavaScript-based client-side SDKs, and only for flags marked available to client-side. Restricted to a single environment. | Client-side JavaScript |
+
+
+    > #### Keep your access tokens and SDK keys private
+
+    >
+
+    > Access tokens should _never_ be exposed in untrusted contexts. Never put an access token in client-side JavaScript, or embed it in a mobile application. LaunchDarkly has special mobile keys that you can embed in mobile apps. If you accidentally expose an access token or SDK key, you can reset it from your **Authorization** page. >
+
+    > The client-side ID is safe to embed in untrusted contexts. It''s designed for use in client-side JavaScript. ### Authentication using request header
+
+
+    The preferred way to authenticate with the API is by adding an `Authorization` header containing your access token to your requests. The value of the `Authorization` header must be your access token. Manage personal access tokens from the **Authorization** page. ### Authentication using session cookie
+
+
+    For testing purposes, you can make API calls directly from your web browser. If you are logged in to the LaunchDarkly application, the API will use your existing session to authenticate calls. Depending on the permissions granted as part of your role, you may not have permission to perform some API calls. You will receive a `401` response code in that case. > ### Modifying the Origin header causes an error
+
+    >
+
+    > LaunchDarkly validates that the Origin header for any API request authenticated by a session cookie matches the expected Origin header. The expected Origin header is `https://app.launchdarkly.com`. >
+
+    > If the Origin header does not match what''s expected, LaunchDarkly returns an error. This error can prevent the LaunchDarkly app from working correctly. >
+
+    > Any browser extension that intentionally changes the Origin header can cause this problem. For example, Cross-Origin Resource Sharing (CORS) extensions used during development can modify the Origin header and cause the app to fail. >
+
+    > To prevent this error, do not modify your Origin header. >
+
+    > LaunchDarkly does not require origin matching when authenticating with an access token, so this issue does not affect normal API usage.'
+  contact:
+    name: LaunchDarkly Technical Support Team
+    url: https://support.launchdarkly.com
+    email: support@launchdarkly.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+  version: '2.0'
+servers:
+- url: https://app.launchdarkly.com
+  description: ' Default'
+- url: https://app.launchdarkly.us
+  description: ' Federal'
+security:
+- ApiKey:
+  - read
+  - write
+tags:
+- name: Release pipelines (beta)
+  description: '> ### This feature is in beta
+
+    >
+
+    > To use this feature, pass in a header including the `LD-API-Version` key with value set to `beta`. Use this header with each call. To learn more, read Beta resources.
+
+    >
+
+    > Resources that are in beta are still undergoing testing and development. They may change without notice, including becoming backwards incompatible.
+
+
+    Release pipelines standardize and automate the release process for feature flags across a series of phases, where each phase consists of one or more environments and audiences. Each phase can use an immediate or guarded rollout to a designated audience, and can require approvals for selected environments. You can use release pipelines to ensure that you correctly roll out a flag in one environment before moving on to the next. To learn more, read Release pipelines.
+
+
+    Use the release pipelines API to view, create, update, and delete release pipelines. You can also use this API to view the progress of all ongoing releases across all flags in a project for a given release pipeline.
+
+
+    ### Creating releases and updating release phases
+
+
+    When you add a flag to a release pipeline, you create a new "release" to automate that flag''s progress through phases in the pipeline.
+
+
+    Use the related releases API to create a new release, or to view or update a release for a given flag. For example, you can use the releases API to add a flag to an existing release pipeline, or to start the next phase of a flag''s ongoing release.'
+paths:
+  /api/v2/projects/{projectKey}/release-pipelines:
+    get:
+      responses:
+        '200':
+          description: Release pipeline collection
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReleasePipelineCollection'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+      tags:
+      - Release pipelines (beta)
+      summary: Get all release pipelines
+      description: 'Get all release pipelines for a project.
+
+
+        ### Filtering release pipelines
+
+
+        LaunchDarkly supports the following fields for filters:
+
+
+        - `query` is a string that matches against the release pipeline `key`, `name`, and `description`. It is not case sensitive. For example: `?filter=query:examplePipeline`.
+
+
+        - `env` is a string that matches an environment key. For example: `?filter=env:production`.'
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: filter
+        in: query
+        description: A comma-separated list of filters. Each filter is of the form field:value. Read the endpoint description for a full list of available filter fields.
+        schema:
+          type: string
+          format: string
+          description: A comma-separated list of filters. Each filter is of the form field:value. Read the endpoint description for a full list of available filter fields.
+      - name: limit
+        in: query
+        description: The maximum number of items to return. Defaults to 20.
+        schema:
+          type: integer
+          format: int64
+          description: The maximum number of items to return. Defaults to 20.
+      - name: offset
+        in: query
+        description: Where to start in the list. Defaults to 0. Use this with pagination. For example, an offset of 10 skips the first ten items and then returns the next items in the list, up to the query `limit`.
+        schema:
+          type: integer
+          format: int64
+          description: Where to start in the list. Defaults to 0. Use this with pagination. For example, an offset of 10 skips the first ten items and then returns the next items in the list, up to the query `limit`.
+      operationId: getAllReleasePipelines
+    post:
+      responses:
+        '201':
+          description: Release pipeline response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReleasePipeline'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '409':
+          description: Status conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusConflictErrorRep'
+      tags:
+      - Release pipelines (beta)
+      summary: Create a release pipeline
+      description: 'Creates a new release pipeline.
+
+
+        The first release pipeline you create is automatically set as the default release pipeline for your project. To change the default release pipeline, use the Update project API to set the `defaultReleasePipelineKey`.
+
+
+        You can create up to 20 release pipelines per project.'
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateReleasePipelineInput'
+        required: true
+      operationId: postReleasePipeline
+  /api/v2/projects/{projectKey}/release-pipelines/{pipelineKey}:
+    get:
+      responses:
+        '200':
+          description: Release pipeline response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReleasePipeline'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+      tags:
+      - Release pipelines (beta)
+      summary: Get release pipeline by key
+      description: Get a release pipeline by key
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: pipelineKey
+        in: path
+        description: The release pipeline key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The release pipeline key
+      operationId: getReleasePipelineByKey
+    put:
+      responses:
+        '200':
+          description: Release pipeline response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReleasePipeline'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+      tags:
+      - Release pipelines (beta)
+      summary: Update a release pipeline
+      description: Updates a release pipeline.
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: pipelineKey
+        in: path
+        description: The release pipeline key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The release pipeline key
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateReleasePipelineInput'
+        required: true
+      operationId: putReleasePipeline
+    delete:
+      responses:
+        '204':
+          description: Action succeeded
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+      tags:
+      - Release pipelines (beta)
+      summary: Delete release pipeline
+      description: 'Deletes a release pipeline.
+
+
+        You cannot delete the default release pipeline.
+
+
+        If you want to delete a release pipeline that is currently the default, create a second release pipeline and set it as the default. Then delete the first release pipeline. To change the default release pipeline, use the Update project API to set the `defaultReleasePipelineKey`.'
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: pipelineKey
+        in: path
+        description: The release pipeline key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The release pipeline key
+      operationId: deleteReleasePipeline
+  /api/v2/projects/{projectKey}/release-pipelines/{pipelineKey}/releases:
+    get:
+      responses:
+        '200':
+          description: Release progression collection
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReleaseProgressionCollection'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+      tags:
+      - Release pipelines (beta)
+      summary: Get release progressions for release pipeline
+      description: Get details on the progression of all releases, across all flags, for a release pipeline
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: pipelineKey
+        in: path
+        description: The pipeline key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The pipeline key
+      - name: filter
+        in: query
+        description: Accepts filter by `status` and `activePhaseId`. `status` can take a value of `completed` or `active`. `activePhaseId` takes a UUID and will filter results down to releases active on the specified phase. Providing `status equals completed` along with an `activePhaseId` filter will return an error as they are disjoint sets of data. The combination of `status equals active` and `activePhaseId` will return the same results as `activePhaseId` alone.
+        schema:
+          type: string
+          format: string
+          description: Accepts filter by `status` and `activePhaseId`. `status` can take a value of `completed` or `active`. `activePhaseId` takes a UUID and will filter results down to releases active on the specified phase. Providing `status equals completed` along with an `activePhaseId` filter will return an error as they are disjoint sets of data. The combination of `status equals active` and `activePhaseId` will return the same results as `activePhaseId` alone.
+      - name: limit
+        in: query
+        description: The maximum number of items to return. Defaults to 20.
+        schema:
+          type: integer
+          format: int64
+          description: The maximum number of items to return. Defaults to 20.
+      - name: offset
+        in: query
+        description: Where to start in the list. Defaults to 0. Use this with pagination. For example, an offset of 10 skips the first ten items and then returns the next items in the list, up to the query `limit`.
+        schema:
+          type: integer
+          format: int64
+          description: Where to start in the list. Defaults to 0. Use this with pagination. For example, an offset of 10 skips the first ten items and then returns the next items in the list, up to the query `limit`.
+      operationId: getAllReleaseProgressionsForReleasePipeline
+components:
+  schemas:
+    AudiencePost:
+      type: object
+      required:
+      - environmentKey
+      - name
+      properties:
+        environmentKey:
+          type: string
+          description: A project-unique key for the environment.
+        name:
+          type: string
+          description: The audience name
+        segmentKeys:
+          type: array
+          description: Segments targeted by this audience.
+          items:
+            type: string
+        configuration:
+          description: The configuration for the audience's rollout.
+          $ref: '#/components/schemas/AudienceConfiguration'
+    AccessDenied:
+      type: object
+      required:
+      - action
+      - reason
+      properties:
+        action:
+          $ref: '#/components/schemas/ActionIdentifier'
+        reason:
+          $ref: '#/components/schemas/AccessDeniedReason'
+    PhaseConfiguration:
+      type: object
+      properties: {}
+    PhaseStatus:
+      type: string
+    Audience:
+      type: object
+      required:
+      - name
+      properties:
+        environment:
+          description: Details about the environment. When the environment has been deleted, this field is omitted.
+          $ref: '#/components/schemas/EnvironmentSummary'
+        name:
+          type: string
+          description: The release phase name
+          example: Phase 1 - Testing
+        configuration:
+          description: The configuration for the audience's rollout.
+          $ref: '#/components/schemas/AudienceConfiguration'
+        segmentKeys:
+          type: array
+          description: A list of segment keys
+          items:
+            type: string
+          example:
+          - segment-key-123abc
+    InvalidRequestErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: invalid_request
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid request body
+    AccessDeniedReason:
+      type: object
+      required:
+      - effect
+      properties:
+        resources:
+          type: array
+          description: Resource specifier strings
+          items:
+            type: string
+          example:
+          - proj/*:env/*;qa_*:/flag/*
+        notResources:
+          type: array
+          description: Targeted resources are the resources NOT in this list. The <code>resources</code> and <code>notActions</code> fields must be empty to use this field.
+          items:
+            type: string
+        actions:
+          type: array
+          description: Actions to perform on a resource
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+          example:
+          - '*'
+        notActions:
+          type: array
+          description: Targeted actions are the actions NOT in this list. The <code>actions</code> and <code>notResources</code> fields must be empty to use this field.
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+        effect:
+          type: string
+          description: Whether this statement should allow or deny actions on the resources.
+          example: allow
+          enum:
+          - allow
+          - deny
+        role_name:
+          type: string
+    ReleasePipeline:
+      type: object
+      required:
+      - createdAt
+      - key
+      - name
+      - phases
+      properties:
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the release pipeline was created
+          example: '1684262711507'
+        description:
+          type: string
+          description: The release pipeline description
+          example: Standard pipeline to roll out to production
+        key:
+          type: string
+          description: The release pipeline key
+          example: standard-pipeline
+        name:
+          type: string
+          description: The release pipeline name
+          example: Standard Pipeline
+        phases:
+          type: array
+          description: An ordered list of the release pipeline phases. Each phase is a logical grouping of one or more environments that share attributes for rolling out changes.
+          items:
+            $ref: '#/components/schemas/Phase'
+        tags:
+          type: array
+          description: A list of the release pipeline's tags
+          items:
+            type: string
+          example:
+          - example-tag
+        _version:
+          type: integer
+          description: The release pipeline version
+          example: 1
+        _access:
+          description: Details on the allowed and denied actions for this release pipeline
+          $ref: '#/components/schemas/Access'
+        isProjectDefault:
+          type: boolean
+          description: Whether this release pipeline is the default pipeline for the project
+        _isLegacy:
+          type: boolean
+          description: Whether this release pipeline is a legacy pipeline
+          example: true
+    Audiences:
+      type: array
+      items:
+        $ref: '#/components/schemas/Audience'
+    ForbiddenErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: forbidden
+        message:
+          type: string
+          description: Description of the error
+          example: Forbidden. Access to the requested resource was denied.
+    ActionSpecifier:
+      type: string
+    ReleaseProgression:
+      type: object
+      required:
+      - _createdAt
+      - flagKey
+      - _links
+      properties:
+        _createdAt:
+          description: Timestamp of when the release was created
+          example: '1684262711507'
+          $ref: '#/components/schemas/UnixMillis'
+        _completedAt:
+          description: Timestamp of when the release was completed
+          example: '1684262711509'
+          $ref: '#/components/schemas/UnixMillis'
+        flagKey:
+          type: string
+          description: The flag key
+          example: flag-key-123abc
+        activePhaseId:
+          type: string
+          description: The ID of the currently active release phase
+          example: 1234a56b7c89d012345e678f
+        activePhaseStatus:
+          description: The status of the currently active release phase, for example, whether it is ready to start or has started
+          example: active
+          $ref: '#/components/schemas/PhaseStatus'
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+    AudienceConfiguration:
+      type: object
+      required:
+      - releaseStrategy
+      - requireApproval
+      properties:
+        releaseStrategy:
+          description: The release strategy
+          example: monitoredRelease
+          $ref: '#/components/schemas/ReleaseStrategy'
+        requireApproval:
+          type: boolean
+          description: Whether or not the audience requires approval
+          example: true
+        notifyMemberIds:
+          type: array
+          description: An array of member IDs. These members are notified to review the approval request.
+          items:
+            type: string
+          example:
+          - 1234a56b7c89d012345e678f
+        notifyTeamKeys:
+          type: array
+          description: An array of team keys. The members of these teams are notified to review the approval request.
+          items:
+            type: string
+          example:
+          - example-reviewer-team
+        releaseGuardianConfiguration:
+          description: The configuration for the release guardian.
+          $ref: '#/components/schemas/ReleaseGuardianConfiguration'
+    Link:
+      type: object
+      properties:
+        href:
+          type: string
+        type:
+          type: string
+    ActionIdentifier:
+      type: string
+    CreatePhaseInput:
+      type: object
+      required:
+      - audiences
+      - name
+      properties:
+        audiences:
+          type: array
+          description: An ordered list of the audiences for this release phase. Each audience corresponds to a LaunchDarkly environment.
+          items:
+            $ref: '#/components/schemas/AudiencePost'
+        name:
+          type: string
+          description: The release phase name
+          example: Phase 1 - Testing
+        configuration:
+          description: The configuration for the phase's rollout.
+          $ref: '#/components/schemas/PhaseConfiguration'
+    UnixMillis:
+      type: integer
+      format: int64
+    ReleaseProgressionCollection:
+      type: object
+      required:
+      - activeCount
+      - completedCount
+      - items
+      - phases
+      - totalCount
+      - _links
+      properties:
+        activeCount:
+          type: integer
+          description: The number of active releases
+          example: 3
+        completedCount:
+          type: integer
+          description: The number of completed releases
+          example: 1
+        items:
+          type: array
+          description: A list of details for each release, across all flags, for this release pipeline
+          items:
+            $ref: '#/components/schemas/ReleaseProgression'
+        phases:
+          type: array
+          description: A list of details for each phase, across all releases, for this release pipeline
+          items:
+            $ref: '#/components/schemas/PhaseInfo'
+        totalCount:
+          type: integer
+          description: The total number of releases for this release pipeline
+          example: 8
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+    ReleaseStrategy:
+      type: string
+    Access:
+      type: object
+      required:
+      - denied
+      - allowed
+      properties:
+        denied:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccessDenied'
+        allowed:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccessAllowedRep'
+    StatusConflictErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: optimistic_locking_error
+        message:
+          type: string
+          description: Description of the error
+          example: Conflict. Optimistic lock error. Try again later.
+    CreateReleasePipelineInput:
+      type: object
+      required:
+      - key
+      - name
+      - phases
+      properties:
+        description:
+          type: string
+          description: The release pipeline description
+          example: Standard pipeline to roll out to production
+        key:
+          type: string
+          description: The unique identifier of this release pipeline
+          example: standard-pipeline
+        name:
+          type: string
+          description: The name of the release pipeline
+          example: Standard Pipeline
+        phases:
+          type: array
+          description: A logical grouping of one or more environments that share attributes for rolling out changes
+          items:
+            $ref: '#/components/schemas/CreatePhaseInput'
+        tags:
+          type: array
+          description: A list of tags for this release pipeline
+          items:
+            type: string
+          example:
+          - example-tag
+        isProjectDefault:
+          type: boolean
+          description: Whether or not the newly created pipeline should be set as the default pipeline for this project
+        isLegacy:
+          type: boolean
+          description: Whether or not the pipeline is enabled for Release Automation.
+    NotFoundErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: not_found
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid resource identifier
+    PhaseInfo:
+      type: object
+      required:
+      - _id
+      - name
+      - releaseCount
+      properties:
+        _id:
+          type: string
+          description: The phase ID
+          example: 1234a56b7c89d012345e678f
+        name:
+          type: string
+          description: The release phase name
+          example: Phase 1 - Testing
+        releaseCount:
+          type: integer
+          description: The number of active releases in this phase
+          example: 2
+    AccessAllowedReason:
+      type: object
+      required:
+      - effect
+      properties:
+        resources:
+          type: array
+          description: Resource specifier strings
+          items:
+            type: string
+          example:
+          - proj/*:env/*;qa_*:/flag/*
+        notResources:
+          type: array
+          description: Targeted resources are the resources NOT in this list. The <code>resources</code> and <code>notActions</code> fields must be empty to use this field.
+          items:
+            type: string
+        actions:
+          type: array
+          description: Actions to perform on a resource
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+          example:
+          - '*'
+        notActions:
+          type: array
+          description: Targeted actions are the actions NOT in this list. The <code>actions</code> and <code>notResources</code> fields must be empty to use this field.
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+        effect:
+          type: string
+          description: Whether this statement should allow or deny actions on the resources.
+          example: allow
+          enum:
+          - allow
+          - deny
+        role_name:
+          type: string
+    Phase:
+      type: object
+      required:
+      - id
+      - audiences
+      - name
+      properties:
+        id:
+          type: string
+          description: The phase ID
+          example: 1234a56b7c89d012345e678f
+        audiences:
+          description: An ordered list of the audiences for this release phase. Each audience corresponds to a LaunchDarkly environment.
+          $ref: '#/components/schemas/Audiences'
+        name:
+          type: string
+          description: The release phase name
+          example: Phase 1 - Testing
+        configuration:
+          description: The configuration for the phase's rollout.
+          $ref: '#/components/schemas/PhaseConfiguration'
+    AccessAllowedRep:
+      type: object
+      required:
+      - action
+      - reason
+      properties:
+        action:
+          $ref: '#/components/schemas/ActionIdentifier'
+        reason:
+          $ref: '#/components/schemas/AccessAllowedReason'
+    ReleasePipelineCollection:
+      type: object
+      required:
+      - items
+      - totalCount
+      properties:
+        items:
+          type: array
+          description: An array of release pipelines
+          items:
+            $ref: '#/components/schemas/ReleasePipeline'
+        totalCount:
+          type: integer
+          description: Total number of release pipelines
+          example: 1
+    EnvironmentSummary:
+      type: object
+      required:
+      - _links
+      - key
+      - name
+      - color
+      properties:
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+          example:
+            self:
+              href: /api/v2/projects/my-project/environments/my-environment
+              type: application/json
+        key:
+          type: string
+          description: A project-unique key for the environment
+          example: environment-key-123abc
+        name:
+          type: string
+          description: A human-friendly name for the environment
+          example: My Environment
+        color:
+          type: string
+          description: The color used to indicate this environment in the UI
+          example: F5A623
+    UpdateReleasePipelineInput:
+      type: object
+      required:
+      - name
+      - phases
+      properties:
+        description:
+          type: string
+          description: The release pipeline description
+          example: Standard pipeline to roll out to production
+        name:
+          type: string
+          description: The name of the release pipeline
+          example: Standard Pipeline
+        phases:
+          type: array
+          description: A logical grouping of one or more environments that share attributes for rolling out changes
+          items:
+            $ref: '#/components/schemas/CreatePhaseInput'
+        tags:
+          type: array
+          description: A list of tags for this release pipeline
+          items:
+            type: string
+          example:
+          - example-tag
+    ReleaseGuardianConfiguration:
+      type: object
+      required:
+      - monitoringWindowMilliseconds
+      - rolloutWeight
+      - rollbackOnRegression
+      properties:
+        monitoringWindowMilliseconds:
+          type: integer
+          format: int64
+          description: The monitoring window in milliseconds
+          example: 60000
+        rolloutWeight:
+          type: integer
+          description: The rollout weight percentage
+          example: 50
+        rollbackOnRegression:
+          type: boolean
+          description: Whether or not to roll back on regression
+          example: true
+        randomizationUnit:
+          type: string
+          description: The randomization unit for the measured rollout
+          example: user
+  securitySchemes:
+    ApiKey:
+      type: apiKey
+      in: header
+      name: Authorization

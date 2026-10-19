@@ -1,0 +1,3165 @@
+openapi: 3.2.0
+info:
+  title: LaunchDarkly REST Account usage (beta) API
+  description: 'This documentation describes LaunchDarkly''s REST API. To access the complete OpenAPI spec directly, use Get OpenAPI spec. To learn how to use LaunchDarkly using the user interface (UI) instead, read our product documentation. ## Authentication
+
+
+    LaunchDarkly''s REST API uses the HTTPS protocol with a minimum TLS version of 1.2. All REST API resources are authenticated with either personal or service access tokens, or session cookies. Other authentication mechanisms are not supported. You can manage personal access tokens on your **Authorization** page in the LaunchDarkly UI. LaunchDarkly also has SDK keys, mobile keys, and client-side IDs that are used by our server-side SDKs, mobile SDKs, and JavaScript-based SDKs, respectively. **These keys cannot be used to access our REST API**. These keys are environment-specific, and can only perform read-only operations such as fetching feature flag settings. | Auth mechanism | Allowed resources | Use cases |
+
+    | ----------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
+
+    | Personal or service access tokens | Can be customized on a per-token basis | Building scripts, custom integrations, data export. |
+
+    | SDK keys | Can only access read-only resources specific to server-side SDKs. Restricted to a single environment. | Server-side SDKs |
+
+    | Mobile keys | Can only access read-only resources specific to mobile SDKs, and only for flags marked available to mobile keys. Restricted to a single environment. | Mobile SDKs |
+
+    | Client-side ID | Can only access read-only resources specific to JavaScript-based client-side SDKs, and only for flags marked available to client-side. Restricted to a single environment. | Client-side JavaScript |
+
+
+    > #### Keep your access tokens and SDK keys private
+
+    >
+
+    > Access tokens should _never_ be exposed in untrusted contexts. Never put an access token in client-side JavaScript, or embed it in a mobile application. LaunchDarkly has special mobile keys that you can embed in mobile apps. If you accidentally expose an access token or SDK key, you can reset it from your **Authorization** page. >
+
+    > The client-side ID is safe to embed in untrusted contexts. It''s designed for use in client-side JavaScript. ### Authentication using request header
+
+
+    The preferred way to authenticate with the API is by adding an `Authorization` header containing your access token to your requests. The value of the `Authorization` header must be your access token. Manage personal access tokens from the **Authorization** page. ### Authentication using session cookie
+
+
+    For testing purposes, you can make API calls directly from your web browser. If you are logged in to the LaunchDarkly application, the API will use your existing session to authenticate calls. Depending on the permissions granted as part of your role, you may not have permission to perform some API calls. You will receive a `401` response code in that case. > ### Modifying the Origin header causes an error
+
+    >
+
+    > LaunchDarkly validates that the Origin header for any API request authenticated by a session cookie matches the expected Origin header. The expected Origin header is `https://app.launchdarkly.com`. >
+
+    > If the Origin header does not match what''s expected, LaunchDarkly returns an error. This error can prevent the LaunchDarkly app from working correctly. >
+
+    > Any browser extension that intentionally changes the Origin header can cause this problem. For example, Cross-Origin Resource Sharing (CORS) extensions used during development can modify the Origin header and cause the app to fail. >
+
+    > To prevent this error, do not modify your Origin header. >
+
+    > LaunchDarkly does not require origin matching when authenticating with an access token, so this issue does not affect normal API usage.'
+  contact:
+    name: LaunchDarkly Technical Support Team
+    url: https://support.launchdarkly.com
+    email: support@launchdarkly.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+  version: '2.0'
+servers:
+- url: https://app.launchdarkly.com
+  description: ' Default'
+- url: https://app.launchdarkly.us
+  description: ' Federal'
+security:
+- ApiKey:
+  - read
+  - write
+tags:
+- name: Account usage (beta)
+  description: '> ### This feature is in beta
+
+    >
+
+    > To use this feature, pass in a header including the `LD-API-Version` key with value set to `beta`. Use this header with each call. To learn more, read Beta resources.
+
+    >
+
+    > Resources that are in beta are still undergoing testing and development. They may change without notice, including becoming backwards incompatible.
+
+
+    The account usage API lets you query for metrics about how your account is using LaunchDarkly. To learn more, read Account usage metrics.
+
+
+    Each endpoint returns time-series data in the form of an array of data points with timestamps. Each one contains data for that time from one or more series. It also includes a metadata array describing what each of the series is.'
+paths:
+  /api/v2/usage/ai-runs:
+    get:
+      responses:
+        '200':
+          description: Usage response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SeriesListRep'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+        '503':
+          description: Service unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusServiceUnavailable'
+      tags:
+      - Account usage (beta)
+      summary: Get AI runs usage
+      description: Get a time series array showing the number of AI runs recorded for your account. The supported granularity varies by aggregation type. The maximum time range is 365 days.
+      parameters:
+      - name: from
+        in: query
+        description: The series of data returned starts from this timestamp (Unix milliseconds). Defaults to the beginning of the current month.
+        schema:
+          type: string
+          format: string
+          description: The series of data returned starts from this timestamp (Unix milliseconds). Defaults to the beginning of the current month.
+      - name: to
+        in: query
+        description: The series of data returned ends at this timestamp (Unix milliseconds). Defaults to the current time.
+        schema:
+          type: string
+          format: string
+          description: The series of data returned ends at this timestamp (Unix milliseconds). Defaults to the current time.
+      - name: projectKey
+        in: query
+        description: A project key to filter results by. Can be specified multiple times, one query parameter per project key.
+        schema:
+          type: string
+          format: string
+          description: A project key to filter results by. Can be specified multiple times, one query parameter per project key.
+      - name: environmentKey
+        in: query
+        description: An environment key to filter results by. If specified, exactly one `projectKey` must be provided. Can be specified multiple times, one query parameter per environment key.
+        schema:
+          type: string
+          format: string
+          description: An environment key to filter results by. If specified, exactly one `projectKey` must be provided. Can be specified multiple times, one query parameter per environment key.
+      - name: sdkName
+        in: query
+        description: An SDK name to filter results by. Can be specified multiple times, one query parameter per SDK name.
+        schema:
+          type: string
+          format: string
+          description: An SDK name to filter results by. Can be specified multiple times, one query parameter per SDK name.
+      - name: sdkVersion
+        in: query
+        description: An SDK version to filter results by. Can be specified multiple times, one query parameter per SDK version.
+        schema:
+          type: string
+          format: string
+          description: An SDK version to filter results by. Can be specified multiple times, one query parameter per SDK version.
+      - name: sdkType
+        in: query
+        description: An SDK type to filter results by. Can be specified multiple times, one query parameter per SDK type.
+        schema:
+          type: string
+          format: string
+          description: An SDK type to filter results by. Can be specified multiple times, one query parameter per SDK type.
+      - name: groupBy
+        in: query
+        description: 'If specified, returns data for each distinct value of the given field. Can be specified multiple times to group data by multiple dimensions, one query parameter per dimension.<br/>Valid values: `projectId`, `environmentId`, `sdkName`, `sdkVersion`, `sdkType`.'
+        schema:
+          type: string
+          format: string
+          description: 'If specified, returns data for each distinct value of the given field. Can be specified multiple times to group data by multiple dimensions, one query parameter per dimension.<br/>Valid values: `projectId`, `environmentId`, `sdkName`, `sdkVersion`, `sdkType`.'
+      - name: aggregationType
+        in: query
+        description: 'Specifies the aggregation method. Defaults to `month_to_date`.<br/>Valid values: `month_to_date`, `incremental`.'
+        schema:
+          type: string
+          format: string
+          description: 'Specifies the aggregation method. Defaults to `month_to_date`.<br/>Valid values: `month_to_date`, `incremental`.'
+      - name: granularity
+        in: query
+        description: 'Specifies the data granularity. Defaults to `daily`. `monthly` granularity is only supported with the **month_to_date** aggregation type.<br/>Valid values: `daily`, `hourly`, `monthly`.'
+        schema:
+          type: string
+          format: string
+          description: 'Specifies the data granularity. Defaults to `daily`. `monthly` granularity is only supported with the **month_to_date** aggregation type.<br/>Valid values: `daily`, `hourly`, `monthly`.'
+      operationId: getAIRunsUsage
+  /api/v2/usage/clientside-contexts:
+    get:
+      responses:
+        '200':
+          description: Usage response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SeriesListRep'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+        '503':
+          description: Service unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusServiceUnavailable'
+      tags:
+      - Account usage (beta)
+      summary: Get contexts clientside usage
+      description: 'Get a detailed time series of the number of context key usages observed by LaunchDarkly in your account, including non-primary context kinds. Use this for breakdowns that go beyond the primary-only aggregation of MAU endpoints. The counts reflect data reported by client-side SDKs.
+
+
+        The supported granularity varies by aggregation type. The maximum time range is 365 days.'
+      parameters:
+      - name: from
+        in: query
+        description: The series of data returned starts from this timestamp (Unix milliseconds). Defaults to the beginning of the current month.
+        schema:
+          type: string
+          format: string
+          description: The series of data returned starts from this timestamp (Unix milliseconds). Defaults to the beginning of the current month.
+      - name: to
+        in: query
+        description: The series of data returned ends at this timestamp (Unix milliseconds). Defaults to the current time.
+        schema:
+          type: string
+          format: string
+          description: The series of data returned ends at this timestamp (Unix milliseconds). Defaults to the current time.
+      - name: projectKey
+        in: query
+        description: A project key to filter results by. Can be specified multiple times, one query parameter per project key.
+        schema:
+          type: string
+          format: string
+          description: A project key to filter results by. Can be specified multiple times, one query parameter per project key.
+      - name: environmentKey
+        in: query
+        description: An environment key to filter results by. If specified, exactly one `projectKey` must be provided. Can be specified multiple times, one query parameter per environment key.
+        schema:
+          type: string
+          format: string
+          description: An environment key to filter results by. If specified, exactly one `projectKey` must be provided. Can be specified multiple times, one query parameter per environment key.
+      - name: contextKind
+        in: query
+        description: A context kind to filter results by. Can be specified multiple times, one query parameter per context kind.
+        schema:
+          type: string
+          format: string
+          description: A context kind to filter results by. Can be specified multiple times, one query parameter per context kind.
+      - name: sdkName
+        in: query
+        description: An SDK name to filter results by. Can be specified multiple times, one query parameter per SDK name.
+        schema:
+          type: string
+          format: string
+          description: An SDK name to filter results by. Can be specified multiple times, one query parameter per SDK name.
+      - name: anonymous
+        in: query
+        description: 'An anonymous value to filter results by. Can be specified multiple times, one query parameter per anonymous value.<br/>Valid values: `true`, `false`.'
+        schema:
+          type: string
+          format: string
+          description: 'An anonymous value to filter results by. Can be specified multiple times, one query parameter per anonymous value.<br/>Valid values: `true`, `false`.'
+      - name: groupBy
+        in: query
+        description: 'If specified, returns data for each distinct value of the given field. `contextKind` is always included as a grouping dimension. Can be specified multiple times to group data by multiple dimensions, one query parameter per dimension.<br/>Valid values: `projectId`, `environmentId`, `sdkName`, `sdkAppId`, `anonymousV2`.'
+        schema:
+          type: string
+          format: string
+          description: 'If specified, returns data for each distinct value of the given field. `contextKind` is always included as a grouping dimension. Can be specified multiple times to group data by multiple dimensions, one query parameter per dimension.<br/>Valid values: `projectId`, `environmentId`, `sdkName`, `sdkAppId`, `anonymousV2`.'
+      - name: aggregationType
+        in: query
+        description: 'Specifies the aggregation method. Defaults to `month_to_date`.<br/>Valid values: `month_to_date`, `incremental`, `rolling_30d`.'
+        schema:
+          type: string
+          format: string
+          description: 'Specifies the aggregation method. Defaults to `month_to_date`.<br/>Valid values: `month_to_date`, `incremental`, `rolling_30d`.'
+      - name: granularity
+        in: query
+        description: 'Specifies the data granularity. Defaults to `daily`. Valid values depend on `aggregationType`: **month_to_date** supports `daily` and `monthly`; **incremental** and **rolling_30d** support `daily` only.'
+        schema:
+          type: string
+          format: string
+          description: 'Specifies the data granularity. Defaults to `daily`. Valid values depend on `aggregationType`: **month_to_date** supports `daily` and `monthly`; **incremental** and **rolling_30d** support `daily` only.'
+      operationId: getContextsClientsideUsage
+  /api/v2/usage/clientside-mau:
+    get:
+      responses:
+        '200':
+          description: Usage response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SeriesListRep'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+        '503':
+          description: Service unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusServiceUnavailable'
+      tags:
+      - Account usage (beta)
+      summary: Get MAU clientside usage
+      description: 'Get a time series of the number of context key usages observed by LaunchDarkly in your account, for the primary context kind only. The counts reflect data reported from client-side SDKs.
+
+
+        For past months, the primary context kind is fixed and reflects the last known primary kind for that month. For the current month, it may vary as new primary context kinds are observed.
+
+
+        The supported granularity varies by aggregation type. The maximum time range is 365 days.'
+      parameters:
+      - name: from
+        in: query
+        description: The series of data returned starts from this timestamp (Unix milliseconds). Defaults to the beginning of the current month.
+        schema:
+          type: string
+          format: string
+          description: The series of data returned starts from this timestamp (Unix milliseconds). Defaults to the beginning of the current month.
+      - name: to
+        in: query
+        description: The series of data returned ends at this timestamp (Unix milliseconds). Defaults to the current time.
+        schema:
+          type: string
+          format: string
+          description: The series of data returned ends at this timestamp (Unix milliseconds). Defaults to the current time.
+      - name: projectKey
+        in: query
+        description: A project key to filter results by. Can be specified multiple times, one query parameter per project key.
+        schema:
+          type: string
+          format: string
+          description: A project key to filter results by. Can be specified multiple times, one query parameter per project key.
+      - name: environmentKey
+        in: query
+        description: An environment key to filter results by. If specified, exactly one `projectKey` must be provided. Can be specified multiple times, one query parameter per environment key.
+        schema:
+          type: string
+          format: string
+          description: An environment key to filter results by. If specified, exactly one `projectKey` must be provided. Can be specified multiple times, one query parameter per environment key.
+      - name: sdkName
+        in: query
+        description: An SDK name to filter results by. Can be specified multiple times, one query parameter per SDK name.
+        schema:
+          type: string
+          format: string
+          description: An SDK name to filter results by. Can be specified multiple times, one query parameter per SDK name.
+      - name: anonymous
+        in: query
+        description: 'An anonymous value to filter results by. Can be specified multiple times, one query parameter per anonymous value.<br/>Valid values: `true`, `false`.'
+        schema:
+          type: string
+          format: string
+          description: 'An anonymous value to filter results by. Can be specified multiple times, one query parameter per anonymous value.<br/>Valid values: `true`, `false`.'
+      - name: groupBy
+        in: query
+        description: 'If specified, returns data for each distinct value of the given field. Can be specified multiple times to group data by multiple dimensions, one query parameter per dimension.<br/>Valid values: `projectId`, `environmentId`, `sdkName`, `sdkAppId`, `anonymousV2`.'
+        schema:
+          type: string
+          format: string
+          description: 'If specified, returns data for each distinct value of the given field. Can be specified multiple times to group data by multiple dimensions, one query parameter per dimension.<br/>Valid values: `projectId`, `environmentId`, `sdkName`, `sdkAppId`, `anonymousV2`.'
+      - name: aggregationType
+        in: query
+        description: 'Specifies the aggregation method. Defaults to `month_to_date`.<br/>Valid values: `month_to_date`, `incremental`, `rolling_30d`.'
+        schema:
+          type: string
+          format: string
+          description: 'Specifies the aggregation method. Defaults to `month_to_date`.<br/>Valid values: `month_to_date`, `incremental`, `rolling_30d`.'
+      - name: granularity
+        in: query
+        description: 'Specifies the data granularity. Defaults to `daily`. Valid values depend on `aggregationType`: **month_to_date** supports `daily` and `monthly`; **incremental** and **rolling_30d** support `daily` only.'
+        schema:
+          type: string
+          format: string
+          description: 'Specifies the data granularity. Defaults to `daily`. Valid values depend on `aggregationType`: **month_to_date** supports `daily` and `monthly`; **incremental** and **rolling_30d** support `daily` only.'
+      operationId: getMAUClientsideUsage
+  /api/v2/usage/data-export-events:
+    get:
+      responses:
+        '200':
+          description: Usage response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataExportSeriesListRep'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '409':
+          description: Project identity is incomplete for the requested range
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataExportProjectIdentityIncompleteErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+        '503':
+          description: Service unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusServiceUnavailable'
+      tags:
+      - Account usage (beta)
+      summary: Get data export events usage
+      description: Get a time series array showing the number of data export events from your account. The supported granularity varies by aggregation type. The maximum time range is 365 days. `groupBy=projectId` resolves legacy rows through the account's current environment-to-project mapping and returns `409` instead of a partial series when any successful row remains unattributed. Plain project filtering keeps its current-environment compatibility behavior.
+      parameters:
+      - name: from
+        in: query
+        description: The series of data returned starts from this timestamp (Unix milliseconds). Defaults to the beginning of the current month.
+        schema:
+          type: string
+          format: string
+          description: The series of data returned starts from this timestamp (Unix milliseconds). Defaults to the beginning of the current month.
+      - name: to
+        in: query
+        description: The series of data returned ends at this timestamp (Unix milliseconds). Defaults to the current time.
+        schema:
+          type: string
+          format: string
+          description: The series of data returned ends at this timestamp (Unix milliseconds). Defaults to the current time.
+      - name: projectKey
+        in: query
+        description: A project key to filter results by. Without `groupBy=projectId`, filters to the project's current environments so retained pre-materialization usage remains visible. Can be specified multiple times, one query parameter per project key.
+        schema:
+          type: string
+          format: string
+          description: A project key to filter results by. Without `groupBy=projectId`, filters to the project's current environments so retained pre-materialization usage remains visible. Can be specified multiple times, one query parameter per project key.
+      - name: environmentKey
+        in: query
+        description: An environment key to filter results by. If specified, exactly one `projectKey` must be provided. Can be specified multiple times, one query parameter per environment key.
+        schema:
+          type: string
+          format: string
+          description: An environment key to filter results by. If specified, exactly one `projectKey` must be provided. Can be specified multiple times, one query parameter per environment key.
+      - name: eventKind
+        in: query
+        description: An event kind to filter results by. Can be specified multiple times, one query parameter per event kind.
+        schema:
+          type: string
+          format: string
+          description: An event kind to filter results by. Can be specified multiple times, one query parameter per event kind.
+      - name: destinationKind
+        in: query
+        description: 'A Streaming configuration kind to filter results by. Values preserve raw product identity; `snowflake` is legacy Streaming Snowflake and is distinct from Warehouse `snowflake-v2`. Can be specified multiple times.<br/>Valid values: `kinesis`, `google-pubsub`, `mparticle`, `segment`, `azure-event-hubs`, `snowflake`, `unknown`.'
+        schema:
+          type: string
+          format: string
+          description: 'A Streaming configuration kind to filter results by. Values preserve raw product identity; `snowflake` is legacy Streaming Snowflake and is distinct from Warehouse `snowflake-v2`. Can be specified multiple times.<br/>Valid values: `kinesis`, `google-pubsub`, `mparticle`, `segment`, `azure-event-hubs`, `snowflake`, `unknown`.'
+      - name: groupBy
+        in: query
+        description: 'If specified, returns data for each distinct value of the given field. Can be specified multiple times to group data by multiple dimensions, one query parameter per dimension. `projectId` requires one or more explicit `projectKey` filters and is capped at 100 selected projects. `destinationId` returns one series per streaming destination with `destinationName` metadata, plus `destinationViewable` when the destination is in the current configuration. The destination''s own kind is added as `destinationKind` only when you can view the destination. A kind requested with `groupBy=destinationKind` is returned unchanged. A destination ID absent from the current configuration is named `Unknown historical destination`. Destinations you cannot view are reported together in one `Unknown destination` series with `destinationId` `hidden` and `destinationViewable` `false`, one per combination of the other requested dimensions, such as `destinationKind`. Usage without a destination ID is one series with an empty `destinationId` named `Unattributed`.<br/>Valid values: `projectId`, `environmentId`, `eventKind`, `destinationKind`, `destinationId`.'
+        schema:
+          type: string
+          format: string
+          description: 'If specified, returns data for each distinct value of the given field. Can be specified multiple times to group data by multiple dimensions, one query parameter per dimension. `projectId` requires one or more explicit `projectKey` filters and is capped at 100 selected projects. `destinationId` returns one series per streaming destination with `destinationName` metadata, plus `destinationViewable` when the destination is in the current configuration. The destination''s own kind is added as `destinationKind` only when you can view the destination. A kind requested with `groupBy=destinationKind` is returned unchanged. A destination ID absent from the current configuration is named `Unknown historical destination`. Destinations you cannot view are reported together in one `Unknown destination` series with `destinationId` `hidden` and `destinationViewable` `false`, one per combination of the other requested dimensions, such as `destinationKind`. Usage without a destination ID is one series with an empty `destinationId` named `Unattributed`.<br/>Valid values: `projectId`, `environmentId`, `eventKind`, `destinationKind`, `destinationId`.'
+      - name: aggregationType
+        in: query
+        description: 'Specifies the aggregation method. Defaults to `month_to_date`.<br/>Valid values: `month_to_date`, `incremental`.'
+        schema:
+          type: string
+          format: string
+          description: 'Specifies the aggregation method. Defaults to `month_to_date`.<br/>Valid values: `month_to_date`, `incremental`.'
+      - name: granularity
+        in: query
+        description: 'Specifies the data granularity. Defaults to `daily`. `monthly` granularity is only supported with the **month_to_date** aggregation type.<br/>Valid values: `daily`, `hourly`, `monthly`.'
+        schema:
+          type: string
+          format: string
+          description: 'Specifies the data granularity. Defaults to `daily`. `monthly` granularity is only supported with the **month_to_date** aggregation type.<br/>Valid values: `daily`, `hourly`, `monthly`.'
+      operationId: getDataExportEventsUsage
+  /api/v2/usage/evaluations/{projectKey}/{environmentKey}/{featureFlagKey}:
+    get:
+      responses:
+        '200':
+          description: Usage response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SeriesListRep'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Account usage (beta)
+      summary: Get evaluations usage
+      description: 'Get time-series arrays of the number of times a flag is evaluated, broken down by the variation that resulted from that evaluation. The granularity of the returned data depends on the length of the requested time range: ranges shorter than two hours return minutely data, ranges shorter than two days return hourly data, and ranges of two days or longer return daily data. Minutely data is retained for 70 days; a range shorter than two hours that starts before then is returned at hourly granularity instead, with the start of the range widened to the containing hour. Ranges that predate available data return an empty series list. If a flag has served many distinct variation values in the requested range, the least recently seen values may be aggregated into a single additional series labeled "Other Variations".'
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: environmentKey
+        in: path
+        description: The environment key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The environment key
+      - name: featureFlagKey
+        in: path
+        description: The feature flag key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The feature flag key
+      - name: from
+        in: query
+        description: The series of data returned starts from this timestamp. Defaults to 30 days ago.
+        schema:
+          type: string
+          format: string
+          description: The series of data returned starts from this timestamp. Defaults to 30 days ago.
+      - name: to
+        in: query
+        description: The series of data returned ends at this timestamp. Defaults to the current time.
+        schema:
+          type: string
+          format: string
+          description: The series of data returned ends at this timestamp. Defaults to the current time.
+      - name: tz
+        in: query
+        description: The timezone to use for breaks between days when returning daily data.
+        schema:
+          type: string
+          format: string
+          description: The timezone to use for breaks between days when returning daily data.
+      operationId: getEvaluationsUsage
+  /api/v2/usage/events/{type}:
+    get:
+      responses:
+        '200':
+          description: Usage response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SeriesListRep'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Account usage (beta)
+      summary: Get events usage
+      description: Get time-series arrays of the number of times a flag is evaluated, broken down by the variation that resulted from that evaluation. The granularity of the data depends on the age of the data requested. If the requested range is within the past two hours, minutely data is returned. If it is within the last two days, hourly data is returned. Otherwise, daily data is returned.
+      parameters:
+      - name: type
+        in: path
+        description: The type of event to retrieve. Must be either `received` or `published`.
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The type of event to retrieve. Must be either `received` or `published`.
+      - name: from
+        in: query
+        description: The series of data returned starts from this timestamp. Defaults to 24 hours ago.
+        schema:
+          type: string
+          format: string
+          description: The series of data returned starts from this timestamp. Defaults to 24 hours ago.
+      - name: to
+        in: query
+        description: The series of data returned ends at this timestamp. Defaults to the current time.
+        schema:
+          type: string
+          format: string
+          description: The series of data returned ends at this timestamp. Defaults to the current time.
+      operationId: getEventsUsage
+  /api/v2/usage/experimentation-events:
+    get:
+      responses:
+        '200':
+          description: Usage response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SeriesListRep'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+        '503':
+          description: Service unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusServiceUnavailable'
+      tags:
+      - Account usage (beta)
+      summary: Get experimentation events usage
+      description: Get a time series array showing the number of experimentation events from your account. The supported granularity varies by aggregation type. The maximum time range is 365 days.
+      parameters:
+      - name: from
+        in: query
+        description: The series of data returned starts from this timestamp (Unix milliseconds). Defaults to the beginning of the current month.
+        schema:
+          type: string
+          format: string
+          description: The series of data returned starts from this timestamp (Unix milliseconds). Defaults to the beginning of the current month.
+      - name: to
+        in: query
+        description: The series of data returned ends at this timestamp (Unix milliseconds). Defaults to the current time.
+        schema:
+          type: string
+          format: string
+          description: The series of data returned ends at this timestamp (Unix milliseconds). Defaults to the current time.
+      - name: projectKey
+        in: query
+        description: A project key to filter results by. Without `environmentKey`, filters to the project's current environments. Can be specified multiple times, one query parameter per project key.
+        schema:
+          type: string
+          format: string
+          description: A project key to filter results by. Without `environmentKey`, filters to the project's current environments. Can be specified multiple times, one query parameter per project key.
+      - name: environmentKey
+        in: query
+        description: An environment key to filter results by. If specified, exactly one `projectKey` must be provided. Can be specified multiple times, one query parameter per environment key.
+        schema:
+          type: string
+          format: string
+          description: An environment key to filter results by. If specified, exactly one `projectKey` must be provided. Can be specified multiple times, one query parameter per environment key.
+      - name: eventKey
+        in: query
+        description: An event key to filter results by. Can be specified multiple times, one query parameter per event key.
+        schema:
+          type: string
+          format: string
+          description: An event key to filter results by. Can be specified multiple times, one query parameter per event key.
+      - name: eventKind
+        in: query
+        description: An event kind to filter results by. Can be specified multiple times, one query parameter per event kind.
+        schema:
+          type: string
+          format: string
+          description: An event kind to filter results by. Can be specified multiple times, one query parameter per event kind.
+      - name: groupBy
+        in: query
+        description: 'If specified, returns data for each distinct value of the given field. Can be specified multiple times to group data by multiple dimensions, one query parameter per dimension.<br/>Valid values: `environmentId`, `eventKey`, `eventKind`.'
+        schema:
+          type: string
+          format: string
+          description: 'If specified, returns data for each distinct value of the given field. Can be specified multiple times to group data by multiple dimensions, one query parameter per dimension.<br/>Valid values: `environmentId`, `eventKey`, `eventKind`.'
+      - name: aggregationType
+        in: query
+        description: 'Specifies the aggregation method. Defaults to `month_to_date`.<br/>Valid values: `month_to_date`, `incremental`.'
+        schema:
+          type: string
+          format: string
+          description: 'Specifies the aggregation method. Defaults to `month_to_date`.<br/>Valid values: `month_to_date`, `incremental`.'
+      - name: granularity
+        in: query
+        description: 'Specifies the data granularity. Defaults to `daily`. `monthly` granularity is only supported with the **month_to_date** aggregation type.<br/>Valid values: `daily`, `hourly`, `monthly`.'
+        schema:
+          type: string
+          format: string
+          description: 'Specifies the data granularity. Defaults to `daily`. `monthly` granularity is only supported with the **month_to_date** aggregation type.<br/>Valid values: `daily`, `hourly`, `monthly`.'
+      operationId: getExperimentationEventsUsage
+  /api/v2/usage/experimentation-keys:
+    get:
+      responses:
+        '200':
+          description: Usage response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SeriesListRep'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+        '503':
+          description: Service unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusServiceUnavailable'
+      tags:
+      - Account usage (beta)
+      summary: Get experimentation keys usage
+      description: Get a time series array showing the number of experimentation keys from your account. The supported granularity varies by aggregation type. The maximum time range is 365 days.
+      parameters:
+      - name: from
+        in: query
+        description: The series of data returned starts from this timestamp (Unix milliseconds). Defaults to the beginning of the current month.
+        schema:
+          type: string
+          format: string
+          description: The series of data returned starts from this timestamp (Unix milliseconds). Defaults to the beginning of the current month.
+      - name: to
+        in: query
+        description: The series of data returned ends at this timestamp (Unix milliseconds). Defaults to the current time.
+        schema:
+          type: string
+          format: string
+          description: The series of data returned ends at this timestamp (Unix milliseconds). Defaults to the current time.
+      - name: projectKey
+        in: query
+        description: A project key to filter results by. Without `environmentKey`, filters by project, including projects that currently have no environments. Can be specified multiple times, one query parameter per project key.
+        schema:
+          type: string
+          format: string
+          description: A project key to filter results by. Without `environmentKey`, filters by project, including projects that currently have no environments. Can be specified multiple times, one query parameter per project key.
+      - name: environmentKey
+        in: query
+        description: An environment key to filter results by. If specified, exactly one `projectKey` must be provided. Can be specified multiple times, one query parameter per environment key.
+        schema:
+          type: string
+          format: string
+          description: An environment key to filter results by. If specified, exactly one `projectKey` must be provided. Can be specified multiple times, one query parameter per environment key.
+      - name: experimentId
+        in: query
+        description: An experiment ID to filter results by. Can be specified multiple times, one query parameter per experiment ID.
+        schema:
+          type: string
+          format: string
+          description: An experiment ID to filter results by. Can be specified multiple times, one query parameter per experiment ID.
+      - name: groupBy
+        in: query
+        description: 'If specified, returns data for each distinct value of the given field. Can be specified multiple times to group data by multiple dimensions, one query parameter per dimension.<br/>Valid values: `projectId`, `environmentId`, `experimentId`.'
+        schema:
+          type: string
+          format: string
+          description: 'If specified, returns data for each distinct value of the given field. Can be specified multiple times to group data by multiple dimensions, one query parameter per dimension.<br/>Valid values: `projectId`, `environmentId`, `experimentId`.'
+      - name: aggregationType
+        in: query
+        description: 'Specifies the aggregation method. Defaults to `month_to_date`.<br/>Valid values: `month_to_date`, `incremental`.'
+        schema:
+          type: string
+          format: string
+          description: 'Specifies the aggregation method. Defaults to `month_to_date`.<br/>Valid values: `month_to_date`, `incremental`.'
+      - name: granularity
+        in: query
+        description: 'Specifies the data granularity. Defaults to `daily`. `monthly` granularity is only supported with the **month_to_date** aggregation type.<br/>Valid values: `daily`, `hourly`, `monthly`.'
+        schema:
+          type: string
+          format: string
+          description: 'Specifies the data granularity. Defaults to `daily`. `monthly` granularity is only supported with the **month_to_date** aggregation type.<br/>Valid values: `daily`, `hourly`, `monthly`.'
+      operationId: getExperimentationKeysUsage
+  /api/v2/usage/mau:
+    get:
+      responses:
+        '200':
+          description: Usage response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SeriesListRep'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Account usage (beta)
+      summary: Get MAU usage
+      description: 'Get a time-series array of the number of monthly active users (MAU) seen by LaunchDarkly from your account. The granularity is always daily.
+
+
+        Endpoints for retrieving monthly active users (MAU) do not return information about active context instances. After you have upgraded your LaunchDarkly SDK to use contexts instead of users, you should not rely on this endpoint. To learn more, read Account usage metrics.'
+      parameters:
+      - name: from
+        in: query
+        description: The series of data returned starts from this timestamp. Defaults to 30 days ago.
+        schema:
+          type: string
+          format: string
+          description: The series of data returned starts from this timestamp. Defaults to 30 days ago.
+      - name: to
+        in: query
+        description: The series of data returned ends at this timestamp. Defaults to the current time.
+        schema:
+          type: string
+          format: string
+          description: The series of data returned ends at this timestamp. Defaults to the current time.
+      - name: project
+        in: query
+        description: A project key to filter results to. Can be specified multiple times, one query parameter per project key, to view data for multiple projects.
+        schema:
+          type: string
+          format: string
+          description: A project key to filter results to. Can be specified multiple times, one query parameter per project key, to view data for multiple projects.
+      - name: environment
+        in: query
+        description: An environment key to filter results to. When using this parameter, exactly one project key must also be set. Can be specified multiple times as separate query parameters to view data for multiple environments within a single project.
+        schema:
+          type: string
+          format: string
+          description: An environment key to filter results to. When using this parameter, exactly one project key must also be set. Can be specified multiple times as separate query parameters to view data for multiple environments within a single project.
+      - name: sdktype
+        in: query
+        description: 'An SDK type to filter results to. Can be specified multiple times, one query parameter per SDK type. Valid values: client, server'
+        schema:
+          type: string
+          format: string
+          description: 'An SDK type to filter results to. Can be specified multiple times, one query parameter per SDK type. Valid values: client, server'
+      - name: sdk
+        in: query
+        description: An SDK name to filter results to. Can be specified multiple times, one query parameter per SDK.
+        schema:
+          type: string
+          format: string
+          description: An SDK name to filter results to. Can be specified multiple times, one query parameter per SDK.
+      - name: anonymous
+        in: query
+        description: If specified, filters results to either anonymous or nonanonymous users.
+        schema:
+          type: string
+          format: string
+          description: If specified, filters results to either anonymous or nonanonymous users.
+      - name: groupby
+        in: query
+        description: 'If specified, returns data for each distinct value of the given field. Can be specified multiple times to group data by multiple dimensions (for example, to group by both project and SDK). Valid values: project, environment, sdktype, sdk, anonymous, contextKind, sdkAppId'
+        schema:
+          type: string
+          format: string
+          description: 'If specified, returns data for each distinct value of the given field. Can be specified multiple times to group data by multiple dimensions (for example, to group by both project and SDK). Valid values: project, environment, sdktype, sdk, anonymous, contextKind, sdkAppId'
+      - name: aggregationType
+        in: query
+        description: 'If specified, queries for rolling 30-day, month-to-date, or daily incremental counts. Default is rolling 30-day. Valid values: rolling_30d, month_to_date, daily_incremental'
+        schema:
+          type: string
+          format: string
+          description: 'If specified, queries for rolling 30-day, month-to-date, or daily incremental counts. Default is rolling 30-day. Valid values: rolling_30d, month_to_date, daily_incremental'
+      - name: contextKind
+        in: query
+        description: Filters results to the specified context kinds. Can be specified multiple times, one query parameter per context kind. If not set, queries for the user context kind.
+        schema:
+          type: string
+          format: string
+          description: Filters results to the specified context kinds. Can be specified multiple times, one query parameter per context kind. If not set, queries for the user context kind.
+      operationId: getMauUsage
+      deprecated: true
+  /api/v2/usage/mau/bycategory:
+    get:
+      responses:
+        '200':
+          description: Usage response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SeriesListRep'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Account usage (beta)
+      summary: Get MAU usage by category
+      description: 'Get time-series arrays of the number of monthly active users (MAU) seen by LaunchDarkly from your account, broken down by the category of users. The category is either `browser`, `mobile`, or `backend`.
+
+
+        Endpoints for retrieving monthly active users (MAU) do not return information about active context instances. After you have upgraded your LaunchDarkly SDK to use contexts instead of users, you should not rely on this endpoint. To learn more, read Account usage metrics.'
+      parameters:
+      - name: from
+        in: query
+        description: The series of data returned starts from this timestamp. Defaults to 30 days ago.
+        schema:
+          type: string
+          format: string
+          description: The series of data returned starts from this timestamp. Defaults to 30 days ago.
+      - name: to
+        in: query
+        description: The series of data returned ends at this timestamp. Defaults to the current time.
+        schema:
+          type: string
+          format: string
+          description: The series of data returned ends at this timestamp. Defaults to the current time.
+      operationId: getMauUsageByCategory
+      deprecated: true
+  /api/v2/usage/mau/sdks:
+    get:
+      responses:
+        '200':
+          description: MAU SDKs response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SdkListRep'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Account usage (beta)
+      summary: Get MAU SDKs by type
+      description: 'Get a list of SDKs. These are all of the SDKs that have connected to LaunchDarkly by monthly active users (MAU) in the requested time period.
+
+
+        Endpoints for retrieving monthly active users (MAU) do not return information about active context instances. After you have upgraded your LaunchDarkly SDK to use contexts instead of users, you should not rely on this endpoint. To learn more, read Account usage metrics.'
+      parameters:
+      - name: from
+        in: query
+        description: The data returned starts from this timestamp. Defaults to seven days ago. The timestamp is in Unix milliseconds, for example, 1656694800000.
+        schema:
+          type: string
+          format: string
+          description: The data returned starts from this timestamp. Defaults to seven days ago. The timestamp is in Unix milliseconds, for example, 1656694800000.
+      - name: to
+        in: query
+        description: The data returned ends at this timestamp. Defaults to the current time. The timestamp is in Unix milliseconds, for example, 1657904400000.
+        schema:
+          type: string
+          format: string
+          description: The data returned ends at this timestamp. Defaults to the current time. The timestamp is in Unix milliseconds, for example, 1657904400000.
+      - name: sdktype
+        in: query
+        description: The type of SDK with monthly active users (MAU) to list. Must be either `client` or `server`.
+        schema:
+          type: string
+          format: string
+          description: The type of SDK with monthly active users (MAU) to list. Must be either `client` or `server`.
+      operationId: getMauSdksByType
+  /api/v2/usage/observability/errors:
+    get:
+      responses:
+        '200':
+          description: Usage response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SeriesListRep'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Account usage (beta)
+      summary: Get observability errors usage
+      description: Get time-series arrays of the number of observability errors. Supports `daily` and `monthly` granularity.
+      parameters:
+      - name: from
+        in: query
+        description: The series of data returned starts from this timestamp (Unix seconds). Defaults to the beginning of the current month.
+        schema:
+          type: string
+          format: string
+          description: The series of data returned starts from this timestamp (Unix seconds). Defaults to the beginning of the current month.
+      - name: to
+        in: query
+        description: The series of data returned ends at this timestamp (Unix seconds). Defaults to the current time.
+        schema:
+          type: string
+          format: string
+          description: The series of data returned ends at this timestamp (Unix seconds). Defaults to the current time.
+      - name: projectKey
+        in: query
+        description: A project key to filter results by. Can be specified multiple times, one query parameter per project key.
+        schema:
+          type: string
+          format: string
+          description: A project key to filter results by. Can be specified multiple times, one query parameter per project key.
+      - name: granularity
+        in: query
+        description: 'Specifies the data granularity. Defaults to `daily`. Valid values depend on `aggregationType`: **month_to_date** supports `daily` and `monthly`; **incremental** and **rolling_30d** support `daily` only.'
+        schema:
+          type: string
+          format: string
+          description: 'Specifies the data granularity. Defaults to `daily`. Valid values depend on `aggregationType`: **month_to_date** supports `daily` and `monthly`; **incremental** and **rolling_30d** support `daily` only.'
+      - name: aggregationType
+        in: query
+        description: 'Specifies the aggregation method. Defaults to `month_to_date`.<br/>Valid values: `month_to_date`, `incremental`, `rolling_30d`.'
+        schema:
+          type: string
+          format: string
+          description: 'Specifies the aggregation method. Defaults to `month_to_date`.<br/>Valid values: `month_to_date`, `incremental`, `rolling_30d`.'
+      operationId: getObservabilityErrorsUsage
+  /api/v2/usage/observability/logs:
+    get:
+      responses:
+        '200':
+          description: Usage response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SeriesListRep'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Account usage (beta)
+      summary: Get observability logs usage
+      description: Get time-series arrays of the number of observability logs. Supports `daily` and `monthly` granularity.
+      parameters:
+      - name: from
+        in: query
+        description: The series of data returned starts from this timestamp (Unix seconds). Defaults to the beginning of the current month.
+        schema:
+          type: string
+          format: string
+          description: The series of data returned starts from this timestamp (Unix seconds). Defaults to the beginning of the current month.
+      - name: to
+        in: query
+        description: The series of data returned ends at this timestamp (Unix seconds). Defaults to the current time.
+        schema:
+          type: string
+          format: string
+          description: The series of data returned ends at this timestamp (Unix seconds). Defaults to the current time.
+      - name: projectKey
+        in: query
+        description: A project key to filter results by. Can be specified multiple times, one query parameter per project key.
+        schema:
+          type: string
+          format: string
+          description: A project key to filter results by. Can be specified multiple times, one query parameter per project key.
+      - name: granularity
+        in: query
+        description: 'Specifies the data granularity. Defaults to `daily`. Valid values depend on `aggregationType`: **month_to_date** supports `daily` and `monthly`; **incremental** and **rolling_30d** support `daily` only.'
+        schema:
+          type: string
+          format: string
+          description: 'Specifies the data granularity. Defaults to `daily`. Valid values depend on `aggregationType`: **month_to_date** supports `daily` and `monthly`; **incremental** and **rolling_30d** support `daily` only.'
+      - name: aggregationType
+        in: query
+        description: 'Specifies the aggregation method. Defaults to `month_to_date`.<br/>Valid values: `month_to_date`, `incremental`, `rolling_30d`.'
+        schema:
+          type: string
+          format: string
+          description: 'Specifies the aggregation method. Defaults to `month_to_date`.<br/>Valid values: `month_to_date`, `incremental`, `rolling_30d`.'
+      operationId: getObservabilityLogsUsage
+  /api/v2/usage/observability/metrics:
+    get:
+      responses:
+        '200':
+          description: Usage response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SeriesListRep'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Account usage (beta)
+      summary: Get observability metrics usage
+      description: Get time-series arrays of the number of observability metrics. Supports `hourly`, `daily`, and `monthly` granularity.
+      parameters:
+      - name: from
+        in: query
+        description: The series of data returned starts from this timestamp (Unix seconds). Defaults to the beginning of the current month.
+        schema:
+          type: string
+          format: string
+          description: The series of data returned starts from this timestamp (Unix seconds). Defaults to the beginning of the current month.
+      - name: to
+        in: query
+        description: The series of data returned ends at this timestamp (Unix seconds). Defaults to the current time.
+        schema:
+          type: string
+          format: string
+          description: The series of data returned ends at this timestamp (Unix seconds). Defaults to the current time.
+      - name: projectKey
+        in: query
+        description: A project key to filter results by. Can be specified multiple times, one query parameter per project key.
+        schema:
+          type: string
+          format: string
+          description: A project key to filter results by. Can be specified multiple times, one query parameter per project key.
+      - name: granularity
+        in: query
+        description: 'Specifies the data granularity. Defaults to `daily`. Valid values depend on `aggregationType`: **month_to_date** supports `hourly`, `daily`, and `monthly`; **average** supports `hourly`, `daily`, and `monthly`.'
+        schema:
+          type: string
+          format: string
+          description: 'Specifies the data granularity. Defaults to `daily`. Valid values depend on `aggregationType`: **month_to_date** supports `hourly`, `daily`, and `monthly`; **average** supports `hourly`, `daily`, and `monthly`.'
+      - name: aggregationType
+        in: query
+        description: 'Specifies the aggregation method. Defaults to `month_to_date`.<br/>Valid values: `month_to_date`, `average`.'
+        schema:
+          type: string
+          format: string
+          description: 'Specifies the aggregation method. Defaults to `month_to_date`.<br/>Valid values: `month_to_date`, `average`.'
+      operationId: getObservabilityMetricsUsage
+  /api/v2/usage/observability/sessions:
+    get:
+      responses:
+        '200':
+          description: Usage response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SeriesListRep'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Account usage (beta)
+      summary: Get observability sessions usage
+      description: Get time-series arrays of the number of observability sessions. Supports `daily` and `monthly` granularity.
+      parameters:
+      - name: from
+        in: query
+        description: The series of data returned starts from this timestamp (Unix seconds). Defaults to the beginning of the current month.
+        schema:
+          type: string
+          format: string
+          description: The series of data returned starts from this timestamp (Unix seconds). Defaults to the beginning of the current month.
+      - name: to
+        in: query
+        description: The series of data returned ends at this timestamp (Unix seconds). Defaults to the current time.
+        schema:
+          type: string
+          format: string
+          description: The series of data returned ends at this timestamp (Unix seconds). Defaults to the current time.
+      - name: projectKey
+        in: query
+        description: A project key to filter results by. Can be specified multiple times, one query parameter per project key.
+        schema:
+          type: string
+          format: string
+          description: A project key to filter results by. Can be specified multiple times, one query parameter per project key.
+      - name: granularity
+        in: query
+        description: 'Specifies the data granularity. Defaults to `daily`. Valid values depend on `aggregationType`: **month_to_date** supports `daily` and `monthly`; **incremental** and **rolling_30d** support `daily` only.'
+        schema:
+          type: string
+          format: string
+          description: 'Specifies the data granularity. Defaults to `daily`. Valid values depend on `aggregationType`: **month_to_date** supports `daily` and `monthly`; **incremental** and **rolling_30d** support `daily` only.'
+      - name: aggregationType
+        in: query
+        description: 'Specifies the aggregation method. Defaults to `month_to_date`.<br/>Valid values: `month_to_date`, `incremental`, `rolling_30d`.'
+        schema:
+          type: string
+          format: string
+          description: 'Specifies the aggregation method. Defaults to `month_to_date`.<br/>Valid values: `month_to_date`, `incremental`, `rolling_30d`.'
+      operationId: getObservabilitySessionsUsage
+  /api/v2/usage/observability/traces:
+    get:
+      responses:
+        '200':
+          description: Usage response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SeriesListRep'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Account usage (beta)
+      summary: Get observability traces usage
+      description: Get time-series arrays of the number of observability traces. Supports `daily` and `monthly` granularity.
+      parameters:
+      - name: from
+        in: query
+        description: The series of data returned starts from this timestamp (Unix seconds). Defaults to the beginning of the current month.
+        schema:
+          type: string
+          format: string
+          description: The series of data returned starts from this timestamp (Unix seconds). Defaults to the beginning of the current month.
+      - name: to
+        in: query
+        description: The series of data returned ends at this timestamp (Unix seconds). Defaults to the current time.
+        schema:
+          type: string
+          format: string
+          description: The series of data returned ends at this timestamp (Unix seconds). Defaults to the current time.
+      - name: projectKey
+        in: query
+        description: A project key to filter results by. Can be specified multiple times, one query parameter per project key.
+        schema:
+          type: string
+          format: string
+          description: A project key to filter results by. Can be specified multiple times, one query parameter per project key.
+      - name: granularity
+        in: query
+        description: 'Specifies the data granularity. Defaults to `daily`. Valid values depend on `aggregationType`: **month_to_date** supports `daily` and `monthly`; **incremental** and **rolling_30d** support `daily` only.'
+        schema:
+          type: string
+          format: string
+          description: 'Specifies the data granularity. Defaults to `daily`. Valid values depend on `aggregationType`: **month_to_date** supports `daily` and `monthly`; **incremental** and **rolling_30d** support `daily` only.'
+      - name: aggregationType
+        in: query
+        description: 'Specifies the aggregation method. Defaults to `month_to_date`.<br/>Valid values: `month_to_date`, `incremental`, `rolling_30d`.'
+        schema:
+          type: string
+          format: string
+          description: 'Specifies the aggregation method. Defaults to `month_to_date`.<br/>Valid values: `month_to_date`, `incremental`, `rolling_30d`.'
+      operationId: getObservabilityTracesUsage
+  /api/v2/usage/sdk-versions/all:
+    get:
+      responses:
+        '200':
+          description: SDK versions usage response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SdkVersionDetailsRep'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+        '503':
+          description: Service unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusServiceUnavailable'
+      tags:
+      - Account usage (beta)
+      summary: Get usage details for all SDK versions
+      description: 'Get detailed SDK version usage data for all versions observed in the last 24 hours in your account. Unlike the `/details` endpoint which returns only the max version per SDK, this endpoint returns all SDK versions for the specified filters. This data is refreshed hourly.
+
+
+        All query parameters are optional, allowing you to filter results as broadly or narrowly as needed.'
+      parameters:
+      - name: environmentId
+        in: query
+        description: Filter to a specific environment ID.
+        schema:
+          type: string
+          format: string
+          description: Filter to a specific environment ID.
+      - name: projectId
+        in: query
+        description: Filter to a specific project ID.
+        schema:
+          type: string
+          format: string
+          description: Filter to a specific project ID.
+      - name: sdkName
+        in: query
+        description: Filter to a specific SDK name.
+        schema:
+          type: string
+          format: string
+          description: Filter to a specific SDK name.
+      - name: sdkType
+        in: query
+        description: Filter to a specific SDK type (for example, 'server', 'browser', 'mobile').
+        schema:
+          type: string
+          format: string
+          description: Filter to a specific SDK type (for example, 'server', 'browser', 'mobile').
+      - name: sdkAppId
+        in: query
+        description: Filter to a specific SDK application ID.
+        schema:
+          type: string
+          format: string
+          description: Filter to a specific SDK application ID.
+      - name: connectionType
+        in: query
+        description: Filter to a specific connection type (for example, 'direct', 'proxy').
+        schema:
+          type: string
+          format: string
+          description: Filter to a specific connection type (for example, 'direct', 'proxy').
+      operationId: getSdkAllVersions
+  /api/v2/usage/sdk-versions/details:
+    get:
+      responses:
+        '200':
+          description: SDK versions usage response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SdkVersionDetailsRep'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+        '503':
+          description: Service unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusServiceUnavailable'
+      tags:
+      - Account usage (beta)
+      summary: Get SDK versions usage details
+      description: 'Get detailed SDK version usage data for your account, including version information, EOL status, and relay proxy metadata. Refreshed hourly, returns the max version for each SDK observed in the last 24 hours, including those without EOL metadata available.
+
+
+        This endpoint provides comprehensive information about SDK versions in use across your projects and environments.'
+      operationId: getSdkVersionsDetails
+  /api/v2/usage/serverside-contexts:
+    get:
+      responses:
+        '200':
+          description: Usage response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SeriesListRep'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+        '503':
+          description: Service unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusServiceUnavailable'
+      tags:
+      - Account usage (beta)
+      summary: Get contexts serverside usage
+      description: 'Get a detailed time series of the number of context key usages observed by LaunchDarkly in your account, including non-primary context kinds. Use this for breakdowns that go beyond the primary-only aggregation of MAU endpoints. The counts reflect data reported by server-side SDKs.
+
+
+        The supported granularity varies by aggregation type. The maximum time range is 365 days.'
+      parameters:
+      - name: from
+        in: query
+        description: The series of data returned starts from this timestamp (Unix seconds). Defaults to the beginning of the current month.
+        schema:
+          type: string
+          format: string
+          description: The series of data returned starts from this timestamp (Unix seconds). Defaults to the beginning of the current month.
+      - name: to
+        in: query
+        description: The series of data returned ends at this timestamp (Unix seconds). Defaults to the current time.
+        schema:
+          type: string
+          format: string
+          description: The series of data returned ends at this timestamp (Unix seconds). Defaults to the current time.
+      - name: projectKey
+        in: query
+        description: A project key to filter results by. Can be specified multiple times, one query parameter per project key.
+        schema:
+          type: string
+          format: string
+          description: A project key to filter results by. Can be specified multiple times, one query parameter per project key.
+      - name: environmentKey
+        in: query
+        description: An environment key to filter results by. If specified, exactly one `projectKey` must be provided. Can be specified multiple times, one query parameter per environment key.
+        schema:
+          type: string
+          format: string
+          description: An environment key to filter results by. If specified, exactly one `projectKey` must be provided. Can be specified multiple times, one query parameter per environment key.
+      - name: contextKind
+        in: query
+        description: A context kind to filter results by. Can be specified multiple times, one query parameter per context kind.
+        schema:
+          type: string
+          format: string
+          description: A context kind to filter results by. Can be specified multiple times, one query parameter per context kind.
+      - name: sdkName
+        in: query
+        description: An SDK name to filter results by. Can be specified multiple times, one query parameter per SDK name.
+        schema:
+          type: string
+          format: string
+          description: An SDK name to filter results by. Can be specified multiple times, one query parameter per SDK name.
+      - name: anonymous
+        in: query
+        description: 'An anonymous value to filter results by. Can be specified multiple times, one query parameter per anonymous value.<br/>Valid values: `true`, `false`.'
+        schema:
+          type: string
+          format: string
+          description: 'An anonymous value to filter results by. Can be specified multiple times, one query parameter per anonymous value.<br/>Valid values: `true`, `false`.'
+      - name: groupBy
+        in: query
+        description: 'If specified, returns data for each distinct value of the given field. `contextKind` is always included as a grouping dimension. Can be specified multiple times to group data by multiple dimensions, one query parameter per dimension.<br/>Valid values: `projectId`, `environmentId`, `sdkName`, `sdkAppId`, `anonymousV2`.'
+        schema:
+          type: string
+          format: string
+          description: 'If specified, returns data for each distinct value of the given field. `contextKind` is always included as a grouping dimension. Can be specified multiple times to group data by multiple dimensions, one query parameter per dimension.<br/>Valid values: `projectId`, `environmentId`, `sdkName`, `sdkAppId`, `anonymousV2`.'
+      - name: aggregationType
+        in: query
+        description: 'Specifies the aggregation method. Defaults to `month_to_date`.<br/>Valid values: `month_to_date`, `incremental`, `rolling_30d`.'
+        schema:
+          type: string
+          format: string
+          description: 'Specifies the aggregation method. Defaults to `month_to_date`.<br/>Valid values: `month_to_date`, `incremental`, `rolling_30d`.'
+      - name: granularity
+        in: query
+        description: 'Specifies the data granularity. Defaults to `daily`. Valid values depend on `aggregationType`: **month_to_date** supports `daily` and `monthly`; **incremental** and **rolling_30d** support `daily` only.'
+        schema:
+          type: string
+          format: string
+          description: 'Specifies the data granularity. Defaults to `daily`. Valid values depend on `aggregationType`: **month_to_date** supports `daily` and `monthly`; **incremental** and **rolling_30d** support `daily` only.'
+      operationId: getContextsServersideUsage
+  /api/v2/usage/service-connections:
+    get:
+      responses:
+        '200':
+          description: Usage response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SeriesListRepFloat'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+        '503':
+          description: Service unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusServiceUnavailable'
+      tags:
+      - Account usage (beta)
+      summary: Get service connections usage
+      description: Get a time series array showing the number of service connection minutes from your account. The supported granularity varies by aggregation type. The maximum time range is 365 days.
+      parameters:
+      - name: from
+        in: query
+        description: The series of data returned starts from this timestamp (Unix milliseconds). Defaults to the beginning of the current month.
+        schema:
+          type: string
+          format: string
+          description: The series of data returned starts from this timestamp (Unix milliseconds). Defaults to the beginning of the current month.
+      - name: to
+        in: query
+        description: The series of data returned ends at this timestamp (Unix milliseconds). Defaults to the current time.
+        schema:
+          type: string
+          format: string
+          description: The series of data returned ends at this timestamp (Unix milliseconds). Defaults to the current time.
+      - name: projectKey
+        in: query
+        description: A project key to filter results by. Can be specified multiple times, one query parameter per project key.
+        schema:
+          type: string
+          format: string
+          description: A project key to filter results by. Can be specified multiple times, one query parameter per project key.
+      - name: environmentKey
+        in: query
+        description: An environment key to filter results by. If specified, exactly one `projectKey` must be provided. Can be specified multiple times, one query parameter per environment key.
+        schema:
+          type: string
+          format: string
+          description: An environment key to filter results by. If specified, exactly one `projectKey` must be provided. Can be specified multiple times, one query parameter per environment key.
+      - name: connectionType
+        in: query
+        description: A connection type to filter results by. Can be specified multiple times, one query parameter per connection type.
+        schema:
+          type: string
+          format: string
+          description: A connection type to filter results by. Can be specified multiple times, one query parameter per connection type.
+      - name: relayVersion
+        in: query
+        description: A relay version to filter results by. Can be specified multiple times, one query parameter per relay version.
+        schema:
+          type: string
+          format: string
+          description: A relay version to filter results by. Can be specified multiple times, one query parameter per relay version.
+      - name: sdkName
+        in: query
+        description: An SDK name to filter results by. Can be specified multiple times, one query parameter per SDK name.
+        schema:
+          type: string
+          format: string
+          description: An SDK name to filter results by. Can be specified multiple times, one query parameter per SDK name.
+      - name: sdkVersion
+        in: query
+        description: An SDK version to filter results by. Can be specified multiple times, one query parameter per SDK version.
+        schema:
+          type: string
+          format: string
+          description: An SDK version to filter results by. Can be specified multiple times, one query parameter per SDK version.
+      - name: sdkType
+        in: query
+        description: Deprecated. This endpoint reports server-side connections only, so `server` is the only value that returns data and omitting the parameter is equivalent. Any other value returns an empty series. To report client-side connections, use `GET /api/v2/usage/streams/{source}`.
+        deprecated: true
+        schema:
+          type: string
+          format: string
+          description: Deprecated. This endpoint reports server-side connections only, so `server` is the only value that returns data and omitting the parameter is equivalent. Any other value returns an empty series. To report client-side connections, use `GET /api/v2/usage/streams/{source}`.
+      - name: sdkAppId
+        in: query
+        description: An SDK app ID to filter results by. Can be specified multiple times, one query parameter per SDK app ID.
+        schema:
+          type: string
+          format: string
+          description: An SDK app ID to filter results by. Can be specified multiple times, one query parameter per SDK app ID.
+      - name: groupBy
+        in: query
+        description: 'If specified, returns data for each distinct value of the given field. Can be specified multiple times to group data by multiple dimensions, one query parameter per dimension.<br/>Valid values: `projectId`, `environmentId`, `connectionType`, `relayVersion`, `sdkName`, `sdkVersion`, `sdkAppId`.<br/>`sdkType` is no longer offered: this endpoint reports server-side connections only, so grouping by it returns a single group. It is still accepted, for compatibility.'
+        schema:
+          type: string
+          format: string
+          description: 'If specified, returns data for each distinct value of the given field. Can be specified multiple times to group data by multiple dimensions, one query parameter per dimension.<br/>Valid values: `projectId`, `environmentId`, `connectionType`, `relayVersion`, `sdkName`, `sdkVersion`, `sdkAppId`.<br/>`sdkType` is no longer offered: this endpoint reports server-side connections only, so grouping by it returns a single group. It is still accepted, for compatibility.'
+      - name: aggregationType
+        in: query
+        description: 'Specifies the aggregation method. Defaults to `month_to_date`.<br/>Valid values: `month_to_date`, `incremental`.'
+        schema:
+          type: string
+          format: string
+          description: 'Specifies the aggregation method. Defaults to `month_to_date`.<br/>Valid values: `month_to_date`, `incremental`.'
+      - name: granularity
+        in: query
+        description: 'Specifies the data granularity. Defaults to `daily`. `monthly` granularity is only supported with the **month_to_date** aggregation type.<br/>Valid values: `daily`, `hourly`, `monthly`.'
+        schema:
+          type: string
+          format: string
+          description: 'Specifies the data granularity. Defaults to `daily`. `monthly` granularity is only supported with the **month_to_date** aggregation type.<br/>Valid values: `daily`, `hourly`, `monthly`.'
+      operationId: getServiceConnectionsUsage
+  /api/v2/usage/streams/{source}:
+    get:
+      responses:
+        '200':
+          description: Usage response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SeriesListRep'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Account usage (beta)
+      summary: Get stream usage
+      description: Get a time-series array of the number of streaming connections to LaunchDarkly in each time period. The granularity of the data depends on the age of the data requested. If the requested range is within the past two hours, minutely data is returned. If it is within the last two days, hourly data is returned. Otherwise, daily data is returned.
+      parameters:
+      - name: source
+        in: path
+        description: The source of streaming connections to describe. Must be either `client` or `server`.
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The source of streaming connections to describe. Must be either `client` or `server`.
+      - name: from
+        in: query
+        description: The series of data returned starts from this timestamp. Defaults to 30 days ago.
+        schema:
+          type: string
+          format: string
+          description: The series of data returned starts from this timestamp. Defaults to 30 days ago.
+      - name: to
+        in: query
+        description: The series of data returned ends at this timestamp. Defaults to the current time.
+        schema:
+          type: string
+          format: string
+          description: The series of data returned ends at this timestamp. Defaults to the current time.
+      - name: tz
+        in: query
+        description: The timezone to use for breaks between days when returning daily data.
+        schema:
+          type: string
+          format: string
+          description: The timezone to use for breaks between days when returning daily data.
+      operationId: getStreamUsage
+  /api/v2/usage/streams/{source}/bysdkversion:
+    get:
+      responses:
+        '200':
+          description: Usage response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SeriesListRep'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Account usage (beta)
+      summary: Get stream usage by SDK version
+      description: Get multiple series of the number of streaming connections to LaunchDarkly in each time period, separated by SDK type and version. Information about each series is in the metadata array. The granularity of the data depends on the age of the data requested. If the requested range is within the past 2 hours, minutely data is returned. If it is within the last two days, hourly data is returned. Otherwise, daily data is returned.
+      parameters:
+      - name: source
+        in: path
+        description: The source of streaming connections to describe. Must be either `client` or `server`.
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The source of streaming connections to describe. Must be either `client` or `server`.
+      - name: from
+        in: query
+        description: The series of data returned starts from this timestamp. Defaults to 24 hours ago.
+        schema:
+          type: string
+          format: string
+          description: The series of data returned starts from this timestamp. Defaults to 24 hours ago.
+      - name: to
+        in: query
+        description: The series of data returned ends at this timestamp. Defaults to the current time.
+        schema:
+          type: string
+          format: string
+          description: The series of data returned ends at this timestamp. Defaults to the current time.
+      - name: tz
+        in: query
+        description: The timezone to use for breaks between days when returning daily data.
+        schema:
+          type: string
+          format: string
+          description: The timezone to use for breaks between days when returning daily data.
+      - name: sdk
+        in: query
+        description: If included, this filters the returned series to only those that match this SDK name.
+        schema:
+          type: string
+          format: string
+          description: If included, this filters the returned series to only those that match this SDK name.
+      - name: version
+        in: query
+        description: If included, this filters the returned series to only those that match this SDK version.
+        schema:
+          type: string
+          format: string
+          description: If included, this filters the returned series to only those that match this SDK version.
+      operationId: getStreamUsageBySdkVersion
+  /api/v2/usage/streams/{source}/sdkversions:
+    get:
+      responses:
+        '200':
+          description: SDK Versions response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SdkVersionListRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Account usage (beta)
+      summary: Get stream usage SDK versions
+      description: Get a list of SDK version objects, which contain an SDK name and version. These are all of the SDKs that have connected to LaunchDarkly from your account in the past 60 days.
+      parameters:
+      - name: source
+        in: path
+        description: The source of streaming connections to describe. Must be either `client` or `server`.
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The source of streaming connections to describe. Must be either `client` or `server`.
+      operationId: getStreamUsageSdkversion
+  /api/v2/usage/total-contexts:
+    get:
+      responses:
+        '200':
+          description: Usage response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SeriesListRep'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+        '503':
+          description: Service unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusServiceUnavailable'
+      tags:
+      - Account usage (beta)
+      summary: Get contexts total usage
+      description: 'Get a detailed time series of the number of context key usages observed by LaunchDarkly in your account, including non-primary context kinds. Use this for breakdowns that go beyond the primary-only aggregation of MAU endpoints.
+
+
+        The supported granularity varies by aggregation type. The maximum time range is 365 days.'
+      parameters:
+      - name: from
+        in: query
+        description: The series of data returned starts from this timestamp (Unix milliseconds). Defaults to the beginning of the current month.
+        schema:
+          type: string
+          format: string
+          description: The series of data returned starts from this timestamp (Unix milliseconds). Defaults to the beginning of the current month.
+      - name: to
+        in: query
+        description: The series of data returned ends at this timestamp (Unix milliseconds). Defaults to the current time.
+        schema:
+          type: string
+          format: string
+          description: The series of data returned ends at this timestamp (Unix milliseconds). Defaults to the current time.
+      - name: projectKey
+        in: query
+        description: A project key to filter results by. Can be specified multiple times, one query parameter per project key.
+        schema:
+          type: string
+          format: string
+          description: A project key to filter results by. Can be specified multiple times, one query parameter per project key.
+      - name: environmentKey
+        in: query
+        description: An environment key to filter results by. If specified, exactly one `projectKey` must be provided. Can be specified multiple times, one query parameter per environment key.
+        schema:
+          type: string
+          format: string
+          description: An environment key to filter results by. If specified, exactly one `projectKey` must be provided. Can be specified multiple times, one query parameter per environment key.
+      - name: contextKind
+        in: query
+        description: A context kind to filter results by. Can be specified multiple times, one query parameter per context kind.
+        schema:
+          type: string
+          format: string
+          description: A context kind to filter results by. Can be specified multiple times, one query parameter per context kind.
+      - name: sdkName
+        in: query
+        description: An SDK name to filter results by. Can be specified multiple times, one query parameter per SDK name.
+        schema:
+          type: string
+          format: string
+          description: An SDK name to filter results by. Can be specified multiple times, one query parameter per SDK name.
+      - name: sdkType
+        in: query
+        description: An SDK type to filter results by. Can be specified multiple times, one query parameter per SDK type.
+        schema:
+          type: string
+          format: string
+          description: An SDK type to filter results by. Can be specified multiple times, one query parameter per SDK type.
+      - name: anonymous
+        in: query
+        description: 'An anonymous value to filter results by. Can be specified multiple times, one query parameter per anonymous value.<br/>Valid values: `true`, `false`.'
+        schema:
+          type: string
+          format: string
+          description: 'An anonymous value to filter results by. Can be specified multiple times, one query parameter per anonymous value.<br/>Valid values: `true`, `false`.'
+      - name: groupBy
+        in: query
+        description: 'If specified, returns data for each distinct value of the given field. `contextKind` is always included as a grouping dimension. Can be specified multiple times to group data by multiple dimensions, one query parameter per dimension.<br/>Valid values: `projectId`, `environmentId`, `sdkName`, `sdkType`, `sdkAppId`, `anonymousV2`.'
+        schema:
+          type: string
+          format: string
+          description: 'If specified, returns data for each distinct value of the given field. `contextKind` is always included as a grouping dimension. Can be specified multiple times to group data by multiple dimensions, one query parameter per dimension.<br/>Valid values: `projectId`, `environmentId`, `sdkName`, `sdkType`, `sdkAppId`, `anonymousV2`.'
+      - name: aggregationType
+        in: query
+        description: 'Specifies the aggregation method. Defaults to `month_to_date`.<br/>Valid values: `month_to_date`, `incremental`, `rolling_30d`.'
+        schema:
+          type: string
+          format: string
+          description: 'Specifies the aggregation method. Defaults to `month_to_date`.<br/>Valid values: `month_to_date`, `incremental`, `rolling_30d`.'
+      - name: granularity
+        in: query
+        description: 'Specifies the data granularity. Defaults to `daily`. Valid values depend on `aggregationType`: **month_to_date** supports `daily` and `monthly`; **incremental** and **rolling_30d** support `daily` only.'
+        schema:
+          type: string
+          format: string
+          description: 'Specifies the data granularity. Defaults to `daily`. Valid values depend on `aggregationType`: **month_to_date** supports `daily` and `monthly`; **incremental** and **rolling_30d** support `daily` only.'
+      operationId: getContextsTotalUsage
+  /api/v2/usage/total-mau:
+    get:
+      responses:
+        '200':
+          description: Usage response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SeriesListRep'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+        '503':
+          description: Service unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusServiceUnavailable'
+      tags:
+      - Account usage (beta)
+      summary: Get MAU total usage
+      description: 'Get a time series of the number of context key usages observed by LaunchDarkly in your account, for the primary context kind only.
+
+
+        For past months, this reflects the context kind that was most recently marked as primary for that month. For the current month, the context kind may vary as new primary kinds are observed.
+
+
+        The supported granularity varies by aggregation type. The maximum time range is 365 days.'
+      parameters:
+      - name: from
+        in: query
+        description: The series of data returned starts from this timestamp (Unix milliseconds). Defaults to the beginning of the current month.
+        schema:
+          type: string
+          format: string
+          description: The series of data returned starts from this timestamp (Unix milliseconds). Defaults to the beginning of the current month.
+      - name: to
+        in: query
+        description: The series of data returned ends at this timestamp (Unix milliseconds). Defaults to the current time.
+        schema:
+          type: string
+          format: string
+          description: The series of data returned ends at this timestamp (Unix milliseconds). Defaults to the current time.
+      - name: projectKey
+        in: query
+        description: A project key to filter results by. Can be specified multiple times, one query parameter per project key.
+        schema:
+          type: string
+          format: string
+          description: A project key to filter results by. Can be specified multiple times, one query parameter per project key.
+      - name: environmentKey
+        in: query
+        description: An environment key to filter results by. If specified, exactly one `projectKey` must be provided. Can be specified multiple times, one query parameter per environment key.
+        schema:
+          type: string
+          format: string
+          description: An environment key to filter results by. If specified, exactly one `projectKey` must be provided. Can be specified multiple times, one query parameter per environment key.
+      - name: sdkName
+        in: query
+        description: An SDK name to filter results by. Can be specified multiple times, one query parameter per SDK name.
+        schema:
+          type: string
+          format: string
+          description: An SDK name to filter results by. Can be specified multiple times, one query parameter per SDK name.
+      - name: sdkType
+        in: query
+        description: An SDK type to filter results by. Can be specified multiple times, one query parameter per SDK type.
+        schema:
+          type: string
+          format: string
+          description: An SDK type to filter results by. Can be specified multiple times, one query parameter per SDK type.
+      - name: anonymous
+        in: query
+        description: 'An anonymous value to filter results by. Can be specified multiple times, one query parameter per anonymous value.<br/>Valid values: `true`, `false`.'
+        schema:
+          type: string
+          format: string
+          description: 'An anonymous value to filter results by. Can be specified multiple times, one query parameter per anonymous value.<br/>Valid values: `true`, `false`.'
+      - name: groupBy
+        in: query
+        description: 'If specified, returns data for each distinct value of the given field. Can be specified multiple times to group data by multiple dimensions, one query parameter per dimension.<br/>Valid values: `projectId`, `environmentId`, `sdkName`, `sdkType`, `sdkAppId`, `anonymousV2`.'
+        schema:
+          type: string
+          format: string
+          description: 'If specified, returns data for each distinct value of the given field. Can be specified multiple times to group data by multiple dimensions, one query parameter per dimension.<br/>Valid values: `projectId`, `environmentId`, `sdkName`, `sdkType`, `sdkAppId`, `anonymousV2`.'
+      - name: aggregationType
+        in: query
+        description: 'Specifies the aggregation method. Defaults to `month_to_date`.<br/>Valid values: `month_to_date`, `incremental`, `rolling_30d`.'
+        schema:
+          type: string
+          format: string
+          description: 'Specifies the aggregation method. Defaults to `month_to_date`.<br/>Valid values: `month_to_date`, `incremental`, `rolling_30d`.'
+      - name: granularity
+        in: query
+        description: 'Specifies the data granularity. Defaults to `daily`. Valid values depend on `aggregationType`: **month_to_date** supports `daily` and `monthly`; **incremental** and **rolling_30d** support `daily` only.'
+        schema:
+          type: string
+          format: string
+          description: 'Specifies the data granularity. Defaults to `daily`. Valid values depend on `aggregationType`: **month_to_date** supports `daily` and `monthly`; **incremental** and **rolling_30d** support `daily` only.'
+      operationId: getMAUTotalUsage
+  /api/v2/usage/vega-ai:
+    get:
+      responses:
+        '200':
+          description: Usage response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SeriesListRep'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Account usage (beta)
+      summary: Get Vega AI usage
+      description: Get time-series arrays of the number of Vega AI usage. Supports `daily` and `monthly` granularity.
+      parameters:
+      - name: from
+        in: query
+        description: The series of data returned starts from this timestamp (Unix seconds). Defaults to the beginning of the current month.
+        schema:
+          type: string
+          format: string
+          description: The series of data returned starts from this timestamp (Unix seconds). Defaults to the beginning of the current month.
+      - name: to
+        in: query
+        description: The series of data returned ends at this timestamp (Unix seconds). Defaults to the current time.
+        schema:
+          type: string
+          format: string
+          description: The series of data returned ends at this timestamp (Unix seconds). Defaults to the current time.
+      - name: projectKey
+        in: query
+        description: A project key to filter results by. Can be specified multiple times, one query parameter per project key.
+        schema:
+          type: string
+          format: string
+          description: A project key to filter results by. Can be specified multiple times, one query parameter per project key.
+      - name: granularity
+        in: query
+        description: 'Specifies the data granularity. Defaults to `daily`. Valid values depend on `aggregationType`: **month_to_date** supports `daily` and `monthly`; **incremental** and **rolling_30d** support `daily` only.'
+        schema:
+          type: string
+          format: string
+          description: 'Specifies the data granularity. Defaults to `daily`. Valid values depend on `aggregationType`: **month_to_date** supports `daily` and `monthly`; **incremental** and **rolling_30d** support `daily` only.'
+      - name: aggregationType
+        in: query
+        description: 'Specifies the aggregation method. Defaults to `month_to_date`.<br/>Valid values: `month_to_date`, `incremental`, `rolling_30d`.'
+        schema:
+          type: string
+          format: string
+          description: 'Specifies the aggregation method. Defaults to `month_to_date`.<br/>Valid values: `month_to_date`, `incremental`, `rolling_30d`.'
+      operationId: getVegaAIUsage
+  /api/v2/usage/warehouse-export:
+    get:
+      responses:
+        '200':
+          description: Usage response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataExportSeriesListRep'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+        '503':
+          description: Service unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusServiceUnavailable'
+      tags:
+      - Account usage (beta)
+      summary: Get warehouse Data Export usage
+      description: Get a time series array showing the number of rows exported to your warehouse Data Export destinations. The supported granularity varies by aggregation type. The maximum time range is 365 days.
+      parameters:
+      - name: from
+        in: query
+        description: The series of data returned starts from this timestamp (Unix milliseconds). Defaults to the beginning of the current month.
+        schema:
+          type: string
+          format: string
+          description: The series of data returned starts from this timestamp (Unix milliseconds). Defaults to the beginning of the current month.
+      - name: to
+        in: query
+        description: The series of data returned ends at this timestamp (Unix milliseconds). Defaults to the current time.
+        schema:
+          type: string
+          format: string
+          description: The series of data returned ends at this timestamp (Unix milliseconds). Defaults to the current time.
+      - name: projectKey
+        in: query
+        description: A project key to filter results by. Can be specified multiple times, one query parameter per project key.
+        schema:
+          type: string
+          format: string
+          description: A project key to filter results by. Can be specified multiple times, one query parameter per project key.
+      - name: environmentKey
+        in: query
+        description: An environment key to filter results by. If specified, exactly one `projectKey` must be provided. Can be specified multiple times, one query parameter per environment key.
+        schema:
+          type: string
+          format: string
+          description: An environment key to filter results by. If specified, exactly one `projectKey` must be provided. Can be specified multiple times, one query parameter per environment key.
+      - name: destinationKind
+        in: query
+        description: 'A Warehouse configuration kind to filter results by. Cannot be combined with `destination`. Can be specified multiple times.<br/>Valid values: `snowflake-v2`, `databricks`, `bigquery`, `redshift`, `clickhouse`, `s3`.'
+        schema:
+          type: string
+          format: string
+          description: 'A Warehouse configuration kind to filter results by. Cannot be combined with `destination`. Can be specified multiple times.<br/>Valid values: `snowflake-v2`, `databricks`, `bigquery`, `redshift`, `clickhouse`, `s3`.'
+      - name: destination
+        in: query
+        description: 'A Warehouse configuration kind to filter results by. Cannot be combined with `destinationKind`. Existing behavior is unchanged. Can be specified multiple times.<br/>Valid values: `snowflake-v2`, `databricks`, `bigquery`, `redshift`, `clickhouse`.'
+        schema:
+          type: string
+          format: string
+          description: 'A Warehouse configuration kind to filter results by. Cannot be combined with `destinationKind`. Existing behavior is unchanged. Can be specified multiple times.<br/>Valid values: `snowflake-v2`, `databricks`, `bigquery`, `redshift`, `clickhouse`.'
+      - name: groupBy
+        in: query
+        description: 'If specified, returns data for each distinct value of the given field. Can be specified multiple times.<br/>Valid values: `projectId`, `environmentId`, `destination`, `destinationKind`, `destinationId`. `destination` and `destinationKind` return the same raw Warehouse configuration kinds. `destinationId` returns one series per warehouse destination with `destinationName` metadata. When a current destination you can view matches, its `destinationId` is the LaunchDarkly destination ID, with `destinationViewable`. Otherwise, it is the warehouse provider''s destination ID, named `Unknown destination`. The destination''s own kind is added as `destinationKind` only when you can view the destination. A kind requested with `groupBy=destinationKind` is returned unchanged. Destinations you cannot view are reported together in one `Unknown destination` series with `destinationId` `hidden` and `destinationViewable` `false`, one per combination of the other requested dimensions, such as `destinationKind`. Usage without a destination ID is one series with an empty `destinationId` named `Unattributed`.'
+        schema:
+          type: string
+          format: string
+          description: 'If specified, returns data for each distinct value of the given field. Can be specified multiple times.<br/>Valid values: `projectId`, `environmentId`, `destination`, `destinationKind`, `destinationId`. `destination` and `destinationKind` return the same raw Warehouse configuration kinds. `destinationId` returns one series per warehouse destination with `destinationName` metadata. When a current destination you can view matches, its `destinationId` is the LaunchDarkly destination ID, with `destinationViewable`. Otherwise, it is the warehouse provider''s destination ID, named `Unknown destination`. The destination''s own kind is added as `destinationKind` only when you can view the destination. A kind requested with `groupBy=destinationKind` is returned unchanged. Destinations you cannot view are reported together in one `Unknown destination` series with `destinationId` `hidden` and `destinationViewable` `false`, one per combination of the other requested dimensions, such as `destinationKind`. Usage without a destination ID is one series with an empty `destinationId` named `Unattributed`.'
+      - name: aggregationType
+        in: query
+        description: 'Specifies the aggregation method. Defaults to `month_to_date`.<br/>Valid values: `month_to_date`, `incremental`.'
+        schema:
+          type: string
+          format: string
+          description: 'Specifies the aggregation method. Defaults to `month_to_date`.<br/>Valid values: `month_to_date`, `incremental`.'
+      - name: granularity
+        in: query
+        description: 'Specifies the data granularity. Defaults to `daily`. `monthly` granularity is only supported with the **month_to_date** aggregation type.<br/>Valid values: `daily`, `hourly`, `monthly`.'
+        schema:
+          type: string
+          format: string
+          description: 'Specifies the data granularity. Defaults to `daily`. `monthly` granularity is only supported with the **month_to_date** aggregation type.<br/>Valid values: `daily`, `hourly`, `monthly`.'
+      operationId: getWarehouseExportUsage
+  /api/v2/usage/data-export-events/projects/ranking:
+    get:
+      description: Rank projects with usage in the requested range by successful Streaming transfers. Legacy rows are attributed through the account's complete current environment-to-project mapping. If any successful row remains unattributed after resolution, the operation returns `409` instead of a partial ranking. The result limit does not cap the account-wide project universe or environment mapping. This source-specific operation does not provide Combined or Warehouse ranking.
+      operationId: getDataExportProjectRanking
+      parameters:
+      - description: Inclusive UTC range start in Unix milliseconds.
+        explode: true
+        in: query
+        name: from
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: form
+      - description: Exclusive UTC range end in Unix milliseconds.
+        explode: true
+        in: query
+        name: to
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: form
+      - description: The source scope. Only `streaming` is supported.
+        explode: true
+        in: query
+        name: source
+        required: false
+        schema:
+          default: streaming
+          type: string
+        style: form
+      - description: The ranking dimension. Only `project` is supported.
+        explode: true
+        in: query
+        name: dimension
+        required: false
+        schema:
+          default: project
+          type: string
+        style: form
+      - description: A canonical project key to include. Can be specified multiple times, with at most 100 unique explicit selections; duplicates do not consume the limit. When omitted, all account projects with usage in the requested range are ranked.
+        explode: true
+        in: query
+        name: projectKey
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+        style: form
+      - description: A case-insensitive substring matched against canonical project keys before querying usage. Project names are not searched.
+        explode: true
+        in: query
+        name: search
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: An opaque cursor returned by a previous response. Cursors are bound to the account and ranking inputs.
+        explode: true
+        in: query
+        name: cursor
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: The maximum number of ranked projects to return. This bounds response rows and look-ahead, not the account-wide candidate universe.
+        explode: true
+        in: query
+        name: limit
+        required: false
+        schema:
+          default: 5
+          maximum: 100
+          minimum: 1
+          type: integer
+        style: form
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataExportProjectRankingRep'
+          description: Bounded project ranking
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Invalid request
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Invalid access token
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Forbidden
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataExportProjectIdentityIncompleteError'
+          description: Current account metadata cannot attribute every successful usage row in the requested range to a project
+        '429':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Rate limited
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Internal server error
+      summary: Rank Streaming usage by project
+      tags:
+      - Account usage (beta)
+components:
+  schemas:
+    DataExportProjectIdentityIncompleteErrorRep:
+      type: object
+      properties:
+        code:
+          type: string
+          example: data_export_project_identity_incomplete
+        message:
+          type: string
+          example: Data export project identity is incomplete for the requested range; project-grouped usage is unavailable
+    SeriesTimeSliceRepFloat:
+      type: object
+      additionalProperties:
+        type: number
+    DataExportProjectRankRep:
+      example:
+        projectKey: projectKey
+        components:
+          streaming: 1
+        usage: 6
+        rank: 0
+        projectName: projectName
+      properties:
+        projectKey:
+          description: The canonical project key.
+          type: string
+        projectName:
+          description: The current project name.
+          type: string
+        rank:
+          description: The one-based rank within all matching projects.
+          type: integer
+        usage:
+          description: Successful Streaming transfers in the requested range.
+          format: int64
+          type: integer
+        components:
+          $ref: '#/components/schemas/DataExportProjectRankComponentsRep'
+      required:
+      - components
+      - projectKey
+      - projectName
+      - rank
+      - usage
+      type: object
+    InvalidRequestErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: invalid_request
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid request body
+    StatusServiceUnavailable:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: service_unavailable
+        message:
+          type: string
+          description: Description of the error
+          example: Requested service unavailable
+    SdkVersionListRep:
+      type: object
+      required:
+      - _links
+      - sdkVersions
+      properties:
+        _links:
+          type: object
+          additionalProperties: {}
+          description: The location and content type of related resources
+        sdkVersions:
+          type: array
+          description: The list of SDK names and versions
+          items:
+            $ref: '#/components/schemas/SdkVersionRep'
+          example:
+          - sdk: Android
+            version: 3.1.2
+          - sdk: Android
+            version: 3.1.5
+          - sdk: C
+            version: 2.4.6
+    RateLimitedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: rate_limited
+        message:
+          type: string
+          description: Description of the error
+          example: You've exceeded the API rate limit. Try again later.
+    DataExportProjectIdentityIncompleteError:
+      example:
+        code: data_export_project_identity_incomplete
+        message: Data export project identity is incomplete for the requested range; project ranking is unavailable
+      properties:
+        message:
+          example: Data export project identity is incomplete for the requested range; project ranking is unavailable
+          type: string
+        code:
+          enum:
+          - data_export_project_identity_incomplete
+          type: string
+      required:
+      - code
+      - message
+      type: object
+    SdkListRep:
+      type: object
+      required:
+      - _links
+      - sdks
+      properties:
+        _links:
+          type: object
+          additionalProperties: {}
+          description: The location and content type of related resources
+        sdks:
+          type: array
+          description: The list of SDK names
+          items:
+            type: string
+          example:
+          - Android
+          - Java
+          - Node.js
+    UnauthorizedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: unauthorized
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid access token
+    ForbiddenErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: forbidden
+        message:
+          type: string
+          description: Description of the error
+          example: Forbidden. Access to the requested resource was denied.
+    DataExportProjectRankingScopeRep:
+      example:
+        from: 7
+        source: streaming
+        to: 9
+        dimension: project
+      properties:
+        source:
+          description: The included usage source.
+          enum:
+          - streaming
+          type: string
+        dimension:
+          description: The ranked dimension.
+          enum:
+          - project
+          type: string
+        from:
+          description: Inclusive UTC range start in Unix milliseconds.
+          format: int64
+          type: integer
+        to:
+          description: Exclusive UTC range end in Unix milliseconds.
+          format: int64
+          type: integer
+      required:
+      - dimension
+      - from
+      - source
+      - to
+      type: object
+    Error:
+      example:
+        code: code
+        message: message
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+      required:
+      - code
+      - message
+      type: object
+    DataExportProjectRankingRep:
+      description: A bounded Streaming project ranking.
+      example:
+        scope:
+          from: 7
+          source: streaming
+          to: 9
+          dimension: project
+        page:
+          nextCursor: nextCursor
+          limit: 5
+          count: 5
+          totalCount: 2
+        items:
+        - projectKey: projectKey
+          components:
+            streaming: 1
+          usage: 6
+          rank: 0
+          projectName: projectName
+        - projectKey: projectKey
+          components:
+            streaming: 1
+          usage: 6
+          rank: 0
+          projectName: projectName
+      properties:
+        items:
+          description: Projects in deterministic rank order.
+          items:
+            $ref: '#/components/schemas/DataExportProjectRankRep'
+          type: array
+        page:
+          $ref: '#/components/schemas/DataExportProjectRankingPageRep'
+        scope:
+          $ref: '#/components/schemas/DataExportProjectRankingScopeRep'
+      required:
+      - items
+      - page
+      - scope
+      type: object
+    DataExportSeriesListRep:
+      type: object
+      required:
+      - _links
+      - metadata
+      - series
+      properties:
+        _links:
+          type: object
+          additionalProperties: {}
+          description: The location and content type of related resources
+        metadata:
+          type: array
+          description: Metadata about each series
+          items:
+            $ref: '#/components/schemas/SeriesMetadataRep'
+        series:
+          type: array
+          description: An array of data points with timestamps. Each element of the array is an object with a 'time' field, whose value is the timestamp, and one or more key fields. If there are multiple key fields, they are labeled '0', '1', and so on, and are explained in the <code>metadata</code>.
+          items:
+            $ref: '#/components/schemas/SeriesTimeSliceRep'
+          example:
+          - '0': 11
+            '1': 15
+            time: 1677888000000
+        dataThrough:
+          type: string
+          description: The end of the latest hour written by this source's usage pipeline, as an RFC 3339 UTC timestamp. It is measured across all accounts, not only yours, and usage after this time is not counted yet. Omitted when the watermark is unavailable.
+          example: '2026-09-30T15:00:00Z'
+        delayed:
+          type: boolean
+          description: 'Whether this source''s usage pipeline is late: it wrote every hour of the 24 hours ending at <code>dataThrough</code>, and more than three hours have passed since <code>dataThrough</code>. Always <code>false</code> for a source with gaps in those 24 hours, where gaps usually mean no usage rather than a stalled pipeline. Omitted when <code>dataThrough</code> is omitted.'
+          example: false
+    NotFoundErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: not_found
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid resource identifier
+    DataExportProjectRankingPageRep:
+      example:
+        nextCursor: nextCursor
+        limit: 5
+        count: 5
+        totalCount: 2
+      properties:
+        limit:
+          description: The bounded page size requested.
+          type: integer
+        count:
+          description: The number of items on this page.
+          type: integer
+        totalCount:
+          description: The number of matching projects with usage.
+          type: integer
+        nextCursor:
+          description: An opaque cursor for the next page.
+          type: string
+      required:
+      - count
+      - limit
+      - totalCount
+      type: object
+    SeriesListRep:
+      type: object
+      required:
+      - _links
+      - metadata
+      - series
+      properties:
+        _links:
+          type: object
+          additionalProperties: {}
+          description: The location and content type of related resources
+        metadata:
+          type: array
+          description: Metadata about each series
+          items:
+            $ref: '#/components/schemas/SeriesMetadataRep'
+        series:
+          type: array
+          description: An array of data points with timestamps. Each element of the array is an object with a 'time' field, whose value is the timestamp, and one or more key fields. If there are multiple key fields, they are labeled '0', '1', and so on, and are explained in the <code>metadata</code>.
+          items:
+            $ref: '#/components/schemas/SeriesTimeSliceRep'
+          example:
+          - '0': 11
+            '1': 15
+            time: 1677888000000
+    SeriesListRepFloat:
+      type: object
+      required:
+      - _links
+      - metadata
+      - series
+      properties:
+        _links:
+          type: object
+          additionalProperties: {}
+          description: The location and content type of related resources
+        metadata:
+          type: array
+          description: Metadata about each series
+          items:
+            $ref: '#/components/schemas/SeriesMetadataRep'
+        series:
+          type: array
+          description: An array of data points with timestamps. Each element of the array is an object with a 'time' field, whose value is the timestamp, and one or more key fields. If there are multiple key fields, they are labeled '0', '1', and so on, and are explained in the <code>metadata</code>.
+          items:
+            $ref: '#/components/schemas/SeriesTimeSliceRepFloat'
+          example:
+          - '0': 11
+            '1': 15
+            time: 1677888000000
+        projectedSeries:
+          type: array
+          description: 'Cumulative projected usage by day for the full billing period, when available. Each element matches the structure of <code>series</code>: an object with a ''time'' field and a ''0'' value field. The projected (non-actual) portion begins where the actual <code>series</code> ends.'
+          items:
+            $ref: '#/components/schemas/SeriesTimeSliceRepFloat'
+          example:
+          - '0': 11
+            time: 1677888000000
+    SeriesTimeSliceRep:
+      type: object
+      additionalProperties:
+        type: integer
+    SeriesMetadataRep:
+      type: object
+      additionalProperties: {}
+    SdkVersionDetailsRep:
+      type: object
+      properties:
+        name:
+          type: string
+        version:
+          type: string
+        type:
+          type: string
+        projectId:
+          type: string
+        projectKey:
+          type: string
+        projectName:
+          type: string
+        environmentId:
+          type: string
+        environmentKey:
+          type: string
+        environmentName:
+          type: string
+        applicationId:
+          type: string
+        ldLatestVersion:
+          type: string
+        eolStatus:
+          type: string
+          description: 'The end of life (EOL) status of the SDK version. Possible values are: <br/>- <code>EolAllClear</code>: the SDK version is current<br/>- <code>EolNear</code>: the SDK version is approaching EOL<br/>- <code>EolPast</code>: the SDK version is past EOL<br/>- <code>MajorVersionAvailable</code>: a new major version is available but the current version is not near EOL<br/>- <code>EolUnknown</code>: the EOL status cannot be determined.'
+        latestReleaseUrl:
+          type: string
+        connectionType:
+          type: string
+        relayVersion:
+          type: string
+        relayEolStatus:
+          type: string
+          description: The end of life status of the Relay Proxy version. Only present when the SDK connects through a Relay Proxy. Uses the same values as <code>eolStatus</code>.
+        relayLatestVersion:
+          type: string
+        relayLatestReleaseUrl:
+          type: string
+    SdkVersionRep:
+      type: object
+      required:
+      - sdk
+      - version
+      properties:
+        sdk:
+          type: string
+          description: The SDK name, or "Unknown"
+        version:
+          type: string
+          description: The version number, or "Unknown"
+    DataExportProjectRankComponentsRep:
+      example:
+        streaming: 1
+      properties:
+        streaming:
+          description: Successful Streaming transfers attributed to this project in the requested range.
+          format: int64
+          type: integer
+      required:
+      - streaming
+      type: object
+  securitySchemes:
+    ApiKey:
+      type: apiKey
+      in: header
+      name: Authorization

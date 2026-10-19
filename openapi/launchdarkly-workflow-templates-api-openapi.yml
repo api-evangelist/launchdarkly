@@ -1,0 +1,608 @@
+openapi: 3.2.0
+info:
+  title: LaunchDarkly REST Workflow templates API
+  description: 'This documentation describes LaunchDarkly''s REST API. To access the complete OpenAPI spec directly, use Get OpenAPI spec. To learn how to use LaunchDarkly using the user interface (UI) instead, read our product documentation. ## Authentication
+
+
+    LaunchDarkly''s REST API uses the HTTPS protocol with a minimum TLS version of 1.2. All REST API resources are authenticated with either personal or service access tokens, or session cookies. Other authentication mechanisms are not supported. You can manage personal access tokens on your **Authorization** page in the LaunchDarkly UI. LaunchDarkly also has SDK keys, mobile keys, and client-side IDs that are used by our server-side SDKs, mobile SDKs, and JavaScript-based SDKs, respectively. **These keys cannot be used to access our REST API**. These keys are environment-specific, and can only perform read-only operations such as fetching feature flag settings. | Auth mechanism | Allowed resources | Use cases |
+
+    | ----------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
+
+    | Personal or service access tokens | Can be customized on a per-token basis | Building scripts, custom integrations, data export. |
+
+    | SDK keys | Can only access read-only resources specific to server-side SDKs. Restricted to a single environment. | Server-side SDKs |
+
+    | Mobile keys | Can only access read-only resources specific to mobile SDKs, and only for flags marked available to mobile keys. Restricted to a single environment. | Mobile SDKs |
+
+    | Client-side ID | Can only access read-only resources specific to JavaScript-based client-side SDKs, and only for flags marked available to client-side. Restricted to a single environment. | Client-side JavaScript |
+
+
+    > #### Keep your access tokens and SDK keys private
+
+    >
+
+    > Access tokens should _never_ be exposed in untrusted contexts. Never put an access token in client-side JavaScript, or embed it in a mobile application. LaunchDarkly has special mobile keys that you can embed in mobile apps. If you accidentally expose an access token or SDK key, you can reset it from your **Authorization** page. >
+
+    > The client-side ID is safe to embed in untrusted contexts. It''s designed for use in client-side JavaScript. ### Authentication using request header
+
+
+    The preferred way to authenticate with the API is by adding an `Authorization` header containing your access token to your requests. The value of the `Authorization` header must be your access token. Manage personal access tokens from the **Authorization** page. ### Authentication using session cookie
+
+
+    For testing purposes, you can make API calls directly from your web browser. If you are logged in to the LaunchDarkly application, the API will use your existing session to authenticate calls. Depending on the permissions granted as part of your role, you may not have permission to perform some API calls. You will receive a `401` response code in that case. > ### Modifying the Origin header causes an error
+
+    >
+
+    > LaunchDarkly validates that the Origin header for any API request authenticated by a session cookie matches the expected Origin header. The expected Origin header is `https://app.launchdarkly.com`. >
+
+    > If the Origin header does not match what''s expected, LaunchDarkly returns an error. This error can prevent the LaunchDarkly app from working correctly. >
+
+    > Any browser extension that intentionally changes the Origin header can cause this problem. For example, Cross-Origin Resource Sharing (CORS) extensions used during development can modify the Origin header and cause the app to fail. >
+
+    > To prevent this error, do not modify your Origin header. >
+
+    > LaunchDarkly does not require origin matching when authenticating with an access token, so this issue does not affect normal API usage.'
+  contact:
+    name: LaunchDarkly Technical Support Team
+    url: https://support.launchdarkly.com
+    email: support@launchdarkly.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+  version: '2.0'
+servers:
+- url: https://app.launchdarkly.com
+  description: ' Default'
+- url: https://app.launchdarkly.us
+  description: ' Federal'
+security:
+- ApiKey:
+  - read
+  - write
+tags:
+- name: Workflow templates
+  description: '> ### Workflows are in maintenance mode
+
+    >
+
+    > The workflows feature is in maintenance mode, and is planned for future deprecation at a date not yet specified. We will work with existing customers using workflows to migrate to a replacement solution when deprecation occurs.
+
+
+    Workflow templates allow you to define a set of workflow stages that you can use as a starting point for new workflows. You can create these workflows for any flag in any environment and any project, and you can create as many workflows as you like from a given template.
+
+
+    You can create workflow templates in two ways:
+
+    * by specifying the desired stages, using the `stages` property of the request body
+
+    * by specifying an existing workflow to save as a template, using the `workflowId` property of the request body
+
+
+    You can use templates to create a workflow in any project, environment, or flag. However, when you create a template, you must specify a particular project, environment, and flag. This means that when you create a template using the `stages` property, you must also include `projectKey`, `environmentKey`, and `flagKey` properties in the request body. When you create a template from an existing workflow, it will use the project, environment, and flag of the existing workflow, so those properties can be omitted from the request body.
+
+
+    To learn more, read Workflows documentation and Workflows API documentation.'
+paths:
+  /api/v2/templates:
+    get:
+      responses:
+        '200':
+          description: Workflow templates list response JSON
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkflowTemplatesListingOutputRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Workflow templates
+      summary: Get workflow templates
+      description: Get workflow templates belonging to an account, or can optionally return templates_endpoints.workflowTemplateSummariesListingOutputRep when summary query param is true
+      parameters:
+      - name: summary
+        in: query
+        description: Whether the entire template object or just a summary should be returned
+        schema:
+          type: boolean
+          description: Whether the entire template object or just a summary should be returned
+      - name: search
+        in: query
+        description: The substring in either the name or description of a template
+        schema:
+          type: string
+          format: string
+          description: The substring in either the name or description of a template
+      operationId: getWorkflowTemplates
+    post:
+      responses:
+        '201':
+          description: Workflow template response JSON
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkflowTemplateOutput'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Workflow templates
+      summary: Create workflow template
+      description: '> ### Workflows are in maintenance mode
+
+        >
+
+        > The workflows feature is in maintenance mode, and is planned for future deprecation at a date not yet specified. We will work with existing customers using workflows to migrate to a replacement solution when deprecation occurs.
+
+
+        Create a template for a feature flag workflow.'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateWorkflowTemplateInput'
+        required: true
+      operationId: createWorkflowTemplate
+  /api/v2/templates/{templateKey}:
+    delete:
+      responses:
+        '204':
+          description: Action completed successfully
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Workflow templates
+      summary: Delete workflow template
+      description: Delete a workflow template
+      parameters:
+      - name: templateKey
+        in: path
+        description: The template key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The template key
+      operationId: deleteWorkflowTemplate
+components:
+  schemas:
+    WorkflowTemplateOutput:
+      type: object
+      required:
+      - _id
+      - _key
+      - _creationDate
+      - _ownerId
+      - _maintainerId
+      - _links
+      properties:
+        _id:
+          type: string
+        _key:
+          type: string
+        name:
+          type: string
+        _creationDate:
+          $ref: '#/components/schemas/UnixMillis'
+        _ownerId:
+          type: string
+        _maintainerId:
+          type: string
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+        description:
+          type: string
+        stages:
+          type: array
+          items:
+            $ref: '#/components/schemas/StageOutput'
+    FormVariableConfig:
+      type: object
+      additionalProperties: {}
+    Instructions:
+      type: array
+      items:
+        $ref: '#/components/schemas/Instruction'
+    InvalidRequestErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: invalid_request
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid request body
+    RateLimitedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: rate_limited
+        message:
+          type: string
+          description: Description of the error
+          example: You've exceeded the API rate limit. Try again later.
+    UnauthorizedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: unauthorized
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid access token
+    ForbiddenErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: forbidden
+        message:
+          type: string
+          description: Description of the error
+          example: Forbidden. Access to the requested resource was denied.
+    ReviewOutput:
+      type: object
+      required:
+      - _id
+      - kind
+      properties:
+        _id:
+          type: string
+        kind:
+          type: string
+        creationDate:
+          $ref: '#/components/schemas/UnixMillis'
+        comment:
+          type: string
+        memberId:
+          type: string
+        serviceTokenId:
+          type: string
+    ActionInput:
+      type: object
+      properties:
+        instructions:
+          description: An array of instructions for the stage. Each object in the array uses the semantic patch format for updating a feature flag.
+          example: '{"instructions": [{ "kind": "turnFlagOn"}]}'
+    CreateWorkflowTemplateInput:
+      type: object
+      required:
+      - key
+      properties:
+        key:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        workflowId:
+          $ref: '#/components/schemas/FeatureWorkflowId'
+        stages:
+          type: array
+          items:
+            $ref: '#/components/schemas/StageInput'
+        projectKey:
+          type: string
+        environmentKey:
+          type: string
+        flagKey:
+          type: string
+    Link:
+      type: object
+      properties:
+        href:
+          type: string
+        type:
+          type: string
+    UnixMillis:
+      type: integer
+      format: int64
+    ExecutionOutput:
+      type: object
+      required:
+      - status
+      properties:
+        status:
+          type: string
+          description: The status of the execution of this workflow stage
+          example: completed
+        stopDate:
+          description: Timestamp of when the workflow was completed.
+          example: '1718467200000'
+          $ref: '#/components/schemas/UnixMillis'
+    NotFoundErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: not_found
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid resource identifier
+    DurationUnit:
+      type: string
+    ConditionInput:
+      type: object
+      properties:
+        scheduleKind:
+          description: Whether the scheduled execution of the workflow stage is relative or absolute. If relative, the <code>waitDuration</code> and <code>waitDurationUnit</code> specify when the execution occurs. If absolute, the <code>executionDate</code> specifies when the execution occurs.
+          example: relative
+          enum:
+          - absolute
+          - relative
+          $ref: '#/components/schemas/ScheduleKind'
+        executionDate:
+          description: For workflow stages whose scheduled execution is absolute, the time, in Unix milliseconds, when the stage should start.
+          example: '1706810400000'
+          $ref: '#/components/schemas/UnixMillis'
+        waitDuration:
+          type: integer
+          description: For workflow stages whose scheduled execution is relative, how far in the future the stage should start.
+          example: 2
+        waitDurationUnit:
+          description: For workflow stages whose scheduled execution is relative, the unit of measure for the <code>waitDuration</code>.
+          example: calendarDay
+          enum:
+          - minute
+          - hour
+          - calendarDay
+          - calendarWeek
+          $ref: '#/components/schemas/DurationUnit'
+        executeNow:
+          type: boolean
+          description: Whether the workflow stage should be executed immediately
+          example: false
+        description:
+          type: string
+          description: A description of the approval required for this stage
+          example: Require example-team approval for final stage
+        notifyMemberIds:
+          type: array
+          description: A list of member IDs for the members to request approval from for this stage
+          items:
+            type: string
+          example:
+          - 507f1f77bcf86cd799439011
+        notifyTeamKeys:
+          type: array
+          description: A list of team keys for the teams to request approval from for this stage
+          items:
+            type: string
+          example:
+          - example-team
+        integrationConfig:
+          description: Additional approval request fields for third-party integration approval systems. If you are using a third-party integration to manage approval requests, these additional fields will be described in the <code>manifest.json</code> for that integration, at https://github.com/launchdarkly/integration-framework.
+          $ref: '#/components/schemas/FormVariableConfig'
+        kind:
+          description: The type of condition to meet before executing this stage of the workflow. Use <code>schedule</code> to schedule a workflow stage. Use <code>ld-approval</code> to add an approval request to a workflow stage.
+          example: schedule
+          $ref: '#/components/schemas/ConditionKind'
+    ConditionOutput:
+      type: object
+      required:
+      - _id
+      - _execution
+      - description
+      - notifyMemberIds
+      - allReviews
+      - reviewStatus
+      properties:
+        _id:
+          type: string
+        kind:
+          type: string
+        _execution:
+          $ref: '#/components/schemas/ExecutionOutput'
+        scheduleKind:
+          $ref: '#/components/schemas/ScheduleKind'
+        executionDate:
+          $ref: '#/components/schemas/UnixMillis'
+        waitDuration:
+          type: integer
+        waitDurationUnit:
+          $ref: '#/components/schemas/DurationUnit'
+        description:
+          type: string
+        notifyMemberIds:
+          type: array
+          items:
+            type: string
+        allReviews:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReviewOutput'
+        reviewStatus:
+          type: string
+        appliedDate:
+          $ref: '#/components/schemas/UnixMillis'
+        creationConfig:
+          $ref: '#/components/schemas/FormVariableConfig'
+    StageInput:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The stage name
+          example: 10% rollout on day 1
+        executeConditionsInSequence:
+          type: boolean
+          description: Whether to execute the conditions in sequence for the given stage
+          example: true
+        conditions:
+          type: array
+          description: An array of conditions for the stage
+          items:
+            $ref: '#/components/schemas/ConditionInput'
+          example:
+          - kind: schedule
+            scheduleKind: relative
+            waitDuration: 2
+            waitDurationUnit: calendarDay
+        action:
+          description: An <code>instructions</code> field containing an array of instructions for the stage. Each object in the array uses the semantic patch format for updating a feature flag.
+          example: '{"instructions": [{ "kind": "turnFlagOn"}]}'
+          $ref: '#/components/schemas/ActionInput'
+    Instruction:
+      type: object
+      additionalProperties: {}
+    StageOutput:
+      type: object
+      required:
+      - _id
+      - conditions
+      - action
+      - _execution
+      properties:
+        _id:
+          type: string
+          description: The ID of this stage
+          example: 12ab3c45de678910abc12345
+        name:
+          type: string
+          description: The stage name
+          example: 10% rollout on day 1
+        conditions:
+          type: array
+          description: An array of conditions for the stage
+          items:
+            $ref: '#/components/schemas/ConditionOutput'
+          example:
+          - _execution:
+              status: completed
+            id: 12ab3c45de678910abc12345
+            kind: schedule
+            scheduleKind: relative
+            waitDuration: 2
+            waitDurationUnit: calendarDay
+        action:
+          description: The type of instruction, and an array of instructions for the stage. Each object in the array uses the semantic patch format for updating a feature flag.
+          example: '{ "kind": "patch", "instructions": [{ "kind": "turnFlagOn"}] }'
+          $ref: '#/components/schemas/ActionOutput'
+        _execution:
+          description: Details on the execution of this stage
+          example: '{ "status": "completed" }'
+          $ref: '#/components/schemas/ExecutionOutput'
+    ConditionKind:
+      type: string
+    ScheduleKind:
+      type: string
+    FeatureWorkflowId:
+      type: string
+    WorkflowTemplatesListingOutputRep:
+      type: object
+      required:
+      - items
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkflowTemplateOutput'
+    ActionOutput:
+      type: object
+      required:
+      - kind
+      - instructions
+      properties:
+        kind:
+          type: string
+          description: The type of action for this stage
+          example: patch
+        instructions:
+          description: An array of instructions for the stage. Each object in the array uses the semantic patch format for updating a feature flag.
+          example: '[{"kind": "turnFlagOn"}]'
+          $ref: '#/components/schemas/Instructions'
+  securitySchemes:
+    ApiKey:
+      type: apiKey
+      in: header
+      name: Authorization

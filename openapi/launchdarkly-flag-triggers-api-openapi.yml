@@ -1,31 +1,554 @@
 openapi: 3.2.0
 info:
-  title: LaunchDarkly REST Flag Triggers API
-  description: The LaunchDarkly REST API provides programmatic access to the full LaunchDarkly feature management platform.
-  version: '20240415'
-  contact:
-    name: LaunchDarkly Support
-    url: https://support.launchdarkly.com
-  termsOfService: https://launchdarkly.com/policies/terms-of-service
+  title: Launchdarkly Flag triggers API
   license:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
+  version: '1.0'
+  description: 'Operations tagged Flag triggers across 2 of this provider''s published API definitions: launchdarkly-openapi.json, launchdarkly-rest-api-openapi.yml. Each path carries the servers of the definition it was published in.'
 servers:
+- url: https://app.launchdarkly.com
+  description: ' Default'
+- url: https://app.launchdarkly.us
+  description: ' Federal'
 - url: https://app.launchdarkly.com/api/v2
   description: LaunchDarkly Production API
-security:
-- bearerAuth: []
 tags:
-- name: Flag Triggers
-  description: Create triggers that allow external services to toggle feature flags via unique webhook URLs.
+- name: Flag triggers
+  description: '> ### Flag triggers is an Enterprise feature
+
+    >
+
+    > Flag triggers is available to customers on an Enterprise plan. To learn more, read about our pricing. To upgrade your plan, contact Sales.
+
+
+    Flag triggers let you initiate flag changes remotely using a unique webhook URL. For example, you can integrate triggers with your existing tools to enable or disable flags when you hit specific operational health thresholds or receive certain alerts. To learn more, read Flag triggers.
+
+
+    With the flag triggers API, you can create, delete, and manage triggers.
+
+
+    Several of the endpoints in the flag triggers API require a flag trigger ID. The flag trigger ID is returned as part of the Create flag trigger and List flag triggers responses. It is the `_id` field, or the `_id` field of each element in the `items` array.'
 paths:
+  /api/v2/flags/{projectKey}/{featureFlagKey}/triggers/{environmentKey}:
+    get:
+      responses:
+        '200':
+          description: Flag trigger collection response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TriggerWorkflowCollectionRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Flag triggers
+      summary: List flag triggers
+      description: Get a list of all flag triggers.
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: environmentKey
+        in: path
+        description: The environment key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The environment key
+      - name: featureFlagKey
+        in: path
+        description: The feature flag key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The feature flag key
+      operationId: getTriggerWorkflows
+      security:
+      - ApiKey:
+        - read
+        - write
+    post:
+      responses:
+        '201':
+          description: Flag trigger response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TriggerWorkflowRep'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '405':
+          description: Method not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MethodNotAllowedErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Flag triggers
+      summary: Create flag trigger
+      description: Create a new flag trigger.
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: environmentKey
+        in: path
+        description: The environment key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The environment key
+      - name: featureFlagKey
+        in: path
+        description: The feature flag key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The feature flag key
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/triggerPost'
+        required: true
+      operationId: createTriggerWorkflow
+      security:
+      - ApiKey:
+        - read
+        - write
+    servers:
+    - url: https://app.launchdarkly.com
+      description: ' Default'
+    - url: https://app.launchdarkly.us
+      description: ' Federal'
+  /api/v2/flags/{projectKey}/{featureFlagKey}/triggers/{environmentKey}/{id}:
+    get:
+      responses:
+        '200':
+          description: Flag trigger response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TriggerWorkflowRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Flag triggers
+      summary: Get flag trigger by ID
+      description: Get a flag trigger by ID.
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: featureFlagKey
+        in: path
+        description: The feature flag key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The feature flag key
+      - name: environmentKey
+        in: path
+        description: The environment key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The environment key
+      - name: id
+        in: path
+        description: The flag trigger ID
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The flag trigger ID
+      operationId: getTriggerWorkflowById
+      security:
+      - ApiKey:
+        - read
+        - write
+    patch:
+      responses:
+        '200':
+          description: Flag trigger response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TriggerWorkflowRep'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '405':
+          description: Method not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MethodNotAllowedErrorRep'
+        '409':
+          description: Status conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusConflictErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Flag triggers
+      summary: Update flag trigger
+      description: 'Update a flag trigger. Updating a flag trigger uses the semantic patch format.
+
+
+        To make a semantic patch request, you must append `domain-model=launchdarkly.semanticpatch` to your `Content-Type` header. To learn more, read Updates using semantic patch.
+
+
+        ### Instructions
+
+
+        Semantic patch requests support the following `kind` instructions for updating flag triggers.
+
+
+        Click to expand instructions for updating flag triggers
+
+
+        #### replaceTriggerActionInstructions
+
+
+        Removes the existing trigger action and replaces it with the new instructions.
+
+
+        ##### Parameters
+
+
+        - `value`: An array of the new `kind`s of actions to perform when triggering. Supported flag actions are `turnFlagOn` and `turnFlagOff`.
+
+
+        Here''s an example that replaces the existing action with new instructions to turn flag targeting off:
+
+
+        ```json
+
+        {
+
+        "instructions": [
+
+        {
+
+        "kind": "replaceTriggerActionInstructions",
+
+        "value": [ {"kind": "turnFlagOff"} ]
+
+        }
+
+        ]
+
+        }
+
+        ```
+
+
+        #### cycleTriggerUrl
+
+
+        Generates a new URL for this trigger. You must update any clients using the trigger to use this new URL.
+
+
+        Here''s an example:
+
+
+        ```json
+
+        {
+
+        "instructions": [{ "kind": "cycleTriggerUrl" }]
+
+        }
+
+        ```
+
+
+        #### disableTrigger
+
+
+        Disables the trigger. This saves the trigger configuration, but the trigger stops running. To re-enable, use `enableTrigger`.
+
+
+        Here''s an example:
+
+
+        ```json
+
+        {
+
+        "instructions": [{ "kind": "disableTrigger" }]
+
+        }
+
+        ```
+
+
+        #### enableTrigger
+
+
+        Enables the trigger. If you previously disabled the trigger, it begins running again.
+
+
+        Here''s an example:
+
+
+        ```json
+
+        {
+
+        "instructions": [{ "kind": "enableTrigger" }]
+
+        }
+
+        ```'
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: environmentKey
+        in: path
+        description: The environment key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The environment key
+      - name: featureFlagKey
+        in: path
+        description: The feature flag key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The feature flag key
+      - name: id
+        in: path
+        description: The flag trigger ID
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The flag trigger ID
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FlagTriggerInput'
+        required: true
+      operationId: patchTriggerWorkflow
+      security:
+      - ApiKey:
+        - read
+        - write
+    delete:
+      responses:
+        '204':
+          description: Action succeeded
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Flag triggers
+      summary: Delete flag trigger
+      description: Delete a flag trigger by ID.
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: environmentKey
+        in: path
+        description: The environment key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The environment key
+      - name: featureFlagKey
+        in: path
+        description: The feature flag key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The feature flag key
+      - name: id
+        in: path
+        description: The flag trigger ID
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The flag trigger ID
+      operationId: deleteTriggerWorkflow
+      security:
+      - ApiKey:
+        - read
+        - write
+    servers:
+    - url: https://app.launchdarkly.com
+      description: ' Default'
+    - url: https://app.launchdarkly.us
+      description: ' Federal'
   /flags/{projectKey}/{flagKey}/triggers/{environmentKey}:
     get:
       operationId: listFlagTriggers
       summary: List flag triggers
       description: Returns a list of all triggers for the specified feature flag in the given environment.
       tags:
-      - Flag Triggers
+      - Flag triggers
       parameters:
       - $ref: '#/components/parameters/ProjectKey'
       - $ref: '#/components/parameters/FlagKey'
@@ -41,12 +564,14 @@ paths:
           description: Unauthorized. Invalid or missing access token.
         '404':
           description: Flag or environment not found.
+      security:
+      - bearerAuth: []
     post:
       operationId: createFlagTrigger
       summary: Create a flag trigger
       description: Creates a new trigger for the specified feature flag that generates a unique URL for external services to toggle the flag.
       tags:
-      - Flag Triggers
+      - Flag triggers
       parameters:
       - $ref: '#/components/parameters/ProjectKey'
       - $ref: '#/components/parameters/FlagKey'
@@ -68,33 +593,313 @@ paths:
           description: Invalid request body.
         '401':
           description: Unauthorized. Invalid or missing access token.
+      security:
+      - bearerAuth: []
+    servers:
+    - url: https://app.launchdarkly.com/api/v2
+      description: LaunchDarkly Production API
 components:
-  parameters:
-    FlagKey:
-      name: flagKey
-      in: path
-      required: true
-      description: The feature flag key identifying a specific flag.
-      schema:
-        type: string
-        pattern: ^[a-z0-9]([a-z0-9._-])*$
-    ProjectKey:
-      name: projectKey
-      in: path
-      required: true
-      description: The project key identifying a LaunchDarkly project.
-      schema:
-        type: string
-        pattern: ^[a-z0-9]([a-z0-9-])*$
-    EnvironmentKey:
-      name: environmentKey
-      in: path
-      required: true
-      description: The environment key identifying a specific environment.
-      schema:
-        type: string
-        pattern: ^[a-z0-9]([a-z0-9-])*$
   schemas:
+    Instruction:
+      type: object
+      additionalProperties: {}
+    TriggerWorkflowCollectionRep:
+      type: object
+      properties:
+        items:
+          type: array
+          description: An array of flag triggers
+          items:
+            $ref: '#/components/schemas/TriggerWorkflowRep'
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+    MethodNotAllowedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: method_not_allowed
+        message:
+          type: string
+          description: Description of the error
+          example: Method not allowed
+    Link:
+      type: object
+      properties:
+        href:
+          type: string
+        type:
+          type: string
+    triggerPost:
+      type: object
+      required:
+      - integrationKey
+      properties:
+        comment:
+          type: string
+          description: Optional comment describing the trigger
+          example: example comment
+        instructions:
+          type: array
+          description: 'The action to perform when triggering. This should be an array with a single object that looks like <code>{"kind": "flag_action"}</code>. Supported flag actions are <code>turnFlagOn</code> and <code>turnFlagOff</code>.'
+          items:
+            $ref: '#/components/schemas/Instruction'
+          example:
+          - kind: turnFlagOn
+        integrationKey:
+          type: string
+          description: The unique identifier of the integration for your trigger. Use <code>generic-trigger</code> for integrations not explicitly supported.
+          example: generic-trigger
+    FlagTriggerInput:
+      type: object
+      properties:
+        comment:
+          type: string
+          description: Optional comment describing the update
+          example: optional comment
+        instructions:
+          type: array
+          description: 'The instructions to perform when updating. This should be an array with objects that look like <code>{"kind": "trigger_action"}</code>.'
+          items:
+            $ref: '#/components/schemas/Instruction'
+          example:
+          - kind: disableTrigger
+    TriggerWorkflowRep:
+      type: object
+      properties:
+        _id:
+          description: The ID of this flag trigger
+          example: 12ab3c45de678910abc12345
+          $ref: '#/components/schemas/FeatureWorkflowId'
+        _version:
+          type: integer
+          description: The flag trigger version
+          example: 1
+        _creationDate:
+          description: Timestamp of when the flag trigger was created
+          example: '1654104600000'
+          $ref: '#/components/schemas/UnixMillis'
+        _maintainerId:
+          type: string
+          description: The ID of the flag trigger maintainer
+          example: 12ab3c45de678910abc12345
+        _maintainer:
+          description: Details on the member who maintains this flag trigger
+          $ref: '#/components/schemas/MemberSummary'
+        enabled:
+          type: boolean
+          description: Whether the flag trigger is currently enabled
+          example: true
+        _status:
+          type: string
+          description: 'The trigger state: active, inactive, or failed'
+          example: active
+          enum:
+          - active
+          - inactive
+          - failed
+        _lastFailedAt:
+          description: Timestamp of when the trigger most recently entered failed state
+          example: '1654114600000'
+          $ref: '#/components/schemas/UnixMillis'
+        _integrationKey:
+          type: string
+          description: The unique identifier of the integration for your trigger
+          example: generic-trigger
+        instructions:
+          description: Details on the action to perform when triggering
+          example: '[ { "kind": "turnFlagOn" }]'
+          $ref: '#/components/schemas/Instructions'
+        _lastTriggeredAt:
+          description: Timestamp of when the trigger was most recently executed
+          example: '1654114600000'
+          $ref: '#/components/schemas/UnixMillis'
+        _recentTriggerBodies:
+          type: array
+          description: Details on recent flag trigger requests.
+          items:
+            $ref: '#/components/schemas/RecentTriggerBody'
+        _triggerCount:
+          type: integer
+          description: Number of times the trigger has been executed
+          example: 3
+        triggerURL:
+          type: string
+          description: The unguessable URL for this flag trigger
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+    FeatureWorkflowId:
+      type: string
+    RecentTriggerBody:
+      type: object
+      properties:
+        timestamp:
+          description: Timestamp of the incoming trigger webhook
+          example: '1654104600000'
+          $ref: '#/components/schemas/UnixMillis'
+        jsonBody:
+          type: object
+          additionalProperties: {}
+          description: The marshalled JSON request body for the incoming trigger webhook. If this is empty or contains invalid JSON, the timestamp is recorded but this field will be empty.
+    InvalidRequestErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: invalid_request
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid request body
+    Instructions:
+      type: array
+      items:
+        $ref: '#/components/schemas/Instruction'
+    StatusConflictErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: optimistic_locking_error
+        message:
+          type: string
+          description: Description of the error
+          example: Conflict. Optimistic lock error. Try again later.
+    NotFoundErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: not_found
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid resource identifier
+    MemberSummary:
+      type: object
+      required:
+      - _links
+      - _id
+      - role
+      - email
+      properties:
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+          example:
+            self:
+              href: /api/v2/members/569f183514f4432160000007
+              type: application/json
+        _id:
+          type: string
+          description: The member's ID
+          example: 569f183514f4432160000007
+        firstName:
+          type: string
+          description: The member's first name
+          example: Ariel
+        lastName:
+          type: string
+          description: The member's last name
+          example: Flores
+        role:
+          type: string
+          description: The member's base role. If the member has no additional roles, this role will be in effect.
+          example: admin
+        email:
+          type: string
+          description: The member's email address
+          example: ariel@acme.com
+    RateLimitedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: rate_limited
+        message:
+          type: string
+          description: Description of the error
+          example: You've exceeded the API rate limit. Try again later.
+    UnauthorizedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: unauthorized
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid access token
+    UnixMillis:
+      type: integer
+      format: int64
+    ForbiddenErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: forbidden
+        message:
+          type: string
+          description: Description of the error
+          example: Forbidden. Access to the requested resource was denied.
+    FlagTriggerBody:
+      type: object
+      description: The request body for creating a new flag trigger.
+      required:
+      - instructions
+      properties:
+        comment:
+          type: string
+          description: An optional comment describing the trigger.
+        instructions:
+          type: array
+          description: The instructions to execute when the trigger fires.
+          items:
+            type: object
+            properties:
+              kind:
+                type: string
+                description: The type of instruction.
+                enum:
+                - turnFlagOn
+                - turnFlagOff
     FlagTriggers:
       type: object
       description: A collection of flag triggers.
@@ -106,6 +911,29 @@ components:
             $ref: '#/components/schemas/FlagTrigger'
         _links:
           $ref: '#/components/schemas/Links'
+    Links:
+      type: object
+      description: HATEOAS links for navigating related resources.
+      properties:
+        self:
+          type: object
+          description: A link to this resource.
+          properties:
+            href:
+              type: string
+              description: The URL of this resource.
+            type:
+              type: string
+              description: The media type.
+      additionalProperties:
+        type: object
+        properties:
+          href:
+            type: string
+            description: The URL of the linked resource.
+          type:
+            type: string
+            description: The media type.
     FlagTrigger:
       type: object
       description: A trigger that provides a unique URL for external services to toggle a feature flag.
@@ -137,51 +965,36 @@ components:
                 - turnFlagOff
         _links:
           $ref: '#/components/schemas/Links'
-    FlagTriggerBody:
-      type: object
-      description: The request body for creating a new flag trigger.
-      required:
-      - instructions
-      properties:
-        comment:
-          type: string
-          description: An optional comment describing the trigger.
-        instructions:
-          type: array
-          description: The instructions to execute when the trigger fires.
-          items:
-            type: object
-            properties:
-              kind:
-                type: string
-                description: The type of instruction.
-                enum:
-                - turnFlagOn
-                - turnFlagOff
-    Links:
-      type: object
-      description: HATEOAS links for navigating related resources.
-      properties:
-        self:
-          type: object
-          description: A link to this resource.
-          properties:
-            href:
-              type: string
-              description: The URL of this resource.
-            type:
-              type: string
-              description: The media type.
-      additionalProperties:
-        type: object
-        properties:
-          href:
-            type: string
-            description: The URL of the linked resource.
-          type:
-            type: string
-            description: The media type.
+  parameters:
+    FlagKey:
+      name: flagKey
+      in: path
+      required: true
+      description: The feature flag key identifying a specific flag.
+      schema:
+        type: string
+        pattern: ^[a-z0-9]([a-z0-9._-])*$
+    EnvironmentKey:
+      name: environmentKey
+      in: path
+      required: true
+      description: The environment key identifying a specific environment.
+      schema:
+        type: string
+        pattern: ^[a-z0-9]([a-z0-9-])*$
+    ProjectKey:
+      name: projectKey
+      in: path
+      required: true
+      description: The project key identifying a LaunchDarkly project.
+      schema:
+        type: string
+        pattern: ^[a-z0-9]([a-z0-9-])*$
   securitySchemes:
+    ApiKey:
+      type: apiKey
+      in: header
+      name: Authorization
     bearerAuth:
       type: http
       scheme: bearer
@@ -189,3 +1002,6 @@ components:
 externalDocs:
   description: LaunchDarkly API Documentation
   url: https://apidocs.launchdarkly.com/
+x-refined-from:
+- launchdarkly-openapi.json
+- launchdarkly-rest-api-openapi.yml

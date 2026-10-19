@@ -508,6 +508,1370 @@ apis:
     url: sandbox/launchdarkly-sandbox.yml
   - type: SourceCode
     url: https://github.com/launchdarkly/ldcli
+- aid: launchdarkly:launchdarkly-account-usage-beta-api
+  name: LaunchDarkly Account usage (beta) API
+  description: >-
+    > ### This feature is in beta
+
+    >
+
+    > To use this feature, pass in a header including the `LD-API-Version` key with value set to `beta`.
+    Use this header with each call. To learn more, read [Beta resources](https://launchdarkly.com/docs/api#beta-resources).
+
+    >
+
+    > Resources that are in beta are still undergoing testing and development. They may change without
+    notice, including becoming backwards incompatible.
+
+
+    The account usage API lets you query for metrics about how your account is using LaunchDarkly. To
+    learn more, read [Account usage metrics](https://launchdarkly.com/docs/home/account/metrics).
+
+
+    Each endpoint returns time-series data in the form of an array of data points with timestamps. Each
+    one contains data for that time from one or more series. It also includes a metadata array describing
+    what each of the series is.
+  humanURL: https://launchdarkly.com/docs/api/webhooks
+  baseURL: https://app.launchdarkly.com/api/v2
+  tags:
+  - Account usage (beta)
+  properties:
+  - type: OpenAPI
+    url: openapi/launchdarkly-account-usage-beta-api-openapi.yml
+- aid: launchdarkly:launchdarkly-adaptive-triggers-api
+  name: LaunchDarkly Adaptive triggers API
+  description: >-
+    Adaptive triggers automatically update the targeting of a feature flag or AgentControl config when
+    a trigger source, such as an observability alert, fires. Each adaptive trigger pairs a trigger source
+    with a task that describes the change to make, such as updating the variation served by the default
+    rule or by a specific targeting rule.
+
+
+    Using the adaptive triggers API, you can create, read, update, enable, disable, and delete adaptive
+    triggers.
+  humanURL: https://launchdarkly.com/docs/api/webhooks
+  baseURL: https://app.launchdarkly.com/api/v2
+  tags:
+  - Adaptive triggers
+  properties:
+  - type: OpenAPI
+    url: openapi/launchdarkly-adaptive-triggers-api-openapi.yml
+- aid: launchdarkly:launchdarkly-agentcontrol-api
+  name: LaunchDarkly Agent Control API
+  description: >-
+    The AgentControl API allows you to create, retrieve, and edit AgentControl configs, config variations,
+    and AI model configurations.
+
+
+    **This product name has changed, but the API has not.** AgentControl was previously called AI Configs.
+    Resources previously called "AI Configs" are now referred to as "AgentControl configs" or "configs."
+    This is not a breaking change to the API. Existing AI Configs API endpoints, paths, request/response
+    bodies, and operation IDs are unchanged. Integrations that use those resources still work and do not
+    need modification.
+
+
+    An AgentControl config is a resource in LaunchDarkly that you can use to customize, test, and roll
+    out new large language models (LLMs) within your generative AI applications. Within each config, you
+    define one or more variations, each of which includes a model configuration and one or more messages.
+    The model configuration can be a standard one from the list provided by LaunchDarkly, or you can define
+    your own custom AI model configuration.
+
+
+    To learn more, read [AgentControl](https://launchdarkly.com/docs/home/agentcontrol).
+  humanURL: https://launchdarkly.com/docs/api/webhooks
+  baseURL: https://app.launchdarkly.com/api/v2
+  tags:
+  - AgentControl
+  properties:
+  - type: OpenAPI
+    url: openapi/launchdarkly-agentcontrol-api-openapi.yml
+- aid: launchdarkly:launchdarkly-announcements-api
+  name: LaunchDarkly Announcements API
+  description: >-
+    The announcements API lets you create and update a custom announcement banner that appears in the
+    LaunchDarkly user interface for everyone in your organization. You can use the banner to display organization-wide
+    information, such as upcoming holidays, code freeze periods, or reminders on best practices. You can
+    have one banner visible at a time.
+
+
+    To learn more, read [Organization announcements](https://launchdarkly.com/docs/home/account/org-announcements).
+  humanURL: https://launchdarkly.com/docs/api/webhooks
+  baseURL: https://app.launchdarkly.com/api/v2
+  tags:
+  - Announcements
+  properties:
+  - type: OpenAPI
+    url: openapi/launchdarkly-announcements-api-openapi.yml
+- aid: launchdarkly:launchdarkly-applications-beta-api
+  name: LaunchDarkly Applications (beta) API
+  description: >-
+    > ### This feature is in beta
+
+    >
+
+    > To use this feature, pass in a header including the `LD-API-Version` key with value set to `beta`.
+    Use this header with each call. To learn more, read [Beta resources](https://launchdarkly.com/docs/api#beta-resources).
+
+    >
+
+    > Resources that are in beta are still undergoing testing and development. They may change without
+    notice, including becoming backwards incompatible.
+
+
+    The applications API lets you create, update, delete, and search for applications and application
+    versions.
+
+
+    Each application includes information about the app you're creating, and a set of versions of the
+    app that you've released. You can use applications to target particular application versions in your
+    feature flags more easily, and to handle unsupported application versions more gracefully.
+
+
+    In addition to creating applications through the applications API, you can also create applications
+    in the LaunchDarkly user interface. To learn more, read [Applications and application versions](https://launchdarkly.com/docs/home/releases/applications).
+    LaunchDarkly also creates applications and application versions automatically when a LaunchDarkly
+    SDK evaluates a feature flag for a context that includes application information. To learn more, read
+    [Automatic environment attributes](https://launchdarkly.com/docs/sdk/features/environment-attributes).
+
+
+    You can use an application in any project in your LaunchDarkly account.
+
+
+    ### Filtering applications and application versions
+
+
+    The `filter` parameter supports the following operators: `equals`, `notEquals`, `anyOf`, `startsWith`.
+
+
+    You can also combine filters in the following ways:
+
+
+    - Use a comma (`,`) as an AND operator
+
+    - Use a vertical bar (`|`) as an OR operator
+
+    - Use parentheses (`()`) to group filters
+
+
+    #### Supported fields and operators
+
+
+    You can only filter certain fields in applications when using the `filter` parameter. Additionally,
+    you can only filter some fields with certain operators.
+
+
+    When you search for applications, the `filter` parameter supports the following fields and operators:
+
+
+    |<div style="width:120px">Field</div> |Description |Supported operators |
+
+    |---|---|---|
+
+    |`key` | The application or application version key, a unique identifier |`equals`, `notEquals`, `anyOf`
+    |
+
+    |`name` | The application name or application version name |`equals`, `notEquals`, `anyOf`, `startsWith`
+    |
+
+    |`autoAdded` | Whether the application or application version was automatically created because it
+    was included in a context when a LaunchDarkly SDK evaluated a feature flag, or was created through
+    the LaunchDarkly UI or REST API |`equals`, `notEquals` |
+
+    |`kind` | The application kind, one of `mobile`, `server`, `browser`. Only available for [Get applications](https://launchdarkly.com/docs/api/applications-beta/get-applications).
+    |`equals`, `notEquals`, `anyOf` |
+
+    |`supported` | Whether a mobile application version is supported or unsupported. Only available for
+    [Get application versions by application key](https://launchdarkly.com/docs/api/applications-beta/get-application-versions).|`equals`,
+    `notEquals` |
+
+
+    For example, the filter `?filter=kind anyOf ["mobile", "server"]` matches applications whose `kind`
+    is either `mobile` or `server`. The filter is not case-sensitive.
+
+
+    The documented values for `filter` query parameters are prior to URL encoding. For example, the `[`
+    in `?filter=kind anyOf ["mobile", "server"]` must be encoded to `%5B`.
+
+
+    ### Sorting applications and application versions
+
+
+    LaunchDarkly supports the following fields for sorting:
+
+    - `name` sorts by application name.
+
+    - `creationDate` sorts by the creation date of the application.
+
+
+    By default, the sort is in ascending order. Use `-` to sort in descending order. For example, `?sort=name`
+    sorts the response by application name in ascending order, and `?sort=-name` sorts in descending order.
+  humanURL: https://launchdarkly.com/docs/api/webhooks
+  baseURL: https://app.launchdarkly.com/api/v2
+  tags:
+  - Applications (beta)
+  properties:
+  - type: OpenAPI
+    url: openapi/launchdarkly-applications-beta-api-openapi.yml
+- aid: launchdarkly:launchdarkly-approvals-beta-api
+  name: LaunchDarkly Approvals (beta) API
+  description: >-
+    > ### This feature is in beta
+
+    >
+
+    > To use this feature, pass in a header including the `LD-API-Version` key with value set to `beta`.
+    Use this header with each call. To learn more, read [Beta resources](https://launchdarkly.com/docs/api#beta-resources).
+
+    >
+
+    > Resources that are in beta are still undergoing testing and development. They may change without
+    notice, including becoming backwards incompatible.
+  humanURL: https://launchdarkly.com/docs/api/webhooks
+  baseURL: https://app.launchdarkly.com/api/v2
+  tags:
+  - Approvals (beta)
+  properties:
+  - type: OpenAPI
+    url: openapi/launchdarkly-approvals-beta-api-openapi.yml
+- aid: launchdarkly:launchdarkly-context-settings-api
+  name: LaunchDarkly Context settings API
+  description: >-
+    You can use the context settings API to assign a context to a specific variation for any feature flag.
+    To learn more, read [View and manage contexts](https://launchdarkly.com/docs/home/observability/context-attributes#view-and-manage-contexts).
+  humanURL: https://launchdarkly.com/docs/api/webhooks
+  baseURL: https://app.launchdarkly.com/api/v2
+  tags:
+  - Context settings
+  properties:
+  - type: OpenAPI
+    url: openapi/launchdarkly-context-settings-api-openapi.yml
+- aid: launchdarkly:launchdarkly-contexts-api
+  name: LaunchDarkly Contexts API
+  description: >-
+    Contexts are people, services, machines, or other resources that encounter feature flags in your product.
+    Contexts are identified by their `kind`, which describes the type of resources encountering flags,
+    and by their `key`. Each unique combination of one or more contexts that have encountered a feature
+    flag in your product is called a context instance.
+
+
+    When you use the LaunchDarkly SDK to evaluate a flag, you provide a context to that call. LaunchDarkly
+    records the key and attributes of each context. You can view these in the LaunchDarkly user interface
+    from the **Contexts** list, or use the Context APIs. To learn more, read [Contexts](https://launchdarkly.com/docs/home/observability/contexts).
+
+
+    LaunchDarkly provides APIs for you to:
+
+
+    * retrieve contexts and context attribute names and values
+
+    * search for contexts
+
+    * fetch context kinds
+
+    * create and update context kinds
+
+
+    To learn more about context kinds, read [Context kinds](https://launchdarkly.com/docs/home/observability/context-kinds).
+
+
+    Contexts are always scoped within a project and an environment. Each environment has its own set of
+    context records. Context records reflect the contexts that LaunchDarkly has received within the last
+    30 days.
+
+
+    Some of the endpoints in the contexts API accept an application ID. The application ID is returned
+    as the `applicationId` field of each element in the `items` array of the [Get contexts](https://launchdarkly.com/docs/api/contexts/get-contexts)
+    response. By default, the application ID is set to the SDK you are using. In the LaunchDarkly UI,
+    the application ID and application version appear on the context details page in the "From source"
+    field. You can change the application ID as part of your SDK configuration. To learn more, read [Application
+    metadata configuration](https://launchdarkly.com/docs/sdk/features/app-config).
+
+
+    ### Filtering contexts
+
+
+    When you [search for contexts](https://launchdarkly.com/docs/api/contexts/search-contexts), you can
+    filter the results using fields and operators with the `filter` parameter. Specify `filter` either
+    as a query parameter or as a request body parameter.
+
+
+    The `filter` parameter supports the following operators: `after`, `anyOf`, `before`, `contains`, `equals`,
+    `exists`, `notEquals`, `startsWith`.
+
+
+    <details>
+
+    <summary>Expand for details on operators and syntax</summary>
+
+
+    #### after
+
+
+    Returns contexts if the field's date value occurs after the specified time. Provide an RFC 3339 timestamp
+    or Unix epoch milliseconds. For example:
+
+
+    * `myField after "2022-09-21T19:03:15+00:00"`
+
+
+    #### anyOf
+
+
+    Returns contexts if the field value matches any of the provided values. The `anyOf` operator is supported
+    for the `applicationId`, `key`, `kind`, `kindKey`, `kindKeys`, and `kinds` fields only. To match an
+    attribute against multiple values, use `equals` with an array value instead. For example:
+
+
+    * `kind anyOf ["user","device"]`
+
+    * `key anyOf ["user-key-123abc","user-key-456def"]`
+
+
+    #### before
+
+
+    Returns contexts if the field's date value occurs before the provided time. Provide an RFC 3339 timestamp
+    or Unix epoch milliseconds. For example:
+
+
+    * `myField before "2022-09-21T19:03:15+00:00"`
+
+
+    #### contains
+
+
+    Returns contexts whose kind or kind and key match the provided value. The `contains` operator is supported
+    for the `kinds` and `kindKeys` fields only, and accepts exactly one value. For example:
+
+
+    * `kinds contains ["user"]`
+
+    * `kindKeys contains ["user:user-key-123abc"]`
+
+
+    #### equals
+
+
+    Returns contexts only if the field value exactly matches the provided value. If you provide an array,
+    the filter matches if the field value equals any element of the array. For example:
+
+
+    * `myField equals 44`
+
+    * `myField equals "device"`
+
+    * `myField equals true`
+
+    * `myField equals [1,2,3,4]`
+
+    * `myField equals ["hello","goodbye"]`
+
+
+    #### exists
+
+
+    Returns contexts based on whether the specified field exists. The `exists` operator is supported for
+    the `name` field and attribute fields only. For example:
+
+
+    * `myField exists true`
+
+    * `myField exists false`
+
+    * `*.name exists true`
+
+
+    #### notEquals
+
+
+    Returns contexts if the field value does not exactly match the provided value. If you provide an array,
+    the filter matches if the field value does not equal any element of the array. For example:
+
+
+    * `myField notEquals 44`
+
+    * `myField notEquals "device"`
+
+    * `myField notEquals true`
+
+    * `myField notEquals [1,2,3,4]`
+
+    * `myField notEquals ["hello","goodbye"]`
+
+
+    #### startsWith
+
+
+    Returns contexts if a singular string field value begins with the provided substring. The substring
+    can be at most 500 characters. Matching is case-sensitive. For example:
+
+
+    * `myField startsWith "do"`
+
+
+    </details>
+
+
+    You can also combine filters in the following ways:
+
+
+    * Use a comma (`,`) as an AND operator
+
+    * Use a vertical bar (`|`) as an OR operator
+
+    * Use parentheses `()` to group filters
+
+
+    For example:
+
+
+    * `myField notEquals 0, myField notEquals 1` returns contexts where `myField` is not 0 and is not
+    1
+
+    * `myFirstField equals "device",(mySecondField equals "iPhone"|mySecondField equals "iPad")` returns
+    contexts where `myFirstField` is equal to "device" and `mySecondField` is equal to either "iPhone"
+    or "iPad"
+
+
+    #### Supported fields and operators
+
+
+    You can only filter some fields using certain operators.
+
+
+    When you search for [contexts](https://launchdarkly.com/docs/api/contexts/search-contexts), the `filter`
+    parameter supports the following fields and operators:
+
+
+    |<div style="width:120px">Field</div> |Description |Supported operators |
+
+    |---|---|---|
+
+    |`applicationId` |An identifier that represents the application where the LaunchDarkly SDK is running.
+    |`equals`, `notEquals`, `anyOf`, `startsWith` |
+
+    |`key` |The context key. |`equals`, `notEquals`, `anyOf`, `startsWith` |
+
+    |`kind` |The context kind. |`equals`, `notEquals`, `anyOf`, `startsWith` |
+
+    |`kinds` |The context's kind. Supply a list of strings to the operator. The filter matches contexts
+    whose kind is any of the provided values. The `contains` operator accepts exactly one value. |`equals`,
+    `anyOf`, `contains` |
+
+    |`kindKey` |The kind and key for the context, joined with a `:`. For example, `user:user-key-abc123`.
+    |`equals`, `notEquals`, `anyOf` |
+
+    |`kindKeys` |The kind and key for the context, joined with a `:`. For example, `user:user-key-abc123`.
+    Supply a list of strings to the operator. The filter matches contexts whose kind and key match any
+    of the provided values. The `contains` operator accepts exactly one value. |`equals`, `anyOf`, `contains`
+    |
+
+    |`q` |A prefix search across the context key and the `name`, `firstName`, `lastName`, and `email`
+    attributes. Supply a single string to the operator. |`equals` |
+
+    |`name` |The name for the context. |`equals`, `notEquals`, `exists`, `startsWith` |
+
+    |`<a kind>.<an attribute name>` |A kind and the name of any attribute that appears in a context of
+    that kind, for example, `user.email`. To filter all kinds use `*` in place of the kind. For example,
+    `*.email`. Reference a nested attribute by joining path segments with periods. For example, `user.address.city`
+    filters on the `city` field within the `address` attribute of a user context. Each path segment may
+    contain letters, numbers, underscores, and hyphens, and may not start with a number. JSON pointer
+    escaping (`~0`, `~1`) is not supported. If the value includes whitespace, enclose it in double quotes.
+    A filter may include at most 10 attribute clauses. |`equals`, `notEquals`, `exists`, `startsWith`,
+    `before`, `after`.|
+  humanURL: https://launchdarkly.com/docs/api/webhooks
+  baseURL: https://app.launchdarkly.com/api/v2
+  tags:
+  - Contexts
+  properties:
+  - type: OpenAPI
+    url: openapi/launchdarkly-contexts-api-openapi.yml
+- aid: launchdarkly:launchdarkly-data-export-destinations-api
+  name: LaunchDarkly Data Export destinations API
+  description: >-
+    > ### Data Export is an add-on feature
+
+    >
+
+    > Data Export is available as an add-on for customers on a Foundation or Enterprise plan. To learn
+    more, [read about our pricing](https://launchdarkly.com/pricing/). To upgrade your plan, [contact
+    Sales](https://launchdarkly.com/contact-sales/).
+
+
+    Data Export provides a real-time export of raw analytics data, including feature flag requests, analytics
+    events, custom events, and more.
+
+
+    Data Export destinations are locations that receive exported data. The Data Export destinations API
+    allows you to configure destinations so that your data can be exported.
+
+
+    Several of the endpoints in the Data Export destinations API require a Data Export destination ID.
+    The Data Export destination ID is returned as part of the [Create a Data Export destination](https://launchdarkly.com/docs/api/data-export-destinations/post-destination)
+    and [List destinations](https://launchdarkly.com/docs/api/data-export-destinations/get-destinations)
+    responses. It is the `_id` field, or the `_id` field of each element in the `items` array.
+
+
+    To learn more, read [Data Export](https://launchdarkly.com/docs/integrations/data-export).
+  humanURL: https://launchdarkly.com/docs/api/webhooks
+  baseURL: https://app.launchdarkly.com/api/v2
+  tags:
+  - Data Export destinations
+  properties:
+  - type: OpenAPI
+    url: openapi/launchdarkly-data-export-destinations-api-openapi.yml
+- aid: launchdarkly:launchdarkly-feature-flags-beta-api
+  name: LaunchDarkly Feature flags (beta) API
+  description: >-
+    > ### This feature is in beta
+
+    >
+
+    > To use this feature, pass in a header including the `LD-API-Version` key with value set to `beta`.
+    Use this header with each call. To learn more, read [Beta resources](https://launchdarkly.com/docs/api#beta-resources).
+
+    >
+
+    > Resources that are in beta are still undergoing testing and development. They may change without
+    notice, including becoming backwards incompatible.
+  humanURL: https://launchdarkly.com/docs/api/webhooks
+  baseURL: https://app.launchdarkly.com/api/v2
+  tags:
+  - Feature flags (beta)
+  properties:
+  - type: OpenAPI
+    url: openapi/launchdarkly-feature-flags-beta-api-openapi.yml
+- aid: launchdarkly:launchdarkly-flag-import-configurations-beta-api
+  name: LaunchDarkly Flag import configurations (beta) API
+  description: >-
+    > ### This feature is in beta
+
+    >
+
+    > To use this feature, pass in a header including the `LD-API-Version` key with value set to `beta`.
+    Use this header with each call. To learn more, read [Beta resources](https://launchdarkly.com/docs/api#beta-resources).
+
+    >
+
+    > Resources that are in beta are still undergoing testing and development. They may change without
+    notice, including becoming backwards incompatible.
+
+
+    Flag import configurations allow you to import feature flags from another feature management system.
+
+
+    Use the flag import configuration endpoints to create, delete, and manage flag import configurations.
+    You can import flags from other feature management tools into LaunchDarkly. For example, you can import
+    flags from Split.io.
+
+
+    Several of the endpoints in the flag import configuration API require an integration ID. The integration
+    ID is returned as part of the [Create a flag import configuration](https://launchdarkly.com/docs/api/flag-import-configurations-beta/create-flag-import-configuration)
+    response, in the `_id` field. It is also returned as part of the [List all flag import configurations](https://launchdarkly.com/docs/api/flag-import-configurations-beta/get-flag-import-configurations)
+    response, in the `_id` field of each element in the `items` array.
+
+
+    To learn more about flag import configurations, read [Import flags](https://launchdarkly.com/docs/home/flags/import).
+  humanURL: https://launchdarkly.com/docs/api/webhooks
+  baseURL: https://app.launchdarkly.com/api/v2
+  tags:
+  - Flag import configurations (beta)
+  properties:
+  - type: OpenAPI
+    url: openapi/launchdarkly-flag-import-configurations-beta-api-openapi.yml
+- aid: launchdarkly:launchdarkly-flag-links-beta-api
+  name: LaunchDarkly Flag links (beta) API
+  description: >-
+    > ### This feature is in beta
+
+    >
+
+    > To use this feature, pass in a header including the `LD-API-Version` key with value set to `beta`.
+    Use this header with each call. To learn more, read [Beta resources](https://launchdarkly.com/docs/api#beta-resources).
+
+    >
+
+    > Resources that are in beta are still undergoing testing and development. They may change without
+    notice, including becoming backwards incompatible.
+
+
+    Flag links let you view external mentions of flags from other tools and services. Links to external
+    conversations and references to your flags allow you to collaborate more easily and quickly review
+    relevant flag contexts. To learn more, read [Flag links](https://launchdarkly.com/docs/home/flags/links).
+
+
+    You can create custom flag links by associating an external URL with a feature flag. After you create
+    a flag link, it applies across all your environments. You should use caution when you delete a flag
+    link, because it will be deleted from all your environments.
+
+
+    With the flag links API, you can view, create, update, and delete links to flags.
+
+
+    Several of the endpoints in the flag links API require a flag link ID. The flag link ID is returned
+    as part of the [Create flag link](https://launchdarkly.com/docs/api/flag-links-beta/create-flag-link)
+    and [List flag links](https://launchdarkly.com/docs/api/flag-links-beta/get-flag-links) responses.
+    It is the `_id` field, or the `_id` field of each element in the `items` array.
+  humanURL: https://launchdarkly.com/docs/api/webhooks
+  baseURL: https://app.launchdarkly.com/api/v2
+  tags:
+  - Flag links (beta)
+  properties:
+  - type: OpenAPI
+    url: openapi/launchdarkly-flag-links-beta-api-openapi.yml
+- aid: launchdarkly:launchdarkly-follow-flags-api
+  name: LaunchDarkly Follow flags API
+  description: >-
+    Follow flags to receive email updates about targeting changes to a flag in a project and environment.
+
+
+    Several of the endpoints in the follow flags API require a member ID. The member ID is returned as
+    part of the [Invite new members](https://launchdarkly.com/docs/api/account-members/post-members) and
+    [List account members](https://launchdarkly.com/docs/api/account-members/get-members) responses. It
+    is the `_id` field of each element in the `items` array.
+  humanURL: https://launchdarkly.com/docs/api/webhooks
+  baseURL: https://app.launchdarkly.com/api/v2
+  tags:
+  - Follow flags
+  properties:
+  - type: OpenAPI
+    url: openapi/launchdarkly-follow-flags-api-openapi.yml
+- aid: launchdarkly:launchdarkly-holdouts-api
+  name: LaunchDarkly Holdouts API
+  description: >-
+    > ### Available for customers using Experimentation
+
+    >
+
+    > Holdouts are available to customers using [Experimentation](https://launchdarkly.com/docs/api/experiments).
+
+
+
+    Holdouts let you exclude a percentage of your audience from your Experimentation program. This enables
+    you to see the overall effect of your experiments on your customer base, and helps determine how effective
+    the experiments you're running are.
+
+
+    Using the holdouts API, you can create, update, and end holdouts. To learn more, read [Holdouts](https://launchdarkly.com/docs/home/holdouts).
+  humanURL: https://launchdarkly.com/docs/api/webhooks
+  baseURL: https://app.launchdarkly.com/api/v2
+  tags:
+  - Holdouts
+  properties:
+  - type: OpenAPI
+    url: openapi/launchdarkly-holdouts-api-openapi.yml
+- aid: launchdarkly:launchdarkly-insights-charts-beta-api
+  name: LaunchDarkly Insights charts (beta) API
+  description: >-
+    > ### This feature is in beta
+
+    >
+
+    > To use this feature, pass in a header including the `LD-API-Version` key with value set to `beta`.
+    Use this header with each call. To learn more, read [Beta resources](https://launchdarkly.com/docs/api#beta-resources).
+
+    >
+
+    > Resources that are in beta are still undergoing testing and development. They may change without
+    notice, including becoming backwards incompatible.
+
+
+    The charts API provides access to the data used in engineering insights project metrics. To learn
+    more, read [Project metrics](https://launchdarkly.com/docs/home/observability/project-metrics).
+  humanURL: https://launchdarkly.com/docs/api/webhooks
+  baseURL: https://app.launchdarkly.com/api/v2
+  tags:
+  - Insights charts (beta)
+  properties:
+  - type: OpenAPI
+    url: openapi/launchdarkly-insights-charts-beta-api-openapi.yml
+- aid: launchdarkly:launchdarkly-insights-deployments-beta-api
+  name: LaunchDarkly Insights deployments (beta) API
+  description: >-
+    > ### This feature is in beta
+
+    >
+
+    > To use this feature, pass in a header including the `LD-API-Version` key with value set to `beta`.
+    Use this header with each call. To learn more, read [Beta resources](https://launchdarkly.com/docs/api#beta-resources).
+
+    >
+
+    > Resources that are in beta are still undergoing testing and development. They may change without
+    notice, including becoming backwards incompatible.
+
+
+    The deployments API provides access to deployment information in engineering insights. To learn more,
+    read [Deployments](https://launchdarkly.com/docs/home/observability/deployments).
+  humanURL: https://launchdarkly.com/docs/api/webhooks
+  baseURL: https://app.launchdarkly.com/api/v2
+  tags:
+  - Insights deployments (beta)
+  properties:
+  - type: OpenAPI
+    url: openapi/launchdarkly-insights-deployments-beta-api-openapi.yml
+- aid: launchdarkly:launchdarkly-insights-flag-events-beta-api
+  name: LaunchDarkly Insights flag events (beta) API
+  description: >-
+    > ### This feature is in beta
+
+    >
+
+    > To use this feature, pass in a header including the `LD-API-Version` key with value set to `beta`.
+    Use this header with each call. To learn more, read [Beta resources](https://launchdarkly.com/docs/api#beta-resources).
+
+    >
+
+    > Resources that are in beta are still undergoing testing and development. They may change without
+    notice, including becoming backwards incompatible.
+
+
+    The flag events API provides access to flag-event data used in engineering insights project metrics.
+    To learn more, read [Flag health](https://launchdarkly.com/docs/home/observability/flag-health).
+  humanURL: https://launchdarkly.com/docs/api/webhooks
+  baseURL: https://app.launchdarkly.com/api/v2
+  tags:
+  - Insights flag events (beta)
+  properties:
+  - type: OpenAPI
+    url: openapi/launchdarkly-insights-flag-events-beta-api-openapi.yml
+- aid: launchdarkly:launchdarkly-insights-pull-requests-beta-api
+  name: LaunchDarkly Insights pull requests (beta) API
+  description: >-
+    > ### This feature is in beta
+
+    >
+
+    > To use this feature, pass in a header including the `LD-API-Version` key with value set to `beta`.
+    Use this header with each call. To learn more, read [Beta resources](https://launchdarkly.com/docs/api#beta-resources).
+
+    >
+
+    > Resources that are in beta are still undergoing testing and development. They may change without
+    notice, including becoming backwards incompatible.
+
+
+    The pull requests API provides access to information used for lead time calculations. To learn more,
+    read [Lead time](https://launchdarkly.com/docs/home/observability/lead-time).
+  humanURL: https://launchdarkly.com/docs/api/webhooks
+  baseURL: https://app.launchdarkly.com/api/v2
+  tags:
+  - Insights pull requests (beta)
+  properties:
+  - type: OpenAPI
+    url: openapi/launchdarkly-insights-pull-requests-beta-api-openapi.yml
+- aid: launchdarkly:launchdarkly-insights-repositories-beta-api
+  name: LaunchDarkly Insights repositories (beta) API
+  description: >-
+    > ### This feature is in beta
+
+    >
+
+    > To use this feature, pass in a header including the `LD-API-Version` key with value set to `beta`.
+    Use this header with each call. To learn more, read [Beta resources](https://launchdarkly.com/docs/api#beta-resources).
+
+    >
+
+    > Resources that are in beta are still undergoing testing and development. They may change without
+    notice, including becoming backwards incompatible.
+
+
+    Engineering insights automatically creates repository associations when it receives deployments or
+    code references. Optionally, you can manually configure additional associations. You can use the repositories
+    API to list repositories and create associations to projects. To learn more, read [Send deployment
+    information](https://launchdarkly.com/docs/home/observability/config-deployment).
+  humanURL: https://launchdarkly.com/docs/api/webhooks
+  baseURL: https://app.launchdarkly.com/api/v2
+  tags:
+  - Insights repositories (beta)
+  properties:
+  - type: OpenAPI
+    url: openapi/launchdarkly-insights-repositories-beta-api-openapi.yml
+- aid: launchdarkly:launchdarkly-insights-scores-beta-api
+  name: LaunchDarkly Insights scores (beta) API
+  description: >-
+    > ### This feature is in beta
+
+    >
+
+    > To use this feature, pass in a header including the `LD-API-Version` key with value set to `beta`.
+    Use this header with each call. To learn more, read [Beta resources](https://launchdarkly.com/docs/api#beta-resources).
+
+    >
+
+    > Resources that are in beta are still undergoing testing and development. They may change without
+    notice, including becoming backwards incompatible.
+
+
+    The insights scores API provides scores for data used in engineering insights project metrics. To
+    learn more, read [Project overview](https://launchdarkly.com/docs/home/observability/project-overview)
+    and [Project metrics](https://launchdarkly.com/docs/home/observability/project-metrics).
+  humanURL: https://launchdarkly.com/docs/api/webhooks
+  baseURL: https://app.launchdarkly.com/api/v2
+  tags:
+  - Insights scores (beta)
+  properties:
+  - type: OpenAPI
+    url: openapi/launchdarkly-insights-scores-beta-api-openapi.yml
+- aid: launchdarkly:launchdarkly-integration-delivery-configurations-beta-api
+  name: LaunchDarkly Integration delivery configurations (beta) API
+  description: >-
+    > ### This feature is in beta
+
+    >
+
+    > To use this feature, pass in a header including the `LD-API-Version` key with value set to `beta`.
+    Use this header with each call. To learn more, read [Beta resources](https://launchdarkly.com/docs/api#beta-resources).
+
+    >
+
+    > Resources that are in beta are still undergoing testing and development. They may change without
+    notice, including becoming backwards incompatible.
+
+
+    The integration delivery configurations API allow you to create, modify, validate, and delete delivery
+    configurations.
+
+
+    Several of the endpoints require a delivery configuration ID. The delivery configuration ID is returned
+    as part of the [Create delivery configuration](https://launchdarkly.com/docs/api/integration-delivery-configurations-beta/create-integration-delivery-configuration)
+    and [List all delivery configurations](https://launchdarkly.com/docs/api/integration-delivery-configurations-beta/get-integration-delivery-configurations)
+    responses. It is the `_id` field, or the `_id` field of each element in the `items` array.
+  humanURL: https://launchdarkly.com/docs/api/webhooks
+  baseURL: https://app.launchdarkly.com/api/v2
+  tags:
+  - Integration delivery configurations (beta)
+  properties:
+  - type: OpenAPI
+    url: openapi/launchdarkly-integration-delivery-configurations-beta-api-openapi.yml
+- aid: launchdarkly:launchdarkly-integrations-beta-api
+  name: LaunchDarkly Integrations (beta) API
+  description: >-
+    > ### This feature is in beta
+
+    >
+
+    > To use this feature, pass in a header including the `LD-API-Version` key with value set to `beta`.
+    Use this header with each call. To learn more, read [Beta resources](https://launchdarkly.com/docs/api#beta-resources).
+
+    >
+
+    > Resources that are in beta are still undergoing testing and development. They may change without
+    notice, including becoming backwards incompatible.
+
+
+    > ### Integration configuration is an Enterprise feature
+
+    >
+
+    > Integration configuration is available to customers on an Enterprise plan. To learn more, [read
+    about our pricing](https://launchdarkly.com/pricing/). To upgrade your plan, [contact Sales](https://launchdarkly.com/contact-sales/).
+
+
+    You can use the integrations API to create, delete, and manage integration configurations.
+
+
+    An integration configuration stores and manages configuration details for an integration between LaunchDarkly
+    and a third-party application. To learn more about building an integration, read [Using the LaunchDarkly
+    integration framework](https://launchdarkly.com/docs/integrations/building-integrations) and [Building
+    partner integrations](https://launchdarkly.com/docs/integrations/partner-integrations).
+  humanURL: https://launchdarkly.com/docs/api/webhooks
+  baseURL: https://app.launchdarkly.com/api/v2
+  tags:
+  - Integrations (beta)
+  properties:
+  - type: OpenAPI
+    url: openapi/launchdarkly-integrations-beta-api-openapi.yml
+- aid: launchdarkly:launchdarkly-ip-allowlist-beta-api
+  name: LaunchDarkly IP Allowlist (beta) API
+  description: "> ### This feature is in beta\n>\n> To use this feature, pass in a header including the\
+    \ `LD-API-Version` key with value set to `beta`. Use this header with each call. To learn more, read\
+    \ [Beta resources](https://launchdarkly.com/docs/api#beta-resources).\n>\n> Resources that are in\
+    \ beta are still undergoing testing and development. They may change without notice, including becoming\
+    \ backwards incompatible.\n\nThe IP allowlist feature lets you configure specific IP addresses that\
+    \ can access your LaunchDarkly app using a browser, \nthe LaunchDarkly REST API, or both. This gives\
+    \ you control over the locations from which \nyour members can access their LaunchDarkly account.\n\
+    \nThe IP allowlist supports both individual IP addresses and classless inter-domain routing (CIDR)\
+    \ ranges. The \nallowlist only supports IPv4 values.\n\nUse of the IP allowlist is an Enterprise and\
+    \ Guardian feature.\n\nTo learn more, read [IP allowlist](https://launchdarkly.com/docs/home/account/ip-allowlist)."
+  humanURL: https://launchdarkly.com/docs/api/webhooks
+  baseURL: https://app.launchdarkly.com/api/v2
+  tags:
+  - IP Allowlist (beta)
+  properties:
+  - type: OpenAPI
+    url: openapi/launchdarkly-ip-allowlist-beta-api-openapi.yml
+- aid: launchdarkly:launchdarkly-layers-api
+  name: LaunchDarkly Layers API
+  description: >-
+    > ### Available for customers using Experimentation
+
+    >
+
+    > Layers are available to customers using [Experimentation](https://launchdarkly.com/docs/api/experiments).
+
+
+    There are some cases in which you may not want to include a context in more than one experiment at
+    a time. For example, you may be concerned about collisions between experiments that are testing similar
+    parts of your app, like two different changes to the same section of your app's user interface (UI),
+    or experiments running on both the back end and front end of the same functionality. In this case
+    you can eliminate the interaction effect between experiments using layers.
+
+
+    A layer contains a set of experiments that cannot share traffic with each other. All of the experiments
+    within a layer are mutually exclusive, which means that if a context is included in one experiment,
+    LaunchDarkly will exclude it from any other experiments in the same layer.
+
+
+    To learn more, read [Mutually exclusive experiments](https://launchdarkly.com/docs/home/experimentation/mutually-exclusive).
+  humanURL: https://launchdarkly.com/docs/api/webhooks
+  baseURL: https://app.launchdarkly.com/api/v2
+  tags:
+  - Layers
+  properties:
+  - type: OpenAPI
+    url: openapi/launchdarkly-layers-api-openapi.yml
+- aid: launchdarkly:launchdarkly-metrics-beta-api
+  name: LaunchDarkly Metrics (beta) API
+  description: >-
+    > ### This feature is in beta
+
+    >
+
+    > To use this feature, pass in a header including the `LD-API-Version` key with value set to `beta`.
+    Use this header with each call. To learn more, read [Beta resources](https://launchdarkly.com/docs/api#beta-resources).
+
+    >
+
+    > Resources that are in beta are still undergoing testing and development. They may change without
+    notice, including becoming backwards incompatible.
+
+
+    Metrics measure audience behaviors affected by the flags in your experiments. Metric groups are reusable,
+    ordered lists of metrics you can use to standardize metrics across multiple experiments. To learn
+    more, read [Metrics](https://launchdarkly.com/docs/home/observability/metrics) and [Metric groups](https://launchdarkly.com/docs/home/observability/metric-groups).
+
+
+    Using the metrics API, you can create, delete, and manage metrics and metric groups.
+  humanURL: https://launchdarkly.com/docs/api/webhooks
+  baseURL: https://app.launchdarkly.com/api/v2
+  tags:
+  - Metrics (beta)
+  properties:
+  - type: OpenAPI
+    url: openapi/launchdarkly-metrics-beta-api-openapi.yml
+- aid: launchdarkly:launchdarkly-oauth2-clients-api
+  name: LaunchDarkly OAuth2 Clients API
+  description: >-
+    The OAuth2 client API allows you to register a LaunchDarkly OAuth client for use in your own custom
+    integrations. Registering a LaunchDarkly OAuth client allows you to use LaunchDarkly as an identity
+    provider so that account members can log into your application with their LaunchDarkly account.
+
+
+    You can create and manage LaunchDarkly OAuth clients using the LaunchDarkly OAuth client API. This
+    API acknowledges creation of your client with a response containing a one-time, unique `_clientSecret`.
+    If you lose your client secret, you will have to register a new client. LaunchDarkly does not store
+    client secrets in plain text.
+
+
+    Several of the endpoints in the OAuth2 client API require an OAuth client ID. The OAuth client ID
+    is returned as part of the [Create a LaunchDarkly OAuth 2.0 client](https://launchdarkly.com/docs/api/o-auth-2-clients/create-o-auth-2-client)
+    and [Get clients](https://launchdarkly.com/docs/api/o-auth-2-clients/get-o-auth-clients) responses.
+    It is the `_clientId` field, or the `_clientId` field of each element in the `items` array.
+
+
+    OAuth clients created through this API cannot be used for SCIM provisioning. If you need OAuth credentials
+    for SCIM setup, [contact LaunchDarkly Support](https://support.launchdarkly.com/hc/en-us/requests/new)
+    to have them generated for you.
+
+
+    You must have _Admin_ privileges or an access token created by a member with _Admin_ privileges in
+    order to be able to use this feature.
+
+
+    `redirectUri`s must be absolute URIs that conform to the https URI scheme. If you wish to register
+    a client with a different URI scheme, please contact LaunchDarkly Support.
+  humanURL: https://launchdarkly.com/docs/api/webhooks
+  baseURL: https://app.launchdarkly.com/api/v2
+  tags:
+  - OAuth2 Clients
+  properties:
+  - type: OpenAPI
+    url: openapi/launchdarkly-oauth2-clients-api-openapi.yml
+- aid: launchdarkly:launchdarkly-other-api
+  name: LaunchDarkly Other API
+  description: Other requests available in the LaunchDarkly API.
+  humanURL: https://launchdarkly.com/docs/api/webhooks
+  baseURL: https://app.launchdarkly.com/api/v2
+  tags:
+  - Other
+  properties:
+  - type: OpenAPI
+    url: openapi/launchdarkly-other-api-openapi.yml
+- aid: launchdarkly:launchdarkly-persistent-store-integrations-beta-api
+  name: LaunchDarkly Persistent store integrations (beta) API
+  description: >-
+    > ### This feature is in beta
+
+    >
+
+    > To use this feature, pass in a header including the `LD-API-Version` key with value set to `beta`.
+    Use this header with each call. To learn more, read [Beta resources](https://launchdarkly.com/docs/api#beta-resources).
+
+    >
+
+    > Resources that are in beta are still undergoing testing and development. They may change without
+    notice, including becoming backwards incompatible.
+
+
+    ### Persistent store integrations
+
+
+    Persistent store integrations, also called "big segment" store integrations, are required when you
+    use a server-side SDK and big segments. You can use the persistent store integrations API endpoints
+    to manage these integrations.
+
+
+    > ### Synced segments and larger list-based segments are an Enterprise feature
+
+    >
+
+    > Segments synced from external tools and larger list-based segments with more than 15,000 entries
+    are the two kinds of "big segment." LaunchDarkly uses different implementations for different types
+    of segments so that all of your segments have good performance.
+
+    >
+
+    > These segments are available to customers on an Enterprise plan. To learn more, [read about our
+    pricing](https://launchdarkly.com/pricing/). To upgrade your plan, [contact Sales](https://launchdarkly.com/contact-sales/).
+
+
+    [Segments synced from external tools](https://launchdarkly.com/docs/home/flags/synced-segments) and
+    [larger list-based segments](https://launchdarkly.com/docs/home/flags/list-based-segments) are the
+    two kinds of big segment. If you are using server-side SDKs, these segments require a persistent store
+    within your infrastructure. LaunchDarkly keeps the persistent store up to date and consults it during
+    flag evaluation.
+
+
+    You need either a persistent store integration or a [Relay Proxy](https://launchdarkly.com/docs/sdk/relay-proxy)
+    to support these segments. The persistent store integrations API lets you manage the persistent store
+    integrations.
+
+
+    To learn more about segments, read [Segments](https://launchdarkly.com/docs/home/flags/segments) and
+    [Segment configuration](https://launchdarkly.com/docs/home/flags/segment-config).
+
+
+    Several of the endpoints in the persistent store integrations API require an integration ID. The integration
+    ID is returned as part of the [Create big segment store integration](https://launchdarkly.com/docs/api/persistent-store-integrations-beta/create-big-segment-store-integration)
+    response, in the `_id` field. It is also returned as part of the [List all big segment store integrations](https://launchdarkly.com/docs/api/persistent-store-integrations-beta/get-big-segment-store-integrations)
+    response, in the `_id` field of each element in the `items` array.
+
+
+    You can find other APIs for working with big segments under [Segments](https://launchdarkly.com/docs/api/segments).
+  humanURL: https://launchdarkly.com/docs/api/webhooks
+  baseURL: https://app.launchdarkly.com/api/v2
+  tags:
+  - Persistent store integrations (beta)
+  properties:
+  - type: OpenAPI
+    url: openapi/launchdarkly-persistent-store-integrations-beta-api-openapi.yml
+- aid: launchdarkly:launchdarkly-release-pipelines-beta-api
+  name: LaunchDarkly Release pipelines (beta) API
+  description: "> ### This feature is in beta\n>\n> To use this feature, pass in a header including the\
+    \ `LD-API-Version` key with value set to `beta`. Use this header with each call. To learn more, read\
+    \ [Beta resources](https://launchdarkly.com/docs/api#beta-resources).\n>\n> Resources that are in\
+    \ beta are still undergoing testing and development. They may change without notice, including becoming\
+    \ backwards incompatible.\n\nRelease pipelines standardize and automate the release process for feature\
+    \ flags across a series of phases, where each phase consists of one or more environments and audiences.\
+    \ Each phase can use an immediate or guarded rollout to a designated audience, and can require approvals\
+    \ for selected environments. You can use release pipelines to ensure that you correctly roll out a\
+    \ flag in one environment before moving on to the next. To learn more, read [Release pipelines](https://launchdarkly.com/docs/home/releases/release-pipelines).\n\
+    \nUse the release pipelines API to view, create, update, and delete release pipelines. You can also\
+    \ use this API to view the progress of all ongoing releases across all flags in a project for a given\
+    \ release pipeline. \n\n### Creating releases and updating release phases\n\nWhen you add a flag to\
+    \ a release pipeline, you create a new \"release\" to automate that flag's progress through phases\
+    \ in the pipeline.\n\nUse the related [releases API](https://launchdarkly.com/docs/api/releases-beta)\
+    \ to create a new release, or to view or update a release for a given flag. For example, you can use\
+    \ the releases API to add a flag to an existing release pipeline, or to start the next phase of a\
+    \ flag's ongoing release."
+  humanURL: https://launchdarkly.com/docs/api/webhooks
+  baseURL: https://app.launchdarkly.com/api/v2
+  tags:
+  - Release pipelines (beta)
+  properties:
+  - type: OpenAPI
+    url: openapi/launchdarkly-release-pipelines-beta-api-openapi.yml
+- aid: launchdarkly:launchdarkly-release-policies-beta-api
+  name: LaunchDarkly Release policies (beta) API
+  description: >-
+    > ### This feature is in beta
+
+    >
+
+    > To use this feature, pass in a header including the `LD-API-Version` key with value set to `beta`.
+    Use this header with each call. To learn more, read [Beta resources](https://launchdarkly.com/docs/api#beta-resources).
+
+    >
+
+    > Resources that are in beta are still undergoing testing and development. They may change without
+    notice, including becoming backwards incompatible.
+
+
+    > ### This feature is deprecated
+
+    >
+
+    > The release policies API is deprecated and will be removed. Release policies continue to work during
+    the deprecation period. LaunchDarkly will announce the exact dates for end of support and removal
+    of access separately.
+
+
+    Release policies let you specify your preferred rollout method for a given set of environments.
+  humanURL: https://launchdarkly.com/docs/api/webhooks
+  baseURL: https://app.launchdarkly.com/api/v2
+  tags:
+  - Release policies (beta)
+  properties:
+  - type: OpenAPI
+    url: openapi/launchdarkly-release-policies-beta-api-openapi.yml
+- aid: launchdarkly:launchdarkly-releases-beta-api
+  name: LaunchDarkly Releases (beta) API
+  description: "> ### This feature is in beta\n>\n> To use this feature, pass in a header including the\
+    \ `LD-API-Version` key with value set to `beta`. Use this header with each call. To learn more, read\
+    \ [Beta resources](https://launchdarkly.com/docs/api#beta-resources).\n>\n> Resources that are in\
+    \ beta are still undergoing testing and development. They may change without notice, including becoming\
+    \ backwards incompatible.\n\nRelease pipelines standardize and automate the release process for feature\
+    \ flags across a series of phases, where each phase consists of one or more environments and audiences.\
+    \ When you add a flag to an existing release pipeline, you create a \"release\" to automate that flag's\
+    \ progress through the pipeline. \n\nUse the releases API to add a flag to an existing release pipeline,\
+    \ or to monitor or update an ongoing release for a flag. Updating an ongoing release generally involves\
+    \ the following steps:\n\n1. Obtain the release phases associated with the release. The `phases` field\
+    \ provides an ordered list of all pipeline phases associated with the flag's release. `phases` is\
+    \ returned in the response when you [Create a new release for a flag](https://launchdarkly.com/docs/api/releases-beta/create-release-for-flag)\
+    \ or [Get the release for a flag](https://launchdarkly.com/docs/api/releases-beta/get-release-by-flag-key).\n\
+    \n2. Determine the `_id` of the phase you want to start. Release pipeline phases take place in their\
+    \ configured order, so find the first incomplete, unstarted phase in the `phases` list. For example,\
+    \ in a newly-created release the first phase in the `phases` list has both the `complete` and `started`\
+    \ fields set to `false`.\n\n3. Use the phase `_id` value with the [Update phase status for release](https://launchdarkly.com/docs/api/releases-beta/update-phase-status)\
+    \ endpoint to start the release phase. At a minimum, you must provide `{\"status\": active}` in the\
+    \ request object to start a pipeline phase. If the phase requires approvals or guarded rollouts, provide\
+    \ the additional required information in the `audiences` list.\n\n### Configuring release pipelines\n\
+    \nUse the related [release pipelines API](https://launchdarkly.com/docs/api/release-pipelines-beta)\
+    \ to view, create, update, and delete release pipelines, or to view the progress of all ongoing releases\
+    \ across all flags in a project for a given release pipeline."
+  humanURL: https://launchdarkly.com/docs/api/webhooks
+  baseURL: https://app.launchdarkly.com/api/v2
+  tags:
+  - Releases (beta)
+  properties:
+  - type: OpenAPI
+    url: openapi/launchdarkly-releases-beta-api-openapi.yml
+- aid: launchdarkly:launchdarkly-scheduled-changes-api
+  name: LaunchDarkly Scheduled changes API
+  description: >-
+    > ### Scheduled flag changes is an Enterprise feature
+
+    >
+
+    > Scheduled flag changes is available to customers on an Enterprise plan. To learn more, [read about
+    our pricing](https://launchdarkly.com/pricing/). To upgrade your plan, [contact Sales](https://launchdarkly.com/contact-sales/).
+
+
+    You can schedule flag targeting rule changes to take place at a selected time. You may schedule multiple
+    changes for a single flag with each change having a different `ExecutionDate`. To learn more, read
+    [Scheduled flag changes](https://launchdarkly.com/docs/home/releases/scheduled-changes).
+
+
+    Several endpoints in the scheduled changes API require an existing scheduled change ID. This ID is
+    returned in the `_id` field from the [Create scheduled changes workflow](https://launchdarkly.com/docs/api/scheduled-changes/post-flag-config-scheduled-changes)
+    response, or in the `_id` field of each element in the `items` array from the [List scheduled changes](https://launchdarkly.com/docs/api/scheduled-changes/get-flag-config-scheduled-changes)
+    response.
+  humanURL: https://launchdarkly.com/docs/api/webhooks
+  baseURL: https://app.launchdarkly.com/api/v2
+  tags:
+  - Scheduled changes
+  properties:
+  - type: OpenAPI
+    url: openapi/launchdarkly-scheduled-changes-api-openapi.yml
+- aid: launchdarkly:launchdarkly-sdk-keys-beta-api
+  name: LaunchDarkly SDK Keys (beta) API
+  description: >-
+    > ### This feature is in beta
+
+    >
+
+    > To use this feature, pass in a header including the `LD-API-Version` key with value set to `beta`.
+    Use this header with each call. To learn more, read [Beta resources](https://launchdarkly.com/docs/api#beta-resources).
+
+    >
+
+    > Resources that are in beta are still undergoing testing and development. They may change without
+    notice, including becoming backwards incompatible.
+
+
+    The SDK keys API lets you create, retrieve, and manage additional server-side and mobile SDK keys
+    for your environments.
+
+
+    To learn more, read [SDK keys](https://launchdarkly.com/docs/sdk/concepts/client-side-server-side#keys).
+  humanURL: https://launchdarkly.com/docs/api/webhooks
+  baseURL: https://app.launchdarkly.com/api/v2
+  tags:
+  - SDK Keys (beta)
+  properties:
+  - type: OpenAPI
+    url: openapi/launchdarkly-sdk-keys-beta-api-openapi.yml
+- aid: launchdarkly:launchdarkly-teams-beta-api
+  name: LaunchDarkly Teams (beta) API
+  description: >-
+    > ### This feature is in beta
+
+    >
+
+    > To use this feature, pass in a header including the `LD-API-Version` key with value set to `beta`.
+    Use this header with each call. To learn more, read [Beta resources](https://launchdarkly.com/docs/api#beta-resources).
+
+    >
+
+    > Resources that are in beta are still undergoing testing and development. They may change without
+    notice, including becoming backwards incompatible.
+
+
+    > ### Teams is an Enterprise feature
+
+    >
+
+    > Teams is available to customers on an Enterprise plan. To learn more, [read about our pricing](https://launchdarkly.com/pricing/).
+    To upgrade your plan, [contact Sales](https://launchdarkly.com/contact-sales/).
+
+
+    A team is a group of members in your LaunchDarkly account. A team can have maintainers who are able
+    to add and remove team members. It also can have custom roles assigned to it that allows shared access
+    to those roles for all team members. To learn more, read [Teams](https://launchdarkly.com/docs/home/account/teams).
+  humanURL: https://launchdarkly.com/docs/api/webhooks
+  baseURL: https://app.launchdarkly.com/api/v2
+  tags:
+  - Teams (beta)
+  properties:
+  - type: OpenAPI
+    url: openapi/launchdarkly-teams-beta-api-openapi.yml
+- aid: launchdarkly:launchdarkly-user-settings-api
+  name: LaunchDarkly User settings API
+  description: >-
+    > ### Contexts are now available
+
+    >
+
+    > After you have upgraded your LaunchDarkly SDK to use contexts instead of users, you should use [Contexts](https://launchdarkly.com/docs/api/contexts)
+    instead of the user settings API. To learn more, read [Contexts](https://launchdarkly.com/docs/home/observability/contexts).
+
+
+    LaunchDarkly's user settings API provides a picture of all feature flags and their current values
+    for a specific user. This gives you instant visibility into how a particular user experiences your
+    site or application. To learn more, read [View and manage contexts](https://launchdarkly.com/docs/home/observability/context-attributes#view-and-manage-contexts).
+
+
+    You can also use the user settings API to assign a user to a specific variation for any feature flag.
+  humanURL: https://launchdarkly.com/docs/api/webhooks
+  baseURL: https://app.launchdarkly.com/api/v2
+  tags:
+  - User settings
+  properties:
+  - type: OpenAPI
+    url: openapi/launchdarkly-user-settings-api-openapi.yml
+- aid: launchdarkly:launchdarkly-users-api
+  name: LaunchDarkly Users API
+  description: >-
+    > ### Contexts are now available
+
+    >
+
+    > After you have upgraded your LaunchDarkly SDK to use contexts instead of users, you should use [Contexts](https://launchdarkly.com/docs/api/contexts)
+    instead of these endpoints. To learn more, read [Contexts](https://launchdarkly.com/docs/home/observability/contexts).
+
+
+
+    LaunchDarkly creates a record for each user passed in to `variation` calls. This record powers the
+    autocomplete functionality on the feature flag dashboard, as well as the Users page. To learn more,
+    read [Contexts](https://launchdarkly.com/docs/home/observability/contexts).
+
+
+    LaunchDarkly also offers an API that lets you tap into this data. You can use the users API to see
+    what user data is available to LaunchDarkly, as well as determine which flag values a user will receive.
+    You can also explicitly set which flag value a user will receive via this API.
+
+
+    Users are always scoped within a project and environment. In other words, each environment has its
+    own set of user records.
+  humanURL: https://launchdarkly.com/docs/api/webhooks
+  baseURL: https://app.launchdarkly.com/api/v2
+  tags:
+  - Users
+  properties:
+  - type: OpenAPI
+    url: openapi/launchdarkly-users-api-openapi.yml
+- aid: launchdarkly:launchdarkly-views-api
+  name: LaunchDarkly Views API
+  description: >-
+    The views API allows you to create, retrieve, and edit views, and link other resources to views.
+
+
+    A view is a resource in LaunchDarkly that you can use to logically group other resources within a
+    project, such as flags or segments. For example, views let you restrict access to sets of flags, so
+    that members of your organization can focus on just the flags they work with.
+
+
+    To learn more, read [Views](https://launchdarkly.com/docs/home/account/views).
+  humanURL: https://launchdarkly.com/docs/api/webhooks
+  baseURL: https://app.launchdarkly.com/api/v2
+  tags:
+  - Views
+  properties:
+  - type: OpenAPI
+    url: openapi/launchdarkly-views-api-openapi.yml
+- aid: launchdarkly:launchdarkly-workflow-templates-api
+  name: LaunchDarkly Workflow templates API
+  description: >-
+    > ### Workflows are in maintenance mode
+
+    >
+
+    > The workflows feature is in maintenance mode, and is planned for future deprecation at a date not
+    yet specified. We will work with existing customers using workflows to migrate to a replacement solution
+    when deprecation occurs.
+
+
+    Workflow templates allow you to define a set of workflow stages that you can use as a starting point
+    for new workflows. You can create these workflows for any flag in any environment and any project,
+    and you can create as many workflows as you like from a given template.
+
+
+    You can create workflow templates in two ways:
+
+    * by specifying the desired stages, using the `stages` property of the request body
+
+    * by specifying an existing workflow to save as a template, using the `workflowId` property of the
+    request body
+
+
+    You can use templates to create a workflow in any project, environment, or flag. However, when you
+    create a template, you must specify a particular project, environment, and flag. This means that when
+    you create a template using the `stages` property, you must also include `projectKey`, `environmentKey`,
+    and `flagKey` properties in the request body. When you create a template from an existing workflow,
+    it will use the project, environment, and flag of the existing workflow, so those properties can be
+    omitted from the request body.
+
+
+    To learn more, read [Workflows documentation](https://launchdarkly.com/docs/home/releases/workflows)
+    and [Workflows API documentation](https://launchdarkly.com/docs/api/workflows).
+  humanURL: https://launchdarkly.com/docs/api/webhooks
+  baseURL: https://app.launchdarkly.com/api/v2
+  tags:
+  - Workflow templates
+  properties:
+  - type: OpenAPI
+    url: openapi/launchdarkly-workflow-templates-api-openapi.yml
 common:
 - type: FinOps
   url: finops/launchdarkly-finops.yml

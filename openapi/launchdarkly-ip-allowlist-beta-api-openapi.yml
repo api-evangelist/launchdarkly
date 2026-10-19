@@ -1,0 +1,521 @@
+openapi: 3.2.0
+info:
+  title: LaunchDarkly REST IP Allowlist (beta) API
+  description: 'This documentation describes LaunchDarkly''s REST API. To access the complete OpenAPI spec directly, use Get OpenAPI spec. To learn how to use LaunchDarkly using the user interface (UI) instead, read our product documentation. ## Authentication
+
+
+    LaunchDarkly''s REST API uses the HTTPS protocol with a minimum TLS version of 1.2. All REST API resources are authenticated with either personal or service access tokens, or session cookies. Other authentication mechanisms are not supported. You can manage personal access tokens on your **Authorization** page in the LaunchDarkly UI. LaunchDarkly also has SDK keys, mobile keys, and client-side IDs that are used by our server-side SDKs, mobile SDKs, and JavaScript-based SDKs, respectively. **These keys cannot be used to access our REST API**. These keys are environment-specific, and can only perform read-only operations such as fetching feature flag settings. | Auth mechanism | Allowed resources | Use cases |
+
+    | ----------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
+
+    | Personal or service access tokens | Can be customized on a per-token basis | Building scripts, custom integrations, data export. |
+
+    | SDK keys | Can only access read-only resources specific to server-side SDKs. Restricted to a single environment. | Server-side SDKs |
+
+    | Mobile keys | Can only access read-only resources specific to mobile SDKs, and only for flags marked available to mobile keys. Restricted to a single environment. | Mobile SDKs |
+
+    | Client-side ID | Can only access read-only resources specific to JavaScript-based client-side SDKs, and only for flags marked available to client-side. Restricted to a single environment. | Client-side JavaScript |
+
+
+    > #### Keep your access tokens and SDK keys private
+
+    >
+
+    > Access tokens should _never_ be exposed in untrusted contexts. Never put an access token in client-side JavaScript, or embed it in a mobile application. LaunchDarkly has special mobile keys that you can embed in mobile apps. If you accidentally expose an access token or SDK key, you can reset it from your **Authorization** page. >
+
+    > The client-side ID is safe to embed in untrusted contexts. It''s designed for use in client-side JavaScript. ### Authentication using request header
+
+
+    The preferred way to authenticate with the API is by adding an `Authorization` header containing your access token to your requests. The value of the `Authorization` header must be your access token. Manage personal access tokens from the **Authorization** page. ### Authentication using session cookie
+
+
+    For testing purposes, you can make API calls directly from your web browser. If you are logged in to the LaunchDarkly application, the API will use your existing session to authenticate calls. Depending on the permissions granted as part of your role, you may not have permission to perform some API calls. You will receive a `401` response code in that case. > ### Modifying the Origin header causes an error
+
+    >
+
+    > LaunchDarkly validates that the Origin header for any API request authenticated by a session cookie matches the expected Origin header. The expected Origin header is `https://app.launchdarkly.com`. >
+
+    > If the Origin header does not match what''s expected, LaunchDarkly returns an error. This error can prevent the LaunchDarkly app from working correctly. >
+
+    > Any browser extension that intentionally changes the Origin header can cause this problem. For example, Cross-Origin Resource Sharing (CORS) extensions used during development can modify the Origin header and cause the app to fail. >
+
+    > To prevent this error, do not modify your Origin header. >
+
+    > LaunchDarkly does not require origin matching when authenticating with an access token, so this issue does not affect normal API usage.'
+  contact:
+    name: LaunchDarkly Technical Support Team
+    url: https://support.launchdarkly.com
+    email: support@launchdarkly.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+  version: '2.0'
+servers:
+- url: https://app.launchdarkly.com
+  description: ' Default'
+- url: https://app.launchdarkly.us
+  description: ' Federal'
+security:
+- ApiKey:
+  - read
+  - write
+tags:
+- name: IP Allowlist (beta)
+  description: '> ### This feature is in beta
+
+    >
+
+    > To use this feature, pass in a header including the `LD-API-Version` key with value set to `beta`. Use this header with each call. To learn more, read Beta resources.
+
+    >
+
+    > Resources that are in beta are still undergoing testing and development. They may change without notice, including becoming backwards incompatible.
+
+
+    The IP allowlist feature lets you configure specific IP addresses that can access your LaunchDarkly app using a browser,
+
+    the LaunchDarkly REST API, or both. This gives you control over the locations from which
+
+    your members can access their LaunchDarkly account.
+
+
+    The IP allowlist supports both individual IP addresses and classless inter-domain routing (CIDR) ranges. The
+
+    allowlist only supports IPv4 values.
+
+
+    Use of the IP allowlist is an Enterprise and Guardian feature.
+
+
+    To learn more, read IP allowlist.'
+paths:
+  /api/v2/account/ip-allowlist:
+    get:
+      description: Get the current IP allowlist configuration and entries.
+      operationId: getIpAllowlist
+      parameters:
+      - description: A case-insensitive substring to filter entries by. Matches against the IP address or CIDR block and the description.
+        explode: true
+        in: query
+        name: search
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: The number of entries to return. Defaults to 20. Maximum is 100.
+        explode: true
+        in: query
+        name: limit
+        required: false
+        schema:
+          type: integer
+        style: form
+      - description: The number of entries to skip. Used for pagination.
+        explode: true
+        in: query
+        name: offset
+        required: false
+        schema:
+          type: integer
+        style: form
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IpAllowlistResponse'
+          description: IP allowlist configuration and entries
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Invalid access token
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Forbidden
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Internal server error
+      summary: Get IP Allowlist
+      tags:
+      - IP Allowlist (beta)
+    patch:
+      description: Update sessionAllowlistEnabled and apiTokenAllowlistEnabled settings.
+      operationId: patchIpAllowlistConfig
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/patchIpAllowlistConfig_request'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IpAllowlistResponse'
+          description: Updated IP allowlist configuration and entries
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Bad request
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Invalid access token
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Forbidden
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Conflict
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Internal server error
+      summary: Update IP Allowlist Configuration
+      tags:
+      - IP Allowlist (beta)
+    post:
+      description: Create a new IP allowlist entry.
+      operationId: createIpAllowlistEntry
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateIpAllowlistEntryRequest'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IpAllowlistEntryResponse'
+          description: IP allowlist entry created
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Bad request
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Invalid access token
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Not found
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Conflict
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Internal server error
+      summary: Create IP Allowlist Entry
+      tags:
+      - IP Allowlist (beta)
+  /api/v2/account/ip-allowlist/{id}:
+    delete:
+      description: Delete an IP allowlist entry by id.
+      operationId: deleteIpAllowlistEntry
+      parameters:
+      - description: Unique identifier for the allowlist entry
+        explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        '204':
+          description: IP allowlist entry deleted successfully
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Bad request
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Invalid access token
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Not found
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Conflict
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Internal server error
+      summary: Delete IP Allowlist Entry
+      tags:
+      - IP Allowlist (beta)
+    patch:
+      description: Update the description of an IP allowlist entry.
+      operationId: patchIpAllowlistEntry
+      parameters:
+      - description: Unique identifier for the allowlist entry
+        explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/patchIpAllowlistEntry_request'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IpAllowlistEntryResponse'
+          description: Updated IP allowlist entry
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Bad request
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Invalid access token
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Not found
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Internal server error
+      summary: Update IP Allowlist Entry Description
+      tags:
+      - IP Allowlist (beta)
+components:
+  schemas:
+    IpAllowlistEntryResponse:
+      example:
+        _createdAt: 0
+        ipAddress: 203.0.113.0/24
+        description: Office network
+        _id: c3d4e5f6-a7b8-9012-cdef-123456789012
+        _updatedAt: 6
+        _createdByMemberId: 507f1f77bcf86cd799439011
+      properties:
+        _id:
+          description: Unique identifier for the allowlist entry
+          example: c3d4e5f6-a7b8-9012-cdef-123456789012
+          format: uuid
+          type: string
+        ipAddress:
+          description: IP address or CIDR block
+          example: 203.0.113.0/24
+          type: string
+        description:
+          example: Office network
+          type: string
+        _createdByMemberId:
+          example: 507f1f77bcf86cd799439011
+          type: string
+        _createdAt:
+          format: int64
+          type: integer
+        _updatedAt:
+          format: int64
+          type: integer
+      required:
+      - _createdAt
+      - _id
+      - _updatedAt
+      - ipAddress
+      type: object
+    patchIpAllowlistEntry_request:
+      properties:
+        description:
+          example: Updated description
+          type: string
+      required:
+      - description
+      type: object
+    Error:
+      example:
+        code: code
+        message: message
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+      required:
+      - code
+      - message
+      type: object
+    patchIpAllowlistConfig_request:
+      additionalProperties: false
+      properties:
+        sessionAllowlistEnabled:
+          description: Enable or disable session allowlist
+          type: boolean
+        apiTokenAllowlistEnabled:
+          description: Enable or disable API token allowlist
+          type: boolean
+      type: object
+    IPAllowlistSelfLink:
+      example:
+        self:
+          href: href
+          type: type
+      properties:
+        self:
+          $ref: '#/components/schemas/CoreLink'
+      required:
+      - self
+      type: object
+    IpAllowlistResponse:
+      example:
+        entries:
+        - _createdAt: 0
+          ipAddress: 203.0.113.0/24
+          description: Office network
+          _id: c3d4e5f6-a7b8-9012-cdef-123456789012
+          _updatedAt: 6
+          _createdByMemberId: 507f1f77bcf86cd799439011
+        - _createdAt: 0
+          ipAddress: 203.0.113.0/24
+          description: Office network
+          _id: c3d4e5f6-a7b8-9012-cdef-123456789012
+          _updatedAt: 6
+          _createdByMemberId: 507f1f77bcf86cd799439011
+        apiTokenAllowlistEnabled: false
+        _links:
+          self:
+            href: href
+            type: type
+        sessionAllowlistEnabled: true
+        totalCount: 42
+      properties:
+        _links:
+          $ref: '#/components/schemas/IPAllowlistSelfLink'
+        sessionAllowlistEnabled:
+          example: true
+          type: boolean
+        apiTokenAllowlistEnabled:
+          example: false
+          type: boolean
+        totalCount:
+          description: The total number of entries matching the query, before pagination.
+          example: 42
+          type: integer
+        entries:
+          items:
+            $ref: '#/components/schemas/IpAllowlistEntryResponse'
+          type: array
+      required:
+      - apiTokenAllowlistEnabled
+      - entries
+      - sessionAllowlistEnabled
+      type: object
+    CreateIpAllowlistEntryRequest:
+      example:
+        ipAddress: 203.0.113.0/24
+        description: Office network
+      properties:
+        ipAddress:
+          example: 203.0.113.0/24
+          type: string
+        description:
+          example: Office network
+          type: string
+      required:
+      - ipAddress
+      type: object
+    CoreLink:
+      example:
+        href: href
+        type: type
+      properties:
+        href:
+          type: string
+        type:
+          type: string
+      required:
+      - href
+      - type
+      type: object
+  securitySchemes:
+    ApiKey:
+      type: apiKey
+      in: header
+      name: Authorization

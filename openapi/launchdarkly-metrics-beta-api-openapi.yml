@@ -1,0 +1,1165 @@
+openapi: 3.2.0
+info:
+  title: LaunchDarkly REST Metrics (beta) API
+  description: 'This documentation describes LaunchDarkly''s REST API. To access the complete OpenAPI spec directly, use Get OpenAPI spec. To learn how to use LaunchDarkly using the user interface (UI) instead, read our product documentation. ## Authentication
+
+
+    LaunchDarkly''s REST API uses the HTTPS protocol with a minimum TLS version of 1.2. All REST API resources are authenticated with either personal or service access tokens, or session cookies. Other authentication mechanisms are not supported. You can manage personal access tokens on your **Authorization** page in the LaunchDarkly UI. LaunchDarkly also has SDK keys, mobile keys, and client-side IDs that are used by our server-side SDKs, mobile SDKs, and JavaScript-based SDKs, respectively. **These keys cannot be used to access our REST API**. These keys are environment-specific, and can only perform read-only operations such as fetching feature flag settings. | Auth mechanism | Allowed resources | Use cases |
+
+    | ----------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
+
+    | Personal or service access tokens | Can be customized on a per-token basis | Building scripts, custom integrations, data export. |
+
+    | SDK keys | Can only access read-only resources specific to server-side SDKs. Restricted to a single environment. | Server-side SDKs |
+
+    | Mobile keys | Can only access read-only resources specific to mobile SDKs, and only for flags marked available to mobile keys. Restricted to a single environment. | Mobile SDKs |
+
+    | Client-side ID | Can only access read-only resources specific to JavaScript-based client-side SDKs, and only for flags marked available to client-side. Restricted to a single environment. | Client-side JavaScript |
+
+
+    > #### Keep your access tokens and SDK keys private
+
+    >
+
+    > Access tokens should _never_ be exposed in untrusted contexts. Never put an access token in client-side JavaScript, or embed it in a mobile application. LaunchDarkly has special mobile keys that you can embed in mobile apps. If you accidentally expose an access token or SDK key, you can reset it from your **Authorization** page. >
+
+    > The client-side ID is safe to embed in untrusted contexts. It''s designed for use in client-side JavaScript. ### Authentication using request header
+
+
+    The preferred way to authenticate with the API is by adding an `Authorization` header containing your access token to your requests. The value of the `Authorization` header must be your access token. Manage personal access tokens from the **Authorization** page. ### Authentication using session cookie
+
+
+    For testing purposes, you can make API calls directly from your web browser. If you are logged in to the LaunchDarkly application, the API will use your existing session to authenticate calls. Depending on the permissions granted as part of your role, you may not have permission to perform some API calls. You will receive a `401` response code in that case. > ### Modifying the Origin header causes an error
+
+    >
+
+    > LaunchDarkly validates that the Origin header for any API request authenticated by a session cookie matches the expected Origin header. The expected Origin header is `https://app.launchdarkly.com`. >
+
+    > If the Origin header does not match what''s expected, LaunchDarkly returns an error. This error can prevent the LaunchDarkly app from working correctly. >
+
+    > Any browser extension that intentionally changes the Origin header can cause this problem. For example, Cross-Origin Resource Sharing (CORS) extensions used during development can modify the Origin header and cause the app to fail. >
+
+    > To prevent this error, do not modify your Origin header. >
+
+    > LaunchDarkly does not require origin matching when authenticating with an access token, so this issue does not affect normal API usage.'
+  contact:
+    name: LaunchDarkly Technical Support Team
+    url: https://support.launchdarkly.com
+    email: support@launchdarkly.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+  version: '2.0'
+servers:
+- url: https://app.launchdarkly.com
+  description: ' Default'
+- url: https://app.launchdarkly.us
+  description: ' Federal'
+security:
+- ApiKey:
+  - read
+  - write
+tags:
+- name: Metrics (beta)
+  description: '> ### This feature is in beta
+
+    >
+
+    > To use this feature, pass in a header including the `LD-API-Version` key with value set to `beta`. Use this header with each call. To learn more, read Beta resources.
+
+    >
+
+    > Resources that are in beta are still undergoing testing and development. They may change without notice, including becoming backwards incompatible.
+
+
+    Metrics measure audience behaviors affected by the flags in your experiments. Metric groups are reusable, ordered lists of metrics you can use to standardize metrics across multiple experiments. To learn more, read Metrics and Metric groups.
+
+
+    Using the metrics API, you can create, delete, and manage metrics and metric groups.'
+paths:
+  /api/v2/projects/{projectKey}/metric-groups:
+    get:
+      responses:
+        '200':
+          description: Metric group collection response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetricGroupCollectionRep'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '405':
+          description: Method not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MethodNotAllowedErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Metrics (beta)
+      summary: List metric groups
+      description: 'Get a list of all metric groups for the specified project.
+
+
+        ### Expanding the metric groups response
+
+
+        This endpoint does not support response expansion.
+
+
+        Although the API accepts an `expand` query parameter for compatibility reasons, it does not currently modify the response. The parameter is reserved for future use.
+
+
+        ### Filtering metric groups
+
+
+        The `filter` parameter supports the following operators: `contains`, `equals`, `anyOf`.
+
+
+        #### Supported fields and operators
+
+
+        You can only filter certain fields in metrics when using the `filter` parameter. Additionally, you can only filter some fields with certain operators.
+
+
+        When you search for metrics, the `filter` parameter supports the following fields and operators:
+
+
+        |
+
+        Field
+
+        |Description |Supported operators |
+
+        |---|---|---|
+
+        | `experimentStatus` | The experiment''s status. One of `not_started`, `running`, `stopped`, `started`. | `equals` |
+
+        | `hasConnections` | Whether the metric group has connections to experiments or guarded rollouts. One of `true`, `false`. | `equals` |
+
+        | `kind` | The metric group kind. One of `funnel`, `standard`. | `equals` |
+
+        | `maintainerIds` | The metric maintainer IDs. | `anyOf` |
+
+        | `maintainerTeamKey` | The metric maintainer team key. | `equals` |
+
+        | `query` | A "fuzzy" search across metric group key and name. Supply a string or list of strings to the operator. | `equals` |
+
+
+        ### Sorting metric groups
+
+
+        LaunchDarkly supports the following fields for sorting:
+
+
+        - `name` sorts by metric group name.
+
+        - `createdAt` sorts by the creation date of the metric group.
+
+        - `connectionCount` sorts by the number of connections to experiments the metric group has.
+
+
+        By default, the sort is in ascending order. Use `-` to sort in descending order. For example, `?sort=name` sorts the response by metric group name in ascending order, and `?sort=-name` sorts in descending order.
+
+
+        #### Sample query
+
+
+        `filter=experimentStatus equals ''not_started'' and query equals ''metric name''`'
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: filter
+        in: query
+        description: 'Accepts filter by `experimentStatus`, `query`, `kind`, `hasConnections`, `maintainerIds`, and `maintainerTeamKey`. Example: `filter=experimentStatus equals ''running'' and query equals ''test''`.'
+        schema:
+          type: string
+          format: string
+          description: 'Accepts filter by `experimentStatus`, `query`, `kind`, `hasConnections`, `maintainerIds`, and `maintainerTeamKey`. Example: `filter=experimentStatus equals ''running'' and query equals ''test''`.'
+      - name: sort
+        in: query
+        description: A comma-separated list of fields to sort by. Fields prefixed by a dash ( - ) sort in descending order. Read the endpoint description for a full list of available sort fields.
+        schema:
+          type: string
+          format: string
+          description: A comma-separated list of fields to sort by. Fields prefixed by a dash ( - ) sort in descending order. Read the endpoint description for a full list of available sort fields.
+      - name: expand
+        in: query
+        description: This parameter is reserved for future use and is not currently supported on this endpoint.
+        schema:
+          type: string
+          format: string
+          description: This parameter is reserved for future use and is not currently supported on this endpoint.
+      - name: limit
+        in: query
+        description: The number of metric groups to return in the response. Defaults to 20. Maximum limit is 50.
+        schema:
+          type: integer
+          format: int64
+          description: The number of metric groups to return in the response. Defaults to 20. Maximum limit is 50.
+      - name: offset
+        in: query
+        description: Where to start in the list. Use this with pagination. For example, an offset of 10 skips the first ten items and returns the next `limit` items.
+        schema:
+          type: integer
+          format: int64
+          description: Where to start in the list. Use this with pagination. For example, an offset of 10 skips the first ten items and returns the next `limit` items.
+      operationId: getMetricGroups
+    post:
+      responses:
+        '201':
+          description: Metric group response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetricGroupRep'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '405':
+          description: Method not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MethodNotAllowedErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Metrics (beta)
+      summary: Create metric group
+      description: Create a new metric group in the specified project
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MetricGroupPost'
+        required: true
+      operationId: createMetricGroup
+  /api/v2/projects/{projectKey}/metric-groups/{metricGroupKey}:
+    get:
+      responses:
+        '200':
+          description: Metric group response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetricGroupRep'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '405':
+          description: Method not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MethodNotAllowedErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Metrics (beta)
+      summary: Get metric group
+      description: 'Get information for a single metric group from the specific project.
+
+
+        ### Expanding the metric group response
+
+        LaunchDarkly supports two fields for expanding the "Get metric group" response. By default, these fields are **not** included in the response.
+
+
+        To expand the response, append the `expand` query parameter and add a comma-separated list with either or both of the following fields:
+
+
+        - `experiments` includes all experiments from the specific project that use the metric group
+
+        - `experimentCount` includes the number of experiments from the specific project that use the metric group
+
+
+        For example, `expand=experiments` includes the `experiments` field in the response.'
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: metricGroupKey
+        in: path
+        description: The metric group key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The metric group key
+      - name: expand
+        in: query
+        description: A comma-separated list of properties that can reveal additional information in the response.
+        schema:
+          type: string
+          format: string
+          description: A comma-separated list of properties that can reveal additional information in the response.
+      operationId: getMetricGroup
+    patch:
+      responses:
+        '200':
+          description: Metric group response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetricGroupRep'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '405':
+          description: Method not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MethodNotAllowedErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Metrics (beta)
+      summary: Patch metric group
+      description: Patch a metric group by key. Updating a metric group uses a JSON patch representation of the desired changes.
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: metricGroupKey
+        in: path
+        description: The metric group key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The metric group key
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JSONPatch'
+            example:
+            - op: replace
+              path: /name
+              value: my-updated-metric-group
+        required: true
+      operationId: patchMetricGroup
+    delete:
+      responses:
+        '204':
+          description: Action succeeded
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '405':
+          description: Method not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MethodNotAllowedErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Metrics (beta)
+      summary: Delete metric group
+      description: Delete a metric group by key.
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: metricGroupKey
+        in: path
+        description: The metric group key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The metric group key
+      operationId: deleteMetricGroup
+components:
+  schemas:
+    JSONPatch:
+      type: array
+      items:
+        $ref: '#/components/schemas/PatchOperation'
+    AccessDenied:
+      type: object
+      required:
+      - action
+      - reason
+      properties:
+        action:
+          $ref: '#/components/schemas/ActionIdentifier'
+        reason:
+          $ref: '#/components/schemas/AccessDeniedReason'
+    InvalidRequestErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: invalid_request
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid request body
+    MemberSummary:
+      type: object
+      required:
+      - _links
+      - _id
+      - role
+      - email
+      properties:
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+          example:
+            self:
+              href: /api/v2/members/569f183514f4432160000007
+              type: application/json
+        _id:
+          type: string
+          description: The member's ID
+          example: 569f183514f4432160000007
+        firstName:
+          type: string
+          description: The member's first name
+          example: Ariel
+        lastName:
+          type: string
+          description: The member's last name
+          example: Flores
+        role:
+          type: string
+          description: The member's base role. If the member has no additional roles, this role will be in effect.
+          example: admin
+        email:
+          type: string
+          description: The member's email address
+          example: ariel@acme.com
+    AccessDeniedReason:
+      type: object
+      required:
+      - effect
+      properties:
+        resources:
+          type: array
+          description: Resource specifier strings
+          items:
+            type: string
+          example:
+          - proj/*:env/*;qa_*:/flag/*
+        notResources:
+          type: array
+          description: Targeted resources are the resources NOT in this list. The <code>resources</code> and <code>notActions</code> fields must be empty to use this field.
+          items:
+            type: string
+        actions:
+          type: array
+          description: Actions to perform on a resource
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+          example:
+          - '*'
+        notActions:
+          type: array
+          description: Targeted actions are the actions NOT in this list. The <code>actions</code> and <code>notResources</code> fields must be empty to use this field.
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+        effect:
+          type: string
+          description: Whether this statement should allow or deny actions on the resources.
+          example: allow
+          enum:
+          - allow
+          - deny
+        role_name:
+          type: string
+    RateLimitedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: rate_limited
+        message:
+          type: string
+          description: Description of the error
+          example: You've exceeded the API rate limit. Try again later.
+    UnauthorizedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: unauthorized
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid access token
+    ForbiddenErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: forbidden
+        message:
+          type: string
+          description: Description of the error
+          example: Forbidden. Access to the requested resource was denied.
+    MemberTeamSummaryRep:
+      type: object
+      required:
+      - customRoleKeys
+      - key
+      - name
+      properties:
+        customRoleKeys:
+          type: array
+          description: A list of keys of the custom roles this team has access to
+          items:
+            type: string
+          example:
+          - access-to-test-projects
+        key:
+          type: string
+          description: The team key
+          example: team-key-123abc
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+        name:
+          type: string
+          description: The team name
+          example: QA Team
+    ActionSpecifier:
+      type: string
+    MetricGroupCollectionRep:
+      type: object
+      required:
+      - items
+      properties:
+        items:
+          type: array
+          description: An array of metric groups
+          items:
+            $ref: '#/components/schemas/MetricGroupRep'
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+          example:
+            parent:
+              href: /api/v2/projects/my-project
+              type: application/json
+            self:
+              href: /api/v2/projects/my-project/metric-groups
+              type: application/json
+        totalCount:
+          type: integer
+    MetricInMetricGroupInput:
+      type: object
+      required:
+      - key
+      - nameInGroup
+      properties:
+        key:
+          type: string
+          description: The metric key
+          example: metric-key-123abc
+        nameInGroup:
+          type: string
+          description: Name of the metric when used within the associated metric group. Can be different from the original name of the metric
+          example: Step 1
+    Link:
+      type: object
+      properties:
+        href:
+          type: string
+        type:
+          type: string
+    MaintainerRep:
+      type: object
+      required:
+      - key
+      - kind
+      properties:
+        key:
+          type: string
+          description: The ID of the maintainer member, or the key of the maintainer team
+          example: 569fdeadbeef1644facecafe
+        kind:
+          type: string
+          description: The type of the maintainer
+          example: member
+          enum:
+          - member
+          - team
+        _member:
+          description: Details on the member who maintains this resource
+          $ref: '#/components/schemas/MemberSummary'
+        _team:
+          description: Details on the team that maintains this resource
+          $ref: '#/components/schemas/MemberTeamSummaryRep'
+    ActionIdentifier:
+      type: string
+    UnixMillis:
+      type: integer
+      format: int64
+    PatchOperation:
+      type: object
+      required:
+      - op
+      - path
+      properties:
+        op:
+          type: string
+          description: The type of operation to perform
+          example: replace
+        path:
+          type: string
+          description: A JSON Pointer string specifying the part of the document to operate on
+          example: /exampleField
+        value:
+          description: A JSON value used in "add", "replace", and "test" operations
+          example: new example value
+    MethodNotAllowedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: method_not_allowed
+        message:
+          type: string
+          description: Description of the error
+          example: Method not allowed
+    Access:
+      type: object
+      required:
+      - denied
+      - allowed
+      properties:
+        denied:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccessDenied'
+        allowed:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccessAllowedRep'
+    NotFoundErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: not_found
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid resource identifier
+    DependentExperimentRep:
+      type: object
+      required:
+      - key
+      - name
+      - environmentId
+      - environmentKey
+      - creationDate
+      - _links
+      properties:
+        key:
+          type: string
+          description: The experiment key
+          example: experiment-key-123abc
+        name:
+          type: string
+          description: The experiment name
+          example: Example experiment
+        environmentId:
+          type: string
+          description: The environment ID
+          example: 1234a56b7c89d012345e678f
+        environmentKey:
+          type: string
+          description: The environment key
+          example: production
+        creationDate:
+          description: Timestamp of when the experiment was created
+          example: '1654104600000'
+          $ref: '#/components/schemas/UnixMillis'
+        archivedDate:
+          description: Timestamp of when the experiment was archived
+          example: '1654104600000'
+          $ref: '#/components/schemas/UnixMillis'
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+          example:
+            parent:
+              href: /api/v2/projects/my-project/environments/my-environment
+              type: application/json
+            self:
+              href: /api/v2/projects/my-project/environments/my-environment/experiments/example-experiment
+              type: application/json
+    MetricGroupPost:
+      type: object
+      required:
+      - key
+      - name
+      - kind
+      - maintainerId
+      - tags
+      - metrics
+      properties:
+        key:
+          type: string
+          description: A unique key to reference the metric group
+          example: metric-group-key-123abc
+        name:
+          type: string
+          description: A human-friendly name for the metric group
+          example: My metric group
+        kind:
+          type: string
+          description: The type of the metric group
+          example: funnel
+          enum:
+          - funnel
+          - standard
+        description:
+          type: string
+          description: Description of the metric group
+          example: Description of the metric group
+        maintainerId:
+          type: string
+          description: The ID of the member who maintains this metric group
+          example: 569fdeadbeef1644facecafe
+        tags:
+          type: array
+          description: Tags for the metric group
+          items:
+            type: string
+          example:
+          - ops
+        metrics:
+          type: array
+          description: An ordered list of the metrics in this metric group
+          items:
+            $ref: '#/components/schemas/MetricInMetricGroupInput'
+    AccessAllowedReason:
+      type: object
+      required:
+      - effect
+      properties:
+        resources:
+          type: array
+          description: Resource specifier strings
+          items:
+            type: string
+          example:
+          - proj/*:env/*;qa_*:/flag/*
+        notResources:
+          type: array
+          description: Targeted resources are the resources NOT in this list. The <code>resources</code> and <code>notActions</code> fields must be empty to use this field.
+          items:
+            type: string
+        actions:
+          type: array
+          description: Actions to perform on a resource
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+          example:
+          - '*'
+        notActions:
+          type: array
+          description: Targeted actions are the actions NOT in this list. The <code>actions</code> and <code>notResources</code> fields must be empty to use this field.
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+        effect:
+          type: string
+          description: Whether this statement should allow or deny actions on the resources.
+          example: allow
+          enum:
+          - allow
+          - deny
+        role_name:
+          type: string
+    MetricInGroupRep:
+      type: object
+      required:
+      - key
+      - name
+      - kind
+      - _links
+      properties:
+        key:
+          type: string
+          description: The metric key
+          example: metric-key-123abc
+        _versionId:
+          type: string
+          description: The version ID of the metric
+          example: version-id-123abc
+        name:
+          type: string
+          description: The metric name
+          example: Example metric
+        kind:
+          type: string
+          description: The kind of event the metric tracks
+          example: custom
+          enum:
+          - pageview
+          - click
+          - custom
+          - trace
+        isNumeric:
+          type: boolean
+          description: For custom metrics, whether to track numeric changes in value against a baseline (<code>true</code>) or to track a conversion when an end user takes an action (<code>false</code>).
+          example: true
+        unitAggregationType:
+          type: string
+          description: The type of unit aggregation to use for the metric
+          example: sum
+          enum:
+          - sum
+          - average
+          - count_distinct
+        analysisType:
+          type: string
+          description: The method for analyzing metric events
+          example: mean
+          enum:
+          - mean
+          - percentile
+        eventKey:
+          type: string
+          description: The event key sent with the metric. Only relevant for custom metrics.
+          example: event-key-123abc
+        analysisUnit:
+          type: string
+          description: The context kind used as the analysis unit for this metric in the experiment iteration
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+          example:
+            self:
+              href: /api/v2/metrics/my-project/my-metric
+              type: application/json
+        nameInGroup:
+          type: string
+          description: Name of the metric when used within the associated metric group. Can be different from the original name of the metric. Required if and only if the metric group is a <code>funnel</code>.
+          example: Step 1
+        randomizationUnits:
+          type: array
+          description: Deprecated, use <code>analysisUnits</code> instead.
+          items:
+            type: string
+          example:
+          - user
+          deprecated: true
+        analysisUnits:
+          type: array
+          description: An array of analysis units allowed for this metric.
+          items:
+            type: string
+          example:
+          - user
+    MetricGroupRep:
+      type: object
+      required:
+      - _id
+      - key
+      - name
+      - kind
+      - _links
+      - tags
+      - _creationDate
+      - _lastModified
+      - maintainer
+      - metrics
+      - _version
+      properties:
+        _id:
+          type: string
+          description: The ID of this metric group
+          example: bc3e5be1-02d2-40c7-9926-26d0aacd7aab
+        key:
+          type: string
+          description: A unique key to reference the metric group
+          example: metric-group-key-123abc
+        name:
+          type: string
+          description: A human-friendly name for the metric group
+          example: My metric group
+        kind:
+          type: string
+          description: The type of the metric group
+          example: funnel
+          enum:
+          - funnel
+          - standard
+        description:
+          type: string
+          description: Description of the metric group
+          example: Description of the metric group
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+          example:
+            parent:
+              href: /api/v2/projects/my-project
+              type: application/json
+            self:
+              href: /api/v2/projects/my-project/metric-groups/my-metric-group
+              type: application/json
+        _access:
+          description: Details on the allowed and denied actions for this metric group
+          $ref: '#/components/schemas/Access'
+        tags:
+          type: array
+          description: Tags for the metric group
+          items:
+            type: string
+          example:
+          - ops
+        _creationDate:
+          description: Timestamp of when the metric group was created
+          example: '1628192791148'
+          $ref: '#/components/schemas/UnixMillis'
+        _lastModified:
+          description: Timestamp of when the metric group was last modified
+          example: '1628192791148'
+          $ref: '#/components/schemas/UnixMillis'
+        maintainer:
+          description: The maintainer of this metric
+          $ref: '#/components/schemas/MaintainerRep'
+        metrics:
+          type: array
+          description: An ordered list of the metrics in this metric group
+          items:
+            $ref: '#/components/schemas/MetricInGroupRep'
+        _version:
+          type: integer
+          description: The version of this metric group
+          example: 1
+        experiments:
+          description: Experiments that use this metric group. Only included if specified in the <code>expand</code> query parameter in a <code>getMetricGroup</code> request.
+          $ref: '#/components/schemas/DependentExperimentListRep'
+        experimentCount:
+          type: integer
+          description: The number of experiments using this metric group
+          example: 0
+        activeExperimentCount:
+          type: integer
+          description: The number of active experiments using this metric group
+          example: 0
+        activeGuardedRolloutCount:
+          type: integer
+          description: The number of active guarded rollouts using this metric group
+          example: 0
+    AccessAllowedRep:
+      type: object
+      required:
+      - action
+      - reason
+      properties:
+        action:
+          $ref: '#/components/schemas/ActionIdentifier'
+        reason:
+          $ref: '#/components/schemas/AccessAllowedReason'
+    DependentExperimentListRep:
+      type: array
+      items:
+        $ref: '#/components/schemas/DependentExperimentRep'
+  securitySchemes:
+    ApiKey:
+      type: apiKey
+      in: header
+      name: Authorization

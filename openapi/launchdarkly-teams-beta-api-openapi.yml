@@ -1,0 +1,379 @@
+openapi: 3.2.0
+info:
+  title: LaunchDarkly REST Teams (beta) API
+  description: 'This documentation describes LaunchDarkly''s REST API. To access the complete OpenAPI spec directly, use Get OpenAPI spec. To learn how to use LaunchDarkly using the user interface (UI) instead, read our product documentation. ## Authentication
+
+
+    LaunchDarkly''s REST API uses the HTTPS protocol with a minimum TLS version of 1.2. All REST API resources are authenticated with either personal or service access tokens, or session cookies. Other authentication mechanisms are not supported. You can manage personal access tokens on your **Authorization** page in the LaunchDarkly UI. LaunchDarkly also has SDK keys, mobile keys, and client-side IDs that are used by our server-side SDKs, mobile SDKs, and JavaScript-based SDKs, respectively. **These keys cannot be used to access our REST API**. These keys are environment-specific, and can only perform read-only operations such as fetching feature flag settings. | Auth mechanism | Allowed resources | Use cases |
+
+    | ----------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
+
+    | Personal or service access tokens | Can be customized on a per-token basis | Building scripts, custom integrations, data export. |
+
+    | SDK keys | Can only access read-only resources specific to server-side SDKs. Restricted to a single environment. | Server-side SDKs |
+
+    | Mobile keys | Can only access read-only resources specific to mobile SDKs, and only for flags marked available to mobile keys. Restricted to a single environment. | Mobile SDKs |
+
+    | Client-side ID | Can only access read-only resources specific to JavaScript-based client-side SDKs, and only for flags marked available to client-side. Restricted to a single environment. | Client-side JavaScript |
+
+
+    > #### Keep your access tokens and SDK keys private
+
+    >
+
+    > Access tokens should _never_ be exposed in untrusted contexts. Never put an access token in client-side JavaScript, or embed it in a mobile application. LaunchDarkly has special mobile keys that you can embed in mobile apps. If you accidentally expose an access token or SDK key, you can reset it from your **Authorization** page. >
+
+    > The client-side ID is safe to embed in untrusted contexts. It''s designed for use in client-side JavaScript. ### Authentication using request header
+
+
+    The preferred way to authenticate with the API is by adding an `Authorization` header containing your access token to your requests. The value of the `Authorization` header must be your access token. Manage personal access tokens from the **Authorization** page. ### Authentication using session cookie
+
+
+    For testing purposes, you can make API calls directly from your web browser. If you are logged in to the LaunchDarkly application, the API will use your existing session to authenticate calls. Depending on the permissions granted as part of your role, you may not have permission to perform some API calls. You will receive a `401` response code in that case. > ### Modifying the Origin header causes an error
+
+    >
+
+    > LaunchDarkly validates that the Origin header for any API request authenticated by a session cookie matches the expected Origin header. The expected Origin header is `https://app.launchdarkly.com`. >
+
+    > If the Origin header does not match what''s expected, LaunchDarkly returns an error. This error can prevent the LaunchDarkly app from working correctly. >
+
+    > Any browser extension that intentionally changes the Origin header can cause this problem. For example, Cross-Origin Resource Sharing (CORS) extensions used during development can modify the Origin header and cause the app to fail. >
+
+    > To prevent this error, do not modify your Origin header. >
+
+    > LaunchDarkly does not require origin matching when authenticating with an access token, so this issue does not affect normal API usage.'
+  contact:
+    name: LaunchDarkly Technical Support Team
+    url: https://support.launchdarkly.com
+    email: support@launchdarkly.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+  version: '2.0'
+servers:
+- url: https://app.launchdarkly.com
+  description: ' Default'
+- url: https://app.launchdarkly.us
+  description: ' Federal'
+security:
+- ApiKey:
+  - read
+  - write
+tags:
+- name: Teams (beta)
+  description: '> ### This feature is in beta
+
+    >
+
+    > To use this feature, pass in a header including the `LD-API-Version` key with value set to `beta`. Use this header with each call. To learn more, read Beta resources.
+
+    >
+
+    > Resources that are in beta are still undergoing testing and development. They may change without notice, including becoming backwards incompatible.
+
+
+    > ### Teams is an Enterprise feature
+
+    >
+
+    > Teams is available to customers on an Enterprise plan. To learn more, read about our pricing. To upgrade your plan, contact Sales.
+
+
+    A team is a group of members in your LaunchDarkly account. A team can have maintainers who are able to add and remove team members. It also can have custom roles assigned to it that allows shared access to those roles for all team members. To learn more, read Teams.'
+paths:
+  /api/v2/teams:
+    patch:
+      responses:
+        '200':
+          description: Teams response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BulkEditTeamsRep'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '409':
+          description: Status conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusConflictErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Teams (beta)
+      summary: Update teams
+      description: 'Perform a partial update to multiple teams. Updating teams uses the semantic patch format.
+
+
+        To make a semantic patch request, you must append `domain-model=launchdarkly.semanticpatch` to your `Content-Type` header. To learn more, read Updates using semantic patch.
+
+
+        ### Instructions
+
+
+        Semantic patch requests support the following `kind` instructions for updating teams.
+
+
+        Click to expand instructions for updating teams
+
+
+        #### addMembersToTeams
+
+
+        Add the members to teams.
+
+
+        ##### Parameters
+
+
+        - `memberIDs`: List of member IDs to add.
+
+        - `teamKeys`: List of teams to update.
+
+
+        Here''s an example:
+
+
+        ```json
+
+        {
+
+        "instructions": [{
+
+        "kind": "addMembersToTeams",
+
+        "memberIDs": [
+
+        "1234a56b7c89d012345e678f"
+
+        ],
+
+        "teamKeys": [
+
+        "example-team-1",
+
+        "example-team-2"
+
+        ]
+
+        }]
+
+        }
+
+        ```
+
+
+        #### addAllMembersToTeams
+
+
+        Add all members to the team. Members that match any of the filters are **excluded** from the update.
+
+
+        ##### Parameters
+
+
+        - `teamKeys`: List of teams to update.
+
+        - `filterLastSeen`: (Optional) A JSON object with one of the following formats:
+
+        - `{"never": true}` - Members that have never been active, such as those who have not accepted their invitation to LaunchDarkly, or have not logged in after being provisioned via SCIM.
+
+        - `{"noData": true}` - Members that have not been active since LaunchDarkly began recording last seen timestamps.
+
+        - `{"before": 1608672063611}` - Members that have not been active since the provided value, which should be a timestamp in Unix epoch milliseconds.
+
+        - `filterQuery`: (Optional) A string that matches against the members'' emails and names. It is not case sensitive.
+
+        - `filterRoles`: (Optional) A `|` separated list of roles and custom roles. For the purposes of this filtering, `Owner` counts as `Admin`.
+
+        - `filterTeamKey`: (Optional) A string that matches against the key of the team the members belong to. It is not case sensitive.
+
+        - `ignoredMemberIDs`: (Optional) A list of member IDs.
+
+
+        Here''s an example:
+
+
+        ```json
+
+        {
+
+        "instructions": [{
+
+        "kind": "addAllMembersToTeams",
+
+        "teamKeys": [
+
+        "example-team-1",
+
+        "example-team-2"
+
+        ],
+
+        "filterLastSeen": { "never": true }
+
+        }]
+
+        }
+
+        ```'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/teamsPatchInput'
+            example:
+              comment: Optional comment about the update
+              instructions:
+              - kind: addMembersToTeams
+                memberIDs:
+                - 1234a56b7c89d012345e678f
+                teamKeys:
+                - example-team-1
+                - example-team-2
+        required: true
+      operationId: patchTeams
+components:
+  schemas:
+    Instruction:
+      type: object
+      additionalProperties: {}
+    RateLimitedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: rate_limited
+        message:
+          type: string
+          description: Description of the error
+          example: You've exceeded the API rate limit. Try again later.
+    Instructions:
+      type: array
+      items:
+        $ref: '#/components/schemas/Instruction'
+    InvalidRequestErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: invalid_request
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid request body
+    StatusConflictErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: optimistic_locking_error
+        message:
+          type: string
+          description: Description of the error
+          example: Conflict. Optimistic lock error. Try again later.
+    teamsPatchInput:
+      type: object
+      required:
+      - instructions
+      properties:
+        comment:
+          type: string
+          description: Optional comment describing the update
+          example: Optional comment about the update
+        instructions:
+          description: 'The instructions to perform when updating. This should be an array with objects that look like <code>{"kind": "update_action"}</code>. Some instructions also require additional parameters as part of this object.'
+          example: '[ { "kind": "updateDescription", "value": "New description for the team" } ]'
+          $ref: '#/components/schemas/Instructions'
+    BulkEditTeamsRep:
+      type: object
+      properties:
+        memberIDs:
+          type: array
+          description: A list of member IDs of the members who were added to the teams.
+          items:
+            type: string
+          example:
+          - 1234a56b7c89d012345e678f
+        teamKeys:
+          type: array
+          description: A list of team keys of the teams that were successfully updated.
+          items:
+            type: string
+          example:
+          - example-team-1
+        errors:
+          type: array
+          description: A list of team keys and errors for the teams whose updates failed.
+          items:
+            type: object
+            additionalProperties:
+              type: string
+          example:
+          - example-team-2: example failure message
+    UnauthorizedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: unauthorized
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid access token
+    ForbiddenErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: forbidden
+        message:
+          type: string
+          description: Description of the error
+          example: Forbidden. Access to the requested resource was denied.
+  securitySchemes:
+    ApiKey:
+      type: apiKey
+      in: header
+      name: Authorization

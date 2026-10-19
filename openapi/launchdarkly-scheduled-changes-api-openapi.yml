@@ -1,0 +1,802 @@
+openapi: 3.2.0
+info:
+  title: LaunchDarkly REST Scheduled changes API
+  description: 'This documentation describes LaunchDarkly''s REST API. To access the complete OpenAPI spec directly, use Get OpenAPI spec. To learn how to use LaunchDarkly using the user interface (UI) instead, read our product documentation. ## Authentication
+
+
+    LaunchDarkly''s REST API uses the HTTPS protocol with a minimum TLS version of 1.2. All REST API resources are authenticated with either personal or service access tokens, or session cookies. Other authentication mechanisms are not supported. You can manage personal access tokens on your **Authorization** page in the LaunchDarkly UI. LaunchDarkly also has SDK keys, mobile keys, and client-side IDs that are used by our server-side SDKs, mobile SDKs, and JavaScript-based SDKs, respectively. **These keys cannot be used to access our REST API**. These keys are environment-specific, and can only perform read-only operations such as fetching feature flag settings. | Auth mechanism | Allowed resources | Use cases |
+
+    | ----------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
+
+    | Personal or service access tokens | Can be customized on a per-token basis | Building scripts, custom integrations, data export. |
+
+    | SDK keys | Can only access read-only resources specific to server-side SDKs. Restricted to a single environment. | Server-side SDKs |
+
+    | Mobile keys | Can only access read-only resources specific to mobile SDKs, and only for flags marked available to mobile keys. Restricted to a single environment. | Mobile SDKs |
+
+    | Client-side ID | Can only access read-only resources specific to JavaScript-based client-side SDKs, and only for flags marked available to client-side. Restricted to a single environment. | Client-side JavaScript |
+
+
+    > #### Keep your access tokens and SDK keys private
+
+    >
+
+    > Access tokens should _never_ be exposed in untrusted contexts. Never put an access token in client-side JavaScript, or embed it in a mobile application. LaunchDarkly has special mobile keys that you can embed in mobile apps. If you accidentally expose an access token or SDK key, you can reset it from your **Authorization** page. >
+
+    > The client-side ID is safe to embed in untrusted contexts. It''s designed for use in client-side JavaScript. ### Authentication using request header
+
+
+    The preferred way to authenticate with the API is by adding an `Authorization` header containing your access token to your requests. The value of the `Authorization` header must be your access token. Manage personal access tokens from the **Authorization** page. ### Authentication using session cookie
+
+
+    For testing purposes, you can make API calls directly from your web browser. If you are logged in to the LaunchDarkly application, the API will use your existing session to authenticate calls. Depending on the permissions granted as part of your role, you may not have permission to perform some API calls. You will receive a `401` response code in that case. > ### Modifying the Origin header causes an error
+
+    >
+
+    > LaunchDarkly validates that the Origin header for any API request authenticated by a session cookie matches the expected Origin header. The expected Origin header is `https://app.launchdarkly.com`. >
+
+    > If the Origin header does not match what''s expected, LaunchDarkly returns an error. This error can prevent the LaunchDarkly app from working correctly. >
+
+    > Any browser extension that intentionally changes the Origin header can cause this problem. For example, Cross-Origin Resource Sharing (CORS) extensions used during development can modify the Origin header and cause the app to fail. >
+
+    > To prevent this error, do not modify your Origin header. >
+
+    > LaunchDarkly does not require origin matching when authenticating with an access token, so this issue does not affect normal API usage.'
+  contact:
+    name: LaunchDarkly Technical Support Team
+    url: https://support.launchdarkly.com
+    email: support@launchdarkly.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+  version: '2.0'
+servers:
+- url: https://app.launchdarkly.com
+  description: ' Default'
+- url: https://app.launchdarkly.us
+  description: ' Federal'
+security:
+- ApiKey:
+  - read
+  - write
+tags:
+- name: Scheduled changes
+  description: '> ### Scheduled flag changes is an Enterprise feature
+
+    >
+
+    > Scheduled flag changes is available to customers on an Enterprise plan. To learn more, read about our pricing. To upgrade your plan, contact Sales.
+
+
+    You can schedule flag targeting rule changes to take place at a selected time. You may schedule multiple changes for a single flag with each change having a different `ExecutionDate`. To learn more, read Scheduled flag changes.
+
+
+    Several endpoints in the scheduled changes API require an existing scheduled change ID. This ID is returned in the `_id` field from the Create scheduled changes workflow response, or in the `_id` field of each element in the `items` array from the List scheduled changes response.'
+paths:
+  /api/v2/projects/{projectKey}/flags/{featureFlagKey}/environments/{environmentKey}/scheduled-changes:
+    get:
+      responses:
+        '200':
+          description: Scheduled changes collection response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeatureFlagScheduledChanges'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+      tags:
+      - Scheduled changes
+      summary: List scheduled changes
+      description: Get a list of scheduled changes that will be applied to the feature flag.
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: featureFlagKey
+        in: path
+        description: The feature flag key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The feature flag key
+      - name: environmentKey
+        in: path
+        description: The environment key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The environment key
+      operationId: getFlagConfigScheduledChanges
+    post:
+      responses:
+        '201':
+          description: Scheduled changes response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeatureFlagScheduledChange'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '405':
+          description: Method not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MethodNotAllowedErrorRep'
+        '409':
+          description: Status conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusConflictErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Scheduled changes
+      summary: Create scheduled changes workflow
+      description: Create scheduled changes for a feature flag. The changes you schedule may include any semantic patch instructions available when updating a feature flag. If the `ignoreConflicts` query parameter is false and there are conflicts between these instructions and existing scheduled changes, the request will fail. If the parameter is true and there are conflicts, the request will succeed.
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: featureFlagKey
+        in: path
+        description: The feature flag key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The feature flag key
+      - name: environmentKey
+        in: path
+        description: The environment key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The environment key
+      - name: ignoreConflicts
+        in: query
+        description: Whether to succeed (`true`) or fail (`false`) when these instructions conflict with existing scheduled changes
+        schema:
+          type: boolean
+          description: Whether to succeed (`true`) or fail (`false`) when these instructions conflict with existing scheduled changes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostFlagScheduledChangesInput'
+            example:
+              comment: Optional comment describing the scheduled changes
+              executionDate: 1718467200000
+              instructions:
+              - kind: turnFlagOn
+        required: true
+      operationId: postFlagConfigScheduledChanges
+  /api/v2/projects/{projectKey}/flags/{featureFlagKey}/environments/{environmentKey}/scheduled-changes/{id}:
+    get:
+      responses:
+        '200':
+          description: Scheduled changes response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeatureFlagScheduledChange'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Scheduled changes
+      summary: Get a scheduled change
+      description: Get a scheduled change that will be applied to the feature flag by ID.
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: featureFlagKey
+        in: path
+        description: The feature flag key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The feature flag key
+      - name: environmentKey
+        in: path
+        description: The environment key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The environment key
+      - name: id
+        in: path
+        description: The scheduled change id
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The scheduled change id
+      operationId: getFeatureFlagScheduledChange
+    patch:
+      responses:
+        '200':
+          description: Scheduled changes response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeatureFlagScheduledChange'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '405':
+          description: Method not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MethodNotAllowedErrorRep'
+        '409':
+          description: Status conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusConflictErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Scheduled changes
+      summary: Update scheduled changes workflow
+      description: 'Update a scheduled change, overriding existing instructions with the new ones. Updating a scheduled change uses the semantic patch format.
+
+
+        To make a semantic patch request, you must append `domain-model=launchdarkly.semanticpatch` to your `Content-Type` header. To learn more, read Updates using semantic patch.
+
+
+        ### Instructions
+
+
+        Semantic patch requests support the following `kind` instructions for updating scheduled changes.
+
+
+        Click to expand instructions for updating scheduled changes
+
+
+        #### deleteScheduledChange
+
+
+        Removes the scheduled change.
+
+
+        Here''s an example:
+
+
+        ```json
+
+        {
+
+        "instructions": [{ "kind": "deleteScheduledChange" }]
+
+        }
+
+        ```
+
+
+        #### replaceScheduledChangesInstructions
+
+
+        Removes the existing scheduled changes and replaces them with the new instructions.
+
+
+        ##### Parameters
+
+
+        - `value`: An array of the new actions to perform when the execution date for these scheduled changes arrives. Supported scheduled actions are `turnFlagOn` and `turnFlagOff`.
+
+
+        Here''s an example that replaces the scheduled changes with new instructions to turn flag targeting off:
+
+
+        ```json
+
+        {
+
+        "instructions": [
+
+        {
+
+        "kind": "replaceScheduledChangesInstructions",
+
+        "value": [ {"kind": "turnFlagOff"} ]
+
+        }
+
+        ]
+
+        }
+
+        ```
+
+
+        #### updateScheduledChangesExecutionDate
+
+
+        Updates the execution date for the scheduled changes.
+
+
+        ##### Parameters
+
+
+        - `value`: the new execution date, in Unix milliseconds.
+
+
+        Here''s an example:
+
+
+        ```json
+
+        {
+
+        "instructions": [
+
+        {
+
+        "kind": "updateScheduledChangesExecutionDate",
+
+        "value": 1754092860000
+
+        }
+
+        ]
+
+        }
+
+        ```'
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: featureFlagKey
+        in: path
+        description: The feature flag key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The feature flag key
+      - name: environmentKey
+        in: path
+        description: The environment key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The environment key
+      - name: id
+        in: path
+        description: The scheduled change ID
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The scheduled change ID
+      - name: ignoreConflicts
+        in: query
+        description: Whether to succeed (`true`) or fail (`false`) when these new instructions conflict with existing scheduled changes
+        schema:
+          type: boolean
+          description: Whether to succeed (`true`) or fail (`false`) when these new instructions conflict with existing scheduled changes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FlagScheduledChangesInput'
+            example:
+              comment: Optional comment describing the update to the scheduled changes
+              instructions:
+              - kind: replaceScheduledChangesInstructions
+                value:
+                - kind: turnFlagOff
+        required: true
+      operationId: patchFlagConfigScheduledChange
+    delete:
+      responses:
+        '204':
+          description: Action succeeded
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '405':
+          description: Method not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MethodNotAllowedErrorRep'
+        '409':
+          description: Status conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusConflictErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Scheduled changes
+      summary: Delete scheduled changes workflow
+      description: Delete a scheduled changes workflow.
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: featureFlagKey
+        in: path
+        description: The feature flag key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The feature flag key
+      - name: environmentKey
+        in: path
+        description: The environment key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The environment key
+      - name: id
+        in: path
+        description: The scheduled change id
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The scheduled change id
+      operationId: deleteFlagConfigScheduledChanges
+components:
+  schemas:
+    Instruction:
+      type: object
+      additionalProperties: {}
+    MethodNotAllowedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: method_not_allowed
+        message:
+          type: string
+          description: Description of the error
+          example: Method not allowed
+    PostFlagScheduledChangesInput:
+      type: object
+      required:
+      - executionDate
+      - instructions
+      properties:
+        comment:
+          type: string
+          description: Optional comment describing the scheduled changes
+          example: optional comment
+        executionDate:
+          description: When the scheduled changes should be executed
+          example: '1636558831870'
+          $ref: '#/components/schemas/UnixMillis'
+        instructions:
+          description: 'The actions to perform on the execution date for these scheduled changes. This should be an array with a single object that looks like <code>{"kind": "scheduled_action"}</code>. Supported scheduled actions include any semantic patch instructions available when updating a feature flag.'
+          example: '[ { "kind": "turnFlagOn" }]'
+          $ref: '#/components/schemas/Instructions'
+    Link:
+      type: object
+      properties:
+        href:
+          type: string
+        type:
+          type: string
+    FlagScheduledChangesInput:
+      type: object
+      required:
+      - instructions
+      properties:
+        comment:
+          type: string
+          description: Optional comment describing the update to the scheduled changes
+          example: optional comment
+        instructions:
+          description: 'The instructions to perform when updating. This should be an array with objects that look like <code>{"kind": "update_action"}</code>. Some instructions also require a <code>value</code> field in the array element.'
+          example: '[ { "kind": "replaceScheduledChangesInstructions", "value": [ { "kind": "turnFlagOff" } ] } ]'
+          $ref: '#/components/schemas/Instructions'
+    FeatureWorkflowId:
+      type: string
+    Instructions:
+      type: array
+      items:
+        $ref: '#/components/schemas/Instruction'
+    InvalidRequestErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: invalid_request
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid request body
+    StatusConflictErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: optimistic_locking_error
+        message:
+          type: string
+          description: Description of the error
+          example: Conflict. Optimistic lock error. Try again later.
+    NotFoundErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: not_found
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid resource identifier
+    FeatureFlagScheduledChange:
+      type: object
+      required:
+      - _id
+      - _creationDate
+      - _maintainerId
+      - _version
+      - executionDate
+      - instructions
+      properties:
+        _id:
+          description: The ID of this scheduled change
+          example: 12ab3c45de678910abc12345
+          $ref: '#/components/schemas/FeatureWorkflowId'
+        _creationDate:
+          description: Timestamp of when the scheduled change was created
+          example: '1654123897062'
+          $ref: '#/components/schemas/UnixMillis'
+        _maintainerId:
+          type: string
+          description: The ID of the scheduled change maintainer
+          example: 12ab3c45de678910abc12345
+        _maintainerServiceTokenId:
+          type: string
+          description: The ID of the service token that created or updated this scheduled change
+        _version:
+          type: integer
+          description: Version of the scheduled change
+          example: 1
+        executionDate:
+          description: When the scheduled changes should be executed
+          example: '1636558831870'
+          $ref: '#/components/schemas/UnixMillis'
+        instructions:
+          description: The actions to perform on the execution date for these scheduled changes
+          example: '[ { "kind": "turnFlagOn" }]'
+          $ref: '#/components/schemas/Instructions'
+        conflicts:
+          description: Details on any conflicting scheduled changes
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+    RateLimitedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: rate_limited
+        message:
+          type: string
+          description: Description of the error
+          example: You've exceeded the API rate limit. Try again later.
+    UnauthorizedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: unauthorized
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid access token
+    UnixMillis:
+      type: integer
+      format: int64
+    ForbiddenErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: forbidden
+        message:
+          type: string
+          description: Description of the error
+          example: Forbidden. Access to the requested resource was denied.
+    FeatureFlagScheduledChanges:
+      type: object
+      required:
+      - items
+      properties:
+        items:
+          type: array
+          description: Array of scheduled changes
+          items:
+            $ref: '#/components/schemas/FeatureFlagScheduledChange'
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+  securitySchemes:
+    ApiKey:
+      type: apiKey
+      in: header
+      name: Authorization

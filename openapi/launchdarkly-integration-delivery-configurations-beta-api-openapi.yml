@@ -1,0 +1,930 @@
+openapi: 3.2.0
+info:
+  title: LaunchDarkly REST Integration delivery configurations…
+  description: 'This documentation describes LaunchDarkly''s REST API. To access the complete OpenAPI spec directly, use Get OpenAPI spec. To learn how to use LaunchDarkly using the user interface (UI) instead, read our product documentation. ## Authentication
+
+
+    LaunchDarkly''s REST API uses the HTTPS protocol with a minimum TLS version of 1.2. All REST API resources are authenticated with either personal or service access tokens, or session cookies. Other authentication mechanisms are not supported. You can manage personal access tokens on your **Authorization** page in the LaunchDarkly UI. LaunchDarkly also has SDK keys, mobile keys, and client-side IDs that are used by our server-side SDKs, mobile SDKs, and JavaScript-based SDKs, respectively. **These keys cannot be used to access our REST API**. These keys are environment-specific, and can only perform read-only operations such as fetching feature flag settings. | Auth mechanism | Allowed resources | Use cases |
+
+    | ----------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
+
+    | Personal or service access tokens | Can be customized on a per-token basis | Building scripts, custom integrations, data export. |
+
+    | SDK keys | Can only access read-only resources specific to server-side SDKs. Restricted to a single environment. | Server-side SDKs |
+
+    | Mobile keys | Can only access read-only resources specific to mobile SDKs, and only for flags marked available to mobile keys. Restricted to a single environment. | Mobile SDKs |
+
+    | Client-side ID | Can only access read-only resources specific to JavaScript-based client-side SDKs, and only for flags marked available to client-side. Restricted to a single environment. | Client-side JavaScript |
+
+
+    > #### Keep your access tokens and SDK keys private
+
+    >
+
+    > Access tokens should _never_ be exposed in untrusted contexts. Never put an access token in client-side JavaScript, or embed it in a mobile application. LaunchDarkly has special mobile keys that you can embed in mobile apps. If you accidentally expose an access token or SDK key, you can reset it from your **Authorization** page. >
+
+    > The client-side ID is safe to embed in untrusted contexts. It''s designed for use in client-side JavaScript. ### Authentication using request header
+
+
+    The preferred way to authenticate with the API is by adding an `Authorization` header containing your access token to your requests. The value of the `Authorization` header must be your access token. Manage personal access tokens from the **Authorization** page. ### Authentication using session cookie
+
+
+    For testing purposes, you can make API calls directly from your web browser. If you are logged in to the LaunchDarkly application, the API will use your existing session to authenticate calls. Depending on the permissions granted as part of your role, you may not have permission to perform some API calls. You will receive a `401` response code in that case. > ### Modifying the Origin header causes an error
+
+    >
+
+    > LaunchDarkly validates that the Origin header for any API request authenticated by a session cookie matches the expected Origin header. The expected Origin header is `https://app.launchdarkly.com`. >
+
+    > If the Origin header does not match what''s expected, LaunchDarkly returns an error. This error can prevent the LaunchDarkly app from working correctly. >
+
+    > Any browser extension that intentionally changes the Origin header can cause this problem. For example, Cross-Origin Resource Sharing (CORS) extensions used during development can modify the Origin header and cause the app to fail. >
+
+    > To prevent this error, do not modify your Origin header. >
+
+    > LaunchDarkly does not require origin matching when authenticating with an access token, so this issue does not affect normal API usage.'
+  contact:
+    name: LaunchDarkly Technical Support Team
+    url: https://support.launchdarkly.com
+    email: support@launchdarkly.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+  version: '2.0'
+servers:
+- url: https://app.launchdarkly.com
+  description: ' Default'
+- url: https://app.launchdarkly.us
+  description: ' Federal'
+security:
+- ApiKey:
+  - read
+  - write
+tags:
+- name: Integration delivery configurations (beta)
+  description: '> ### This feature is in beta
+
+    >
+
+    > To use this feature, pass in a header including the `LD-API-Version` key with value set to `beta`. Use this header with each call. To learn more, read Beta resources.
+
+    >
+
+    > Resources that are in beta are still undergoing testing and development. They may change without notice, including becoming backwards incompatible.
+
+
+    The integration delivery configurations API allow you to create, modify, validate, and delete delivery configurations.
+
+
+    Several of the endpoints require a delivery configuration ID. The delivery configuration ID is returned as part of the Create delivery configuration and List all delivery configurations responses. It is the `_id` field, or the `_id` field of each element in the `items` array.'
+paths:
+  /api/v2/integration-capabilities/featureStore:
+    get:
+      responses:
+        '200':
+          description: Integration delivery configuration collection response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IntegrationDeliveryConfigurationCollection'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Integration delivery configurations (beta)
+      summary: List all delivery configurations
+      description: List all delivery configurations.
+      operationId: getIntegrationDeliveryConfigurations
+  /api/v2/integration-capabilities/featureStore/{projectKey}/{environmentKey}:
+    get:
+      responses:
+        '200':
+          description: Integration delivery configuration collection response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IntegrationDeliveryConfigurationCollection'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Integration delivery configurations (beta)
+      summary: Get delivery configurations by environment
+      description: Get delivery configurations by environment.
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: environmentKey
+        in: path
+        description: The environment key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The environment key
+      operationId: getIntegrationDeliveryConfigurationByEnvironment
+  /api/v2/integration-capabilities/featureStore/{projectKey}/{environmentKey}/{integrationKey}:
+    post:
+      responses:
+        '201':
+          description: Integration delivery configuration response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IntegrationDeliveryConfiguration'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Integration delivery configurations (beta)
+      summary: Create delivery configuration
+      description: Create a delivery configuration.
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: environmentKey
+        in: path
+        description: The environment key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The environment key
+      - name: integrationKey
+        in: path
+        description: The integration key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The integration key
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IntegrationDeliveryConfigurationPost'
+            example:
+              config:
+                optional: example value for optional formVariables property for sample-integration
+                required: example value for required formVariables property for sample-integration
+              name: Sample integration
+              'on': false
+              tags:
+              - example-tag
+        required: true
+      operationId: createIntegrationDeliveryConfiguration
+  /api/v2/integration-capabilities/featureStore/{projectKey}/{environmentKey}/{integrationKey}/{id}:
+    get:
+      responses:
+        '200':
+          description: Integration delivery configuration response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IntegrationDeliveryConfiguration'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Integration delivery configurations (beta)
+      summary: Get delivery configuration by ID
+      description: Get delivery configuration by ID.
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: environmentKey
+        in: path
+        description: The environment key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The environment key
+      - name: integrationKey
+        in: path
+        description: The integration key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The integration key
+      - name: id
+        in: path
+        description: The configuration ID
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The configuration ID
+      operationId: getIntegrationDeliveryConfigurationById
+    patch:
+      responses:
+        '200':
+          description: Integration delivery configuration response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IntegrationDeliveryConfiguration'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '422':
+          description: Invalid patch content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PatchFailedErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Integration delivery configurations (beta)
+      summary: Update delivery configuration
+      description: Update an integration delivery configuration. Updating an integration delivery configuration uses a JSON patch representation of the desired changes. To learn more, read Updates.
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: environmentKey
+        in: path
+        description: The environment key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The environment key
+      - name: integrationKey
+        in: path
+        description: The integration key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The integration key
+      - name: id
+        in: path
+        description: The configuration ID
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The configuration ID
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JSONPatch'
+            example:
+            - op: replace
+              path: /on
+              value: true
+        required: true
+      operationId: patchIntegrationDeliveryConfiguration
+    delete:
+      responses:
+        '204':
+          description: Action succeeded
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Integration delivery configurations (beta)
+      summary: Delete delivery configuration
+      description: Delete a delivery configuration.
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: environmentKey
+        in: path
+        description: The environment key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The environment key
+      - name: integrationKey
+        in: path
+        description: The integration key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The integration key
+      - name: id
+        in: path
+        description: The configuration ID
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The configuration ID
+      operationId: deleteIntegrationDeliveryConfiguration
+  /api/v2/integration-capabilities/featureStore/{projectKey}/{environmentKey}/{integrationKey}/{id}/validate:
+    post:
+      responses:
+        '200':
+          description: Integration delivery configuration validation response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IntegrationDeliveryConfigurationResponse'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Integration delivery configurations (beta)
+      summary: Validate delivery configuration
+      description: Validate the saved delivery configuration, using the `validationRequest` in the integration's `manifest.json` file.
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: environmentKey
+        in: path
+        description: The environment key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The environment key
+      - name: integrationKey
+        in: path
+        description: The integration key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The integration key
+      - name: id
+        in: path
+        description: The configuration ID
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The configuration ID
+      operationId: validateIntegrationDeliveryConfiguration
+components:
+  schemas:
+    FormVariableConfig:
+      type: object
+      additionalProperties: {}
+    AccessDenied:
+      type: object
+      required:
+      - action
+      - reason
+      properties:
+        action:
+          $ref: '#/components/schemas/ActionIdentifier'
+        reason:
+          $ref: '#/components/schemas/AccessDeniedReason'
+    IntegrationDeliveryConfigurationCollection:
+      type: object
+      required:
+      - _links
+      - items
+      properties:
+        _links:
+          description: The location and content type of related resources
+          $ref: '#/components/schemas/IntegrationDeliveryConfigurationCollectionLinks'
+        items:
+          type: array
+          description: An array of integration delivery configurations
+          items:
+            $ref: '#/components/schemas/IntegrationDeliveryConfiguration'
+    JSONPatch:
+      type: array
+      items:
+        $ref: '#/components/schemas/PatchOperation'
+    PatchFailedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: patch_failed
+        message:
+          type: string
+          description: Description of the error
+          example: Unprocessable entity. Could not apply patch.
+    InvalidRequestErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: invalid_request
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid request body
+    IntegrationDeliveryConfigurationPost:
+      type: object
+      required:
+      - config
+      properties:
+        'on':
+          type: boolean
+          description: Whether the integration configuration is active. Default value is false.
+          example: false
+        config:
+          description: The global integration settings, as specified by the <code>formVariables</code> in the <code>manifest.json</code> for this integration.
+          example: '{"required": "example value for required formVariables property for sample-integration", "optional": "example value for optional formVariables property for sample-integration"}'
+          $ref: '#/components/schemas/FormVariableConfig'
+        tags:
+          type: array
+          description: Tags to associate with the integration
+          items:
+            type: string
+          example:
+          - example-tag
+        name:
+          type: string
+          description: Name to identify the integration
+          example: Sample integration
+    RateLimitedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: rate_limited
+        message:
+          type: string
+          description: Description of the error
+          example: You've exceeded the API rate limit. Try again later.
+    AccessDeniedReason:
+      type: object
+      required:
+      - effect
+      properties:
+        resources:
+          type: array
+          description: Resource specifier strings
+          items:
+            type: string
+          example:
+          - proj/*:env/*;qa_*:/flag/*
+        notResources:
+          type: array
+          description: Targeted resources are the resources NOT in this list. The <code>resources</code> and <code>notActions</code> fields must be empty to use this field.
+          items:
+            type: string
+        actions:
+          type: array
+          description: Actions to perform on a resource
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+          example:
+          - '*'
+        notActions:
+          type: array
+          description: Targeted actions are the actions NOT in this list. The <code>actions</code> and <code>notResources</code> fields must be empty to use this field.
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+        effect:
+          type: string
+          description: Whether this statement should allow or deny actions on the resources.
+          example: allow
+          enum:
+          - allow
+          - deny
+        role_name:
+          type: string
+    UnauthorizedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: unauthorized
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid access token
+    ForbiddenErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: forbidden
+        message:
+          type: string
+          description: Description of the error
+          example: Forbidden. Access to the requested resource was denied.
+    ActionSpecifier:
+      type: string
+    IntegrationDeliveryConfigurationResponse:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          description: The status code returned by the validation
+          example: 200
+        error:
+          type: string
+        timestamp:
+          description: Timestamp of when the validation was performed
+          example: '1654104600000'
+          $ref: '#/components/schemas/UnixMillis'
+        responseBody:
+          type: string
+          description: JSON response to the validation request
+    Link:
+      type: object
+      properties:
+        href:
+          type: string
+        type:
+          type: string
+    ActionIdentifier:
+      type: string
+    UnixMillis:
+      type: integer
+      format: int64
+    PatchOperation:
+      type: object
+      required:
+      - op
+      - path
+      properties:
+        op:
+          type: string
+          description: The type of operation to perform
+          example: replace
+        path:
+          type: string
+          description: A JSON Pointer string specifying the part of the document to operate on
+          example: /exampleField
+        value:
+          description: A JSON value used in "add", "replace", and "test" operations
+          example: new example value
+    Access:
+      type: object
+      required:
+      - denied
+      - allowed
+      properties:
+        denied:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccessDenied'
+        allowed:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccessAllowedRep'
+    NotFoundErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: not_found
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid resource identifier
+    AccessAllowedReason:
+      type: object
+      required:
+      - effect
+      properties:
+        resources:
+          type: array
+          description: Resource specifier strings
+          items:
+            type: string
+          example:
+          - proj/*:env/*;qa_*:/flag/*
+        notResources:
+          type: array
+          description: Targeted resources are the resources NOT in this list. The <code>resources</code> and <code>notActions</code> fields must be empty to use this field.
+          items:
+            type: string
+        actions:
+          type: array
+          description: Actions to perform on a resource
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+          example:
+          - '*'
+        notActions:
+          type: array
+          description: Targeted actions are the actions NOT in this list. The <code>actions</code> and <code>notResources</code> fields must be empty to use this field.
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+        effect:
+          type: string
+          description: Whether this statement should allow or deny actions on the resources.
+          example: allow
+          enum:
+          - allow
+          - deny
+        role_name:
+          type: string
+    AccessAllowedRep:
+      type: object
+      required:
+      - action
+      - reason
+      properties:
+        action:
+          $ref: '#/components/schemas/ActionIdentifier'
+        reason:
+          $ref: '#/components/schemas/AccessAllowedReason'
+    IntegrationDeliveryConfigurationLinks:
+      type: object
+      required:
+      - self
+      - parent
+      - project
+      - environment
+      properties:
+        self:
+          $ref: '#/components/schemas/Link'
+        parent:
+          $ref: '#/components/schemas/Link'
+        project:
+          $ref: '#/components/schemas/Link'
+        environment:
+          $ref: '#/components/schemas/Link'
+    IntegrationDeliveryConfiguration:
+      type: object
+      required:
+      - _links
+      - _id
+      - integrationKey
+      - projectKey
+      - environmentKey
+      - config
+      - 'on'
+      - tags
+      - name
+      - version
+      properties:
+        _links:
+          description: The location and content type of related resources
+          $ref: '#/components/schemas/IntegrationDeliveryConfigurationLinks'
+        _id:
+          type: string
+          description: The integration ID
+          example: 12ab3c4d5ef1a2345bcde67f
+        integrationKey:
+          type: string
+          description: The integration key
+          example: example-integration-key
+        projectKey:
+          type: string
+          description: The project key
+          example: default
+        environmentKey:
+          type: string
+          description: The environment key
+          example: development
+        config:
+          description: The delivery configuration for the given integration provider. Only included when requesting a single integration by ID. Refer to the <code>formVariables</code> field in the corresponding <code>manifest.json</code> for a full list of fields for each integration.
+          $ref: '#/components/schemas/FormVariableConfig'
+        'on':
+          type: boolean
+          description: Whether the configuration is turned on
+          example: true
+        tags:
+          type: array
+          description: List of tags for this configuration
+          items:
+            type: string
+          example: []
+        name:
+          type: string
+          description: Name of the configuration
+          example: Development environment configuration
+        version:
+          type: integer
+          description: Version of the current configuration
+          example: 1
+        _access:
+          description: Details on the allowed and denied actions for this configuration
+          $ref: '#/components/schemas/Access'
+    IntegrationDeliveryConfigurationCollectionLinks:
+      type: object
+      required:
+      - self
+      properties:
+        self:
+          $ref: '#/components/schemas/Link'
+        parent:
+          $ref: '#/components/schemas/Link'
+  securitySchemes:
+    ApiKey:
+      type: apiKey
+      in: header
+      name: Authorization

@@ -1,0 +1,900 @@
+openapi: 3.2.0
+info:
+  title: LaunchDarkly REST Persistent store integrations (beta) API
+  description: 'This documentation describes LaunchDarkly''s REST API. To access the complete OpenAPI spec directly, use Get OpenAPI spec. To learn how to use LaunchDarkly using the user interface (UI) instead, read our product documentation. ## Authentication
+
+
+    LaunchDarkly''s REST API uses the HTTPS protocol with a minimum TLS version of 1.2. All REST API resources are authenticated with either personal or service access tokens, or session cookies. Other authentication mechanisms are not supported. You can manage personal access tokens on your **Authorization** page in the LaunchDarkly UI. LaunchDarkly also has SDK keys, mobile keys, and client-side IDs that are used by our server-side SDKs, mobile SDKs, and JavaScript-based SDKs, respectively. **These keys cannot be used to access our REST API**. These keys are environment-specific, and can only perform read-only operations such as fetching feature flag settings. | Auth mechanism | Allowed resources | Use cases |
+
+    | ----------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
+
+    | Personal or service access tokens | Can be customized on a per-token basis | Building scripts, custom integrations, data export. |
+
+    | SDK keys | Can only access read-only resources specific to server-side SDKs. Restricted to a single environment. | Server-side SDKs |
+
+    | Mobile keys | Can only access read-only resources specific to mobile SDKs, and only for flags marked available to mobile keys. Restricted to a single environment. | Mobile SDKs |
+
+    | Client-side ID | Can only access read-only resources specific to JavaScript-based client-side SDKs, and only for flags marked available to client-side. Restricted to a single environment. | Client-side JavaScript |
+
+
+    > #### Keep your access tokens and SDK keys private
+
+    >
+
+    > Access tokens should _never_ be exposed in untrusted contexts. Never put an access token in client-side JavaScript, or embed it in a mobile application. LaunchDarkly has special mobile keys that you can embed in mobile apps. If you accidentally expose an access token or SDK key, you can reset it from your **Authorization** page. >
+
+    > The client-side ID is safe to embed in untrusted contexts. It''s designed for use in client-side JavaScript. ### Authentication using request header
+
+
+    The preferred way to authenticate with the API is by adding an `Authorization` header containing your access token to your requests. The value of the `Authorization` header must be your access token. Manage personal access tokens from the **Authorization** page. ### Authentication using session cookie
+
+
+    For testing purposes, you can make API calls directly from your web browser. If you are logged in to the LaunchDarkly application, the API will use your existing session to authenticate calls. Depending on the permissions granted as part of your role, you may not have permission to perform some API calls. You will receive a `401` response code in that case. > ### Modifying the Origin header causes an error
+
+    >
+
+    > LaunchDarkly validates that the Origin header for any API request authenticated by a session cookie matches the expected Origin header. The expected Origin header is `https://app.launchdarkly.com`. >
+
+    > If the Origin header does not match what''s expected, LaunchDarkly returns an error. This error can prevent the LaunchDarkly app from working correctly. >
+
+    > Any browser extension that intentionally changes the Origin header can cause this problem. For example, Cross-Origin Resource Sharing (CORS) extensions used during development can modify the Origin header and cause the app to fail. >
+
+    > To prevent this error, do not modify your Origin header. >
+
+    > LaunchDarkly does not require origin matching when authenticating with an access token, so this issue does not affect normal API usage.'
+  contact:
+    name: LaunchDarkly Technical Support Team
+    url: https://support.launchdarkly.com
+    email: support@launchdarkly.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+  version: '2.0'
+servers:
+- url: https://app.launchdarkly.com
+  description: ' Default'
+- url: https://app.launchdarkly.us
+  description: ' Federal'
+security:
+- ApiKey:
+  - read
+  - write
+tags:
+- name: Persistent store integrations (beta)
+  description: '> ### This feature is in beta
+
+    >
+
+    > To use this feature, pass in a header including the `LD-API-Version` key with value set to `beta`. Use this header with each call. To learn more, read Beta resources.
+
+    >
+
+    > Resources that are in beta are still undergoing testing and development. They may change without notice, including becoming backwards incompatible.
+
+
+    ### Persistent store integrations
+
+
+    Persistent store integrations, also called "big segment" store integrations, are required when you use a server-side SDK and big segments. You can use the persistent store integrations API endpoints to manage these integrations.
+
+
+    > ### Synced segments and larger list-based segments are an Enterprise feature
+
+    >
+
+    > Segments synced from external tools and larger list-based segments with more than 15,000 entries are the two kinds of "big segment." LaunchDarkly uses different implementations for different types of segments so that all of your segments have good performance.
+
+    >
+
+    > These segments are available to customers on an Enterprise plan. To learn more, read about our pricing. To upgrade your plan, contact Sales.
+
+
+    Segments synced from external tools and larger list-based segments are the two kinds of big segment. If you are using server-side SDKs, these segments require a persistent store within your infrastructure. LaunchDarkly keeps the persistent store up to date and consults it during flag evaluation.
+
+
+    You need either a persistent store integration or a Relay Proxy to support these segments. The persistent store integrations API lets you manage the persistent store integrations.
+
+
+    To learn more about segments, read Segments and Segment configuration.
+
+
+    Several of the endpoints in the persistent store integrations API require an integration ID. The integration ID is returned as part of the Create big segment store integration response, in the `_id` field. It is also returned as part of the List all big segment store integrations response, in the `_id` field of each element in the `items` array.
+
+
+    You can find other APIs for working with big segments under Segments.'
+paths:
+  /api/v2/integration-capabilities/big-segment-store:
+    get:
+      responses:
+        '200':
+          description: Big segment store collection response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BigSegmentStoreIntegrationCollection'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Environment or project not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Persistent store integrations (beta)
+      summary: List all big segment store integrations
+      description: List all big segment store integrations.
+      operationId: getBigSegmentStoreIntegrations
+  /api/v2/integration-capabilities/big-segment-store/{projectKey}/{environmentKey}/{integrationKey}:
+    post:
+      responses:
+        '201':
+          description: Big segment store response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BigSegmentStoreIntegration'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Environment or project not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '409':
+          description: Status conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusConflictErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Persistent store integrations (beta)
+      summary: Create big segment store integration
+      description: 'Create a persistent store integration.
+
+
+        If you are using server-side SDKs, segments synced from external tools and larger list-based segments require a persistent store within your infrastructure. LaunchDarkly keeps the persistent store up to date and consults it during flag evaluation.
+
+
+        You can use either Redis or DynamoDB as your persistent store. When you create a persistent store integration, the fields in the `config` object in the request vary depending on which persistent store you use.
+
+
+        If you are using Redis to create your persistent store integration, you will need to know:
+
+
+        * Your Redis host
+
+        * Your Redis port
+
+        * Your Redis username
+
+        * Your Redis password
+
+        * Whether or not LaunchDarkly should connect using TLS
+
+
+        If you are using DynamoDB to create your persistent store integration, you will need to know:
+
+
+        * Your DynamoDB table name. The table must have the following schema:
+
+        * Partition key: `namespace` (string)
+
+        * Sort key: `key` (string)
+
+        * Your DynamoDB Amazon Web Services (AWS) region.
+
+        * Your AWS role Amazon Resource Name (ARN). This is the role that LaunchDarkly will assume to manage your DynamoDB table.
+
+        * The External ID you specified when creating your Amazon Resource Name (ARN).
+
+
+        To learn more, read Segment configuration.'
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: environmentKey
+        in: path
+        description: The environment key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The environment key
+      - name: integrationKey
+        in: path
+        description: The integration key, either `redis` or `dynamodb`
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The integration key, either `redis` or `dynamodb`
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IntegrationDeliveryConfigurationPost'
+            example:
+              config:
+                optional: example value for optional formVariables property for sample-integration
+                required: example value for required formVariables property for sample-integration
+              name: Example persistent store integration
+              'on': false
+              tags:
+              - example-tag
+        required: true
+      operationId: createBigSegmentStoreIntegration
+  /api/v2/integration-capabilities/big-segment-store/{projectKey}/{environmentKey}/{integrationKey}/{integrationId}:
+    get:
+      responses:
+        '200':
+          description: Big segment store response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BigSegmentStoreIntegration'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Environment or project not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Persistent store integrations (beta)
+      summary: Get big segment store integration by ID
+      description: Get a big segment store integration by ID.
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: environmentKey
+        in: path
+        description: The environment key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The environment key
+      - name: integrationKey
+        in: path
+        description: The integration key, either `redis` or `dynamodb`
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The integration key, either `redis` or `dynamodb`
+      - name: integrationId
+        in: path
+        description: The integration ID
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The integration ID
+      operationId: getBigSegmentStoreIntegration
+    patch:
+      responses:
+        '200':
+          description: Big segment store response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BigSegmentStoreIntegration'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Environment or project not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '409':
+          description: Status conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusConflictErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Persistent store integrations (beta)
+      summary: Update big segment store integration
+      description: Update a big segment store integration. Updating a big segment store requires a JSON Patch representation of the desired changes. To learn more, read Updates.
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: environmentKey
+        in: path
+        description: The environment key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The environment key
+      - name: integrationKey
+        in: path
+        description: The integration key, either `redis` or `dynamodb`
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The integration key, either `redis` or `dynamodb`
+      - name: integrationId
+        in: path
+        description: The integration ID
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The integration ID
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JSONPatch'
+        required: true
+      operationId: patchBigSegmentStoreIntegration
+    delete:
+      responses:
+        '204':
+          description: Action completed successfully
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Environment or project not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '409':
+          description: Status conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusConflictErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Persistent store integrations (beta)
+      summary: Delete big segment store integration
+      description: Delete a persistent store integration. Each integration uses either Redis or DynamoDB.
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: environmentKey
+        in: path
+        description: The environment key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The environment key
+      - name: integrationKey
+        in: path
+        description: The integration key, either `redis` or `dynamodb`
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The integration key, either `redis` or `dynamodb`
+      - name: integrationId
+        in: path
+        description: The integration ID
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The integration ID
+      operationId: deleteBigSegmentStoreIntegration
+components:
+  schemas:
+    FormVariableConfig:
+      type: object
+      additionalProperties: {}
+    BigSegmentStoreIntegrationCollection:
+      type: object
+      required:
+      - _links
+      - items
+      properties:
+        _links:
+          description: The location and content type of related resources
+          $ref: '#/components/schemas/BigSegmentStoreIntegrationCollectionLinks'
+        items:
+          type: array
+          description: An array of persistent store integration configurations
+          items:
+            $ref: '#/components/schemas/BigSegmentStoreIntegration'
+    AccessDenied:
+      type: object
+      required:
+      - action
+      - reason
+      properties:
+        action:
+          $ref: '#/components/schemas/ActionIdentifier'
+        reason:
+          $ref: '#/components/schemas/AccessDeniedReason'
+    JSONPatch:
+      type: array
+      items:
+        $ref: '#/components/schemas/PatchOperation'
+    InvalidRequestErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: invalid_request
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid request body
+    IntegrationDeliveryConfigurationPost:
+      type: object
+      required:
+      - config
+      properties:
+        'on':
+          type: boolean
+          description: Whether the integration configuration is active. Default value is false.
+          example: false
+        config:
+          description: The global integration settings, as specified by the <code>formVariables</code> in the <code>manifest.json</code> for this integration.
+          example: '{"required": "example value for required formVariables property for sample-integration", "optional": "example value for optional formVariables property for sample-integration"}'
+          $ref: '#/components/schemas/FormVariableConfig'
+        tags:
+          type: array
+          description: Tags to associate with the integration
+          items:
+            type: string
+          example:
+          - example-tag
+        name:
+          type: string
+          description: Name to identify the integration
+          example: Sample integration
+    AccessDeniedReason:
+      type: object
+      required:
+      - effect
+      properties:
+        resources:
+          type: array
+          description: Resource specifier strings
+          items:
+            type: string
+          example:
+          - proj/*:env/*;qa_*:/flag/*
+        notResources:
+          type: array
+          description: Targeted resources are the resources NOT in this list. The <code>resources</code> and <code>notActions</code> fields must be empty to use this field.
+          items:
+            type: string
+        actions:
+          type: array
+          description: Actions to perform on a resource
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+          example:
+          - '*'
+        notActions:
+          type: array
+          description: Targeted actions are the actions NOT in this list. The <code>actions</code> and <code>notResources</code> fields must be empty to use this field.
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+        effect:
+          type: string
+          description: Whether this statement should allow or deny actions on the resources.
+          example: allow
+          enum:
+          - allow
+          - deny
+        role_name:
+          type: string
+    RateLimitedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: rate_limited
+        message:
+          type: string
+          description: Description of the error
+          example: You've exceeded the API rate limit. Try again later.
+    UnauthorizedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: unauthorized
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid access token
+    ForbiddenErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: forbidden
+        message:
+          type: string
+          description: Description of the error
+          example: Forbidden. Access to the requested resource was denied.
+    ActionSpecifier:
+      type: string
+    StoreIntegrationError:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+        message:
+          type: string
+        timestamp:
+          $ref: '#/components/schemas/UnixMillis'
+    Link:
+      type: object
+      properties:
+        href:
+          type: string
+        type:
+          type: string
+    ActionIdentifier:
+      type: string
+    BigSegmentStoreStatus:
+      type: object
+      properties:
+        available:
+          type: boolean
+          description: Whether the persistent store integration is fully synchronized with the LaunchDarkly environment, and the <code>lastSync</code> occurred within a few minutes
+          example: true
+        potentiallyStale:
+          type: boolean
+          description: Whether the persistent store integration may not be fully synchronized with the LaunchDarkly environment. <code>true</code> if the integration could be stale.
+          example: false
+        lastSync:
+          description: Timestamp of when the most recent successful sync occurred between the persistent store integration and the LaunchDarkly environment.
+          example: '1717263000000'
+          $ref: '#/components/schemas/UnixMillis'
+        lastError:
+          description: Timestamp of when the most recent synchronization error occurred, if any
+          example: '1714584600000'
+          $ref: '#/components/schemas/UnixMillis'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/StoreIntegrationError'
+    UnixMillis:
+      type: integer
+      format: int64
+    PatchOperation:
+      type: object
+      required:
+      - op
+      - path
+      properties:
+        op:
+          type: string
+          description: The type of operation to perform
+          example: replace
+        path:
+          type: string
+          description: A JSON Pointer string specifying the part of the document to operate on
+          example: /exampleField
+        value:
+          description: A JSON value used in "add", "replace", and "test" operations
+          example: new example value
+    BigSegmentStoreIntegration:
+      type: object
+      required:
+      - _links
+      - _id
+      - integrationKey
+      - projectKey
+      - environmentKey
+      - config
+      - 'on'
+      - tags
+      - name
+      - version
+      - _status
+      properties:
+        _links:
+          description: The location and content type of related resources
+          $ref: '#/components/schemas/BigSegmentStoreIntegrationLinks'
+        _id:
+          type: string
+          description: The integration ID
+          example: 12ab3c4d5ef1a2345bcde67f
+        integrationKey:
+          type: string
+          description: The integration key
+          example: redis
+          enum:
+          - redis
+          - dynamodb
+        projectKey:
+          type: string
+          description: The project key
+          example: default
+        environmentKey:
+          type: string
+          description: The environment key
+          example: development
+        config:
+          description: The delivery configuration for the given integration provider. Only included when requesting a single integration by ID. Refer to the <code>formVariables</code> field in the corresponding <code>manifest.json</code> for a full list of fields for each integration.
+          $ref: '#/components/schemas/FormVariableConfig'
+        'on':
+          type: boolean
+          description: Whether the configuration is turned on
+          example: true
+        tags:
+          type: array
+          description: List of tags for this configuration
+          items:
+            type: string
+          example: []
+        name:
+          type: string
+          description: Name of the configuration
+          example: Development environment configuration
+        version:
+          type: integer
+          description: Version of the current configuration
+          example: 1
+        _access:
+          description: Details on the allowed and denied actions for this configuration
+          $ref: '#/components/schemas/Access'
+        _status:
+          description: Details on the connection status of the persistent store integration
+          $ref: '#/components/schemas/BigSegmentStoreStatus'
+    Access:
+      type: object
+      required:
+      - denied
+      - allowed
+      properties:
+        denied:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccessDenied'
+        allowed:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccessAllowedRep'
+    BigSegmentStoreIntegrationLinks:
+      type: object
+      required:
+      - self
+      - parent
+      - project
+      - environment
+      properties:
+        self:
+          $ref: '#/components/schemas/Link'
+        parent:
+          $ref: '#/components/schemas/Link'
+        project:
+          $ref: '#/components/schemas/Link'
+        environment:
+          $ref: '#/components/schemas/Link'
+    StatusConflictErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: optimistic_locking_error
+        message:
+          type: string
+          description: Description of the error
+          example: Conflict. Optimistic lock error. Try again later.
+    NotFoundErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: not_found
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid resource identifier
+    AccessAllowedReason:
+      type: object
+      required:
+      - effect
+      properties:
+        resources:
+          type: array
+          description: Resource specifier strings
+          items:
+            type: string
+          example:
+          - proj/*:env/*;qa_*:/flag/*
+        notResources:
+          type: array
+          description: Targeted resources are the resources NOT in this list. The <code>resources</code> and <code>notActions</code> fields must be empty to use this field.
+          items:
+            type: string
+        actions:
+          type: array
+          description: Actions to perform on a resource
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+          example:
+          - '*'
+        notActions:
+          type: array
+          description: Targeted actions are the actions NOT in this list. The <code>actions</code> and <code>notResources</code> fields must be empty to use this field.
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+        effect:
+          type: string
+          description: Whether this statement should allow or deny actions on the resources.
+          example: allow
+          enum:
+          - allow
+          - deny
+        role_name:
+          type: string
+    AccessAllowedRep:
+      type: object
+      required:
+      - action
+      - reason
+      properties:
+        action:
+          $ref: '#/components/schemas/ActionIdentifier'
+        reason:
+          $ref: '#/components/schemas/AccessAllowedReason'
+    BigSegmentStoreIntegrationCollectionLinks:
+      type: object
+      required:
+      - self
+      properties:
+        self:
+          $ref: '#/components/schemas/Link'
+        parent:
+          $ref: '#/components/schemas/Link'
+  securitySchemes:
+    ApiKey:
+      type: apiKey
+      in: header
+      name: Authorization

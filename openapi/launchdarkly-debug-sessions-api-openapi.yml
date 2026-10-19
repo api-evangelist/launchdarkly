@@ -105,6 +105,23 @@ paths:
       tags:
       - Debug Sessions
 components:
+  responses:
+    ErrorResponse:
+      description: Error response object
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - code
+            - message
+            properties:
+              code:
+                type: string
+                description: specific error code encountered
+              message:
+                type: string
+                description: description of the error
   schemas:
     EventsPage:
       description: Paginated response of events
@@ -150,6 +167,25 @@ components:
           type: object
           description: raw event data as JSON
           x-go-type: json.RawMessage
+    DebugSession:
+      description: Debug session with event count
+      type: object
+      required:
+      - key
+      - written_at
+      - event_count
+      properties:
+        key:
+          type: string
+          description: unique identifier for the debug session
+        written_at:
+          type: string
+          format: date-time
+          description: timestamp when the debug session was created
+        event_count:
+          type: integer
+          format: int64
+          description: number of events associated with this debug session
     DebugSessionsPage:
       description: Paginated response of debug sessions
       type: object
@@ -170,39 +206,3 @@ components:
         has_more:
           type: boolean
           description: whether there are more results available
-    DebugSession:
-      description: Debug session with event count
-      type: object
-      required:
-      - key
-      - written_at
-      - event_count
-      properties:
-        key:
-          type: string
-          description: unique identifier for the debug session
-        written_at:
-          type: string
-          format: date-time
-          description: timestamp when the debug session was created
-        event_count:
-          type: integer
-          format: int64
-          description: number of events associated with this debug session
-  responses:
-    ErrorResponse:
-      description: Error response object
-      content:
-        application/json:
-          schema:
-            type: object
-            required:
-            - code
-            - message
-            properties:
-              code:
-                type: string
-                description: specific error code encountered
-              message:
-                type: string
-                description: description of the error

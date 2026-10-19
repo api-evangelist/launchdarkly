@@ -1,0 +1,464 @@
+openapi: 3.2.0
+info:
+  title: LaunchDarkly REST OAuth2 Clients API
+  description: 'This documentation describes LaunchDarkly''s REST API. To access the complete OpenAPI spec directly, use Get OpenAPI spec. To learn how to use LaunchDarkly using the user interface (UI) instead, read our product documentation. ## Authentication
+
+
+    LaunchDarkly''s REST API uses the HTTPS protocol with a minimum TLS version of 1.2. All REST API resources are authenticated with either personal or service access tokens, or session cookies. Other authentication mechanisms are not supported. You can manage personal access tokens on your **Authorization** page in the LaunchDarkly UI. LaunchDarkly also has SDK keys, mobile keys, and client-side IDs that are used by our server-side SDKs, mobile SDKs, and JavaScript-based SDKs, respectively. **These keys cannot be used to access our REST API**. These keys are environment-specific, and can only perform read-only operations such as fetching feature flag settings. | Auth mechanism | Allowed resources | Use cases |
+
+    | ----------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
+
+    | Personal or service access tokens | Can be customized on a per-token basis | Building scripts, custom integrations, data export. |
+
+    | SDK keys | Can only access read-only resources specific to server-side SDKs. Restricted to a single environment. | Server-side SDKs |
+
+    | Mobile keys | Can only access read-only resources specific to mobile SDKs, and only for flags marked available to mobile keys. Restricted to a single environment. | Mobile SDKs |
+
+    | Client-side ID | Can only access read-only resources specific to JavaScript-based client-side SDKs, and only for flags marked available to client-side. Restricted to a single environment. | Client-side JavaScript |
+
+
+    > #### Keep your access tokens and SDK keys private
+
+    >
+
+    > Access tokens should _never_ be exposed in untrusted contexts. Never put an access token in client-side JavaScript, or embed it in a mobile application. LaunchDarkly has special mobile keys that you can embed in mobile apps. If you accidentally expose an access token or SDK key, you can reset it from your **Authorization** page. >
+
+    > The client-side ID is safe to embed in untrusted contexts. It''s designed for use in client-side JavaScript. ### Authentication using request header
+
+
+    The preferred way to authenticate with the API is by adding an `Authorization` header containing your access token to your requests. The value of the `Authorization` header must be your access token. Manage personal access tokens from the **Authorization** page. ### Authentication using session cookie
+
+
+    For testing purposes, you can make API calls directly from your web browser. If you are logged in to the LaunchDarkly application, the API will use your existing session to authenticate calls. Depending on the permissions granted as part of your role, you may not have permission to perform some API calls. You will receive a `401` response code in that case. > ### Modifying the Origin header causes an error
+
+    >
+
+    > LaunchDarkly validates that the Origin header for any API request authenticated by a session cookie matches the expected Origin header. The expected Origin header is `https://app.launchdarkly.com`. >
+
+    > If the Origin header does not match what''s expected, LaunchDarkly returns an error. This error can prevent the LaunchDarkly app from working correctly. >
+
+    > Any browser extension that intentionally changes the Origin header can cause this problem. For example, Cross-Origin Resource Sharing (CORS) extensions used during development can modify the Origin header and cause the app to fail. >
+
+    > To prevent this error, do not modify your Origin header. >
+
+    > LaunchDarkly does not require origin matching when authenticating with an access token, so this issue does not affect normal API usage.'
+  contact:
+    name: LaunchDarkly Technical Support Team
+    url: https://support.launchdarkly.com
+    email: support@launchdarkly.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+  version: '2.0'
+servers:
+- url: https://app.launchdarkly.com
+  description: ' Default'
+- url: https://app.launchdarkly.us
+  description: ' Federal'
+security:
+- ApiKey:
+  - read
+  - write
+tags:
+- name: OAuth2 Clients
+  description: 'The OAuth2 client API allows you to register a LaunchDarkly OAuth client for use in your own custom integrations. Registering a LaunchDarkly OAuth client allows you to use LaunchDarkly as an identity provider so that account members can log into your application with their LaunchDarkly account.
+
+
+    You can create and manage LaunchDarkly OAuth clients using the LaunchDarkly OAuth client API. This API acknowledges creation of your client with a response containing a one-time, unique `_clientSecret`. If you lose your client secret, you will have to register a new client. LaunchDarkly does not store client secrets in plain text.
+
+
+    Several of the endpoints in the OAuth2 client API require an OAuth client ID. The OAuth client ID is returned as part of the Create a LaunchDarkly OAuth 2.0 client and Get clients responses. It is the `_clientId` field, or the `_clientId` field of each element in the `items` array.
+
+
+    OAuth clients created through this API cannot be used for SCIM provisioning. If you need OAuth credentials for SCIM setup, contact LaunchDarkly Support to have them generated for you.
+
+
+    You must have _Admin_ privileges or an access token created by a member with _Admin_ privileges in order to be able to use this feature.
+
+
+    `redirectUri`s must be absolute URIs that conform to the https URI scheme. If you wish to register a client with a different URI scheme, please contact LaunchDarkly Support.'
+paths:
+  /api/v2/oauth/clients:
+    get:
+      responses:
+        '200':
+          description: OAuth 2.0 client collection response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientCollection'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+      tags:
+      - OAuth2 Clients
+      summary: Get clients
+      description: Get all OAuth 2.0 clients registered by your account.
+      operationId: getOAuthClients
+    post:
+      responses:
+        '201':
+          description: OAuth 2.0 client response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Client'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+      tags:
+      - OAuth2 Clients
+      summary: Create a LaunchDarkly OAuth 2.0 client
+      description: Create (register) a LaunchDarkly OAuth2 client. OAuth2 clients allow you to build custom integrations using LaunchDarkly as your identity provider.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/oauthClientPost'
+        required: true
+      operationId: createOAuth2Client
+  /api/v2/oauth/clients/{clientId}:
+    get:
+      responses:
+        '200':
+          description: OAuth 2.0 client response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Client'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+      tags:
+      - OAuth2 Clients
+      summary: Get client by ID
+      description: Get a registered OAuth 2.0 client by unique client ID.
+      parameters:
+      - name: clientId
+        in: path
+        description: The client ID
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The client ID
+      operationId: getOAuthClientById
+    patch:
+      responses:
+        '200':
+          description: OAuth 2.0 client response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Client'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+      tags:
+      - OAuth2 Clients
+      summary: Patch client by ID
+      description: Patch an existing OAuth 2.0 client by client ID. Updating an OAuth2 client uses a JSON patch representation of the desired changes. To learn more, read Updates. Only `name`, `description`, and `redirectUri` may be patched.
+      parameters:
+      - name: clientId
+        in: path
+        description: The client ID
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The client ID
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JSONPatch'
+            example:
+            - op: replace
+              path: /name
+              value: Example Client V2
+        required: true
+      operationId: patchOAuthClient
+    delete:
+      responses:
+        '204':
+          description: Action succeeded
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+      tags:
+      - OAuth2 Clients
+      summary: Delete OAuth 2.0 client
+      description: Delete an existing OAuth 2.0 client by unique client ID.
+      parameters:
+      - name: clientId
+        in: path
+        description: The client ID
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The client ID
+      operationId: deleteOAuthClient
+components:
+  schemas:
+    Client:
+      type: object
+      required:
+      - _links
+      - name
+      - _accountId
+      - _clientId
+      - redirectUri
+      - _creationDate
+      properties:
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+          example:
+            parent:
+              href: /api/v2/oauth/clients
+              type: application/json
+            self:
+              href: /api/v2/oauth/clients/50666563-9144-4125-b822-33f308227e45
+              type: application/json
+        name:
+          type: string
+          description: Client name
+        description:
+          type: string
+          description: Client description
+        _accountId:
+          type: string
+          description: The account ID the client is registered under
+        _clientId:
+          type: string
+          description: The client's unique ID
+        _clientSecret:
+          type: string
+          description: The client secret. This will only be shown upon creation.
+        redirectUri:
+          type: string
+          description: The client's redirect URI
+        _creationDate:
+          description: Timestamp of client creation date
+          example: '1494437420312'
+          $ref: '#/components/schemas/UnixMillis'
+    oauthClientPost:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of your new LaunchDarkly OAuth 2.0 client.
+        redirectUri:
+          type: string
+          description: The redirect URI for your new OAuth 2.0 application. This should be an absolute URL conforming with the standard HTTPS protocol.
+        description:
+          type: string
+          description: Description of your OAuth 2.0 client.
+    ClientCollection:
+      type: object
+      required:
+      - _links
+      - items
+      properties:
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+          example:
+            self:
+              href: /api/v2/oauth/clients
+              type: application/json
+        items:
+          type: array
+          description: List of client objects
+          items:
+            $ref: '#/components/schemas/Client'
+    JSONPatch:
+      type: array
+      items:
+        $ref: '#/components/schemas/PatchOperation'
+    Link:
+      type: object
+      properties:
+        href:
+          type: string
+        type:
+          type: string
+    InvalidRequestErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: invalid_request
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid request body
+    NotFoundErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: not_found
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid resource identifier
+    UnauthorizedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: unauthorized
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid access token
+    UnixMillis:
+      type: integer
+      format: int64
+    PatchOperation:
+      type: object
+      required:
+      - op
+      - path
+      properties:
+        op:
+          type: string
+          description: The type of operation to perform
+          example: replace
+        path:
+          type: string
+          description: A JSON Pointer string specifying the part of the document to operate on
+          example: /exampleField
+        value:
+          description: A JSON value used in "add", "replace", and "test" operations
+          example: new example value
+    ForbiddenErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: forbidden
+        message:
+          type: string
+          description: Description of the error
+          example: Forbidden. Access to the requested resource was denied.
+  securitySchemes:
+    ApiKey:
+      type: apiKey
+      in: header
+      name: Authorization

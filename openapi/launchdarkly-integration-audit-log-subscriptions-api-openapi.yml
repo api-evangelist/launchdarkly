@@ -1,31 +1,749 @@
 openapi: 3.2.0
 info:
-  title: LaunchDarkly REST Integration Audit Log Subscriptions API
-  description: The LaunchDarkly REST API provides programmatic access to the full LaunchDarkly feature management platform.
-  version: '20240415'
-  contact:
-    name: LaunchDarkly Support
-    url: https://support.launchdarkly.com
-  termsOfService: https://launchdarkly.com/policies/terms-of-service
+  title: Launchdarkly Integration audit log subscriptions API
   license:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
+  version: '1.0'
+  description: 'Operations tagged Integration audit log subscriptions across 2 of this provider''s published API definitions: launchdarkly-openapi.json, launchdarkly-rest-api-openapi.yml. Each path carries the servers of the definition it was published in.'
 servers:
+- url: https://app.launchdarkly.com
+  description: ' Default'
+- url: https://app.launchdarkly.us
+  description: ' Federal'
 - url: https://app.launchdarkly.com/api/v2
   description: LaunchDarkly Production API
-security:
-- bearerAuth: []
 tags:
-- name: Integration Audit Log Subscriptions
-  description: Manage integrations that subscribe to audit log events and forward them to external tools.
+- name: Integration audit log subscriptions
+  description: 'Audit log integration subscriptions allow you to send audit log events hooks to one of dozens of external tools. For example, you can send flag change event webhooks to external third party software. To learn more, read Using the LaunchDarkly integration framework. You can use the integration subscriptions API to create, delete, and manage your integration audit log subscriptions. Each of these operations requires an `integrationKey` that refers to the type of integration. The required `config` fields to create a subscription vary depending on the `integrationKey`. You can find a full list of the fields for each integration below. Several of these operations require a subscription ID. The subscription ID is returned as part of the Create audit log subscription and Get audit log subscriptions by integration responses. It is the `_id` field, or the `_id` field of each element in the `items` array. ### Configuration bodies by integrationKey
+
+
+    #### datadog
+
+
+    `apiKey` is a sensitive value. `hostURL` must evaluate to either `"https://api.datadoghq.com"` or `"https://api.datadoghq.eu"` and will default to the former if not explicitly defined. ```
+
+    "config": {
+
+    "apiKey": , # sensitive value
+
+    "hostURL":
+
+    }
+
+    ```
+
+
+    #### dynatrace
+
+
+    `apiToken` is a sensitive value. `entity` must evaluate to one of the following fields and will default to `"APPLICATION"` if not explicitly defined:
+
+
+    Click to expand list of fields
+
+
+    "APPLICATION"
+
+
+    "APPLICATION_METHOD"
+
+
+    "APPLICATION_METHOD_GROUP"
+
+
+    "AUTO_SCALING_GROUP"
+
+
+    "AUXILIARY_SYNTHETIC_TEST"
+
+
+    "AWS_APPLICATION_LOAD_BALANCER"
+
+
+    "AWS_AVAILABILITY_ZONE"
+
+
+    "AWS_CREDENTIALS"
+
+
+    "AWS_LAMBDA_FUNCTION"
+
+
+    "AWS_NETWORK_LOAD_BALANCER"
+
+
+    "AZURE_API_MANAGEMENT_SERVICE"
+
+
+    "AZURE_APPLICATION_GATEWAY"
+
+
+    "AZURE_COSMOS_DB"
+
+
+    "AZURE_CREDENTIALS"
+
+
+    "AZURE_EVENT_HUB"
+
+
+    "AZURE_EVENT_HUB_NAMESPACE"
+
+
+    "AZURE_FUNCTION_APP"
+
+
+    "AZURE_IOT_HUB"
+
+
+    "AZURE_LOAD_BALANCER"
+
+
+    "AZURE_MGMT_GROUP"
+
+
+    "AZURE_REDIS_CACHE"
+
+
+    "AZURE_REGION"
+
+
+    "AZURE_SERVICE_BUS_NAMESPACE"
+
+
+    "AZURE_SERVICE_BUS_QUEUE"
+
+
+    "AZURE_SERVICE_BUS_TOPIC"
+
+
+    "AZURE_SQL_DATABASE"
+
+
+    "AZURE_SQL_ELASTIC_POOL"
+
+
+    "AZURE_SQL_SERVER"
+
+
+    "AZURE_STORAGE_ACCOUNT"
+
+
+    "AZURE_SUBSCRIPTION"
+
+
+    "AZURE_TENANT"
+
+
+    "AZURE_VM"
+
+
+    "AZURE_VM_SCALE_SET"
+
+
+    "AZURE_WEB_APP"
+
+
+    "CF_APPLICATION"
+
+
+    "CF_FOUNDATION"
+
+
+    "CINDER_VOLUME"
+
+
+    "CLOUD_APPLICATION"
+
+
+    "CLOUD_APPLICATION_INSTANCE"
+
+
+    "CLOUD_APPLICATION_NAMESPACE"
+
+
+    "CONTAINER_GROUP"
+
+
+    "CONTAINER_GROUP_INSTANCE"
+
+
+    "CUSTOM_APPLICATION"
+
+
+    "CUSTOM_DEVICE"
+
+
+    "CUSTOM_DEVICE_GROUP"
+
+
+    "DCRUM_APPLICATION"
+
+
+    "DCRUM_SERVICE"
+
+
+    "DCRUM_SERVICE_INSTANCE"
+
+
+    "DEVICE_APPLICATION_METHOD"
+
+
+    "DISK"
+
+
+    "DOCKER_CONTAINER_GROUP_INSTANCE"
+
+
+    "DYNAMO_DB_TABLE"
+
+
+    "EBS_VOLUME"
+
+
+    "EC2_INSTANCE"
+
+
+    "ELASTIC_LOAD_BALANCER"
+
+
+    "ENVIRONMENT"
+
+
+    "EXTERNAL_SYNTHETIC_TEST_STEP"
+
+
+    "GCP_ZONE"
+
+
+    "GEOLOCATION"
+
+
+    "GEOLOC_SITE"
+
+
+    "GOOGLE_COMPUTE_ENGINE"
+
+
+    "HOST"
+
+
+    "HOST_GROUP"
+
+
+    "HTTP_CHECK"
+
+
+    "HTTP_CHECK_STEP"
+
+
+    "HYPERVISOR"
+
+
+    "KUBERNETES_CLUSTER"
+
+
+    "KUBERNETES_NODE"
+
+
+    "MOBILE_APPLICATION"
+
+
+    "NETWORK_INTERFACE"
+
+
+    "NEUTRON_SUBNET"
+
+
+    "OPENSTACK_PROJECT"
+
+
+    "OPENSTACK_REGION"
+
+
+    "OPENSTACK_VM"
+
+
+    "OS"
+
+
+    "PROCESS_GROUP"
+
+
+    "PROCESS_GROUP_INSTANCE"
+
+
+    "RELATIONAL_DATABASE_SERVICE"
+
+
+    "SERVICE"
+
+
+    "SERVICE_INSTANCE"
+
+
+    "SERVICE_METHOD"
+
+
+    "SERVICE_METHOD_GROUP"
+
+
+    "SWIFT_CONTAINER"
+
+
+    "SYNTHETIC_LOCATION"
+
+
+    "SYNTHETIC_TEST"
+
+
+    "SYNTHETIC_TEST_STEP"
+
+
+    "VIRTUALMACHINE"
+
+
+    "VMWARE_DATACENTER"
+
+
+    ```
+
+    "config": {
+
+    "apiToken": ,
+
+    "url": ,
+
+    "entity":
+
+    }
+
+    ```
+
+
+    #### elastic
+
+
+    `token` is a sensitive field. ```
+
+    "config": {
+
+    "url": ,
+
+    "token": ,
+
+    "index":
+
+    }
+
+    ```
+
+
+    #### honeycomb
+
+
+    `apiKey` is a sensitive field. ```
+
+    "config": {
+
+    "datasetName": ,
+
+    "apiKey":
+
+    }
+
+    ```
+
+
+    #### logdna
+
+
+    `ingestionKey` is a sensitive field. ```
+
+    "config": {
+
+    "ingestionKey": ,
+
+    "level":
+
+    }
+
+    ```
+
+
+    #### msteams
+
+
+    ```
+
+    "config": {
+
+    "url":
+
+    }
+
+    ```
+
+
+    #### new-relic-apm
+
+
+    `apiKey` is a sensitive field. `domain` must evaluate to either `"api.newrelic.com"` or `"api.eu.newrelic.com"` and will default to the former if not explicitly defined. ```
+
+    "config": {
+
+    "apiKey": ,
+
+    "applicationId": ,
+
+    "domain":
+
+    }
+
+    ```
+
+
+    #### signalfx
+
+
+    `accessToken` is a sensitive field.'
 paths:
+  /api/v2/integrations/{integrationKey}:
+    get:
+      responses:
+        '200':
+          description: Integrations collection response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Integrations'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Integration audit log subscriptions
+      summary: Get audit log subscriptions by integration
+      description: Get all audit log subscriptions associated with a given integration.
+      parameters:
+      - name: integrationKey
+        in: path
+        description: The integration key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The integration key
+      operationId: getSubscriptions
+      security:
+      - ApiKey:
+        - read
+        - write
+    post:
+      responses:
+        '201':
+          description: Integration response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Integration'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Integration audit log subscriptions
+      summary: Create audit log subscription
+      description: 'Create an audit log subscription.
+
+
+        For each subscription, you must specify the set of resources you wish to subscribe to audit log notifications for. You can describe these resources using a custom role policy. To learn more, read Custom role concepts.'
+      parameters:
+      - name: integrationKey
+        in: path
+        description: The integration key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The integration key
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/subscriptionPost'
+            example:
+              config:
+                optional: an optional property
+                required: the required property
+                url: https://example.com
+              name: Example audit log subscription.
+              'on': false
+              statements:
+              - actions:
+                - '*'
+                effect: allow
+                resources:
+                - proj/*:env/*:flag/*;testing-tag
+              tags:
+              - testing-tag
+        required: true
+      operationId: createSubscription
+      security:
+      - ApiKey:
+        - read
+        - write
+    servers:
+    - url: https://app.launchdarkly.com
+      description: ' Default'
+    - url: https://app.launchdarkly.us
+      description: ' Federal'
+  /api/v2/integrations/{integrationKey}/{id}:
+    get:
+      responses:
+        '200':
+          description: Integration response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Integration'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Integration audit log subscriptions
+      summary: Get audit log subscription by ID
+      description: Get an audit log subscription by ID.
+      parameters:
+      - name: integrationKey
+        in: path
+        description: The integration key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The integration key
+      - name: id
+        in: path
+        description: The subscription ID
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The subscription ID
+      operationId: getSubscriptionByID
+      security:
+      - ApiKey:
+        - read
+        - write
+    patch:
+      responses:
+        '200':
+          description: Integration response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Integration'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '409':
+          description: Status conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusConflictErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Integration audit log subscriptions
+      summary: Update audit log subscription
+      description: Update an audit log subscription configuration. Updating an audit log subscription uses a JSON patch representation of the desired changes. To learn more, read Updates.
+      parameters:
+      - name: integrationKey
+        in: path
+        description: The integration key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The integration key
+      - name: id
+        in: path
+        description: The ID of the audit log subscription
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The ID of the audit log subscription
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JSONPatch'
+            example:
+            - op: replace
+              path: /on
+              value: false
+        required: true
+      operationId: updateSubscription
+      security:
+      - ApiKey:
+        - read
+        - write
+    delete:
+      responses:
+        '204':
+          description: Action succeeded
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Integration audit log subscriptions
+      summary: Delete audit log subscription
+      description: Delete an audit log subscription.
+      parameters:
+      - name: integrationKey
+        in: path
+        description: The integration key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The integration key
+      - name: id
+        in: path
+        description: The subscription ID
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The subscription ID
+      operationId: deleteSubscription
+      security:
+      - ApiKey:
+        - read
+        - write
+    servers:
+    - url: https://app.launchdarkly.com
+      description: ' Default'
+    - url: https://app.launchdarkly.us
+      description: ' Federal'
   /integrations/{integrationKey}/subscriptions:
     get:
       operationId: listIntegrationSubscriptions
       summary: List integration audit log subscriptions
       description: Returns a list of all audit log event subscriptions for the specified integration.
       tags:
-      - Integration Audit Log Subscriptions
+      - Integration audit log subscriptions
       parameters:
       - name: integrationKey
         in: path
@@ -44,26 +762,445 @@ paths:
           description: Unauthorized. Invalid or missing access token.
         '404':
           description: Integration not found.
+      security:
+      - bearerAuth: []
+    servers:
+    - url: https://app.launchdarkly.com/api/v2
+      description: LaunchDarkly Production API
 components:
   schemas:
-    IntegrationSubscriptions:
+    subscriptionPost:
       type: object
-      description: A collection of integration audit log subscriptions.
+      required:
+      - name
+      - config
       properties:
+        name:
+          type: string
+          description: A human-friendly name for your audit log subscription.
+          example: Example audit log subscription.
+        statements:
+          description: The set of resources you wish to subscribe to audit log notifications for.
+          $ref: '#/components/schemas/StatementPostList'
+        'on':
+          type: boolean
+          description: Whether or not you want your subscription to actively send events.
+          example: false
+        tags:
+          type: array
+          description: An array of tags for this subscription.
+          items:
+            type: string
+          example:
+          - testing-tag
+        config:
+          type: object
+          additionalProperties: {}
+          description: The unique set of fields required to configure an audit log subscription integration of this type. Refer to the <code>formVariables</code> field in the corresponding <code>manifest.json</code> at https://github.com/launchdarkly/integration-framework/tree/main/integrations for a full list of fields for the integration you wish to configure.
+          example:
+            optional: an optional property
+            required: the required property
+            url: https://example.com
+        url:
+          type: string
+          description: Slack webhook receiver URL. Only necessary for legacy Slack webhook integrations.
+        apiKey:
+          type: string
+          description: Datadog API key. Only necessary for legacy Datadog webhook integrations.
+    JSONPatch:
+      type: array
+      items:
+        $ref: '#/components/schemas/PatchOperation'
+    AccessDenied:
+      type: object
+      required:
+      - action
+      - reason
+      properties:
+        action:
+          $ref: '#/components/schemas/ActionIdentifier'
+        reason:
+          $ref: '#/components/schemas/AccessDeniedReason'
+    StatementPost:
+      type: object
+      required:
+      - effect
+      properties:
+        resources:
+          type: array
+          description: Resource specifier strings
+          items:
+            type: string
+          example:
+          - proj/*:env/*:flag/*;testing-tag
+        notResources:
+          type: array
+          description: Targeted resources are the resources NOT in this list. The <code>resources</code> field must be empty to use this field.
+          items:
+            type: string
+        actions:
+          type: array
+          description: Actions to perform on a resource
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+          example:
+          - '*'
+        notActions:
+          type: array
+          description: Targeted actions are the actions NOT in this list. The <code>actions</code> field must be empty to use this field.
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+        effect:
+          type: string
+          description: Whether this statement should allow or deny actions on the resources.
+          example: allow
+          enum:
+          - allow
+          - deny
+    InvalidRequestErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: invalid_request
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid request body
+    RateLimitedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: rate_limited
+        message:
+          type: string
+          description: Description of the error
+          example: You've exceeded the API rate limit. Try again later.
+    AccessDeniedReason:
+      type: object
+      required:
+      - effect
+      properties:
+        resources:
+          type: array
+          description: Resource specifier strings
+          items:
+            type: string
+          example:
+          - proj/*:env/*;qa_*:/flag/*
+        notResources:
+          type: array
+          description: Targeted resources are the resources NOT in this list. The <code>resources</code> and <code>notActions</code> fields must be empty to use this field.
+          items:
+            type: string
+        actions:
+          type: array
+          description: Actions to perform on a resource
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+          example:
+          - '*'
+        notActions:
+          type: array
+          description: Targeted actions are the actions NOT in this list. The <code>actions</code> and <code>notResources</code> fields must be empty to use this field.
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+        effect:
+          type: string
+          description: Whether this statement should allow or deny actions on the resources.
+          example: allow
+          enum:
+          - allow
+          - deny
+        role_name:
+          type: string
+    UnauthorizedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: unauthorized
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid access token
+    ForbiddenErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: forbidden
+        message:
+          type: string
+          description: Description of the error
+          example: Forbidden. Access to the requested resource was denied.
+    ActionSpecifier:
+      type: string
+    Integration:
+      type: object
+      properties:
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+        _id:
+          type: string
+          description: The ID for this integration audit log subscription
+          example: 1234a56b7c89d012345e678f
+        kind:
+          type: string
+          description: The type of integration
+          example: datadog
+        name:
+          type: string
+          description: A human-friendly name for the integration
+          example: Example Datadog integration
+        config:
+          type: object
+          additionalProperties: {}
+          description: Details on configuration for an integration of this type. Refer to the <code>formVariables</code> field in the corresponding <code>manifest.json</code> for a full list of fields for each integration.
+        statements:
+          type: array
+          description: Represents a Custom role policy, defining a resource kinds filter the integration audit log subscription responds to.
+          items:
+            $ref: '#/components/schemas/Statement'
+        'on':
+          type: boolean
+          description: Whether the integration is currently active
+          example: true
+        tags:
+          type: array
+          description: An array of tags for this integration
+          items:
+            type: string
+          example:
+          - testing
+        _access:
+          description: Details on the allowed and denied actions for this subscription
+          $ref: '#/components/schemas/Access'
+        _status:
+          description: Details on the most recent successes and errors for this integration
+          $ref: '#/components/schemas/IntegrationSubscriptionStatusRep'
+        url:
+          type: string
+          description: Slack webhook receiver URL. Only used for legacy Slack webhook integrations.
+        apiKey:
+          type: string
+          description: Datadog API key. Only used for legacy Datadog webhook integrations.
+    Link:
+      type: object
+      properties:
+        href:
+          type: string
+        type:
+          type: string
+    ActionIdentifier:
+      type: string
+    Integrations:
+      type: object
+      properties:
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
         items:
           type: array
-          description: The list of integration subscriptions.
           items:
-            type: object
-            properties:
-              _id:
-                type: string
-                description: The subscription identifier.
-              name:
-                type: string
-                description: The subscription name.
-              _links:
-                $ref: '#/components/schemas/Links'
+            $ref: '#/components/schemas/Integration'
+        key:
+          type: string
+    UnixMillis:
+      type: integer
+      format: int64
+    PatchOperation:
+      type: object
+      required:
+      - op
+      - path
+      properties:
+        op:
+          type: string
+          description: The type of operation to perform
+          example: replace
+        path:
+          type: string
+          description: A JSON Pointer string specifying the part of the document to operate on
+          example: /exampleField
+        value:
+          description: A JSON value used in "add", "replace", and "test" operations
+          example: new example value
+    Statement:
+      type: object
+      required:
+      - effect
+      properties:
+        resources:
+          type: array
+          description: Resource specifier strings
+          items:
+            type: string
+          example:
+          - proj/*:env/*;qa_*:/flag/*
+        notResources:
+          type: array
+          description: Targeted resources are the resources NOT in this list. The <code>resources</code> and <code>notActions</code> fields must be empty to use this field.
+          items:
+            type: string
+        actions:
+          type: array
+          description: Actions to perform on a resource
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+          example:
+          - '*'
+        notActions:
+          type: array
+          description: Targeted actions are the actions NOT in this list. The <code>actions</code> and <code>notResources</code> fields must be empty to use this field.
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+        effect:
+          type: string
+          description: Whether this statement should allow or deny actions on the resources.
+          example: allow
+          enum:
+          - allow
+          - deny
+    StatementPostList:
+      type: array
+      items:
+        $ref: '#/components/schemas/StatementPost'
+    IntegrationStatusRep:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+        responseBody:
+          type: string
+        timestamp:
+          $ref: '#/components/schemas/UnixMillis'
+    Access:
+      type: object
+      required:
+      - denied
+      - allowed
+      properties:
+        denied:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccessDenied'
+        allowed:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccessAllowedRep'
+    StatusConflictErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: optimistic_locking_error
+        message:
+          type: string
+          description: Description of the error
+          example: Conflict. Optimistic lock error. Try again later.
+    NotFoundErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: not_found
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid resource identifier
+    AccessAllowedReason:
+      type: object
+      required:
+      - effect
+      properties:
+        resources:
+          type: array
+          description: Resource specifier strings
+          items:
+            type: string
+          example:
+          - proj/*:env/*;qa_*:/flag/*
+        notResources:
+          type: array
+          description: Targeted resources are the resources NOT in this list. The <code>resources</code> and <code>notActions</code> fields must be empty to use this field.
+          items:
+            type: string
+        actions:
+          type: array
+          description: Actions to perform on a resource
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+          example:
+          - '*'
+        notActions:
+          type: array
+          description: Targeted actions are the actions NOT in this list. The <code>actions</code> and <code>notResources</code> fields must be empty to use this field.
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+        effect:
+          type: string
+          description: Whether this statement should allow or deny actions on the resources.
+          example: allow
+          enum:
+          - allow
+          - deny
+        role_name:
+          type: string
+    AccessAllowedRep:
+      type: object
+      required:
+      - action
+      - reason
+      properties:
+        action:
+          $ref: '#/components/schemas/ActionIdentifier'
+        reason:
+          $ref: '#/components/schemas/AccessAllowedReason'
+    IntegrationSubscriptionStatusRep:
+      type: object
+      properties:
+        successCount:
+          type: integer
+        lastSuccess:
+          $ref: '#/components/schemas/UnixMillis'
+        lastError:
+          $ref: '#/components/schemas/UnixMillis'
+        errorCount:
+          type: integer
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/IntegrationStatusRep'
     Links:
       type: object
       description: HATEOAS links for navigating related resources.
@@ -87,7 +1224,29 @@ components:
           type:
             type: string
             description: The media type.
+    IntegrationSubscriptions:
+      type: object
+      description: A collection of integration audit log subscriptions.
+      properties:
+        items:
+          type: array
+          description: The list of integration subscriptions.
+          items:
+            type: object
+            properties:
+              _id:
+                type: string
+                description: The subscription identifier.
+              name:
+                type: string
+                description: The subscription name.
+              _links:
+                $ref: '#/components/schemas/Links'
   securitySchemes:
+    ApiKey:
+      type: apiKey
+      in: header
+      name: Authorization
     bearerAuth:
       type: http
       scheme: bearer
@@ -95,3 +1254,6 @@ components:
 externalDocs:
   description: LaunchDarkly API Documentation
   url: https://apidocs.launchdarkly.com/
+x-refined-from:
+- launchdarkly-openapi.json
+- launchdarkly-rest-api-openapi.yml

@@ -1,0 +1,858 @@
+openapi: 3.2.0
+info:
+  title: LaunchDarkly REST User settings API
+  description: 'This documentation describes LaunchDarkly''s REST API. To access the complete OpenAPI spec directly, use Get OpenAPI spec. To learn how to use LaunchDarkly using the user interface (UI) instead, read our product documentation. ## Authentication
+
+
+    LaunchDarkly''s REST API uses the HTTPS protocol with a minimum TLS version of 1.2. All REST API resources are authenticated with either personal or service access tokens, or session cookies. Other authentication mechanisms are not supported. You can manage personal access tokens on your **Authorization** page in the LaunchDarkly UI. LaunchDarkly also has SDK keys, mobile keys, and client-side IDs that are used by our server-side SDKs, mobile SDKs, and JavaScript-based SDKs, respectively. **These keys cannot be used to access our REST API**. These keys are environment-specific, and can only perform read-only operations such as fetching feature flag settings. | Auth mechanism | Allowed resources | Use cases |
+
+    | ----------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
+
+    | Personal or service access tokens | Can be customized on a per-token basis | Building scripts, custom integrations, data export. |
+
+    | SDK keys | Can only access read-only resources specific to server-side SDKs. Restricted to a single environment. | Server-side SDKs |
+
+    | Mobile keys | Can only access read-only resources specific to mobile SDKs, and only for flags marked available to mobile keys. Restricted to a single environment. | Mobile SDKs |
+
+    | Client-side ID | Can only access read-only resources specific to JavaScript-based client-side SDKs, and only for flags marked available to client-side. Restricted to a single environment. | Client-side JavaScript |
+
+
+    > #### Keep your access tokens and SDK keys private
+
+    >
+
+    > Access tokens should _never_ be exposed in untrusted contexts. Never put an access token in client-side JavaScript, or embed it in a mobile application. LaunchDarkly has special mobile keys that you can embed in mobile apps. If you accidentally expose an access token or SDK key, you can reset it from your **Authorization** page. >
+
+    > The client-side ID is safe to embed in untrusted contexts. It''s designed for use in client-side JavaScript. ### Authentication using request header
+
+
+    The preferred way to authenticate with the API is by adding an `Authorization` header containing your access token to your requests. The value of the `Authorization` header must be your access token. Manage personal access tokens from the **Authorization** page. ### Authentication using session cookie
+
+
+    For testing purposes, you can make API calls directly from your web browser. If you are logged in to the LaunchDarkly application, the API will use your existing session to authenticate calls. Depending on the permissions granted as part of your role, you may not have permission to perform some API calls. You will receive a `401` response code in that case. > ### Modifying the Origin header causes an error
+
+    >
+
+    > LaunchDarkly validates that the Origin header for any API request authenticated by a session cookie matches the expected Origin header. The expected Origin header is `https://app.launchdarkly.com`. >
+
+    > If the Origin header does not match what''s expected, LaunchDarkly returns an error. This error can prevent the LaunchDarkly app from working correctly. >
+
+    > Any browser extension that intentionally changes the Origin header can cause this problem. For example, Cross-Origin Resource Sharing (CORS) extensions used during development can modify the Origin header and cause the app to fail. >
+
+    > To prevent this error, do not modify your Origin header. >
+
+    > LaunchDarkly does not require origin matching when authenticating with an access token, so this issue does not affect normal API usage.'
+  contact:
+    name: LaunchDarkly Technical Support Team
+    url: https://support.launchdarkly.com
+    email: support@launchdarkly.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+  version: '2.0'
+servers:
+- url: https://app.launchdarkly.com
+  description: ' Default'
+- url: https://app.launchdarkly.us
+  description: ' Federal'
+security:
+- ApiKey:
+  - read
+  - write
+tags:
+- name: User settings
+  description: '> ### Contexts are now available
+
+    >
+
+    > After you have upgraded your LaunchDarkly SDK to use contexts instead of users, you should use Contexts instead of the user settings API. To learn more, read Contexts.
+
+
+    LaunchDarkly''s user settings API provides a picture of all feature flags and their current values for a specific user. This gives you instant visibility into how a particular user experiences your site or application. To learn more, read View and manage contexts.
+
+
+    You can also use the user settings API to assign a user to a specific variation for any feature flag.'
+paths:
+  /api/v2/users/{projectKey}/{environmentKey}/{userKey}/flags:
+    get:
+      responses:
+        '200':
+          description: User flag settings collection response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserFlagSettings'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - User settings
+      summary: List flag settings for user
+      description: 'Get the current flag settings for a given user.
+
+
+        The `_value` is the flag variation that the user receives. The `setting` indicates whether you''ve explicitly targeted a user to receive a particular variation. For example, if you have turned off a feature flag for a user, this setting will be `false`. The example response indicates that the user `Abbie_Braun` has the `sort.order` flag enabled and the `alternate.page` flag disabled, and that the user has not been explicitly targeted to receive a particular variation.'
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: environmentKey
+        in: path
+        description: The environment key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The environment key
+      - name: userKey
+        in: path
+        description: The user key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The user key
+      operationId: getUserFlagSettings
+      deprecated: true
+  /api/v2/users/{projectKey}/{environmentKey}/{userKey}/flags/{featureFlagKey}:
+    get:
+      responses:
+        '200':
+          description: User flag settings response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserFlagSetting'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - User settings
+      summary: Get flag setting for user
+      description: 'Get a single flag setting for a user by flag key.
+
+
+        The `_value` is the flag variation that the user receives. The `setting` indicates whether you''ve explicitly targeted a user to receive a particular variation. For example, if you have turned off a feature flag for a user, this setting will be `false`. The example response indicates that the user `Abbie_Braun` has the `sort.order` flag enabled.'
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: environmentKey
+        in: path
+        description: The environment key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The environment key
+      - name: userKey
+        in: path
+        description: The user key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The user key
+      - name: featureFlagKey
+        in: path
+        description: The feature flag key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The feature flag key
+      operationId: getUserFlagSetting
+      deprecated: true
+    put:
+      responses:
+        '204':
+          description: Action succeeded
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - User settings
+      summary: Update flag settings for user
+      description: 'Enable or disable a feature flag for a user based on their key.
+
+
+        Omitting the `setting` attribute from the request body, or including a `setting` of `null`, erases the current setting for a user.
+
+
+        If you previously patched the flag, and the patch included the user''s data, LaunchDarkly continues to use that data. If LaunchDarkly has never encountered the user''s key before, it calculates the flag values based on the user key alone.'
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: environmentKey
+        in: path
+        description: The environment key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The environment key
+      - name: userKey
+        in: path
+        description: The user key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The user key
+      - name: featureFlagKey
+        in: path
+        description: The feature flag key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The feature flag key
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ValuePut'
+        required: true
+      operationId: putFlagSetting
+      deprecated: true
+  /api/v2/users/{projectKey}/{userKey}/expiring-user-targets/{environmentKey}:
+    get:
+      responses:
+        '200':
+          description: Expiring user target response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExpiringUserTargetGetResponse'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - User settings
+      summary: Get expiring dates on flags for user
+      description: Get a list of flags for which the given user is scheduled for removal.
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: userKey
+        in: path
+        description: The user key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The user key
+      - name: environmentKey
+        in: path
+        description: The environment key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The environment key
+      operationId: getExpiringFlagsForUser
+      deprecated: true
+    patch:
+      responses:
+        '200':
+          description: Expiring user target response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExpiringUserTargetPatchResponse'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - User settings
+      summary: Update expiring user target for flags
+      description: 'Schedule the specified user for removal from individual targeting on one or more flags. The user must already be individually targeted for each flag.
+
+
+        You can add, update, or remove a scheduled removal date. You can only schedule a user for removal on a single variation per flag.
+
+
+        Updating an expiring target uses the semantic patch format. To make a semantic patch request, you must append `domain-model=launchdarkly.semanticpatch` to your `Content-Type` header. To learn more, read Updates using semantic patch.
+
+
+        ### Instructions
+
+
+        Semantic patch requests support the following `kind` instructions for updating expiring user targets.
+
+
+        Click to expand instructions for updating expiring user targets
+
+
+        #### addExpireUserTargetDate
+
+
+        Adds a date and time that LaunchDarkly will remove the user from the flag''s individual targeting.
+
+
+        ##### Parameters
+
+
+        * `flagKey`: The flag key
+
+        * `variationId`: ID of a variation on the flag
+
+        * `value`: The time, in Unix milliseconds, when LaunchDarkly should remove the user from individual targeting for this flag.
+
+
+        #### updateExpireUserTargetDate
+
+
+        Updates the date and time that LaunchDarkly will remove the user from the flag''s individual targeting.
+
+
+        ##### Parameters
+
+
+        * `flagKey`: The flag key
+
+        * `variationId`: ID of a variation on the flag
+
+        * `value`: The time, in Unix milliseconds, when LaunchDarkly should remove the user from individual targeting for this flag.
+
+        * `version`: The version of the expiring user target to update. If included, update will fail if version doesn''t match current version of the expiring user target.
+
+
+        #### removeExpireUserTargetDate
+
+
+        Removes the scheduled removal of the user from the flag''s individual targeting. The user will remain part of the flag''s individual targeting until explicitly removed, or until another removal is scheduled.
+
+
+        ##### Parameters
+
+
+        * `flagKey`: The flag key
+
+        * `variationId`: ID of a variation on the flag'
+      parameters:
+      - name: projectKey
+        in: path
+        description: The project key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The project key
+      - name: userKey
+        in: path
+        description: The user key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The user key
+      - name: environmentKey
+        in: path
+        description: The environment key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The environment key
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/patchUsersRequest'
+        required: true
+      operationId: patchExpiringFlagsForUser
+      deprecated: true
+components:
+  schemas:
+    ExpiringTargetError:
+      type: object
+      required:
+      - instructionIndex
+      - message
+      properties:
+        instructionIndex:
+          type: integer
+          description: The index of the PATCH instruction where the error occurred
+          example: 1
+        message:
+          type: string
+          description: The error message related to a failed PATCH instruction
+          example: example error message
+    patchUsersRequest:
+      type: object
+      required:
+      - instructions
+      properties:
+        comment:
+          type: string
+          description: Optional comment describing the change
+          example: optional comment
+        instructions:
+          type: array
+          description: The instructions to perform when updating
+          items:
+            $ref: '#/components/schemas/instructionUserRequest'
+    instructionUserRequest:
+      type: object
+      required:
+      - kind
+      - flagKey
+      - variationId
+      properties:
+        kind:
+          type: string
+          description: The type of change to make to the removal date for this user from individual targeting for this flag.
+          example: addExpireUserTargetDate
+          enum:
+          - addExpireUserTargetDate
+          - updateExpireUserTargetDate
+          - removeExpireUserTargetDate
+        flagKey:
+          type: string
+          description: The flag key
+          example: sample-flag-key
+        variationId:
+          type: string
+          description: ID of a variation on the flag
+          example: ce12d345-a1b2-4fb5-a123-ab123d4d5f5d
+        value:
+          type: integer
+          description: The time, in Unix milliseconds, when LaunchDarkly should remove the user from individual targeting for this flag. Required if <code>kind</code> is <code>addExpireUserTargetDate</code> or <code>updateExpireUserTargetDate</code>.
+          example: 1653469200000
+        version:
+          type: integer
+          description: The version of the expiring user target to update. Optional and only used if <code>kind</code> is <code>updateExpireUserTargetDate</code>. If included, update will fail if version doesn't match current version of the expiring user target.
+          example: 1
+    UserFlagSetting:
+      type: object
+      required:
+      - _links
+      - _value
+      - setting
+      properties:
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources.
+          example:
+            sort.order:
+              href: /api/v2/users/lacuna/production/Abbie_Braun/flags/sort.order
+              type: application/json
+        _value:
+          description: The value of the flag variation that the user receives. If there is no defined default rule, this is null.
+          example: 'true'
+        setting:
+          description: Whether the user is explicitly targeted to receive a particular variation. The setting is false if you have turned off a feature flag for a user. It is null if you haven't assigned that user to a specific variation.
+          example: 'null'
+        reason:
+          description: Contains information about why that variation was selected.
+          example: '{"kind": "RULE_MATCH"}'
+          $ref: '#/components/schemas/EvaluationReason'
+    Link:
+      type: object
+      properties:
+        href:
+          type: string
+        type:
+          type: string
+    ValuePut:
+      type: object
+      properties:
+        setting:
+          description: The variation value to set for the context. Must match the flag's variation type.
+          example: existing_variation_value_to_use
+        comment:
+          type: string
+          description: Optional comment describing the change
+          example: make sure this context experiences a specific variation
+    ExpiringUserTargetItem:
+      type: object
+      required:
+      - _id
+      - _version
+      - expirationDate
+      - userKey
+      - _resourceId
+      properties:
+        _id:
+          type: string
+          description: The ID of this expiring user target
+          example: 12ab3c45de678910fgh12345
+        _version:
+          type: integer
+          description: The version of this expiring user target
+          example: 1
+        expirationDate:
+          description: A timestamp for when the user target expires
+          example: '1658192820000'
+          $ref: '#/components/schemas/UnixMillis'
+        userKey:
+          type: string
+          description: A unique key used to represent the user
+          example: example-user-key
+        targetType:
+          type: string
+          description: A segment's target type. Included when expiring user targets are updated on a segment.
+          example: included
+        variationId:
+          type: string
+          description: A unique key used to represent the flag variation. Included when expiring user targets are updated on a feature flag.
+          example: ce67d625-a8b9-4fb5-a344-ab909d9d4f4d
+        _resourceId:
+          description: Details on the resource from which the user is expiring
+          $ref: '#/components/schemas/ResourceIDResponse'
+    ForbiddenErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: forbidden
+        message:
+          type: string
+          description: Description of the error
+          example: Forbidden. Access to the requested resource was denied.
+    NotFoundErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: not_found
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid resource identifier
+    ExpiringUserTargetPatchResponse:
+      type: object
+      required:
+      - items
+      properties:
+        items:
+          type: array
+          description: An array of expiring user targets
+          items:
+            $ref: '#/components/schemas/ExpiringUserTargetItem'
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+        totalInstructions:
+          type: integer
+          description: The total count of instructions sent in the PATCH request
+          example: 1
+        successfulInstructions:
+          type: integer
+          description: The total count of successful instructions sent in the PATCH request
+          example: 1
+        failedInstructions:
+          type: integer
+          description: The total count of the failed instructions sent in the PATCH request
+          example: 0
+        errors:
+          type: array
+          description: An array of error messages for the failed instructions
+          items:
+            $ref: '#/components/schemas/ExpiringTargetError'
+    UnixMillis:
+      type: integer
+      format: int64
+    ExpiringUserTargetGetResponse:
+      type: object
+      required:
+      - items
+      properties:
+        items:
+          type: array
+          description: An array of expiring user targets
+          items:
+            $ref: '#/components/schemas/ExpiringUserTargetItem'
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+    RateLimitedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: rate_limited
+        message:
+          type: string
+          description: Description of the error
+          example: You've exceeded the API rate limit. Try again later.
+    InvalidRequestErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: invalid_request
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid request body
+    UnauthorizedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: unauthorized
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid access token
+    UserFlagSettings:
+      type: object
+      required:
+      - items
+      - _links
+      properties:
+        items:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/UserFlagSetting'
+          description: An array of flag settings for the user
+          example:
+            alternate.page:
+              _links:
+                self:
+                  href: /api/v2/users/lacuna/production/Abbie_Braun/flags/alternate.page
+                  type: application/json
+              _value: false
+              setting: null
+            sort.order:
+              _links:
+                self:
+                  href: /api/v2/users/lacuna/production/Abbie_Braun/flags/sort.order
+                  type: application/json
+              _value: true
+              setting: null
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+          example:
+            self:
+              href: /api/v2/users/lacuna/production/Abbie_Braun/flags
+              type: application/json
+    EvaluationReason:
+      type: object
+      required:
+      - kind
+      properties:
+        kind:
+          type: string
+          description: Describes the general reason that LaunchDarkly selected this variation.
+          example: 'OFF'
+        ruleIndex:
+          type: integer
+          description: The positional index of the matching rule if the kind is 'RULE_MATCH'. The index is 0-based.
+          example: 3
+        ruleID:
+          type: string
+          description: The unique identifier of the matching rule if the kind is 'RULE_MATCH'.
+          example: '1234567890'
+        prerequisiteKey:
+          type: string
+          description: The key of the flag that failed if the kind is 'PREREQUISITE_FAILED'.
+          example: someotherflagkey
+        inExperiment:
+          type: boolean
+          description: Indicates whether the evaluation occurred as part of an experiment.
+          example: true
+        errorKind:
+          type: string
+          description: The specific error type if the kind is 'ERROR'.
+          example: USER_NOT_SPECIFIED
+    ResourceIDResponse:
+      type: object
+      properties:
+        kind:
+          type: string
+        projectKey:
+          type: string
+        environmentKey:
+          type: string
+        flagKey:
+          type: string
+        key:
+          type: string
+  securitySchemes:
+    ApiKey:
+      type: apiKey
+      in: header
+      name: Authorization

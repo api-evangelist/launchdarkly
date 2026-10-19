@@ -1,46 +1,350 @@
 openapi: 3.2.0
 info:
-  title: LaunchDarkly REST Custom Roles API
-  description: The LaunchDarkly REST API provides programmatic access to the full LaunchDarkly feature management platform.
-  version: '20240415'
-  contact:
-    name: LaunchDarkly Support
-    url: https://support.launchdarkly.com
-  termsOfService: https://launchdarkly.com/policies/terms-of-service
+  title: Launchdarkly Custom roles API
   license:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
+  version: '1.0'
+  description: 'Operations tagged Custom roles across 2 of this provider''s published API definitions: launchdarkly-openapi.json, launchdarkly-rest-api-openapi.yml. Each path carries the servers of the definition it was published in.'
 servers:
+- url: https://app.launchdarkly.com
+  description: ' Default'
+- url: https://app.launchdarkly.us
+  description: ' Federal'
 - url: https://app.launchdarkly.com/api/v2
   description: LaunchDarkly Production API
-security:
-- bearerAuth: []
 tags:
-- name: Custom Roles
-  description: Define custom roles with fine-grained permissions using resource specifiers and actions.
+- name: Custom roles
+  description: '> ### Custom roles is an Enterprise feature
+
+    >
+
+    > Custom roles is available to customers on an Enterprise plan. To learn more, read about our pricing. To upgrade your plan, contact Sales.
+
+
+    Custom roles allow you to create flexible policies providing fine-grained access control to everything in LaunchDarkly, including feature flags, environments, and teams. With roles, it''s possible to enforce access policies that meet your exact workflow needs.
+
+
+    The custom roles API allows you to create, update, and delete roles. You can also use the API to list roles or get a role by key or ID. This API works with roles that you create, and with preset roles provided by LaunchDarkly. You cannot use this API to work with base roles.
+
+
+    For more information about roles and the syntax for role policies, read the product documentation for Roles.'
 paths:
+  /api/v2/roles:
+    get:
+      responses:
+        '200':
+          description: Custom roles collection response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomRoles'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Custom roles
+      summary: List custom roles
+      description: Get a complete list of custom roles. This includes project and organization roles that you create, or that are provided as presets by LaunchDarkly. It does not include base roles.
+      parameters:
+      - name: limit
+        in: query
+        description: The maximum number of custom roles to return. Defaults to 20.
+        schema:
+          type: integer
+          format: int64
+          description: The maximum number of custom roles to return. Defaults to 20.
+      - name: offset
+        in: query
+        description: Where to start in the list. Defaults to 0. Use this with pagination. For example, an offset of 10 skips the first ten items and then returns the next items in the list, up to the query `limit`.
+        schema:
+          type: integer
+          format: int64
+          description: Where to start in the list. Defaults to 0. Use this with pagination. For example, an offset of 10 skips the first ten items and then returns the next items in the list, up to the query `limit`.
+      operationId: getCustomRoles
+      security:
+      - ApiKey:
+        - read
+        - write
+    post:
+      responses:
+        '201':
+          description: Custom role response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomRole'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '409':
+          description: Status conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusConflictErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Custom roles
+      summary: Create custom role
+      description: Create a new custom role
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomRolePost'
+            example:
+              basePermissions: reader
+              description: An example role for members of the ops team
+              key: role-key-123abc
+              name: Ops team
+              policy:
+              - actions:
+                - updateOn
+                effect: allow
+                resources:
+                - proj/*:env/production:flag/*
+        required: true
+      operationId: postCustomRole
+      security:
+      - ApiKey:
+        - read
+        - write
+    servers:
+    - url: https://app.launchdarkly.com
+      description: ' Default'
+    - url: https://app.launchdarkly.us
+      description: ' Federal'
+  /api/v2/roles/{customRoleKey}:
+    get:
+      responses:
+        '200':
+          description: Custom role response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomRole'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Custom roles
+      summary: Get custom role
+      description: Get a single custom role by key or ID
+      parameters:
+      - name: customRoleKey
+        in: path
+        description: The custom role key or ID
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The custom role key or ID
+      operationId: getCustomRole
+      security:
+      - ApiKey:
+        - read
+        - write
+    patch:
+      responses:
+        '200':
+          description: Custom role response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomRole'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '409':
+          description: Status conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusConflictErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Custom roles
+      summary: Update custom role
+      description: 'Update a single custom role. Updating a custom role uses a JSON patch or JSON merge patch representation of the desired changes. To learn more, read Updates.
+
+
+        To add an element to the `policy` array, set the `path` to `/policy` and then append `/`. Use `/0` to add to the beginning of the array. Use `/-` to add to the end of the array.'
+      parameters:
+      - name: customRoleKey
+        in: path
+        description: The custom role key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The custom role key
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchWithComment'
+            example:
+              patch:
+              - op: add
+                path: /policy/0
+                value:
+                  actions:
+                  - updateOn
+                  effect: allow
+                  resources:
+                  - proj/*:env/qa:flag/*
+        required: true
+      operationId: patchCustomRole
+      security:
+      - ApiKey:
+        - read
+        - write
+    delete:
+      responses:
+        '204':
+          description: Action succeeded
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Custom roles
+      summary: Delete custom role
+      description: Delete a custom role by key
+      parameters:
+      - name: customRoleKey
+        in: path
+        description: The custom role key
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The custom role key
+      operationId: deleteCustomRole
+      security:
+      - ApiKey:
+        - read
+        - write
+    servers:
+    - url: https://app.launchdarkly.com
+      description: ' Default'
+    - url: https://app.launchdarkly.us
+      description: ' Federal'
   /roles:
     get:
       operationId: listCustomRoles
       summary: List custom roles
       description: Returns a list of all custom roles defined in the LaunchDarkly account.
       tags:
-      - Custom Roles
+      - Custom roles
       responses:
         '200':
           description: Successful response containing a list of custom roles.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CustomRoles'
+                $ref: '#/components/schemas/CustomRoles_2'
         '401':
           description: Unauthorized. Invalid or missing access token.
+      security:
+      - bearerAuth: []
     post:
       operationId: createCustomRole
       summary: Create a custom role
       description: Creates a new custom role with the specified permissions policy.
       tags:
-      - Custom Roles
+      - Custom roles
       requestBody:
         required: true
         content:
@@ -53,16 +357,532 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CustomRole'
+                $ref: '#/components/schemas/CustomRole_2'
         '400':
           description: Invalid request body.
         '401':
           description: Unauthorized. Invalid or missing access token.
         '409':
           description: A custom role with the given key already exists.
+      security:
+      - bearerAuth: []
+    servers:
+    - url: https://app.launchdarkly.com/api/v2
+      description: LaunchDarkly Production API
 components:
   schemas:
+    JSONPatch:
+      type: array
+      items:
+        $ref: '#/components/schemas/PatchOperation'
+    AccessDenied:
+      type: object
+      required:
+      - action
+      - reason
+      properties:
+        action:
+          $ref: '#/components/schemas/ActionIdentifier'
+        reason:
+          $ref: '#/components/schemas/AccessDeniedReason'
+    StatementPost:
+      type: object
+      required:
+      - effect
+      properties:
+        resources:
+          type: array
+          description: Resource specifier strings
+          items:
+            type: string
+          example:
+          - proj/*:env/*:flag/*;testing-tag
+        notResources:
+          type: array
+          description: Targeted resources are the resources NOT in this list. The <code>resources</code> field must be empty to use this field.
+          items:
+            type: string
+        actions:
+          type: array
+          description: Actions to perform on a resource
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+          example:
+          - '*'
+        notActions:
+          type: array
+          description: Targeted actions are the actions NOT in this list. The <code>actions</code> field must be empty to use this field.
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+        effect:
+          type: string
+          description: Whether this statement should allow or deny actions on the resources.
+          example: allow
+          enum:
+          - allow
+          - deny
+    CustomRolePost:
+      type: object
+      required:
+      - name
+      - key
+      - policy
+      properties:
+        name:
+          type: string
+          description: A human-friendly name for the custom role
+          example: Ops team
+        key:
+          type: string
+          description: The custom role key
+          example: role-key-123abc
+        description:
+          type: string
+          description: Description of custom role
+          example: An example role for members of the ops team
+        policy:
+          description: Resource statements for custom role
+          $ref: '#/components/schemas/StatementPostList'
+        basePermissions:
+          description: When this field is omitted, reader is stored, and it grants read access across every project in addition to the policy. A value of no_access grants only what the policy allows.
+          example: reader
+          enum:
+          - reader
+          - no_access
+          $ref: '#/components/schemas/RoleType'
+        resourceCategory:
+          description: The category of resources this role is intended to manage. Can be <code>organization</code>, <code>project</code>, or <code>any</code>. This field is immutable.
+          $ref: '#/components/schemas/ResourceCategory'
+    InvalidRequestErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: invalid_request
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid request body
+    RateLimitedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: rate_limited
+        message:
+          type: string
+          description: Description of the error
+          example: You've exceeded the API rate limit. Try again later.
+    AccessDeniedReason:
+      type: object
+      required:
+      - effect
+      properties:
+        resources:
+          type: array
+          description: Resource specifier strings
+          items:
+            type: string
+          example:
+          - proj/*:env/*;qa_*:/flag/*
+        notResources:
+          type: array
+          description: Targeted resources are the resources NOT in this list. The <code>resources</code> and <code>notActions</code> fields must be empty to use this field.
+          items:
+            type: string
+        actions:
+          type: array
+          description: Actions to perform on a resource
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+          example:
+          - '*'
+        notActions:
+          type: array
+          description: Targeted actions are the actions NOT in this list. The <code>actions</code> and <code>notResources</code> fields must be empty to use this field.
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+        effect:
+          type: string
+          description: Whether this statement should allow or deny actions on the resources.
+          example: allow
+          enum:
+          - allow
+          - deny
+        role_name:
+          type: string
+    UnauthorizedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: unauthorized
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid access token
+    ForbiddenErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: forbidden
+        message:
+          type: string
+          description: Description of the error
+          example: Forbidden. Access to the requested resource was denied.
+    ActionSpecifier:
+      type: string
+    Link:
+      type: object
+      properties:
+        href:
+          type: string
+        type:
+          type: string
+    ActionIdentifier:
+      type: string
+    ResourceCategory:
+      type: string
+    RoleType:
+      type: string
     Statement:
+      type: object
+      required:
+      - effect
+      properties:
+        resources:
+          type: array
+          description: Resource specifier strings
+          items:
+            type: string
+          example:
+          - proj/*:env/*;qa_*:/flag/*
+        notResources:
+          type: array
+          description: Targeted resources are the resources NOT in this list. The <code>resources</code> and <code>notActions</code> fields must be empty to use this field.
+          items:
+            type: string
+        actions:
+          type: array
+          description: Actions to perform on a resource
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+          example:
+          - '*'
+        notActions:
+          type: array
+          description: Targeted actions are the actions NOT in this list. The <code>actions</code> and <code>notResources</code> fields must be empty to use this field.
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+        effect:
+          type: string
+          description: Whether this statement should allow or deny actions on the resources.
+          example: allow
+          enum:
+          - allow
+          - deny
+    PatchOperation:
+      type: object
+      required:
+      - op
+      - path
+      properties:
+        op:
+          type: string
+          description: The type of operation to perform
+          example: replace
+        path:
+          type: string
+          description: A JSON Pointer string specifying the part of the document to operate on
+          example: /exampleField
+        value:
+          description: A JSON value used in "add", "replace", and "test" operations
+          example: new example value
+    StatementPostList:
+      type: array
+      items:
+        $ref: '#/components/schemas/StatementPost'
+    Access:
+      type: object
+      required:
+      - denied
+      - allowed
+      properties:
+        denied:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccessDenied'
+        allowed:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccessAllowedRep'
+    NotFoundErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: not_found
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid resource identifier
+    StatusConflictErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: optimistic_locking_error
+        message:
+          type: string
+          description: Description of the error
+          example: Conflict. Optimistic lock error. Try again later.
+    CustomRole:
+      type: object
+      required:
+      - _id
+      - _links
+      - key
+      - name
+      - policy
+      properties:
+        _id:
+          type: string
+          description: The ID of the custom role
+          example: 1234a56b7c89d012345e678f
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+        _access:
+          description: Details on the allowed and denied actions for this custom role
+          $ref: '#/components/schemas/Access'
+        description:
+          type: string
+          description: The description of the custom role
+          example: This custom role is just an example
+        key:
+          type: string
+          description: The key of the custom role
+          example: example-custom-role
+        name:
+          type: string
+          description: The name of the custom role
+          example: Example custom role
+        policy:
+          type: array
+          description: An array of the policies that comprise this custom role
+          items:
+            $ref: '#/components/schemas/Statement'
+        basePermissions:
+          description: When this field is omitted, reader is stored, and it grants read access across every project in addition to the policy. A value of no_access grants only what the policy allows.
+          example: reader
+          $ref: '#/components/schemas/RoleType'
+        resourceCategory:
+          description: The category of resources this role is intended to manage. Can be <code>organization</code>, <code>project</code>, or <code>any</code>. Once set, this field cannot be changed.
+          $ref: '#/components/schemas/ResourceCategory'
+        assignedTo:
+          description: The number of teams and members this role is assigned to
+          $ref: '#/components/schemas/AssignedToRep'
+        _presetBundleVersion:
+          type: integer
+          description: If created from a preset, the preset bundle version
+        _presetStatements:
+          type: array
+          description: If created from a preset, the read-only statements copied from the preset
+          items:
+            $ref: '#/components/schemas/Statement'
+    AccessAllowedReason:
+      type: object
+      required:
+      - effect
+      properties:
+        resources:
+          type: array
+          description: Resource specifier strings
+          items:
+            type: string
+          example:
+          - proj/*:env/*;qa_*:/flag/*
+        notResources:
+          type: array
+          description: Targeted resources are the resources NOT in this list. The <code>resources</code> and <code>notActions</code> fields must be empty to use this field.
+          items:
+            type: string
+        actions:
+          type: array
+          description: Actions to perform on a resource
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+          example:
+          - '*'
+        notActions:
+          type: array
+          description: Targeted actions are the actions NOT in this list. The <code>actions</code> and <code>notResources</code> fields must be empty to use this field.
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+        effect:
+          type: string
+          description: Whether this statement should allow or deny actions on the resources.
+          example: allow
+          enum:
+          - allow
+          - deny
+        role_name:
+          type: string
+    PatchWithComment:
+      type: object
+      required:
+      - patch
+      properties:
+        patch:
+          description: A JSON patch representation of the change to make
+          $ref: '#/components/schemas/JSONPatch'
+        comment:
+          type: string
+          description: Optional comment
+    CustomRoles:
+      type: object
+      required:
+      - items
+      properties:
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+        items:
+          type: array
+          description: An array of custom roles
+          items:
+            $ref: '#/components/schemas/CustomRole'
+        totalCount:
+          type: integer
+          description: The total number of custom roles
+    AccessAllowedRep:
+      type: object
+      required:
+      - action
+      - reason
+      properties:
+        action:
+          $ref: '#/components/schemas/ActionIdentifier'
+        reason:
+          $ref: '#/components/schemas/AccessAllowedReason'
+    AssignedToRep:
+      type: object
+      properties:
+        membersCount:
+          type: integer
+          description: The number of individual members this role is assigned to
+        teamsCount:
+          type: integer
+          description: The number of teams this role is assigned to
+    CustomRoles_2:
+      type: object
+      description: A collection of custom roles.
+      properties:
+        items:
+          type: array
+          description: The list of custom roles.
+          items:
+            $ref: '#/components/schemas/CustomRole_2'
+        _links:
+          $ref: '#/components/schemas/Links'
+    CustomRoleBody:
+      type: object
+      description: The request body for creating a custom role.
+      required:
+      - name
+      - key
+      - policy
+      properties:
+        name:
+          type: string
+          description: The human-readable name of the custom role.
+        key:
+          type: string
+          description: The custom role key.
+        description:
+          type: string
+          description: A description of the custom role.
+        policy:
+          type: array
+          description: The policy statements defining permissions.
+          items:
+            $ref: '#/components/schemas/Statement_2'
+    Links:
+      type: object
+      description: HATEOAS links for navigating related resources.
+      properties:
+        self:
+          type: object
+          description: A link to this resource.
+          properties:
+            href:
+              type: string
+              description: The URL of this resource.
+            type:
+              type: string
+              description: The media type.
+      additionalProperties:
+        type: object
+        properties:
+          href:
+            type: string
+            description: The URL of the linked resource.
+          type:
+            type: string
+            description: The media type.
+    CustomRole_2:
+      type: object
+      description: A custom role with fine-grained permissions.
+      properties:
+        _id:
+          type: string
+          description: The unique identifier of this custom role.
+        key:
+          type: string
+          description: The custom role key.
+        name:
+          type: string
+          description: The human-readable name of this custom role.
+        description:
+          type: string
+          description: A description of this custom role.
+        policy:
+          type: array
+          description: The policy statements defining permissions.
+          items:
+            $ref: '#/components/schemas/Statement_2'
+        _links:
+          $ref: '#/components/schemas/Links'
+    Statement_2:
       type: object
       description: A policy statement controlling resource access or event filtering.
       properties:
@@ -92,86 +912,11 @@ components:
           description: The actions this statement does not apply to.
           items:
             type: string
-    CustomRoles:
-      type: object
-      description: A collection of custom roles.
-      properties:
-        items:
-          type: array
-          description: The list of custom roles.
-          items:
-            $ref: '#/components/schemas/CustomRole'
-        _links:
-          $ref: '#/components/schemas/Links'
-    Links:
-      type: object
-      description: HATEOAS links for navigating related resources.
-      properties:
-        self:
-          type: object
-          description: A link to this resource.
-          properties:
-            href:
-              type: string
-              description: The URL of this resource.
-            type:
-              type: string
-              description: The media type.
-      additionalProperties:
-        type: object
-        properties:
-          href:
-            type: string
-            description: The URL of the linked resource.
-          type:
-            type: string
-            description: The media type.
-    CustomRole:
-      type: object
-      description: A custom role with fine-grained permissions.
-      properties:
-        _id:
-          type: string
-          description: The unique identifier of this custom role.
-        key:
-          type: string
-          description: The custom role key.
-        name:
-          type: string
-          description: The human-readable name of this custom role.
-        description:
-          type: string
-          description: A description of this custom role.
-        policy:
-          type: array
-          description: The policy statements defining permissions.
-          items:
-            $ref: '#/components/schemas/Statement'
-        _links:
-          $ref: '#/components/schemas/Links'
-    CustomRoleBody:
-      type: object
-      description: The request body for creating a custom role.
-      required:
-      - name
-      - key
-      - policy
-      properties:
-        name:
-          type: string
-          description: The human-readable name of the custom role.
-        key:
-          type: string
-          description: The custom role key.
-        description:
-          type: string
-          description: A description of the custom role.
-        policy:
-          type: array
-          description: The policy statements defining permissions.
-          items:
-            $ref: '#/components/schemas/Statement'
   securitySchemes:
+    ApiKey:
+      type: apiKey
+      in: header
+      name: Authorization
     bearerAuth:
       type: http
       scheme: bearer
@@ -179,3 +924,6 @@ components:
 externalDocs:
   description: LaunchDarkly API Documentation
   url: https://apidocs.launchdarkly.com/
+x-refined-from:
+- launchdarkly-openapi.json
+- launchdarkly-rest-api-openapi.yml

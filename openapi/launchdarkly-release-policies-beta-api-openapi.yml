@@ -1,0 +1,1372 @@
+openapi: 3.2.0
+info:
+  title: LaunchDarkly REST Release policies (beta) API
+  description: 'This documentation describes LaunchDarkly''s REST API. To access the complete OpenAPI spec directly, use Get OpenAPI spec. To learn how to use LaunchDarkly using the user interface (UI) instead, read our product documentation. ## Authentication
+
+
+    LaunchDarkly''s REST API uses the HTTPS protocol with a minimum TLS version of 1.2. All REST API resources are authenticated with either personal or service access tokens, or session cookies. Other authentication mechanisms are not supported. You can manage personal access tokens on your **Authorization** page in the LaunchDarkly UI. LaunchDarkly also has SDK keys, mobile keys, and client-side IDs that are used by our server-side SDKs, mobile SDKs, and JavaScript-based SDKs, respectively. **These keys cannot be used to access our REST API**. These keys are environment-specific, and can only perform read-only operations such as fetching feature flag settings. | Auth mechanism | Allowed resources | Use cases |
+
+    | ----------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
+
+    | Personal or service access tokens | Can be customized on a per-token basis | Building scripts, custom integrations, data export. |
+
+    | SDK keys | Can only access read-only resources specific to server-side SDKs. Restricted to a single environment. | Server-side SDKs |
+
+    | Mobile keys | Can only access read-only resources specific to mobile SDKs, and only for flags marked available to mobile keys. Restricted to a single environment. | Mobile SDKs |
+
+    | Client-side ID | Can only access read-only resources specific to JavaScript-based client-side SDKs, and only for flags marked available to client-side. Restricted to a single environment. | Client-side JavaScript |
+
+
+    > #### Keep your access tokens and SDK keys private
+
+    >
+
+    > Access tokens should _never_ be exposed in untrusted contexts. Never put an access token in client-side JavaScript, or embed it in a mobile application. LaunchDarkly has special mobile keys that you can embed in mobile apps. If you accidentally expose an access token or SDK key, you can reset it from your **Authorization** page. >
+
+    > The client-side ID is safe to embed in untrusted contexts. It''s designed for use in client-side JavaScript. ### Authentication using request header
+
+
+    The preferred way to authenticate with the API is by adding an `Authorization` header containing your access token to your requests. The value of the `Authorization` header must be your access token. Manage personal access tokens from the **Authorization** page. ### Authentication using session cookie
+
+
+    For testing purposes, you can make API calls directly from your web browser. If you are logged in to the LaunchDarkly application, the API will use your existing session to authenticate calls. Depending on the permissions granted as part of your role, you may not have permission to perform some API calls. You will receive a `401` response code in that case. > ### Modifying the Origin header causes an error
+
+    >
+
+    > LaunchDarkly validates that the Origin header for any API request authenticated by a session cookie matches the expected Origin header. The expected Origin header is `https://app.launchdarkly.com`. >
+
+    > If the Origin header does not match what''s expected, LaunchDarkly returns an error. This error can prevent the LaunchDarkly app from working correctly. >
+
+    > Any browser extension that intentionally changes the Origin header can cause this problem. For example, Cross-Origin Resource Sharing (CORS) extensions used during development can modify the Origin header and cause the app to fail. >
+
+    > To prevent this error, do not modify your Origin header. >
+
+    > LaunchDarkly does not require origin matching when authenticating with an access token, so this issue does not affect normal API usage.'
+  contact:
+    name: LaunchDarkly Technical Support Team
+    url: https://support.launchdarkly.com
+    email: support@launchdarkly.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+  version: '2.0'
+servers:
+- url: https://app.launchdarkly.com
+  description: ' Default'
+- url: https://app.launchdarkly.us
+  description: ' Federal'
+security:
+- ApiKey:
+  - read
+  - write
+tags:
+- name: Release policies (beta)
+  description: '> ### This feature is in beta
+
+    >
+
+    > To use this feature, pass in a header including the `LD-API-Version` key with value set to `beta`. Use this header with each call. To learn more, read Beta resources.
+
+    >
+
+    > Resources that are in beta are still undergoing testing and development. They may change without notice, including becoming backwards incompatible.
+
+
+    > ### This feature is deprecated
+
+    >
+
+    > The release policies API is deprecated and will be removed. Release policies continue to work during the deprecation period. LaunchDarkly will announce the exact dates for end of support and removal of access separately.
+
+
+    Release policies let you specify your preferred rollout method for a given set of environments.'
+paths:
+  /api/v2/projects/{projectKey}/release-policies:
+    get:
+      description: Get a list of release policies for the specified project with optional filtering.
+      operationId: GetReleasePolicies
+      parameters:
+      - description: Version of the endpoint.
+        explode: false
+        in: header
+        name: LD-API-Version
+        required: true
+        schema:
+          enum:
+          - beta
+          type: string
+        style: simple
+      - description: The project key
+        example: default
+        explode: false
+        in: path
+        name: projectKey
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: When true, exclude the default release policy from the response. When false or omitted, include the default policy if an environment filter is present.
+        example: false
+        explode: true
+        in: query
+        name: excludeDefault
+        required: false
+        schema:
+          default: false
+          type: boolean
+        style: form
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReleasePoliciesResponse'
+          description: List of release policies
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Bad request
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Invalid access token
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Not found
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Internal server error
+      summary: List release policies
+      tags:
+      - Release policies (beta)
+    post:
+      description: Create a new release policy for the specified project.
+      operationId: PostReleasePolicy
+      parameters:
+      - description: Version of the endpoint.
+        explode: false
+        in: header
+        name: LD-API-Version
+        required: true
+        schema:
+          enum:
+          - beta
+          type: string
+        style: simple
+      - description: The project key
+        example: default
+        explode: false
+        in: path
+        name: projectKey
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostReleasePolicyRequest'
+        description: Release policy to create
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReleasePolicy'
+          description: Release policy created successfully
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Bad request
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Invalid access token
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Not found
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Conflict
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Internal server error
+      summary: Create a release policy
+      tags:
+      - Release policies (beta)
+  /api/v2/projects/{projectKey}/release-policies/order:
+    post:
+      description: Update the order of existing release policies for the specified project.
+      operationId: PostReleasePoliciesOrder
+      parameters:
+      - description: Version of the endpoint.
+        explode: false
+        in: header
+        name: LD-API-Version
+        required: true
+        schema:
+          enum:
+          - beta
+          type: string
+        style: simple
+      - description: The project key
+        example: default
+        explode: false
+        in: path
+        name: projectKey
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: Ordered list of release policy keys
+              items:
+                type: string
+              type: array
+        description: Array of release policy keys in the desired rank order (scoped policies only). These keys must include _all_ of the scoped release policies for the project.
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/ReleasePolicy'
+                type: array
+          description: Release policies updated successfully
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Bad request
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Invalid access token
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Not found
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Internal server error
+      summary: Update the order of existing release policies
+      tags:
+      - Release policies (beta)
+  /api/v2/projects/{projectKey}/release-policies/{policyKey}:
+    delete:
+      description: Delete an existing release policy for the specified project.
+      operationId: DeleteReleasePolicy
+      parameters:
+      - description: Version of the endpoint.
+        explode: false
+        in: header
+        name: LD-API-Version
+        required: true
+        schema:
+          enum:
+          - beta
+          type: string
+        style: simple
+      - description: The project key
+        example: default
+        explode: false
+        in: path
+        name: projectKey
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: The human-readable key of the release policy
+        example: production-release
+        explode: false
+        in: path
+        name: policyKey
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        '204':
+          description: Release policy deleted successfully
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Bad request
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Invalid access token
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Not found
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Internal server error
+      summary: Delete a release policy
+      tags:
+      - Release policies (beta)
+    get:
+      description: Retrieve a single release policy by its key for the specified project.
+      operationId: GetReleasePolicy
+      parameters:
+      - description: Version of the endpoint.
+        explode: false
+        in: header
+        name: LD-API-Version
+        required: true
+        schema:
+          enum:
+          - beta
+          type: string
+        style: simple
+      - description: The project key
+        example: default
+        explode: false
+        in: path
+        name: projectKey
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: The release policy key
+        example: production-release
+        explode: false
+        in: path
+        name: policyKey
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReleasePolicy'
+          description: Release policy found
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Bad request
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Invalid access token
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Not found
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Internal server error
+      summary: Get a release policy by key
+      tags:
+      - Release policies (beta)
+    put:
+      description: Update an existing release policy for the specified project.
+      operationId: PutReleasePolicy
+      parameters:
+      - description: Version of the endpoint.
+        explode: false
+        in: header
+        name: LD-API-Version
+        required: true
+        schema:
+          enum:
+          - beta
+          type: string
+        style: simple
+      - description: The project key
+        example: default
+        explode: false
+        in: path
+        name: projectKey
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: The human-readable key of the release policy
+        example: production-release
+        explode: false
+        in: path
+        name: policyKey
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PutReleasePolicyRequest'
+        description: Release policy data to update
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReleasePolicy'
+          description: Release policy updated successfully
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Bad request
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Invalid access token
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Not found
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Internal server error
+      summary: Update a release policy
+      tags:
+      - Release policies (beta)
+components:
+  schemas:
+    ActionSpecifier:
+      type: string
+    ReleasePolicy:
+      example:
+        releaseMethod: guarded-release
+        _access:
+          allowed:
+          - reason:
+              role_name: role_name
+              notActions:
+              - null
+              - null
+              notResources:
+              - notResources
+              - notResources
+              effect: allow
+              resources:
+              - proj/*:env/*;qa_*:/flag/*
+              actions:
+              - '*'
+            action: action
+          - reason:
+              role_name: role_name
+              notActions:
+              - null
+              - null
+              notResources:
+              - notResources
+              - notResources
+              effect: allow
+              resources:
+              - proj/*:env/*;qa_*:/flag/*
+              actions:
+              - '*'
+            action: action
+          denied:
+          - reason:
+              role_name: role_name
+              notActions:
+              - null
+              - null
+              notResources:
+              - notResources
+              - notResources
+              effect: allow
+              resources:
+              - proj/*:env/*;qa_*:/flag/*
+              actions:
+              - '*'
+            action: action
+          - reason:
+              role_name: role_name
+              notActions:
+              - null
+              - null
+              notResources:
+              - notResources
+              - notResources
+              effect: allow
+              resources:
+              - proj/*:env/*;qa_*:/flag/*
+              actions:
+              - '*'
+            action: action
+        scope:
+          environmentKeys:
+          - production
+          - staging
+          flagTagKeys:
+          - frontend
+          - backend
+          viewKeys:
+          - feature-a
+          - team-a
+        progressiveReleaseConfig:
+          rolloutContextKindKey: user
+          stages:
+          - allocation: 25000
+            durationMillis: 60000
+          - allocation: 50000
+            durationMillis: 60000
+        name: Production Release
+        rank: 1
+        _id: 550e8400-e29b-41d4-a716-446655440000
+        guardedReleaseConfig:
+          metricKeys:
+          - http-errors
+          - latency
+          rolloutContextKindKey: user
+          metricGroupKeys:
+          - frontend-metrics
+          - backend-metrics
+          minSampleSize: 100
+          stages:
+          - allocation: 25000
+            durationMillis: 60000
+          - allocation: 50000
+            durationMillis: 60000
+          rollbackOnRegression: true
+        key: production-release
+      properties:
+        _access:
+          $ref: '#/components/schemas/ReleasePoliciesAccessRep'
+        _id:
+          description: The unique identifier of the release policy
+          example: 550e8400-e29b-41d4-a716-446655440000
+          type: string
+        scope:
+          $ref: '#/components/schemas/ReleasePolicyScope'
+        rank:
+          description: The rank/priority of the release policy
+          example: 1
+          type: integer
+        releaseMethod:
+          $ref: '#/components/schemas/ReleaseMethod'
+        guardedReleaseConfig:
+          $ref: '#/components/schemas/GuardedReleaseConfig'
+        progressiveReleaseConfig:
+          $ref: '#/components/schemas/ProgressiveReleaseConfig'
+        name:
+          description: The name of the release policy
+          example: Production Release
+          maxLength: 256
+          type: string
+        key:
+          description: The human-readable key of the release policy
+          example: production-release
+          type: string
+      required:
+      - _id
+      - key
+      - name
+      - rank
+      - releaseMethod
+      type: object
+    ReleasePoliciesAccess:
+      properties:
+        denied:
+          items:
+            $ref: '#/components/schemas/ReleasePoliciesAccessDenied'
+          type: array
+        allowed:
+          items:
+            $ref: '#/components/schemas/ReleasePoliciesAccessAllowedRep'
+          type: array
+      required:
+      - allowed
+      - denied
+      type: object
+    Error:
+      example:
+        code: code
+        message: message
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+      required:
+      - code
+      - message
+      type: object
+    ReleasePoliciesAccessAllowedRep:
+      example:
+        reason:
+          role_name: role_name
+          notActions:
+          - null
+          - null
+          notResources:
+          - notResources
+          - notResources
+          effect: allow
+          resources:
+          - proj/*:env/*;qa_*:/flag/*
+          actions:
+          - '*'
+        action: action
+      properties:
+        action:
+          type: string
+        reason:
+          $ref: '#/components/schemas/ReleasePoliciesAccessAllowedReason'
+      required:
+      - action
+      - reason
+      type: object
+    PutReleasePolicyRequest:
+      example:
+        releaseMethod: guarded-release
+        scope:
+          environmentKeys:
+          - production
+          - staging
+          flagTagKeys:
+          - frontend
+          - backend
+          viewKeys:
+          - feature-a
+          - team-a
+        progressiveReleaseConfig:
+          rolloutContextKindKey: user
+          stages:
+          - allocation: 25000
+            durationMillis: 60000
+          - allocation: 50000
+            durationMillis: 60000
+        name: Production Release
+        guardedReleaseConfig:
+          metricKeys:
+          - http-errors
+          - latency
+          rolloutContextKindKey: user
+          metricGroupKeys:
+          - frontend-metrics
+          - backend-metrics
+          minSampleSize: 100
+          stages:
+          - allocation: 25000
+            durationMillis: 60000
+          - allocation: 50000
+            durationMillis: 60000
+          rollbackOnRegression: true
+      properties:
+        scope:
+          $ref: '#/components/schemas/ReleasePolicyScope'
+        releaseMethod:
+          $ref: '#/components/schemas/ReleaseMethod'
+        guardedReleaseConfig:
+          $ref: '#/components/schemas/GuardedReleaseConfig'
+        progressiveReleaseConfig:
+          $ref: '#/components/schemas/ProgressiveReleaseConfig'
+        name:
+          description: The name of the release policy
+          example: Production Release
+          maxLength: 256
+          type: string
+      required:
+      - name
+      - releaseMethod
+      type: object
+    GuardedReleaseConfig:
+      description: Configuration for guarded releases
+      example:
+        metricKeys:
+        - http-errors
+        - latency
+        rolloutContextKindKey: user
+        metricGroupKeys:
+        - frontend-metrics
+        - backend-metrics
+        minSampleSize: 100
+        stages:
+        - allocation: 25000
+          durationMillis: 60000
+        - allocation: 50000
+          durationMillis: 60000
+        rollbackOnRegression: true
+      properties:
+        rolloutContextKindKey:
+          description: Context kind key to use as the randomization unit for the rollout
+          example: user
+          type: string
+        minSampleSize:
+          description: The minimum number of samples required to make a decision
+          example: 100
+          type: integer
+        rollbackOnRegression:
+          description: Whether to roll back on regression
+          example: true
+          type: boolean
+        metricKeys:
+          description: List of metric keys
+          example:
+          - http-errors
+          - latency
+          items:
+            type: string
+          type: array
+        metricGroupKeys:
+          description: List of metric group keys
+          example:
+          - frontend-metrics
+          - backend-metrics
+          items:
+            type: string
+          type: array
+        stages:
+          description: List of stages. At most 10 stages by default; the server enforces the per-account limit, which is never more than 20.
+          example:
+          - allocation: 25000
+            durationMillis: 60000
+          - allocation: 50000
+            durationMillis: 60000
+          items:
+            $ref: '#/components/schemas/ReleasePolicyStage'
+          maxItems: 20
+          type: array
+      type: object
+    ReleasePoliciesResponse:
+      example:
+        totalCount: 42
+        items:
+        - releaseMethod: guarded-release
+          _access:
+            allowed:
+            - reason:
+                role_name: role_name
+                notActions:
+                - null
+                - null
+                notResources:
+                - notResources
+                - notResources
+                effect: allow
+                resources:
+                - proj/*:env/*;qa_*:/flag/*
+                actions:
+                - '*'
+              action: action
+            - reason:
+                role_name: role_name
+                notActions:
+                - null
+                - null
+                notResources:
+                - notResources
+                - notResources
+                effect: allow
+                resources:
+                - proj/*:env/*;qa_*:/flag/*
+                actions:
+                - '*'
+              action: action
+            denied:
+            - reason:
+                role_name: role_name
+                notActions:
+                - null
+                - null
+                notResources:
+                - notResources
+                - notResources
+                effect: allow
+                resources:
+                - proj/*:env/*;qa_*:/flag/*
+                actions:
+                - '*'
+              action: action
+            - reason:
+                role_name: role_name
+                notActions:
+                - null
+                - null
+                notResources:
+                - notResources
+                - notResources
+                effect: allow
+                resources:
+                - proj/*:env/*;qa_*:/flag/*
+                actions:
+                - '*'
+              action: action
+          scope:
+            environmentKeys:
+            - production
+            - staging
+            flagTagKeys:
+            - frontend
+            - backend
+            viewKeys:
+            - feature-a
+            - team-a
+          progressiveReleaseConfig:
+            rolloutContextKindKey: user
+            stages:
+            - allocation: 25000
+              durationMillis: 60000
+            - allocation: 50000
+              durationMillis: 60000
+          name: Production Release
+          rank: 1
+          _id: 550e8400-e29b-41d4-a716-446655440000
+          guardedReleaseConfig:
+            metricKeys:
+            - http-errors
+            - latency
+            rolloutContextKindKey: user
+            metricGroupKeys:
+            - frontend-metrics
+            - backend-metrics
+            minSampleSize: 100
+            stages:
+            - allocation: 25000
+              durationMillis: 60000
+            - allocation: 50000
+              durationMillis: 60000
+            rollbackOnRegression: true
+          key: production-release
+        - releaseMethod: guarded-release
+          _access:
+            allowed:
+            - reason:
+                role_name: role_name
+                notActions:
+                - null
+                - null
+                notResources:
+                - notResources
+                - notResources
+                effect: allow
+                resources:
+                - proj/*:env/*;qa_*:/flag/*
+                actions:
+                - '*'
+              action: action
+            - reason:
+                role_name: role_name
+                notActions:
+                - null
+                - null
+                notResources:
+                - notResources
+                - notResources
+                effect: allow
+                resources:
+                - proj/*:env/*;qa_*:/flag/*
+                actions:
+                - '*'
+              action: action
+            denied:
+            - reason:
+                role_name: role_name
+                notActions:
+                - null
+                - null
+                notResources:
+                - notResources
+                - notResources
+                effect: allow
+                resources:
+                - proj/*:env/*;qa_*:/flag/*
+                actions:
+                - '*'
+              action: action
+            - reason:
+                role_name: role_name
+                notActions:
+                - null
+                - null
+                notResources:
+                - notResources
+                - notResources
+                effect: allow
+                resources:
+                - proj/*:env/*;qa_*:/flag/*
+                actions:
+                - '*'
+              action: action
+          scope:
+            environmentKeys:
+            - production
+            - staging
+            flagTagKeys:
+            - frontend
+            - backend
+            viewKeys:
+            - feature-a
+            - team-a
+          progressiveReleaseConfig:
+            rolloutContextKindKey: user
+            stages:
+            - allocation: 25000
+              durationMillis: 60000
+            - allocation: 50000
+              durationMillis: 60000
+          name: Production Release
+          rank: 1
+          _id: 550e8400-e29b-41d4-a716-446655440000
+          guardedReleaseConfig:
+            metricKeys:
+            - http-errors
+            - latency
+            rolloutContextKindKey: user
+            metricGroupKeys:
+            - frontend-metrics
+            - backend-metrics
+            minSampleSize: 100
+            stages:
+            - allocation: 25000
+              durationMillis: 60000
+            - allocation: 50000
+              durationMillis: 60000
+            rollbackOnRegression: true
+          key: production-release
+      properties:
+        items:
+          description: List of release policies
+          items:
+            $ref: '#/components/schemas/ReleasePolicy'
+          type: array
+        totalCount:
+          description: Total number of release policies
+          example: 42
+          type: integer
+      required:
+      - items
+      - totalCount
+      type: object
+    ReleasePoliciesAccessAllowedReason:
+      example:
+        role_name: role_name
+        notActions:
+        - null
+        - null
+        notResources:
+        - notResources
+        - notResources
+        effect: allow
+        resources:
+        - proj/*:env/*;qa_*:/flag/*
+        actions:
+        - '*'
+      properties:
+        resources:
+          description: Resource specifier strings
+          example:
+          - proj/*:env/*;qa_*:/flag/*
+          items:
+            type: string
+          type: array
+        notResources:
+          description: Targeted resources are the resources NOT in this list. The <code>resources</code> and <code>notActions</code> fields must be empty to use this field.
+          items:
+            type: string
+          type: array
+        actions:
+          description: Actions to perform on a resource
+          example:
+          - '*'
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+          type: array
+        notActions:
+          description: Targeted actions are the actions NOT in this list. The <code>actions</code> and <code>notResources</code> fields must be empty to use this field.
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+          type: array
+        effect:
+          description: Whether this statement should allow or deny actions on the resources.
+          enum:
+          - allow
+          - deny
+          example: allow
+          type: string
+        role_name:
+          type: string
+      required:
+      - effect
+      type: object
+    ReleasePoliciesAccessDenied:
+      example:
+        reason:
+          role_name: role_name
+          notActions:
+          - null
+          - null
+          notResources:
+          - notResources
+          - notResources
+          effect: allow
+          resources:
+          - proj/*:env/*;qa_*:/flag/*
+          actions:
+          - '*'
+        action: action
+      properties:
+        action:
+          type: string
+        reason:
+          $ref: '#/components/schemas/ReleasePoliciesAccessDeniedReason'
+      required:
+      - action
+      - reason
+      type: object
+    ReleasePoliciesAccessRep:
+      allOf:
+      - $ref: '#/components/schemas/ReleasePoliciesAccess'
+      example:
+        allowed:
+        - reason:
+            role_name: role_name
+            notActions:
+            - null
+            - null
+            notResources:
+            - notResources
+            - notResources
+            effect: allow
+            resources:
+            - proj/*:env/*;qa_*:/flag/*
+            actions:
+            - '*'
+          action: action
+        - reason:
+            role_name: role_name
+            notActions:
+            - null
+            - null
+            notResources:
+            - notResources
+            - notResources
+            effect: allow
+            resources:
+            - proj/*:env/*;qa_*:/flag/*
+            actions:
+            - '*'
+          action: action
+        denied:
+        - reason:
+            role_name: role_name
+            notActions:
+            - null
+            - null
+            notResources:
+            - notResources
+            - notResources
+            effect: allow
+            resources:
+            - proj/*:env/*;qa_*:/flag/*
+            actions:
+            - '*'
+          action: action
+        - reason:
+            role_name: role_name
+            notActions:
+            - null
+            - null
+            notResources:
+            - notResources
+            - notResources
+            effect: allow
+            resources:
+            - proj/*:env/*;qa_*:/flag/*
+            actions:
+            - '*'
+          action: action
+    ProgressiveReleaseConfig:
+      description: Configuration for progressive releases
+      example:
+        rolloutContextKindKey: user
+        stages:
+        - allocation: 25000
+          durationMillis: 60000
+        - allocation: 50000
+          durationMillis: 60000
+      properties:
+        rolloutContextKindKey:
+          description: Context kind key to use as the randomization unit for the rollout
+          example: user
+          type: string
+        stages:
+          description: List of stages. At most 10 stages by default; the server enforces the per-account limit, which is never more than 20.
+          example:
+          - allocation: 25000
+            durationMillis: 60000
+          - allocation: 50000
+            durationMillis: 60000
+          items:
+            $ref: '#/components/schemas/ReleasePolicyStage'
+          maxItems: 20
+          type: array
+      type: object
+    ReleasePolicyStage:
+      properties:
+        allocation:
+          example: 25000
+          type: integer
+        durationMillis:
+          example: 60000
+          format: int64
+          type: integer
+      required:
+      - allocation
+      - durationMillis
+      type: object
+    ReleaseMethod:
+      description: The release method for this policy
+      enum:
+      - guarded-release
+      - immediate-release
+      - progressive-release
+      type: string
+    ReleasePoliciesAccessDeniedReason:
+      example:
+        role_name: role_name
+        notActions:
+        - null
+        - null
+        notResources:
+        - notResources
+        - notResources
+        effect: allow
+        resources:
+        - proj/*:env/*;qa_*:/flag/*
+        actions:
+        - '*'
+      properties:
+        resources:
+          description: Resource specifier strings
+          example:
+          - proj/*:env/*;qa_*:/flag/*
+          items:
+            type: string
+          type: array
+        notResources:
+          description: Targeted resources are the resources NOT in this list. The <code>resources</code> and <code>notActions</code> fields must be empty to use this field.
+          items:
+            type: string
+          type: array
+        actions:
+          description: Actions to perform on a resource
+          example:
+          - '*'
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+          type: array
+        notActions:
+          description: Targeted actions are the actions NOT in this list. The <code>actions</code> and <code>notResources</code> fields must be empty to use this field.
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+          type: array
+        effect:
+          description: Whether this statement should allow or deny actions on the resources.
+          enum:
+          - allow
+          - deny
+          example: allow
+          type: string
+        role_name:
+          type: string
+      required:
+      - effect
+      type: object
+    PostReleasePolicyRequest:
+      example:
+        releaseMethod: guarded-release
+        scope:
+          environmentKeys:
+          - production
+          - staging
+          flagTagKeys:
+          - frontend
+          - backend
+          viewKeys:
+          - feature-a
+          - team-a
+        progressiveReleaseConfig:
+          rolloutContextKindKey: user
+          stages:
+          - allocation: 25000
+            durationMillis: 60000
+          - allocation: 50000
+            durationMillis: 60000
+        name: Production Release
+        guardedReleaseConfig:
+          metricKeys:
+          - http-errors
+          - latency
+          rolloutContextKindKey: user
+          metricGroupKeys:
+          - frontend-metrics
+          - backend-metrics
+          minSampleSize: 100
+          stages:
+          - allocation: 25000
+            durationMillis: 60000
+          - allocation: 50000
+            durationMillis: 60000
+          rollbackOnRegression: true
+        key: production-release
+      properties:
+        scope:
+          $ref: '#/components/schemas/ReleasePolicyScope'
+        releaseMethod:
+          $ref: '#/components/schemas/ReleaseMethod'
+        guardedReleaseConfig:
+          $ref: '#/components/schemas/GuardedReleaseConfig'
+        progressiveReleaseConfig:
+          $ref: '#/components/schemas/ProgressiveReleaseConfig'
+        name:
+          description: The name of the release policy
+          example: Production Release
+          maxLength: 256
+          type: string
+        key:
+          description: The human-readable key of the release policy
+          example: production-release
+          type: string
+      required:
+      - key
+      - name
+      - releaseMethod
+      type: object
+    ReleasePolicyScope:
+      example:
+        environmentKeys:
+        - production
+        - staging
+        flagTagKeys:
+        - frontend
+        - backend
+        viewKeys:
+        - feature-a
+        - team-a
+      properties:
+        environmentKeys:
+          description: List of environment keys this policy applies to
+          example:
+          - production
+          - staging
+          items:
+            type: string
+          type: array
+        flagTagKeys:
+          description: List of flag tag keys this policy applies to. At most 1000 keys. Each key must only contain letters, numbers, '-', '_', or '.', and be at most 64 characters.
+          example:
+          - frontend
+          - backend
+          items:
+            maxLength: 64
+            pattern: ^[.A-Za-z_0-9-]+$
+            type: string
+          maxItems: 1000
+          type: array
+      type: object
+  securitySchemes:
+    ApiKey:
+      type: apiKey
+      in: header
+      name: Authorization

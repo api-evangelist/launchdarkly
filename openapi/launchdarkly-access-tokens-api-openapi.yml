@@ -1,24 +1,392 @@
 openapi: 3.2.0
 info:
-  title: LaunchDarkly REST Access Tokens API
-  description: The LaunchDarkly REST API provides programmatic access to the full LaunchDarkly feature management platform.
-  version: '20240415'
-  contact:
-    name: LaunchDarkly Support
-    url: https://support.launchdarkly.com
-  termsOfService: https://launchdarkly.com/policies/terms-of-service
+  title: Launchdarkly Access tokens API
   license:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
+  version: '1.0'
+  description: 'Operations tagged Access tokens across 2 of this provider''s published API definitions: launchdarkly-openapi.json, launchdarkly-rest-api-openapi.yml. Each path carries the servers of the definition it was published in.'
 servers:
+- url: https://app.launchdarkly.com
+  description: ' Default'
+- url: https://app.launchdarkly.us
+  description: ' Federal'
 - url: https://app.launchdarkly.com/api/v2
   description: LaunchDarkly Production API
-security:
-- bearerAuth: []
 tags:
 - name: Access Tokens
-  description: Create and manage personal and service access tokens used to authenticate API requests.
+  description: 'The access tokens API allows you to list, create, modify, and delete access tokens programmatically.
+
+
+    When using access tokens to manage access tokens, the following restrictions apply:
+
+    - Personal tokens can see all service tokens and other personal tokens created by the same team member. If the personal token has the "Admin" role, it may also see other member''s personal tokens. To learn more, read Personal tokens.
+
+    - Service tokens can see all service tokens. If the token has the "Admin" role, it may also see all personal tokens. To learn more, read Service tokens.
+
+    - Tokens can only manage other tokens, including themselves, if they have "Admin" role or explicit permission via a custom role. To learn more, read Personal access token actions.
+
+
+    Several of the endpoints in the access tokens API require an access token ID. The access token ID is returned as part of the Create access token and List access tokens responses. It is the `_id` field, or the `_id` field of each element in the `items` array.
+
+
+    To learn more about access tokens, read API access tokens.'
 paths:
+  /api/v2/tokens:
+    get:
+      responses:
+        '200':
+          description: Access tokens collection response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tokens'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Access Tokens
+      summary: List access tokens
+      description: Fetch a list of all access tokens.
+      parameters:
+      - name: showAll
+        in: query
+        description: If set to true, and the authentication access token has the 'Admin' role, personal access tokens for all members will be retrieved.
+        schema:
+          type: boolean
+          description: If set to true, and the authentication access token has the 'Admin' role, personal access tokens for all members will be retrieved.
+      - name: limit
+        in: query
+        description: The number of access tokens to return in the response. Defaults to 25.
+        schema:
+          type: integer
+          format: int64
+          description: The number of access tokens to return in the response. Defaults to 25.
+      - name: offset
+        in: query
+        description: Where to start in the list. This is for use with pagination. For example, an offset of 10 skips the first ten items and then returns the next items in the list, up to the query `limit`.
+        schema:
+          type: integer
+          format: int64
+          description: Where to start in the list. This is for use with pagination. For example, an offset of 10 skips the first ten items and then returns the next items in the list, up to the query `limit`.
+      operationId: getTokens
+      security:
+      - ApiKey:
+        - read
+        - write
+    post:
+      responses:
+        '201':
+          description: Access token response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Token'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Access Tokens
+      summary: Create access token
+      description: Create a new access token.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccessTokenPost'
+            example:
+              role: reader
+        required: true
+      operationId: postToken
+      security:
+      - ApiKey:
+        - read
+        - write
+    servers:
+    - url: https://app.launchdarkly.com
+      description: ' Default'
+    - url: https://app.launchdarkly.us
+      description: ' Federal'
+  /api/v2/tokens/{id}:
+    get:
+      responses:
+        '200':
+          description: Access token response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Token'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Access Tokens
+      summary: Get access token
+      description: Get a single access token by ID.
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the access token
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The ID of the access token
+      operationId: getToken
+      security:
+      - ApiKey:
+        - read
+        - write
+    patch:
+      responses:
+        '200':
+          description: Access token response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Token'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestErrorRep'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '409':
+          description: Status conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusConflictErrorRep'
+        '422':
+          description: Invalid patch content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PatchFailedErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Access Tokens
+      summary: Patch access token
+      description: Update an access token's settings. Updating an access token uses a JSON patch representation of the desired changes. To learn more, read Updates.
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the access token to update
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The ID of the access token to update
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JSONPatch'
+            example:
+            - op: replace
+              path: /role
+              value: writer
+        required: true
+      operationId: patchToken
+      security:
+      - ApiKey:
+        - read
+        - write
+    delete:
+      responses:
+        '204':
+          description: Action succeeded
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Access Tokens
+      summary: Delete access token
+      description: Delete an access token by ID.
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the access token to update
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The ID of the access token to update
+      operationId: deleteToken
+      security:
+      - ApiKey:
+        - read
+        - write
+    servers:
+    - url: https://app.launchdarkly.com
+      description: ' Default'
+    - url: https://app.launchdarkly.us
+      description: ' Federal'
+  /api/v2/tokens/{id}/reset:
+    post:
+      responses:
+        '200':
+          description: Access token response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Token'
+        '401':
+          description: Invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedErrorRep'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenErrorRep'
+        '404':
+          description: Invalid resource identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorRep'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitedErrorRep'
+      tags:
+      - Access Tokens
+      summary: Reset access token (legacy)
+      description: Reset an access token's secret key with an optional expiry time for the old key. Use of this legacy handler is discouraged. Patch the `expiry` field on the token directly instead.
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the access token to update
+        required: true
+        schema:
+          type: string
+          format: string
+          description: The ID of the access token to update
+      - name: expiry
+        in: query
+        description: An expiration time for the old token key, expressed as a Unix epoch time in milliseconds. By default, the token will expire immediately.
+        schema:
+          type: integer
+          format: int64
+          description: An expiration time for the old token key, expressed as a Unix epoch time in milliseconds. By default, the token will expire immediately.
+      operationId: resetToken
+      deprecated: true
+      security:
+      - ApiKey:
+        - read
+        - write
+    servers:
+    - url: https://app.launchdarkly.com
+      description: ' Default'
+    - url: https://app.launchdarkly.us
+      description: ' Federal'
   /tokens:
     get:
       operationId: listAccessTokens
@@ -35,6 +403,8 @@ paths:
                 $ref: '#/components/schemas/AccessTokens'
         '401':
           description: Unauthorized. Invalid or missing access token.
+      security:
+      - bearerAuth: []
     post:
       operationId: createAccessToken
       summary: Create an access token
@@ -58,35 +428,395 @@ paths:
           description: Invalid request body.
         '401':
           description: Unauthorized. Invalid or missing access token.
+      security:
+      - bearerAuth: []
+    servers:
+    - url: https://app.launchdarkly.com/api/v2
+      description: LaunchDarkly Production API
 components:
   schemas:
-    AccessTokenBody:
+    JSONPatch:
+      type: array
+      items:
+        $ref: '#/components/schemas/PatchOperation'
+    StatementPost:
       type: object
-      description: The request body for creating a new access token.
       required:
-      - name
+      - effect
+      properties:
+        resources:
+          type: array
+          description: Resource specifier strings
+          items:
+            type: string
+          example:
+          - proj/*:env/*:flag/*;testing-tag
+        notResources:
+          type: array
+          description: Targeted resources are the resources NOT in this list. The <code>resources</code> field must be empty to use this field.
+          items:
+            type: string
+        actions:
+          type: array
+          description: Actions to perform on a resource
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+          example:
+          - '*'
+        notActions:
+          type: array
+          description: Targeted actions are the actions NOT in this list. The <code>actions</code> field must be empty to use this field.
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+        effect:
+          type: string
+          description: Whether this statement should allow or deny actions on the resources.
+          example: allow
+          enum:
+          - allow
+          - deny
+    PatchFailedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: patch_failed
+        message:
+          type: string
+          description: Description of the error
+          example: Unprocessable entity. Could not apply patch.
+    InvalidRequestErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: invalid_request
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid request body
+    MemberSummary:
+      type: object
+      required:
+      - _links
+      - _id
+      - role
+      - email
+      properties:
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+          example:
+            self:
+              href: /api/v2/members/569f183514f4432160000007
+              type: application/json
+        _id:
+          type: string
+          description: The member's ID
+          example: 569f183514f4432160000007
+        firstName:
+          type: string
+          description: The member's first name
+          example: Ariel
+        lastName:
+          type: string
+          description: The member's last name
+          example: Flores
+        role:
+          type: string
+          description: The member's base role. If the member has no additional roles, this role will be in effect.
+          example: admin
+        email:
+          type: string
+          description: The member's email address
+          example: ariel@acme.com
+    RateLimitedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: rate_limited
+        message:
+          type: string
+          description: Description of the error
+          example: You've exceeded the API rate limit. Try again later.
+    UnauthorizedErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: unauthorized
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid access token
+    ForbiddenErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: forbidden
+        message:
+          type: string
+          description: Description of the error
+          example: Forbidden. Access to the requested resource was denied.
+    ActionSpecifier:
+      type: string
+    Link:
+      type: object
+      properties:
+        href:
+          type: string
+        type:
+          type: string
+    AccessTokenPost:
+      type: object
       properties:
         name:
           type: string
-          description: A human-readable name for the token.
+          description: A human-friendly name for the access token
+        description:
+          type: string
+          description: A description for the access token
         role:
           type: string
-          description: The built-in role to assign.
+          description: Base role for the token
           enum:
           - reader
           - writer
           - admin
         customRoleIds:
           type: array
-          description: Custom role identifiers to assign.
+          description: A list of custom role IDs to use as access limits for the access token
           items:
             type: string
+        inlineRole:
+          type: array
+          description: 'A JSON array of statements represented as JSON objects with three attributes: effect, resources, actions. May be used in place of a role.'
+          items:
+            $ref: '#/components/schemas/StatementPost'
         serviceToken:
           type: boolean
-          description: Whether to create a service token.
+          description: Whether the token is a service token
         defaultApiVersion:
           type: integer
-          description: The default API version for this token.
+          description: The default API version for this token
+        expiry:
+          description: Timestamp of when the access token should expire, as a Unix epoch time in milliseconds. Omit for a token that does not expire.
+          example: '1735689600000'
+          $ref: '#/components/schemas/UnixMillis'
+    UnixMillis:
+      type: integer
+      format: int64
+    PatchOperation:
+      type: object
+      required:
+      - op
+      - path
+      properties:
+        op:
+          type: string
+          description: The type of operation to perform
+          example: replace
+        path:
+          type: string
+          description: A JSON Pointer string specifying the part of the document to operate on
+          example: /exampleField
+        value:
+          description: A JSON value used in "add", "replace", and "test" operations
+          example: new example value
+    Statement:
+      type: object
+      required:
+      - effect
+      properties:
+        resources:
+          type: array
+          description: Resource specifier strings
+          items:
+            type: string
+          example:
+          - proj/*:env/*;qa_*:/flag/*
+        notResources:
+          type: array
+          description: Targeted resources are the resources NOT in this list. The <code>resources</code> and <code>notActions</code> fields must be empty to use this field.
+          items:
+            type: string
+        actions:
+          type: array
+          description: Actions to perform on a resource
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+          example:
+          - '*'
+        notActions:
+          type: array
+          description: Targeted actions are the actions NOT in this list. The <code>actions</code> and <code>notResources</code> fields must be empty to use this field.
+          items:
+            $ref: '#/components/schemas/ActionSpecifier'
+        effect:
+          type: string
+          description: Whether this statement should allow or deny actions on the resources.
+          example: allow
+          enum:
+          - allow
+          - deny
+    StatusConflictErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: optimistic_locking_error
+        message:
+          type: string
+          description: Description of the error
+          example: Conflict. Optimistic lock error. Try again later.
+    NotFoundErrorRep:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          description: Specific error code encountered
+          example: not_found
+        message:
+          type: string
+          description: Description of the error
+          example: Invalid resource identifier
+    Token:
+      type: object
+      required:
+      - _id
+      - ownerId
+      - memberId
+      - creationDate
+      - lastModified
+      - _links
+      properties:
+        _id:
+          description: The ID of the access token
+          example: 61095542756dba551110ae21
+          $ref: '#/components/schemas/ObjectId'
+        ownerId:
+          description: The ID of the owner of the account for the access token
+          example: 569f514156e003339cfd3917
+          $ref: '#/components/schemas/ObjectId'
+        memberId:
+          description: The ID of the member who created the access token
+          example: 569f514183f2164430000002
+          $ref: '#/components/schemas/ObjectId'
+        _member:
+          description: Details on the member who created the access token
+          $ref: '#/components/schemas/MemberSummary'
+        name:
+          type: string
+          description: A human-friendly name for the access token
+          example: Example reader token
+        description:
+          type: string
+          description: A description for the access token
+          example: A reader token used in testing and examples
+        creationDate:
+          description: Timestamp of when the access token was created
+          example: '1628001602644'
+          $ref: '#/components/schemas/UnixMillis'
+        lastModified:
+          description: Timestamp of the last modification of the access token
+          example: '1628001602644'
+          $ref: '#/components/schemas/UnixMillis'
+        customRoleIds:
+          type: array
+          description: A list of custom role IDs to use as access limits for the access token
+          items:
+            $ref: '#/components/schemas/ObjectId'
+          example: []
+        inlineRole:
+          type: array
+          description: 'An array of policy statements, with three attributes: effect, resources, actions. May be used in place of a role.'
+          items:
+            $ref: '#/components/schemas/Statement'
+          example: []
+        role:
+          type: string
+          description: Base role for the token
+          example: reader
+        token:
+          type: string
+          description: The token value. When creating or resetting, contains the entire token value. Otherwise, contains the last four characters.
+          example: '1234'
+        serviceToken:
+          type: boolean
+          description: Whether this is a service token or a personal token
+          example: false
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+          description: The location and content type of related resources
+          example:
+            parent:
+              href: /api/v2/tokens
+              type: application/json
+            self:
+              href: /api/v2/tokens/61095542756dba551110ae21
+              type: application/json
+        defaultApiVersion:
+          type: integer
+          description: The default API version for this token
+          example: 20240415
+        lastUsed:
+          description: Timestamp of when the access token was last used
+          example: '0'
+          $ref: '#/components/schemas/UnixMillis'
+        expiry:
+          description: Timestamp of when the access token expires. Omitted when the token has no expiry.
+          example: '1735689600000'
+          $ref: '#/components/schemas/UnixMillis'
+    Tokens:
+      type: object
+      properties:
+        items:
+          type: array
+          description: An array of access tokens
+          items:
+            $ref: '#/components/schemas/Token'
+        _links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Link'
+        totalCount:
+          type: integer
+          description: The number of access tokens returned
+    ObjectId:
+      type: string
     Links:
       type: object
       description: HATEOAS links for navigating related resources.
@@ -121,6 +851,33 @@ components:
             $ref: '#/components/schemas/AccessToken'
         _links:
           $ref: '#/components/schemas/Links'
+    AccessTokenBody:
+      type: object
+      description: The request body for creating a new access token.
+      required:
+      - name
+      properties:
+        name:
+          type: string
+          description: A human-readable name for the token.
+        role:
+          type: string
+          description: The built-in role to assign.
+          enum:
+          - reader
+          - writer
+          - admin
+        customRoleIds:
+          type: array
+          description: Custom role identifiers to assign.
+          items:
+            type: string
+        serviceToken:
+          type: boolean
+          description: Whether to create a service token.
+        defaultApiVersion:
+          type: integer
+          description: The default API version for this token.
     AccessToken:
       type: object
       description: A personal or service access token.
@@ -159,6 +916,10 @@ components:
         _links:
           $ref: '#/components/schemas/Links'
   securitySchemes:
+    ApiKey:
+      type: apiKey
+      in: header
+      name: Authorization
     bearerAuth:
       type: http
       scheme: bearer
@@ -166,3 +927,6 @@ components:
 externalDocs:
   description: LaunchDarkly API Documentation
   url: https://apidocs.launchdarkly.com/
+x-refined-from:
+- launchdarkly-openapi.json
+- launchdarkly-rest-api-openapi.yml
