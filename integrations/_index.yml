@@ -399,3 +399,323 @@
   relationship: platform-app
   status: not-a-workflow
   arazzo: null
+- slug: launchdarkly-go-module-proxy
+  label: Go module proxy
+  partner_name: Go module proxy
+  category: official SDK (Go)
+  type: register
+  channel: package-registry
+  evidence: https://pkg.go.dev/github.com/launchdarkly/go-server-sdk/v7
+  source: edge
+  relationship: distribution-channel
+  contract_reference:
+    register: Go module proxy (public registry JSON)
+    spec_file: null
+    language: Go
+    packages:
+    - name: github.com/launchdarkly/go-server-sdk/v7
+      version: v7.19.2
+      released: '2026-10-15'
+      released_field: Time
+      lapsed: false
+      page: https://pkg.go.dev/github.com/launchdarkly/go-server-sdk/v7
+      repo_leg: github-org:launchdarkly
+      publisher_leg: org:launchdarkly
+      matched_by: github-org
+    current: true
+    signal_note: 'an official package on the registry: distribution, not an integration; lapsed = no release in
+      24 months'
+    detected_by: sweep-official-sdks.py
+    detected: '2026-10-18'
+  status: not-a-workflow
+  arazzo: null
+- slug: launchdarkly-maven-central
+  label: Maven Central
+  partner: maven-central
+  partner_name: Maven Central
+  category: official SDK (Java/JVM)
+  type: register
+  channel: package-registry
+  evidence: https://central.sonatype.com/artifact/com.launchdarkly/launchdarkly-android-client-sdk
+  source: edge
+  relationship: distribution-channel
+  contract_reference:
+    register: Maven Central (public registry JSON)
+    spec_file: null
+    language: Java/JVM
+    packages:
+    - name: com.launchdarkly:launchdarkly-android-client-sdk
+      version: 5.17.0
+      released: '2026-10-16'
+      released_field: lastUpdated
+      lapsed: false
+      page: https://central.sonatype.com/artifact/com.launchdarkly/launchdarkly-android-client-sdk
+      repo_leg: github-org:launchdarkly
+      publisher_leg: groupId:launchdarkly.com
+      matched_by: domain
+    - name: com.launchdarkly:launchdarkly-java-server-sdk
+      version: 7.17.3
+      released: '2026-10-14'
+      released_field: lastUpdated
+      lapsed: false
+      page: https://central.sonatype.com/artifact/com.launchdarkly/launchdarkly-java-server-sdk
+      repo_leg: github-org:launchdarkly
+      publisher_leg: groupId:launchdarkly.com
+      matched_by: domain
+    current: true
+    signal_note: 'an official package on the registry: distribution, not an integration; lapsed = no release in
+      24 months'
+    detected_by: sweep-official-sdks.py
+    detected: '2026-10-18'
+  status: not-a-workflow
+  arazzo: null
+- slug: launchdarkly-npm-registry
+  label: npm registry
+  partner: npm
+  partner_name: npm registry
+  category: official SDK (JavaScript/TypeScript)
+  type: register
+  channel: package-registry
+  evidence: https://www.npmjs.com/package/@launchdarkly/browser
+  source: edge
+  relationship: distribution-channel
+  contract_reference:
+    register: npm registry (public registry JSON)
+    spec_file: null
+    language: JavaScript/TypeScript
+    packages:
+    - name: '@launchdarkly/browser'
+      version: 0.1.33
+      released: '2026-09-09'
+      released_field: modified
+      lapsed: false
+      page: https://www.npmjs.com/package/@launchdarkly/browser
+      repo_leg: github-org:launchdarkly
+      publisher_leg: email:launchdarkly.com
+      matched_by: domain
+    - name: '@launchdarkly/cloudflare-server-sdk'
+      version: 2.7.46
+      released: '2026-10-16'
+      released_field: modified
+      lapsed: false
+      page: https://www.npmjs.com/package/@launchdarkly/cloudflare-server-sdk
+      repo_leg: github-org:launchdarkly
+      publisher_leg: email:launchdarkly.com
+      matched_by: domain
+    - name: '@launchdarkly/js-client-sdk'
+      version: 4.13.0
+      released: '2026-10-16'
+      released_field: modified
+      lapsed: false
+      page: https://www.npmjs.com/package/@launchdarkly/js-client-sdk
+      repo_leg: github-org:launchdarkly
+      publisher_leg: email:launchdarkly.com
+      matched_by: domain
+    - name: '@launchdarkly/js-client-sdk-common'
+      version: 1.34.0
+      released: '2026-10-16'
+      released_field: modified
+      lapsed: false
+      page: https://www.npmjs.com/package/@launchdarkly/js-client-sdk-common
+      repo_leg: github-org:launchdarkly
+      publisher_leg: email:launchdarkly.com
+      matched_by: domain
+    - name: '@launchdarkly/node-server-sdk'
+      version: 9.15.0
+      released: '2026-10-16'
+      released_field: modified
+      lapsed: false
+      page: https://www.npmjs.com/package/@launchdarkly/node-server-sdk
+      repo_leg: github-org:launchdarkly
+      publisher_leg: email:launchdarkly.com
+      matched_by: domain
+    - name: '@launchdarkly/observability'
+      version: 1.2.1
+      released: '2026-10-16'
+      released_field: modified
+      lapsed: false
+      page: https://www.npmjs.com/package/@launchdarkly/observability
+      repo_leg: github-org:launchdarkly
+      publisher_leg: email:launchdarkly.com
+      matched_by: domain
+    - name: '@launchdarkly/react-native-client-sdk'
+      version: 10.23.0
+      released: '2026-10-16'
+      released_field: modified
+      lapsed: false
+      page: https://www.npmjs.com/package/@launchdarkly/react-native-client-sdk
+      repo_leg: github-org:launchdarkly
+      publisher_leg: email:launchdarkly.com
+      matched_by: domain
+    - name: '@launchdarkly/vercel-server-sdk'
+      version: 1.3.69
+      released: '2026-10-16'
+      released_field: modified
+      lapsed: false
+      page: https://www.npmjs.com/package/@launchdarkly/vercel-server-sdk
+      repo_leg: github-org:launchdarkly
+      publisher_leg: email:launchdarkly.com
+      matched_by: domain
+    - name: launchdarkly-electron-client-sdk
+      version: 1.7.0
+      released: '2022-10-21'
+      released_field: modified
+      lapsed: true
+      page: https://www.npmjs.com/package/launchdarkly-electron-client-sdk
+      repo_leg: github-org:launchdarkly
+      publisher_leg: email:launchdarkly.com
+      matched_by: domain
+    - name: launchdarkly-js-client-sdk
+      version: 3.9.6
+      released: '2026-10-02'
+      released_field: modified
+      lapsed: false
+      page: https://www.npmjs.com/package/launchdarkly-js-client-sdk
+      repo_leg: github-org:launchdarkly
+      publisher_leg: email:launchdarkly.com
+      matched_by: domain
+    - name: launchdarkly-node-client-sdk
+      version: 3.4.3
+      released: '2026-08-07'
+      released_field: modified
+      lapsed: false
+      page: https://www.npmjs.com/package/launchdarkly-node-client-sdk
+      repo_leg: github-org:launchdarkly
+      publisher_leg: email:launchdarkly.com
+      matched_by: domain
+    - name: launchdarkly-node-server-sdk
+      version: 7.0.4
+      released: '2026-03-11'
+      released_field: modified
+      lapsed: false
+      page: https://www.npmjs.com/package/launchdarkly-node-server-sdk
+      repo_leg: github-org:launchdarkly
+      publisher_leg: email:launchdarkly.com
+      matched_by: domain
+    - name: launchdarkly-react-client-sdk
+      version: 3.9.4
+      released: '2026-08-10'
+      released_field: modified
+      lapsed: false
+      page: https://www.npmjs.com/package/launchdarkly-react-client-sdk
+      repo_leg: github-org:launchdarkly
+      publisher_leg: email:launchdarkly.com
+      matched_by: domain
+    current: true
+    signal_note: 'an official package on the registry: distribution, not an integration; lapsed = no release in
+      24 months'
+    detected_by: sweep-official-sdks.py
+    detected: '2026-10-18'
+  status: not-a-workflow
+  arazzo: null
+- slug: launchdarkly-nuget-gallery
+  label: NuGet Gallery
+  partner: nuget
+  partner_name: NuGet Gallery
+  category: official SDK (.NET)
+  type: register
+  channel: package-registry
+  evidence: https://www.nuget.org/packages/LaunchDarkly.ClientSdk
+  source: edge
+  relationship: distribution-channel
+  contract_reference:
+    register: NuGet Gallery (public registry JSON)
+    spec_file: null
+    language: .NET
+    packages:
+    - name: LaunchDarkly.ClientSdk
+      version: 5.10.2
+      released: '2026-10-05'
+      released_field: published
+      lapsed: false
+      page: https://www.nuget.org/packages/LaunchDarkly.ClientSdk
+      repo_leg: github-org:launchdarkly
+      publisher_leg: org:launchdarkly
+      matched_by: github-org
+    - name: LaunchDarkly.ServerSdk
+      version: 8.17.2
+      released: '2026-10-05'
+      released_field: published
+      lapsed: false
+      page: https://www.nuget.org/packages/LaunchDarkly.ServerSdk
+      repo_leg: github-org:launchdarkly
+      publisher_leg: org:launchdarkly
+      matched_by: github-org
+    current: true
+    signal_note: 'an official package on the registry: distribution, not an integration; lapsed = no release in
+      24 months'
+    detected_by: sweep-official-sdks.py
+    detected: '2026-10-18'
+  status: not-a-workflow
+  arazzo: null
+- slug: launchdarkly-pypi
+  label: PyPI
+  partner: pypi
+  partner_name: PyPI
+  category: official SDK (Python)
+  type: register
+  channel: package-registry
+  evidence: https://pypi.org/project/launchdarkly-eventsource/
+  source: edge
+  relationship: distribution-channel
+  contract_reference:
+    register: PyPI (public registry JSON)
+    spec_file: null
+    language: Python
+    packages:
+    - name: launchdarkly-eventsource
+      version: 1.7.3
+      released: '2026-09-17'
+      released_field: upload_time
+      lapsed: false
+      page: https://pypi.org/project/launchdarkly-eventsource/
+      repo_leg: domain:launchdarkly.com
+      publisher_leg: email:launchdarkly.com
+      matched_by: domain
+    - name: launchdarkly-server-sdk
+      version: 9.18.2
+      released: '2026-10-13'
+      released_field: upload_time
+      lapsed: false
+      page: https://pypi.org/project/launchdarkly-server-sdk/
+      repo_leg: domain:launchdarkly.com
+      publisher_leg: email:launchdarkly.com
+      matched_by: domain
+    current: true
+    signal_note: 'an official package on the registry: distribution, not an integration; lapsed = no release in
+      24 months'
+    detected_by: sweep-official-sdks.py
+    detected: '2026-10-18'
+  status: not-a-workflow
+  arazzo: null
+- slug: launchdarkly-rubygems
+  label: RubyGems
+  partner: rubygems
+  partner_name: RubyGems
+  category: official SDK (Ruby)
+  type: register
+  channel: package-registry
+  evidence: https://rubygems.org/gems/launchdarkly-server-sdk
+  source: edge
+  relationship: distribution-channel
+  contract_reference:
+    register: RubyGems (public registry JSON)
+    spec_file: null
+    language: Ruby
+    packages:
+    - name: launchdarkly-server-sdk
+      version: 8.19.0
+      released: '2026-10-15'
+      released_field: version_created_at
+      lapsed: false
+      page: https://rubygems.org/gems/launchdarkly-server-sdk
+      repo_leg: github-org:launchdarkly
+      publisher_leg: org:launchdarkly
+      matched_by: github-org
+    current: true
+    signal_note: 'an official package on the registry: distribution, not an integration; lapsed = no release in
+      24 months'
+    detected_by: sweep-official-sdks.py
+    detected: '2026-10-18'
+  status: not-a-workflow
+  arazzo: null
