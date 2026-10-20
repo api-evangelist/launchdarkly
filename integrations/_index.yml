@@ -51,354 +51,6 @@
   relationship: platform-app
   status: not-a-workflow
   arazzo: null
-- slug: launchdarkly-twilio-segment
-  label: Twilio Segment
-  partner: segment
-  partner_name: Twilio Segment
-  type: marketplace
-  marketplace: segment-partner-destinations
-  channel: partner-built
-  evidence: https://www.twilio.com/docs/segment/connections/destinations/catalog/actions-launchdarkly
-  source: edge
-  relationship: platform-app
-  status: not-a-workflow
-  arazzo: null
-- slug: launchdarkly-rudderstack
-  label: RudderStack
-  partner: rudderstack
-  partner_name: RudderStack
-  type: coverage
-  marketplace: coverage
-  channel: partner-built
-  evidence: https://github.com/rudderlabs/rudder-integrations-config/tree/main/src/configurations/destinations/launchdarkly_audience
-  source: edge
-  relationship: connector-coverage
-  status: not-a-workflow
-  arazzo: null
-- slug: launchdarkly-mparticle
-  label: mParticle
-  partner: mparticle
-  partner_name: mParticle
-  type: coverage
-  marketplace: coverage
-  channel: partner-built
-  evidence: https://docs.mparticle.com/integrations/launchdarkly/feed/
-  source: edge
-  relationship: connector-coverage
-  status: not-a-workflow
-  arazzo: null
-- slug: launchdarkly-hightouch
-  label: Hightouch
-  partner: hightouch
-  partner_name: Hightouch
-  type: coverage
-  marketplace: coverage
-  channel: partner-built
-  evidence: https://hightouch.com/docs/destinations/launchdarkly
-  source: edge
-  relationship: connector-coverage
-  status: not-a-workflow
-  arazzo: null
-- slug: launchdarkly-census
-  label: Census
-  partner: getcensus
-  partner_name: Census
-  type: coverage
-  marketplace: coverage
-  channel: partner-built
-  evidence: https://fivetran.com/docs/activations/destinations/available-destinations/launchdarkly
-  source: edge
-  relationship: connector-coverage
-  status: not-a-workflow
-  arazzo: null
-- slug: launchdarkly-datadog-own
-  label: Datadog (own)
-  partner: datadog
-  partner_name: Datadog (own)
-  category: Configuration & Deployment
-  type: marketplace
-  marketplace: own
-  channel: partner-built
-  evidence: https://github.com/DataDog/integrations-extras/tree/master/launchdarkly
-  source: edge
-  relationship: platform-app
-  status: not-a-workflow
-  arazzo: null
-- slug: launchdarkly-new-relic-own
-  label: New Relic (own)
-  partner: new-relic
-  partner_name: New Relic (own)
-  category: Community
-  type: marketplace
-  marketplace: own
-  channel: partner-built
-  evidence: https://newrelic.com/instant-observability/launchdarkly
-  source: edge
-  relationship: platform-app
-  status: not-a-workflow
-  arazzo: null
-- slug: launchdarkly-okta-own
-  label: Okta (own)
-  partner: okta
-  partner_name: Okta (own)
-  category: Directory and HR Sync
-  type: marketplace
-  marketplace: own
-  channel: partner-built
-  evidence: https://www.okta.com/integrations/dev-677260_launchdarklyeu_1/
-  source: edge
-  relationship: platform-app
-  status: not-a-workflow
-  arazzo: null
-- slug: launchdarkly-cncf-cloud-native-landscape
-  label: CNCF (Cloud Native Landscape)
-  partner: cncf
-  partner_name: CNCF (Cloud Native Landscape)
-  category: Cloud native landscape
-  type: register
-  channel: standard-directory
-  evidence: https://github.com/cncf/landscape/blob/3a7d378b1824b82e729a453bb03fa6f1e37557e1/landscape.yml
-  source: edge
-  relationship: standard-participant
-  contract_reference:
-    register: CNCF Cloud Native Landscape (github.com/cncf/landscape landscape.yml @3a7d378b18)
-    spec_file: null
-    standard: Cloud Native (CNCF)
-    role: landscape-listed
-    registered_name: LaunchDarkly
-    registered_names:
-    - LaunchDarkly
-    website: https://launchdarkly.com
-    matched_domain: launchdarkly.com
-    matched_by: domain
-    member_tier: null
-    joined: null
-    end_user: false
-    cncf_projects: []
-    landscape_categories:
-    - Observability and Analysis / Feature Flagging
-    landscape_entries: 1
-    signal_note: 'participation only: a landscape listing is standard-participant evidence, not depth. Entries,
-      categories, tier and projects are CONTEXT, never read (breadth is not credit)'
-    detected_by: sweep-cloud-native.py
-    detected: '2026-10-15'
-  status: not-a-workflow
-  arazzo: null
-- slug: launchdarkly-zapier
-  label: Zapier
-  partner: zapier
-  partner_name: Zapier
-  type: marketplace
-  marketplace: zapier-directory
-  channel: ipaas-listing
-  evidence: https://zapier.com/apps/launchdarkly/integrations
-  source: edge
-  relationship: ipaas-bridge
-  contract_reference:
-    register: Zapier app directory (zapier.com/api/v4/apps)
-    spec_file: null
-    role: ipaas-connector:zapier
-    registered_name: LaunchDarkly
-    matched_domain: launchdarkly.com
-    matched_by: domain
-    detected_by: sweep-workflow-automation.py
-    detected: '2026-10-15'
-    signal_note: one edge per (provider, platform); actions, triggers and usage counts are context, never read
-    app_slug: launchdarkly
-    beta: false
-    builder: unknown (not in the directory record)
-  status: not-a-workflow
-  arazzo: null
-- slug: launchdarkly-pipedream
-  label: Pipedream
-  partner: pipedream
-  partner_name: Pipedream
-  type: marketplace
-  marketplace: pipedream-components
-  channel: open-source-node
-  evidence: https://github.com/PipedreamHQ/pipedream/tree/94800dd6de6640b942c65ea7ee655f71ac56d438/components/launchdarkly
-  source: edge
-  relationship: ipaas-bridge
-  contract_reference:
-    register: Pipedream components (PipedreamHQ/pipedream components/)
-    spec_file: null
-    role: ipaas-connector:pipedream
-    registered_name: launchdarkly
-    matched_domain: launchdarkly.com
-    matched_by: domain
-    detected_by: sweep-workflow-automation.py
-    detected: '2026-10-15'
-    signal_note: one edge per (provider, platform); actions, triggers and usage counts are context, never read
-    app_slug: launchdarkly
-    actions: true
-    sources: true
-    builder: Pipedream repo (component)
-  status: not-a-workflow
-  arazzo: null
-- slug: launchdarkly-fedramp
-  label: FedRAMP
-  partner_name: FedRAMP
-  category: FedRAMP authorization
-  type: contract
-  channel: regulator-register
-  evidence: https://marketplace.fedramp.gov/products/FR2120962552
-  source: edge
-  relationship: standard-participant
-  contract_reference:
-    register: FedRAMP Marketplace data (github.com/18F/fedramp-data data/data.json @4b73d9247f)
-    standard: FedRAMP
-    spec_file: null
-    role: fedramp-authorized
-    registered_name: LaunchDarkly
-    register_id: FR2120962552
-    matched_domain: launchdarkly.com
-    matched_by: domain
-    domain_source: website
-    designations:
-    - Compliant
-    packages:
-    - LaunchDarkly
-    service_models:
-    - SaaS
-    paths:
-    - Agency
-    signal_note: certified_products = one entry per AUTHORIZED impact level, never per package; packages, service
-      models, paths and leveraging agencies are context, never counted. The register lists current designations
-      only (revoked / expired are removed), so lapsed is always false
-    detected_by: sweep-gov-cloud.py
-    detected: '2026-10-15'
-    certified_products:
-    - product: FedRAMP Moderate
-      impact_level: Moderate
-      lapsed: false
-      latest_authorization: '2022-07-08'
-  status: not-a-workflow
-  arazzo: null
-- slug: launchdarkly-contentful-own
-  label: Contentful (own)
-  partner: contentful
-  partner_name: Contentful (own)
-  type: marketplace
-  marketplace: own
-  channel: partner-built
-  evidence: https://www.contentful.com/marketplace/launchdarkly/
-  source: edge
-  relationship: platform-app
-  status: not-a-workflow
-  arazzo: null
-- slug: launchdarkly-airbyte
-  label: Airbyte
-  partner: airbyte
-  partner_name: Airbyte
-  type: marketplace
-  marketplace: airbyte-registry
-  channel: elt-connector
-  evidence: https://docs.airbyte.com/integrations/sources/launchdarkly
-  source: edge
-  relationship: ipaas-bridge
-  contract_reference:
-    register: Airbyte connector registry (connectors.airbyte.com cloud_registry.json + oss_registry.json)
-    spec_file: null
-    role: elt-connector:airbyte-community
-    registered_name: LaunchDarkly
-    matched_domain: launchdarkly.com
-    matched_by: domain
-    detected_by: sweep-data-integration.py
-    detected: '2026-10-18'
-    signal_note: one edge per (provider, platform); connectors, streams, packages and usage are context, never read
-    connectors:
-    - airbyte/source-launchdarkly
-    support_level:
-    - community
-    release_stage:
-    - alpha
-    in_cloud: true
-    builder: unknown (community connector; contributor not in the record)
-  status: not-a-workflow
-  arazzo: null
-- slug: launchdarkly-fivetran
-  label: Fivetran
-  partner: fivetran
-  partner_name: Fivetran
-  type: marketplace
-  marketplace: fivetran-connectors
-  channel: elt-connector
-  evidence: https://fivetran.com/docs/connectors/applications/launchdarkly
-  source: edge
-  relationship: ipaas-bridge
-  contract_reference:
-    register: Fivetran connectors (fivetran.com/docs/connectors, docs-sitemap.xml + Partner-Built program)
-    spec_file: null
-    role: elt-connector:fivetran
-    registered_name: LaunchDarkly
-    matched_domain: launchdarkly.com
-    matched_by: domain
-    detected_by: sweep-data-integration.py
-    detected: '2026-10-18'
-    signal_note: one edge per (provider, platform); connectors, streams, packages and usage are context, never read
-    connector_paths:
-    - connectors/applications/launchdarkly
-    vendor_link: https://launchdarkly.com/
-    builder: Fivetran
-  status: not-a-workflow
-  arazzo: null
-- slug: launchdarkly-meltano
-  label: Meltano
-  partner: meltano
-  partner_name: Meltano
-  type: marketplace
-  marketplace: meltano-hub
-  channel: elt-connector
-  evidence: https://hub.meltano.com/extractors/tap-launchdarkly--airbyte
-  source: edge
-  relationship: ipaas-bridge
-  contract_reference:
-    register: Meltano Hub (github.com/meltano/hub _data/meltano extractors + loaders)
-    spec_file: null
-    role: elt-connector:meltano-hub
-    registered_name: Launchdarkly
-    matched_domain: launchdarkly.com
-    matched_by: domain
-    detected_by: sweep-data-integration.py
-    detected: '2026-10-18'
-    signal_note: one edge per (provider, platform); connectors, streams, packages and usage are context, never read
-    plugins:
-    - tap-launchdarkly--airbyte
-    - tap-launchdarkly--pulumi
-    maintenance_status:
-    - active
-    - beta
-    quality:
-    - bronze
-    builder: 'community (Meltano Hub variant maintainers: airbyte, pulumi)'
-  status: not-a-workflow
-  arazzo: null
-- slug: launchdarkly-microsoft-teams-own
-  label: Microsoft Teams (own)
-  partner: microsoft-teams
-  partner_name: Microsoft Teams (own)
-  category: Microsoft Teams app
-  type: marketplace
-  marketplace: own
-  channel: partner-built
-  evidence: https://appsource.microsoft.com/en-us/product/office/WA200005047
-  source: edge
-  relationship: platform-app
-  status: not-a-workflow
-  arazzo: null
-- slug: launchdarkly-slack-own
-  label: Slack (own)
-  partner: slack
-  partner_name: Slack (own)
-  category: Slack app
-  type: marketplace
-  marketplace: own
-  channel: partner-built
-  evidence: https://slack.com/marketplace/AKEEF9DTM-launchdarkly
-  source: edge
-  relationship: platform-app
-  status: not-a-workflow
-  arazzo: null
 - slug: launchdarkly-go-module-proxy
   label: Go module proxy
   partner_name: Go module proxy
@@ -717,5 +369,366 @@
       24 months'
     detected_by: sweep-official-sdks.py
     detected: '2026-10-18'
+  status: not-a-workflow
+  arazzo: null
+- slug: launchdarkly-twilio-segment
+  label: Twilio Segment
+  partner: segment
+  partner_name: Twilio Segment
+  type: marketplace
+  marketplace: segment-partner-destinations
+  channel: partner-built
+  evidence: https://www.twilio.com/docs/segment/connections/destinations/catalog/actions-launchdarkly
+  source: edge
+  relationship: platform-app
+  status: not-a-workflow
+  arazzo: null
+- slug: launchdarkly-rudderstack
+  label: RudderStack
+  partner: rudderstack
+  partner_name: RudderStack
+  type: coverage
+  marketplace: coverage
+  channel: partner-built
+  evidence: https://github.com/rudderlabs/rudder-integrations-config/tree/main/src/configurations/destinations/launchdarkly_audience
+  source: edge
+  relationship: connector-coverage
+  status: not-a-workflow
+  arazzo: null
+- slug: launchdarkly-mparticle
+  label: mParticle
+  partner: mparticle
+  partner_name: mParticle
+  type: coverage
+  marketplace: coverage
+  channel: partner-built
+  evidence: https://docs.mparticle.com/integrations/launchdarkly/feed/
+  source: edge
+  relationship: connector-coverage
+  status: not-a-workflow
+  arazzo: null
+- slug: launchdarkly-hightouch
+  label: Hightouch
+  partner: hightouch
+  partner_name: Hightouch
+  type: coverage
+  marketplace: coverage
+  channel: partner-built
+  evidence: https://hightouch.com/docs/destinations/launchdarkly
+  source: edge
+  relationship: connector-coverage
+  status: not-a-workflow
+  arazzo: null
+- slug: launchdarkly-census
+  label: Census
+  partner: getcensus
+  partner_name: Census
+  type: coverage
+  marketplace: coverage
+  channel: partner-built
+  evidence: https://fivetran.com/docs/activations/destinations/available-destinations/launchdarkly
+  source: edge
+  relationship: connector-coverage
+  status: not-a-workflow
+  arazzo: null
+- slug: launchdarkly-airbyte
+  label: Airbyte
+  partner: airbyte
+  partner_name: Airbyte
+  type: marketplace
+  marketplace: airbyte-registry
+  channel: elt-connector
+  evidence: https://docs.airbyte.com/integrations/sources/launchdarkly
+  source: edge
+  relationship: ipaas-bridge
+  contract_reference:
+    register: Airbyte connector registry (connectors.airbyte.com cloud_registry.json + oss_registry.json)
+    spec_file: null
+    role: elt-connector:airbyte-community
+    registered_name: LaunchDarkly
+    matched_domain: launchdarkly.com
+    matched_by: domain
+    detected_by: sweep-data-integration.py
+    detected: '2026-10-18'
+    signal_note: one edge per (provider, platform); connectors, streams, packages and usage are context, never read
+    connectors:
+    - airbyte/source-launchdarkly
+    support_level:
+    - community
+    release_stage:
+    - alpha
+    in_cloud: true
+    builder: unknown (community connector; contributor not in the record)
+  status: not-a-workflow
+  arazzo: null
+- slug: launchdarkly-fivetran
+  label: Fivetran
+  partner: fivetran
+  partner_name: Fivetran
+  type: marketplace
+  marketplace: fivetran-connectors
+  channel: elt-connector
+  evidence: https://fivetran.com/docs/connectors/applications/launchdarkly
+  source: edge
+  relationship: ipaas-bridge
+  contract_reference:
+    register: Fivetran connectors (fivetran.com/docs/connectors, docs-sitemap.xml + Partner-Built program)
+    spec_file: null
+    role: elt-connector:fivetran
+    registered_name: LaunchDarkly
+    matched_domain: launchdarkly.com
+    matched_by: domain
+    detected_by: sweep-data-integration.py
+    detected: '2026-10-18'
+    signal_note: one edge per (provider, platform); connectors, streams, packages and usage are context, never read
+    connector_paths:
+    - connectors/applications/launchdarkly
+    vendor_link: https://launchdarkly.com/
+    builder: Fivetran
+  status: not-a-workflow
+  arazzo: null
+- slug: launchdarkly-meltano
+  label: Meltano
+  partner: meltano
+  partner_name: Meltano
+  type: marketplace
+  marketplace: meltano-hub
+  channel: elt-connector
+  evidence: https://hub.meltano.com/extractors/tap-launchdarkly--airbyte
+  source: edge
+  relationship: ipaas-bridge
+  contract_reference:
+    register: Meltano Hub (github.com/meltano/hub _data/meltano extractors + loaders)
+    spec_file: null
+    role: elt-connector:meltano-hub
+    registered_name: Launchdarkly
+    matched_domain: launchdarkly.com
+    matched_by: domain
+    detected_by: sweep-data-integration.py
+    detected: '2026-10-18'
+    signal_note: one edge per (provider, platform); connectors, streams, packages and usage are context, never read
+    plugins:
+    - tap-launchdarkly--airbyte
+    - tap-launchdarkly--pulumi
+    maintenance_status:
+    - active
+    - beta
+    quality:
+    - bronze
+    builder: 'community (Meltano Hub variant maintainers: airbyte, pulumi)'
+  status: not-a-workflow
+  arazzo: null
+- slug: launchdarkly-fedramp
+  label: FedRAMP
+  partner_name: FedRAMP
+  category: FedRAMP authorization
+  type: contract
+  channel: regulator-register
+  evidence: https://marketplace.fedramp.gov/products/FR2120962552
+  source: edge
+  relationship: standard-participant
+  contract_reference:
+    register: FedRAMP Marketplace data (github.com/18F/fedramp-data data/data.json @4b73d9247f)
+    standard: FedRAMP
+    spec_file: null
+    role: fedramp-authorized
+    registered_name: LaunchDarkly
+    register_id: FR2120962552
+    matched_domain: launchdarkly.com
+    matched_by: domain
+    domain_source: website
+    designations:
+    - Compliant
+    packages:
+    - LaunchDarkly
+    service_models:
+    - SaaS
+    paths:
+    - Agency
+    signal_note: certified_products = one entry per AUTHORIZED impact level, never per package; packages, service
+      models, paths and leveraging agencies are context, never counted. The register lists current designations
+      only (revoked / expired are removed), so lapsed is always false
+    detected_by: sweep-gov-cloud.py
+    detected: '2026-10-15'
+    certified_products:
+    - product: FedRAMP Moderate
+      impact_level: Moderate
+      lapsed: false
+      latest_authorization: '2022-07-08'
+  status: not-a-workflow
+  arazzo: null
+- slug: launchdarkly-cncf-cloud-native-landscape
+  label: CNCF (Cloud Native Landscape)
+  partner: cncf
+  partner_name: CNCF (Cloud Native Landscape)
+  category: Cloud native landscape
+  type: register
+  channel: standard-directory
+  evidence: https://github.com/cncf/landscape/blob/42dd4cd91dad8ec8558ac02467a43f0805b9957a/landscape.yml
+  source: edge
+  relationship: standard-participant
+  contract_reference:
+    register: CNCF Cloud Native Landscape (github.com/cncf/landscape landscape.yml @42dd4cd91d)
+    spec_file: null
+    standard: Cloud Native (CNCF)
+    role: landscape-listed
+    registered_name: LaunchDarkly
+    registered_names:
+    - LaunchDarkly
+    website: https://launchdarkly.com
+    matched_domain: launchdarkly.com
+    matched_by: domain
+    member_tier: null
+    joined: null
+    end_user: false
+    cncf_projects: []
+    landscape_categories:
+    - Observability and Analysis / Feature Flagging
+    landscape_entries: 1
+    signal_note: 'participation only: a landscape listing is standard-participant evidence, not depth. Entries,
+      categories, tier and projects are CONTEXT, never read (breadth is not credit)'
+    detected_by: sweep-cloud-native.py
+    detected: '2026-10-19'
+  status: not-a-workflow
+  arazzo: null
+- slug: launchdarkly-zapier
+  label: Zapier
+  partner: zapier
+  partner_name: Zapier
+  type: marketplace
+  marketplace: zapier-directory
+  channel: ipaas-listing
+  evidence: https://zapier.com/apps/launchdarkly/integrations
+  source: edge
+  relationship: ipaas-bridge
+  contract_reference:
+    register: Zapier app directory (zapier.com/api/v4/apps)
+    spec_file: null
+    role: ipaas-connector:zapier
+    registered_name: LaunchDarkly
+    matched_domain: launchdarkly.com
+    matched_by: domain
+    detected_by: sweep-workflow-automation.py
+    detected: '2026-10-15'
+    signal_note: one edge per (provider, platform); actions, triggers and usage counts are context, never read
+    app_slug: launchdarkly
+    beta: false
+    builder: unknown (not in the directory record)
+  status: not-a-workflow
+  arazzo: null
+- slug: launchdarkly-pipedream
+  label: Pipedream
+  partner: pipedream
+  partner_name: Pipedream
+  type: marketplace
+  marketplace: pipedream-components
+  channel: open-source-node
+  evidence: https://github.com/PipedreamHQ/pipedream/tree/d5872355ef27b4efa769f05352f2820c299a456e/components/launchdarkly
+  source: edge
+  relationship: ipaas-bridge
+  contract_reference:
+    register: Pipedream components (PipedreamHQ/pipedream components/)
+    spec_file: null
+    role: ipaas-connector:pipedream
+    registered_name: launchdarkly
+    matched_domain: launchdarkly.com
+    matched_by: domain
+    detected_by: sweep-workflow-automation.py
+    detected: '2026-10-15'
+    signal_note: one edge per (provider, platform); actions, triggers and usage counts are context, never read
+    app_slug: launchdarkly
+    actions: true
+    sources: true
+    builder: Pipedream repo (component)
+  status: not-a-workflow
+  arazzo: null
+- slug: launchdarkly-contentful-own
+  label: Contentful (own)
+  partner: contentful
+  partner_name: Contentful (own)
+  type: marketplace
+  marketplace: own
+  channel: partner-built
+  evidence: https://www.contentful.com/marketplace/launchdarkly/
+  source: edge
+  relationship: platform-app
+  status: not-a-workflow
+  arazzo: null
+- slug: launchdarkly-datadog-own
+  label: Datadog (own)
+  partner: datadog
+  partner_name: Datadog (own)
+  category: Configuration & Deployment
+  type: marketplace
+  marketplace: own
+  channel: partner-built
+  evidence: https://github.com/DataDog/integrations-extras/tree/master/launchdarkly
+  source: edge
+  relationship: platform-app
+  status: not-a-workflow
+  arazzo: null
+- slug: launchdarkly-microsoft-teams-own
+  label: Microsoft Teams (own)
+  partner: microsoft-teams
+  partner_name: Microsoft Teams (own)
+  category: Microsoft Teams app
+  type: marketplace
+  marketplace: own
+  channel: partner-built
+  evidence: https://appsource.microsoft.com/en-us/product/office/WA200005047
+  source: edge
+  relationship: platform-app
+  status: not-a-workflow
+  arazzo: null
+- slug: launchdarkly-new-relic-own
+  label: New Relic (own)
+  partner: new-relic
+  partner_name: New Relic (own)
+  category: Community
+  type: marketplace
+  marketplace: own
+  channel: partner-built
+  evidence: https://newrelic.com/instant-observability/launchdarkly
+  source: edge
+  relationship: platform-app
+  status: not-a-workflow
+  arazzo: null
+- slug: launchdarkly-okta-own
+  label: Okta (own)
+  partner: okta
+  partner_name: Okta (own)
+  category: Directory and HR Sync
+  type: marketplace
+  marketplace: own
+  channel: partner-built
+  evidence: https://www.okta.com/integrations/dev-677260_launchdarklyeu_1/
+  source: edge
+  relationship: platform-app
+  status: not-a-workflow
+  arazzo: null
+- slug: launchdarkly-slack-own
+  label: Slack (own)
+  partner: slack
+  partner_name: Slack (own)
+  category: Slack app
+  type: marketplace
+  marketplace: own
+  channel: partner-built
+  evidence: https://slack.com/marketplace/AKEEF9DTM-launchdarkly
+  source: edge
+  relationship: platform-app
+  status: not-a-workflow
+  arazzo: null
+- slug: launchdarkly-zendesk-own
+  label: Zendesk (own)
+  partner: zendesk
+  partner_name: Zendesk (own)
+  category: Product and Project Management
+  type: marketplace
+  marketplace: own
+  channel: partner-built
+  evidence: https://www.zendesk.com/marketplace/apps/support/474556/launchdarkly/
+  source: edge
+  relationship: platform-app
   status: not-a-workflow
   arazzo: null
