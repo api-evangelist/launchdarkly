@@ -811,6 +811,40 @@ edges:
     year: '2015'
   detected_by: sweep-accelerator-portfolios.py
   first_seen: '2026-10-21'
+- partner_name: GitHub secret scanning partner program
+  partner: github
+  partner_match: register-name
+  type: register
+  channel: standard-directory
+  relationship: standard-participant
+  direction: partner-built
+  evidence: https://docs.github.com/en/code-security/reference/secret-security/supported-secret-scanning-patterns#supported-provider-patterns
+  category: GitHub platform partnership (security)
+  contract_reference:
+    register: GitHub secret scanning partner program (docs.github.com supported-secret-scanning-patterns, 'Partner'
+      column = isPublic in the page's own pattern data)
+    standard: GitHub secret scanning partner program
+    spec_file: null
+    role: secret-scanning-partner
+    registered_name: LaunchDarkly
+    register_id: https://docs.github.com/en/code-security/reference/secret-security/supported-secret-scanning-patterns#supported-provider-patterns
+    matched_domain: null
+    matched_by: register-name
+    register_name_note: register-name 'launchdarkly' = launchdarkly; wikidata P856 launchdarkly.com agrees or unheld
+    token_types:
+    - launchdarkly_access_token
+    context:
+      push_protection: 1
+      validity_check: 0
+    signal_note: 'participation only: GitHub notifies the provider when its token leaks publicly (the provider runs
+      a verification endpoint for the programme); token types and counts are context, never counted'
+    detected_by: sweep-github-marketplace.py
+    detected: '2026-10-21'
+    identity_source: register-name
+    identity_note: register gave only the name; exact normalised match to the repo's apis.yml name, one repo, Wikidata
+      P856 not contradicting (Kin 2026-10-20 decision 2)
+  detected_by: sweep-github-marketplace.py
+  first_seen: '2026-10-21'
 - partner_name: Contentful (own)
   partner: contentful
   partner_match: mirror
@@ -1000,40 +1034,23 @@ edges:
   badges:
   - Verified publisher (Terraform partner tier)
   - Verified publisher (GitHub domain-verified organization)
-- partner_name: GitHub secret scanning partner program
-  partner: github
-  partner_match: register-name
-  type: register
-  channel: standard-directory
-  relationship: standard-participant
-  direction: partner-built
-  evidence: https://docs.github.com/en/code-security/reference/secret-security/supported-secret-scanning-patterns#supported-provider-patterns
-  category: GitHub platform partnership (security)
-  contract_reference:
-    register: GitHub secret scanning partner program (docs.github.com supported-secret-scanning-patterns, 'Partner'
-      column = isPublic in the page's own pattern data)
-    standard: GitHub secret scanning partner program
-    spec_file: null
-    role: secret-scanning-partner
-    registered_name: LaunchDarkly
-    register_id: https://docs.github.com/en/code-security/reference/secret-security/supported-secret-scanning-patterns#supported-provider-patterns
-    matched_domain: null
-    matched_by: register-name
-    register_name_note: register-name 'launchdarkly' = launchdarkly; wikidata P856 launchdarkly.com agrees or unheld
-    token_types:
-    - launchdarkly_access_token
-    context:
-      push_protection: 1
-      validity_check: 0
-    signal_note: 'participation only: GitHub notifies the provider when its token leaks publicly (the provider runs
-      a verification endpoint for the programme); token types and counts are context, never counted'
-    detected_by: sweep-github-marketplace.py
-    detected: '2026-10-21'
-    identity_source: register-name
-    identity_note: register gave only the name; exact normalised match to the repo's apis.yml name, one repo, Wikidata
-      P856 not contradicting (Kin 2026-10-20 decision 2)
-  detected_by: sweep-github-marketplace.py
-  first_seen: '2026-10-21'
+- partner_name: Google Play Developer (Google Play SDK Index)
+  partner: google-play
+  partner_match: mirror
+  mirror_match: domain
+  type: marketplace
+  relationship: platform-app
+  direction: third-party
+  channel: partner-built
+  marketplace: Google Play SDK Index
+  evidence: https://play.google.com/sdks/details/com-launchdarkly-launchdarkly-android-client-sdk
+  mirror_of: google-play/integrations/google-play-integration-edges.yml
+  apps:
+  - LaunchDarkly SDK
+  listing_count: 1
+  detected: '2026-10-21'
+  detected_by: mirror-platform-listings.py
+  category: mobile SDK (marketing-and-engagement)
 method: searched
 checked:
 - contentful/integrations/contentful-integration-edges.yml
@@ -1093,6 +1110,7 @@ checked:
 - https://docs.github.com/en/code-security/tutorials/secret-scanning-partner-program
 - https://github.com/partners/technology-partners
 - https://partner.github.com/
+- google-play/integrations/google-play-integration-edges.yml
 source:
 - https://docs.mparticle.com/integrations/launchdarkly/feed/
 - https://fivetran.com/docs/activations/destinations/available-destinations/launchdarkly
