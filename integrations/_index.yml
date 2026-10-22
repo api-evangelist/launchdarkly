@@ -945,3 +945,45 @@
     detected: '2026-10-22'
   status: not-a-workflow
   arazzo: null
+- slug: launchdarkly-apis-guru-openapi-directory
+  label: APIs.guru OpenAPI Directory
+  partner: apis-guru
+  partner_name: APIs.guru OpenAPI Directory
+  category: API definition directory listing (OpenAPI)
+  type: register
+  channel: standard-directory
+  evidence: https://apis.guru/
+  source: edge
+  relationship: standard-participant
+  contract_reference:
+    register: APIs.guru OpenAPI Directory
+    spec_file: null
+    standard: APIs.guru OpenAPI Directory
+    role: listed-in-directory
+    directory_provider: launchdarkly.com
+    matched_domain: launchdarkly.com
+    matched_by: domain
+    apis_listed: 1
+    version_count: 1
+    first_added: '2017-09-29'
+    last_updated: '2021-07-19'
+    origin_publisher_hosted: false
+    origin_hosts:
+    - launchdarkly.github.io
+    categories:
+    - developer_tools
+    own_openapi_files: 66
+    listings:
+    - key: launchdarkly.com
+      title: LaunchDarkly REST API
+      preferred: 5.3.0
+      versions: 1
+      swagger_url: https://api.apis.guru/v2/specs/launchdarkly.com/5.3.0/swagger.json
+      origin_url: https://launchdarkly.github.io/ld-openapi/openapi.json
+      openapi_version: '2.0'
+    signal_note: 'participation only: a community directory listing (APIs.guru collects definitions; the provider
+      did not file them). Signals: version_count, apis_listed, origin_publisher_hosted.'
+    detected_by: sweep-openapi-directory-apis-guru.py
+    detected: '2026-10-22'
+  status: not-a-workflow
+  arazzo: null
