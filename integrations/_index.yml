@@ -751,6 +751,323 @@
       P856 not contradicting (Kin 2026-10-20 decision 2)
   status: not-a-workflow
   arazzo: null
+- slug: launchdarkly-raycast
+  label: Raycast
+  partner: raycast
+  partner_name: Raycast
+  category: Raycast Store extension (community wrapper)
+  type: marketplace
+  marketplace: raycast-store
+  channel: connector-listing
+  evidence: https://www.raycast.com/luarmr/launchdarkly
+  source: edge
+  relationship: connector-coverage
+  contract_reference:
+    register: Raycast Store (raycast/extensions monorepo + store_listings JSON)
+    spec_file: null
+    role: raycast-community-wrapper
+    builder: community
+    authors:
+    - luarmr
+    matched_domain: launchdarkly.com
+    matched_by: domain
+    monorepo_commit: 84f9ac51336a8c69f70974a75bc067c0feae3658
+    listings:
+    - title: LaunchDarkly
+      store_url: https://www.raycast.com/luarmr/launchdarkly
+      installs: 170
+      categories:
+      - Developer Tools
+      source: https://github.com/raycast/extensions/tree/84f9ac51336a8c69f70974a75bc067c0feae3658/extensions/launchdarkly/
+      author: luarmr
+    categories:
+    - Developer Tools
+    identity_note: the extension's own source calls a host on the product's domain AND its title / package name
+      passes partner_link's name check; built by Raycast community developers, not the vendor
+    signal_note: 'coverage: Raycast''s store reaches the product through community-built extensions; one edge per
+      (product, store); install / listing counts are context, never counted'
+    detected_by: sweep-raycast-store-extensions.py
+    detected: '2026-10-22'
+  status: not-a-workflow
+  arazzo: null
+- slug: launchdarkly-apis-guru-openapi-directory
+  label: APIs.guru OpenAPI Directory
+  partner: apis-guru
+  partner_name: APIs.guru OpenAPI Directory
+  category: API definition directory listing (OpenAPI)
+  type: register
+  channel: standard-directory
+  evidence: https://apis.guru/
+  source: edge
+  relationship: standard-participant
+  contract_reference:
+    register: APIs.guru OpenAPI Directory
+    spec_file: null
+    standard: APIs.guru OpenAPI Directory
+    role: listed-in-directory
+    directory_provider: launchdarkly.com
+    matched_domain: launchdarkly.com
+    matched_by: domain
+    apis_listed: 1
+    version_count: 1
+    first_added: '2017-09-29'
+    last_updated: '2021-07-19'
+    origin_publisher_hosted: false
+    origin_hosts:
+    - launchdarkly.github.io
+    categories:
+    - developer_tools
+    own_openapi_files: 66
+    listings:
+    - key: launchdarkly.com
+      title: LaunchDarkly REST API
+      preferred: 5.3.0
+      versions: 1
+      swagger_url: https://api.apis.guru/v2/specs/launchdarkly.com/5.3.0/swagger.json
+      origin_url: https://launchdarkly.github.io/ld-openapi/openapi.json
+      openapi_version: '2.0'
+    signal_note: 'participation only: a community directory listing (APIs.guru collects definitions; the provider
+      did not file them). Signals: version_count, apis_listed, origin_publisher_hosted.'
+    detected_by: sweep-openapi-directory-apis-guru.py
+    detected: '2026-10-22'
+  status: not-a-workflow
+  arazzo: null
+- slug: launchdarkly-tx-ramp
+  label: TX-RAMP
+  partner_name: TX-RAMP
+  category: Texas state cloud security certification (TX-RAMP)
+  type: contract
+  channel: regulator-register
+  evidence: https://dir.texas.gov/resource-library-item/tx-ramp-certified-cloud-products
+  source: edge
+  relationship: standard-participant
+  contract_reference:
+    register: TX-RAMP Certified Cloud Products (Texas DIR)
+    standard: TX-RAMP
+    spec_file: null
+    role: tx-ramp-certified
+    register_file: https://dir.texas.gov/sites/default/files/2026-10/Copy%20of%20TX-RAMP%20Certified%20Cloud%20Products_1.xlsx
+    registrations:
+    - certification_id: TX1009296
+      product: LaunchDarkly
+      registered_vendor: LaunchDarkly
+      certification_level: Provisional
+      cloud_categories:
+      - SaaS
+      certification_path: Certification Due to Existing Other RAMP-Certification
+      expires: null
+      lapsed: false
+      matched_domain: launchdarkly.com
+      matched_by: domain
+    identity: wikidata Q140599516 'LaunchDarkly' P856 https://launchdarkly.com/
+    identity_source: wikidata P856 (labelled provenance step; Kin 2026-10-15 decision 1)
+    signal_note: 'certified_products = one entry per cloud category (SaaS / PaaS / IaaS) the vendor holds a TX-RAMP
+      certification in, never per product; products are context, never counted. certification_level = the highest
+      level in that category; lapsed: true when every product in the category is past its expiry date. partner_tier
+      = the highest CURRENT level'
+    certified_products:
+    - product: SaaS
+      product_type: SaaS
+      standard: TX-RAMP
+      certification_level: Provisional
+      lapsed: false
+    detected_by: sweep-tx-ramp-certified-cloud.py
+    detected: '2026-10-22'
+  status: not-a-workflow
+  arazzo: null
+- slug: launchdarkly-hex
+  label: Hex
+  partner: hex-pm
+  partner_name: Hex
+  category: official SDK (Elixir/Erlang)
+  type: register
+  channel: package-registry
+  evidence: https://hex.pm/packages/launchdarkly_server_sdk
+  source: edge
+  relationship: distribution-channel
+  contract_reference:
+    register: Hex (public registry JSON)
+    spec_file: null
+    language: Elixir/Erlang
+    packages:
+    - name: launchdarkly_server_sdk
+      version: 3.12.1
+      released: '2026-10-21'
+      released_field: inserted_at
+      lapsed: false
+      page: https://hex.pm/packages/launchdarkly_server_sdk
+      repo_leg: github-org:launchdarkly
+      publisher_leg: org:launchdarkly
+      matched_by: github-org
+    current: true
+    signal_note: 'an official package on the registry: distribution, not an integration; lapsed = no release in
+      24 months'
+    detected_by: sweep-php-dart-elixir-package-registries.py
+    detected: '2026-10-22'
+  status: not-a-workflow
+  arazzo: null
+- slug: launchdarkly-packagist
+  label: Packagist
+  partner: packagist
+  partner_name: Packagist
+  category: official SDK (PHP)
+  type: register
+  channel: package-registry
+  evidence: https://packagist.org/packages/launchdarkly/api-client-php
+  source: edge
+  relationship: distribution-channel
+  contract_reference:
+    register: Packagist (public registry JSON)
+    spec_file: null
+    language: PHP
+    packages:
+    - name: launchdarkly/api-client-php
+      version: 20.0.0
+      released: '2025-12-17'
+      released_field: time
+      lapsed: true
+      page: https://packagist.org/packages/launchdarkly/api-client-php
+      repo_leg: github-org:launchdarkly
+      publisher_leg: org:launchdarkly
+      matched_by: github-org
+      abandoned: true
+    - name: launchdarkly/launchdarkly-php
+      version: 6.11.0
+      released: '2026-10-21'
+      released_field: time
+      lapsed: false
+      page: https://packagist.org/packages/launchdarkly/launchdarkly-php
+      repo_leg: github-org:launchdarkly
+      publisher_leg: org:launchdarkly
+      matched_by: github-org
+    - name: launchdarkly/server-sdk
+      version: 6.11.0
+      released: '2026-10-21'
+      released_field: time
+      lapsed: false
+      page: https://packagist.org/packages/launchdarkly/server-sdk
+      repo_leg: github-org:launchdarkly
+      publisher_leg: org:launchdarkly
+      matched_by: github-org
+    - name: launchdarkly/server-sdk-consul
+      version: 3.3.0
+      released: '2026-10-21'
+      released_field: time
+      lapsed: false
+      page: https://packagist.org/packages/launchdarkly/server-sdk-consul
+      repo_leg: github-org:launchdarkly
+      publisher_leg: org:launchdarkly
+      matched_by: github-org
+    - name: launchdarkly/server-sdk-dynamodb
+      version: 1.4.0
+      released: '2026-10-21'
+      released_field: time
+      lapsed: false
+      page: https://packagist.org/packages/launchdarkly/server-sdk-dynamodb
+      repo_leg: github-org:launchdarkly
+      publisher_leg: org:launchdarkly
+      matched_by: github-org
+    - name: launchdarkly/server-sdk-otel
+      version: 0.2.0
+      released: '2026-10-21'
+      released_field: time
+      lapsed: false
+      page: https://packagist.org/packages/launchdarkly/server-sdk-otel
+      repo_leg: github-org:launchdarkly
+      publisher_leg: org:launchdarkly
+      matched_by: github-org
+    - name: launchdarkly/server-sdk-redis-phpredis
+      version: 2.1.0
+      released: '2026-10-21'
+      released_field: time
+      lapsed: false
+      page: https://packagist.org/packages/launchdarkly/server-sdk-redis-phpredis
+      repo_leg: github-org:launchdarkly
+      publisher_leg: org:launchdarkly
+      matched_by: github-org
+    - name: launchdarkly/server-sdk-redis-predis
+      version: 2.1.0
+      released: '2026-10-21'
+      released_field: time
+      lapsed: false
+      page: https://packagist.org/packages/launchdarkly/server-sdk-redis-predis
+      repo_leg: github-org:launchdarkly
+      publisher_leg: org:launchdarkly
+      matched_by: github-org
+    current: true
+    signal_note: 'an official package on the registry: distribution, not an integration; lapsed = no release in
+      24 months'
+    detected_by: sweep-php-dart-elixir-package-registries.py
+    detected: '2026-10-22'
+  status: not-a-workflow
+  arazzo: null
+- slug: launchdarkly-pub-dev
+  label: pub.dev
+  partner: pub-dev
+  partner_name: pub.dev
+  category: official SDK (Dart/Flutter)
+  type: register
+  channel: package-registry
+  evidence: https://pub.dev/packages/launchdarkly_common_client
+  source: edge
+  relationship: distribution-channel
+  contract_reference:
+    register: pub.dev (public registry JSON)
+    spec_file: null
+    language: Dart/Flutter
+    packages:
+    - name: launchdarkly_common_client
+      version: 1.15.0
+      released: '2026-09-25'
+      released_field: published
+      lapsed: false
+      page: https://pub.dev/packages/launchdarkly_common_client
+      repo_leg: not required (verified publisher)
+      publisher_leg: verified-publisher:launchdarkly.com
+      matched_by: domain
+    - name: launchdarkly_dart_common
+      version: 1.8.2
+      released: '2026-08-26'
+      released_field: published
+      lapsed: false
+      page: https://pub.dev/packages/launchdarkly_dart_common
+      repo_leg: not required (verified publisher)
+      publisher_leg: verified-publisher:launchdarkly.com
+      matched_by: domain
+    - name: launchdarkly_event_source_client
+      version: 3.0.0
+      released: '2026-06-25'
+      released_field: published
+      lapsed: false
+      page: https://pub.dev/packages/launchdarkly_event_source_client
+      repo_leg: not required (verified publisher)
+      publisher_leg: verified-publisher:launchdarkly.com
+      matched_by: domain
+    - name: launchdarkly_flutter_client_sdk
+      version: 4.21.0
+      released: '2026-09-25'
+      released_field: published
+      lapsed: false
+      page: https://pub.dev/packages/launchdarkly_flutter_client_sdk
+      repo_leg: not required (verified publisher)
+      publisher_leg: verified-publisher:launchdarkly.com
+      matched_by: domain
+    - name: launchdarkly_flutter_observability
+      version: 1.0.2
+      released: '2026-10-07'
+      released_field: published
+      lapsed: false
+      page: https://pub.dev/packages/launchdarkly_flutter_observability
+      repo_leg: not required (verified publisher)
+      publisher_leg: verified-publisher:launchdarkly.com
+      matched_by: domain
+    current: true
+    signal_note: 'an official package on the registry: distribution, not an integration; lapsed = no release in
+      24 months'
+    detected_by: sweep-php-dart-elixir-package-registries.py
+    detected: '2026-10-22'
+  status: not-a-workflow
+  arazzo: null
 - slug: launchdarkly-contentful-own
   label: Contentful (own)
   partner: contentful
@@ -906,127 +1223,16 @@
   relationship: platform-app
   status: not-a-workflow
   arazzo: null
-- slug: launchdarkly-raycast
-  label: Raycast
-  partner: raycast
-  partner_name: Raycast
-  category: Raycast Store extension (community wrapper)
+- slug: launchdarkly-ansible-ansible-galaxy
+  label: Ansible (ansible-galaxy)
+  partner: ansible
+  partner_name: Ansible (ansible-galaxy)
+  category: configuration-management content listing (Ansible collection)
   type: marketplace
-  marketplace: raycast-store
-  channel: connector-listing
-  evidence: https://www.raycast.com/luarmr/launchdarkly
+  marketplace: ansible-galaxy
+  channel: partner-built
+  evidence: https://galaxy.ansible.com/ui/repo/published/launchdarkly_labs/collection/
   source: edge
-  relationship: connector-coverage
-  contract_reference:
-    register: Raycast Store (raycast/extensions monorepo + store_listings JSON)
-    spec_file: null
-    role: raycast-community-wrapper
-    builder: community
-    authors:
-    - luarmr
-    matched_domain: launchdarkly.com
-    matched_by: domain
-    monorepo_commit: 84f9ac51336a8c69f70974a75bc067c0feae3658
-    listings:
-    - title: LaunchDarkly
-      store_url: https://www.raycast.com/luarmr/launchdarkly
-      installs: 170
-      categories:
-      - Developer Tools
-      source: https://github.com/raycast/extensions/tree/84f9ac51336a8c69f70974a75bc067c0feae3658/extensions/launchdarkly/
-      author: luarmr
-    categories:
-    - Developer Tools
-    identity_note: the extension's own source calls a host on the product's domain AND its title / package name
-      passes partner_link's name check; built by Raycast community developers, not the vendor
-    signal_note: 'coverage: Raycast''s store reaches the product through community-built extensions; one edge per
-      (product, store); install / listing counts are context, never counted'
-    detected_by: sweep-raycast-store-extensions.py
-    detected: '2026-10-22'
-  status: not-a-workflow
-  arazzo: null
-- slug: launchdarkly-apis-guru-openapi-directory
-  label: APIs.guru OpenAPI Directory
-  partner: apis-guru
-  partner_name: APIs.guru OpenAPI Directory
-  category: API definition directory listing (OpenAPI)
-  type: register
-  channel: standard-directory
-  evidence: https://apis.guru/
-  source: edge
-  relationship: standard-participant
-  contract_reference:
-    register: APIs.guru OpenAPI Directory
-    spec_file: null
-    standard: APIs.guru OpenAPI Directory
-    role: listed-in-directory
-    directory_provider: launchdarkly.com
-    matched_domain: launchdarkly.com
-    matched_by: domain
-    apis_listed: 1
-    version_count: 1
-    first_added: '2017-09-29'
-    last_updated: '2021-07-19'
-    origin_publisher_hosted: false
-    origin_hosts:
-    - launchdarkly.github.io
-    categories:
-    - developer_tools
-    own_openapi_files: 66
-    listings:
-    - key: launchdarkly.com
-      title: LaunchDarkly REST API
-      preferred: 5.3.0
-      versions: 1
-      swagger_url: https://api.apis.guru/v2/specs/launchdarkly.com/5.3.0/swagger.json
-      origin_url: https://launchdarkly.github.io/ld-openapi/openapi.json
-      openapi_version: '2.0'
-    signal_note: 'participation only: a community directory listing (APIs.guru collects definitions; the provider
-      did not file them). Signals: version_count, apis_listed, origin_publisher_hosted.'
-    detected_by: sweep-openapi-directory-apis-guru.py
-    detected: '2026-10-22'
-  status: not-a-workflow
-  arazzo: null
-- slug: launchdarkly-tx-ramp
-  label: TX-RAMP
-  partner_name: TX-RAMP
-  category: Texas state cloud security certification (TX-RAMP)
-  type: contract
-  channel: regulator-register
-  evidence: https://dir.texas.gov/resource-library-item/tx-ramp-certified-cloud-products
-  source: edge
-  relationship: standard-participant
-  contract_reference:
-    register: TX-RAMP Certified Cloud Products (Texas DIR)
-    standard: TX-RAMP
-    spec_file: null
-    role: tx-ramp-certified
-    register_file: https://dir.texas.gov/sites/default/files/2026-10/Copy%20of%20TX-RAMP%20Certified%20Cloud%20Products_1.xlsx
-    registrations:
-    - certification_id: TX1009296
-      product: LaunchDarkly
-      registered_vendor: LaunchDarkly
-      certification_level: Provisional
-      cloud_categories:
-      - SaaS
-      certification_path: Certification Due to Existing Other RAMP-Certification
-      expires: null
-      lapsed: false
-      matched_domain: launchdarkly.com
-      matched_by: domain
-    identity: wikidata Q140599516 'LaunchDarkly' P856 https://launchdarkly.com/
-    identity_source: wikidata P856 (labelled provenance step; Kin 2026-10-15 decision 1)
-    signal_note: 'certified_products = one entry per cloud category (SaaS / PaaS / IaaS) the vendor holds a TX-RAMP
-      certification in, never per product; products are context, never counted. certification_level = the highest
-      level in that category; lapsed: true when every product in the category is past its expiry date. partner_tier
-      = the highest CURRENT level'
-    certified_products:
-    - product: SaaS
-      product_type: SaaS
-      standard: TX-RAMP
-      certification_level: Provisional
-      lapsed: false
-    detected_by: sweep-tx-ramp-certified-cloud.py
-    detected: '2026-10-22'
+  relationship: platform-app
   status: not-a-workflow
   arazzo: null
