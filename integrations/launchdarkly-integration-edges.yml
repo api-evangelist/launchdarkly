@@ -1403,6 +1403,37 @@ edges:
   detected: '2026-10-22'
   detected_by: mirror-platform-listings.py
   category: configuration-management content listing (Ansible collection)
+- partner_name: JSR
+  partner: null
+  partner_match: null
+  type: register
+  direction: provider-built
+  category: official SDK (JavaScript/TypeScript, JSR)
+  evidence: https://jsr.io/@launchdarkly/cloudflare-server-sdk
+  channel: package-registry
+  relationship: distribution-channel
+  contract_reference:
+    register: JSR (jsr.io public API JSON)
+    spec_file: null
+    language: JavaScript/TypeScript
+    packages:
+    - name: '@launchdarkly/cloudflare-server-sdk'
+      version: 2.7.46
+      released: '2026-10-16'
+      released_field: versions.createdAt
+      lapsed: false
+      page: https://jsr.io/@launchdarkly/cloudflare-server-sdk
+      github_repository: https://github.com/launchdarkly/js-core
+      repo_leg: github-org:launchdarkly
+      publisher_leg: org:launchdarkly
+      matched_by: github-org
+    current: true
+    signal_note: 'an official package on the registry: distribution, not an integration; lapsed = no release in
+      24 months or archived'
+    detected_by: sweep-jsr-javascript-registry.py
+    detected: '2026-10-23'
+  detected_by: sweep-jsr-javascript-registry.py
+  first_seen: '2026-10-23'
 method: searched
 checked:
 - contentful/integrations/contentful-integration-edges.yml
@@ -1473,6 +1504,8 @@ checked:
 - https://packagist.org/packages
 - https://pub.dev/api
 - ansible/integrations/ansible-integration-edges.yml
+- https://jsr.io/api/packages
+- https://jsr.io/api/scopes
 source:
 - https://docs.mparticle.com/integrations/launchdarkly/feed/
 - https://fivetran.com/docs/activations/destinations/available-destinations/launchdarkly
