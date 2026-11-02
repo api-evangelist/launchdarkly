@@ -1,0 +1,97 @@
+# Pricing transcribed from the provider's own page — see provenance. Numbers are quoted, not derived.
+generated: '2026-10-28'
+method: searched
+source: https://launchdarkly.com/pricing/
+sources:
+- https://launchdarkly.com/pricing/
+provenance:
+  tool: engine/economics/harvest_pricing.py
+  run: 20261028T120612
+  grounding: every price_text was found verbatim in the fetched page text
+audience: business-product
+pricing_basis: usage-other
+delivery:
+  delivery: managed
+  method: page
+  read: '2026-10-28'
+  managed_tier: Foundation
+published: true
+note: Tiered page with free Developer tier, usage-based Foundation (service connections, client-side MAU,
+  AI runs) and negotiated Enterprise plus paid Guardian add-on. Note page lists both $8.33 per 1k client-side
+  MAU / mo and $10 / mo per 1K MAU in the comparison table.
+plan_count: 4
+currency: USD
+plans:
+- name: Developer
+  price_text: $0 / mo, forever
+  price: 0
+  currency: USD
+  period: month
+  unit: account
+  included_quota: Unlimited seats; 100K experimentation MAU/mo; 10M logs and 10M traces /mo; unlimited
+    feature flags; 5 service connections and 1K client-side MAU /mo; 5K session replays and 5K errors
+    /mo; 5k AI runs/mo; 14 days data retention; 1 project & 3 environments
+  overage: Ingestion stops at 5K
+- name: Foundation
+  price_text: $10 per Service Connection / mo
+  price: 10
+  currency: USD
+  period: month
+  unit: service connection
+  included_quota: 5 service connections included; 5K session replays, 5K errors, 10M logs, and 10M traces
+    each month; 5k AI Runs included / mo; 30 days data retention; unlimited projects and environments
+  overage: $5 per additional 1k runs; $8.33 per 1k client-side MAU / mo (comparison table states $10 /
+    mo per 1K MAU); usage beyond included observability bills as you go
+- name: Enterprise
+  price_text: Custom pricing
+  period: none
+  included_quota: Everything in Foundation, plus advanced targeting, custom roles & teams, workflows,
+    SCIM, custom AI runs, 100 days data retention
+  overage: Contracted true-up
+- name: Guardian
+  price_text: Paid add-on
+  period: none
+  included_quota: Release monitoring, guardrail metrics, automatic rollback, advanced observability, exposure
+    insights
+rate_limit_statements:
+- Ingestion stops at 5K
+- Config delivery latency (SLO) < 300ms < 200ms < 150ms (SLA)
+x-canonical:
+  generated: '2026-11-01'
+  vocabulary: engine/economics/plans-canonical.yml
+  models:
+  - hybrid
+  - metered
+  units:
+  - object
+  plans:
+  - name: Developer
+    access: other
+    model: metered
+    model_how: derived
+    units:
+    - object
+    periods:
+    - month
+  - name: Foundation
+    access: other
+    model: hybrid
+    model_how: derived
+    units:
+    - other
+    periods:
+    - month
+  - name: Enterprise
+    access: other
+    model: metered
+    model_how: derived
+    units: []
+    periods:
+    - none
+  - name: Guardian
+    access: other
+    model: unstated
+    model_how: derived
+    units: []
+    periods:
+    - none
