@@ -57,7 +57,7 @@ rate_limit_statements:
 - Ingestion stops at 5K
 - Config delivery latency (SLO) < 300ms < 200ms < 150ms (SLA)
 x-canonical:
-  generated: '2026-11-01'
+  generated: '2026-11-02'
   vocabulary: engine/economics/plans-canonical.yml
   models:
   - hybrid
